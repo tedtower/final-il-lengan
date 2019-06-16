@@ -1308,5 +1308,18 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     LEFT JOIN menu USING(MID)
     //     ) USING(prID)
     // LEFT JOIN stockitems USING(stID)
+
+    // Insert prefstock
+    // INSERT INTO prefstock(prID, stID, prstQty)
+    // VALUES(?, ?, ?)
+
+    // Update prefstock
+    // UPDATE prefstock set prstQty = ?
+    // WHERE prID = ? AND stID = ?
+
+    //Delete prefStock
+    // DELETE FROM prefstock
+    // WHERE prID = ? AND stID = ?
+
 }
 ?>
