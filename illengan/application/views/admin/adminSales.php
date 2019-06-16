@@ -383,6 +383,7 @@ var discounts = <?= json_encode($discounts) ?>;
 var addons = [];
 var mnaddons = <?= json_encode($mnaddons) ?>;
 var sales = [];
+var stocks = [];
      $(function () {
         $.ajax({
             url: '/admin/jsonSales',
@@ -405,6 +406,7 @@ var sales = [];
                 sales = data;
                 menuItems = data.menuitems;
                 tables = data.tables;
+                stocks = data.stocks;
                 addons = data.addons;
                 showTable();
             },
@@ -545,7 +547,7 @@ var sales = [];
         subPrice = 0;
         var osID = $(this).closest("tr").attr("data-id");
         setEditModal($("#editSales"), sales.orderslips.filter(item => item.osID === osID)[0], 
-        sales.orderlists.filter(ol => ol.osID === osID), addons);
+        sales.orderlists.filter(ol => ol.osID === osID), addons, stocks);
     });
     showAddOns();
     }
@@ -562,10 +564,10 @@ var sales = [];
     }
  }
 
- function setEditModal(modal, saleslist, ol, addons) {
+ function setEditModal(modal, saleslist, ol, addons, stocks) {
     var olAddons = [];
     var options = [];
-   
+  
     // Conversion of Date to Datetime-local format
     var osDateTime = new Date(saleslist.osDateTime);
     var osPayDateTime = new Date(saleslist.osPayDateTime);
@@ -584,13 +586,14 @@ var sales = [];
 
     ol.forEach(ol => {
         modal.find(".editsalesTable > tbody").append(`
-        <tr class="salesElem salesElements" data-id="${ol.olID}">
+        <tr class="salesElem salesElements" data-id="${ol.olID}" data-stockid="${ol.stID}" 
+        data-stqty="${ol.prstQty}" data-currqty="${ol.stQty}">
             <input type="hidden" name="prID" id="prID" value="${ol.prID}">
             <input type="hidden" name="osID" id="osID" value="${ol.osID}">
             <input type="hidden" class="mID" id="mID" name="mID" value="${ol.mID}">
                 <td><input type="text" id="olDesc" name="olDesc"
                   class="olDesc form-control form-control-sm" value="${ol.olDesc}" readonly="readonly"></td>
-                <td><input type="number" id="olQty" onchange="setSubtotal()" name="olQty"
+                <td><input type="number" id="olQty" data-qty="${ol.olQty}" onchange="setSubtotal()" name="olQty"
                   class="olQty form-control form-control-sm" value="${ol.olQty}" required min="1"></td>
                 <td><input type="number" id="prPrice" name="prPrice" data-orPrice="${ol.prPrice}"
                   class="prPrice form-control form-control-sm" onchange="setSubtotal()" value="${ol.olPrice}" ></td>
@@ -642,7 +645,7 @@ var sales = [];
 }
 function setAddonOptions(modal, mID, olID, aoID) {
     mnaddon = mnaddons.filter(item => item.mID === mID);
-    console.log(mnaddon);
+
     mnaddon.forEach(ma => {
                 modal.find("#ao"+olID+aoID).append(`
                 <option value="${ma.aoID}">${ma.aoName}</option>`);
@@ -693,7 +696,7 @@ function setDiscount() {
         $(tr).find('select').empty();
         var prmID = $('.discount').eq(i).closest('tr').find('#prID').val();
         var discount = discounts.filter(item => item.prID === prmID);
-        console.log(discount);
+   
         if(parseInt(discount.length) === 0) {
             $(tr).find('select').append(`<option value="0" selected>None</option>`);
         } else {
@@ -721,9 +724,29 @@ $(document).ready(function() {
         var ol = [];
         for (var index = 0; index < $(this).find(".salesElements").length; index++) {
             var row = $(this).find(".salesElements").eq(index);
+            var stQty;
+            var oldQty = parseInt(row.find("input[name='olQty']").data("qty"));
+            var newQty = parseInt(row.find("input[name='olQty']").val());
+
+            if(isNaN(parseInt(row.attr('data-id')))) {
+                stQty = parseInt(row.attr('data-currqty') - (row.find("input[name='olQty']").val() * 
+                row.attr('data-stqty')));
+            } else if(parseInt(row.attr('data-delete')) === 0) {
+                stQty = parseInt(row.attr('data-currqty')) + (parseInt(row.find("input[name='olQty']").data("qty")) * 
+                parseInt(row.attr('data-stqty')));
+            } else if( oldQty !== newQty ) {
+                var difference = oldQty - newQty;
+                stQty = parseInt(row.attr('data-currqty')) + (parseInt(difference) * 
+                parseInt(row.attr('data-stqty')));
+            } else {
+                stQty = parseInt(row.attr('data-currqty'));
+            }
+
             ol.push({
                 olID:  isNaN(parseInt(row.attr('data-id'))) ?  (null) : parseInt(row.attr('data-id')),
                 prID :  row.find("input[name='prID']").val(),
+                stID: parseInt(row.attr('data-stockid')),
+                stQty: stQty,
                 osID:  osID,
                 olDesc: row.find("input[name='olDesc']").val(),
                 olQty: row.find("input[name='olQty']").val(),
@@ -765,11 +788,10 @@ $(document).ready(function() {
                 addons: JSON.stringify(addons)
             },
             success: function() {
-                alert('Sales Updated');
-                //location.reload();
+                location.reload();
             },
             error: function (response, setting, errorThrown) {
-                //alert("There are add on duplicates on an item");
+                alert("There are add on duplicates on an item");
                 console.log(errorThrown);
                 console.log(response.responseText);
             }
