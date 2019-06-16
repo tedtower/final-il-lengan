@@ -30,6 +30,32 @@ class Adminmodel extends CI_Model{
                 LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
         return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
     }
+    function get_prefStocks(){
+        $query="SELECT
+                prID AS menuitem,
+                CONCAT(mName, 
+                    IF(prName IS NULL, '', CONCAT(' ', prName,)),
+                    IF(mTemp IS NULL, '', CONCAT(' ',
+                            IF(mTemp = 'hc', '',
+                                IF(mTemp = 'h', 'Hot', 'Cold')
+                            )
+                        )
+                    )
+                ) AS prefname,
+                stID AS stockitem,
+                CONCAT(stName,
+                    IF(stSize IS NULL, '', CONCAT(' ', stSize))
+                ) AS stockitemname,
+                prstQty AS qty
+            FROM
+                prefstock
+            LEFT JOIN(
+                    preferences
+                LEFT JOIN menu USING(MID)
+                ) USING(prID)
+            LEFT JOIN stockitems USING(stID)";
+        return $this->db->query($query)->result_array();
+    }
     function get_stockCategories(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) where ctType = 'inventory' group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
