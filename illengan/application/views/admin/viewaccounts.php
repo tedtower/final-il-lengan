@@ -22,7 +22,7 @@
                                     Account</button>
 
                                 <br><br>
-                                <table id="accountsTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                <table id="accountsTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                                     <thead class="thead-dark">
                                         <th><b class="pull-left">Account No.</b></th>
                                         <th><b class="pull-left">Type</b></th>
@@ -195,7 +195,7 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Delete Account</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Archive Account</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -203,12 +203,12 @@
                                             <form id="confirmDelete">
                                                 <div class="modal-body">
                                                     <h6 id="deleteAccountId"></h6>
-                                                    <p>Are you sure you want to delete this table?</p>
+                                                    <p>Are you sure you want to archive the account?</p>
                                                     <input name="accountId" hidden="hidden">
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                    <button type="submit" class="btn btn-warning btn-sm">Archive</button>
                                                 </div>
                                             </form>
                                             <!--End of Delete Modal -->
@@ -303,17 +303,15 @@
                 <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
-
+                            <!--Change Pass button-->
+                            <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
+                            data-original-title" >Change Password</button>
                             <!--Edit button-->
                             <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
                                 data-target="#editAccount">Edit</button>
                             <!--Delete button-->
                             <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteAccount">Archived</button>
-                            <!--Change Pass button-->
-                            <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
-                            data-original-title style="float: left" >Change Password</button>
-                                                  
+                            data-target="#deleteAccount">Archived</button>                   
                         </div>
                     </td>
                 </tr>`);
@@ -327,7 +325,7 @@
             });
             $(".item_delete").last().on('click', function() {
                 $("#deleteAccountId").text(
-                    `Delete account code ${$(this).closest("tr").attr("data-id")}`);
+                    `Account code: ${$(this).closest("tr").attr("data-id")}`);
                 $("#deleteAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
                     "data-id"));
             });
