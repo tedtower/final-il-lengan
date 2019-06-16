@@ -258,6 +258,7 @@ function jsonSales() {
     $data = array();
     $data['orderslips'] = $this->adminmodel->get_osSales();
     $data['orderlists'] = $this->adminmodel->get_olSales();
+    $data['stocks'] = $this->adminmodel->get_prefstock();
     $data['menuitems'] = $this->adminmodel->get_menuPref();
     $data['addons'] = $this->adminmodel->get_orderAddon();
     $data['tables'] = $this->adminmodel->get_tables();
