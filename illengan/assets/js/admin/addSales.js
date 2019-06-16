@@ -22,7 +22,8 @@ function getSelectedMenu() {
                         } else {
                             prName = ", "+data[0].prName;
                         }
-                        merchChecked = `<tr class="salesElem salesElements">
+                        merchChecked = `<tr class="salesElem salesElements" data-stockid="${data[0].stID}" 
+                        data-stqty="${data[0].prstQty}" data-currqty="${data[0].stQty}">
                         <input type="hidden" name="prID" id="prID" value="` + data[0].prID + `">
                         <input type="hidden" class="mID" id="mID" name="mID" value="` + data[0].mID + `">
                         <td ><input type="text" id="olDesc" name="olDesc"
@@ -72,7 +73,7 @@ function addAddons(btn) {
             if(data.length !== 0) {
             addonsArr = data;
             var options = [];
-            console.log(addonsArr);
+           
             for(var i = 0; i <= data.length-1; i++) {
             var option = `  <option value="`+data[i].aoID+`">`+data[i].aoName+`</option>`;
             options.push(option);
@@ -132,7 +133,7 @@ function setAddOnSubtotal() {
         var aoQty = $(select).closest('td').next('td').find('#aoQty').val();
         var aoSubtotal = parseFloat(aoPrice * aoQty);
         $(select).closest('td').nextAll('td').find('#aoSubtotal')[0].value = aoSubtotal;
-        console.log(select);
+       
         setAddonTotal();
 }
 
@@ -187,7 +188,6 @@ function setSubtotal() {
         } else {
             disc = parseFloat(document.getElementsByName('seniorDC')[1].value);
         }
-        console.log(disc);
 
         if(isNaN(disc) || disc === 0 || disc === "") {
             disc = 0;
@@ -197,7 +197,6 @@ function setSubtotal() {
         } else {
             var percentage = parseFloat(disc) / 100;
             discountAmt = parseFloat(total) * percentage; 
-        
             total = total - discountAmt;
 
             $('#dcpercent').remove();
@@ -234,8 +233,11 @@ $(document).ready(function() {
 
     for (var i = 0; i <= elements.length - 1; i++) { 
         prID = document.getElementsByName('prID')[i].value;
+        stID = $('.salesElements').eq(i).data("stockid");
         olDesc = document.getElementsByName('olDesc')[i].value;
-        olQty = document.getElementsByName('olQty')[i].value;
+        olQty = parseInt(document.getElementsByName('olQty')[i].value);
+        currQty = parseInt($('.salesElements').eq(i).data("currqty"));
+        stQty = currQty - (parseInt($('.salesElements').eq(i).data("stqty")) * olQty);
         olPrice = document.getElementsByName('prPrice')[i].value;
         olSubtotal = parseFloat(document.getElementsByName('subtotal')[i].value);
         olDiscount = parseFloat(document.getElementsByName('discount')[i].value);
@@ -243,6 +245,8 @@ $(document).ready(function() {
 
         items = {
             'prID': prID,
+            'stID': stID,
+            'stQty': stQty,
             'olDesc': olDesc,
             'olQty' : olQty,
             'olPrice': olPrice,
@@ -286,13 +290,8 @@ $(document).ready(function() {
             orderlists: JSON.stringify(orderlists),
             addons: JSON.stringify(addons)
         },
-        beforeSend: function() {
-            // console.log('ADDED ADDONS');
-            // console.log(addons)
-        },
         success: function() {
-            alert('Sales added');
-            //location.reload();
+            location.reload();
         },
         error: function (response, setting, errorThrown) {
             console.log(errorThrown);
