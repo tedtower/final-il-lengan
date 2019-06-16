@@ -566,7 +566,16 @@ class Adminmodel extends CI_Model{
         $query = "SELECT * from categories where supcatID is null AND ctType = 'inventory' group by ctName order by ctName asc";
         return $this->db->query($query)->result_array();
     }
-
+    function get_returns() {
+        $query = "SELECT tID, spID, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
+        return $this->db->query($query)->result_array();
+    }
+    function get_returnItems() {
+        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
+        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID);";
+        return $this->db->query($query)->result_array();
+    }
+    
 //INSERT FUNCTIONS----------------------------------------------------------------
     function add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch){
         $query = "insert into supplier (spName, spContactNum, spEmail, spStatus, spAddress) values (?,?,?,?,?);";

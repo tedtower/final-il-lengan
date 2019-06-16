@@ -17,7 +17,7 @@
                             <div class="card-content">
                         <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTable" data-original-title style="margin:0;">Add Table</button><br>
                         <br>
-                        <table id="tablesTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                        <table id="tablesTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                             <thead class="thead-dark">
                                 <th><b class="pull-left">Table Code</b></th>
                                 <th><b class="pull-left">Actions</b></th>
@@ -103,7 +103,7 @@
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLongTitle">Delete Table</h5>
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Archive Table</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -111,12 +111,12 @@
                                     <form id="confirmDelete">
                                         <div class="modal-body">
                                             <h6 id="deleteTableCode"></h6>
-                                            <p>Are you sure you want to delete this table?</p>
+                                            <p>Are you sure you want to archive this table?</p>
                                             <input type="text" name="tableCode" hidden="hidden">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            <button type="submit" class="btn btn-warning btn-sm">Delete</button>
                                         </div>
                                     </form>
                                 </div>
@@ -258,7 +258,7 @@
             });
             
             $(".deleteBtn").last().on('click', function() {
-                $("#deleteTableCode").text(`Delete table code ${$(this).closest("tr").attr("data-id")}`);
+                $("#deleteTableCode").text(`Table code: ${$(this).closest("tr").attr("data-id")}`);
                 $("#deleteTable").find("input[name='tableCode']").val($(this).closest("tr").attr("data-id"));
             });
         });

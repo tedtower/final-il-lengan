@@ -13,13 +13,13 @@
             <ul class="collapse list-unstyled" id="homeSubmenu">
                 <li><a href="<?php echo base_url('admin/inventory')?>"><i class="far fa-boxes"></i> Stock Items</a></li>
                 <li><a href="<?php echo base_url('admin/stockcategories')?>"><i class="far fa-bookmark"></i> Categories</a></li>
-                <li><a href="<?php echo base_url('admin/purchaseorder')?>"><i class="far fa-truck-loading"></i> Purchase Order</a></li>
+                <li><a href="<?php echo base_url('admin/purchaseorder')?>"><i class="far fa-dolly-flatbed-alt"></i> Purchase Order</a></li>
                 <li><a href="<?php echo base_url('admin/deliveryreceipt')?>"><i class="far fa-truck-loading"></i> Delivery Receipt</a></li>
-                <li><a href="<?php echo base_url('admin/officialreceipt')?>"><i class="far fa-truck-loading"></i> Official Receipt</a></li>
-                <li><a href="<?php echo base_url('admin/return')?>"><i class="far fa-truck-loading"></i> Returns</a></li>
+                <li><a href="<?php echo base_url('admin/officialreceipt')?>"><i class="far fa-receipt"></i> Official Receipt</a></li>
+                <li><a href="<?php echo base_url('admin/return')?>"><i class="far fa-exchange"></i> Returns</a></li>
                 <li><a href="<?= base_url('admin/consumption'); ?>"><i class="far fa-calendar-minus"></i> Consumption</a></li>
                 <li><a href="<?php echo base_url('admin/stock/spoilages')?>"><i class="far fa-trash"></i> Spoilages</a></li>
-                <li><a href="<?php echo base_url('admin/measurements')?>"><i class="far fa-trash"></i> Measurements</a></li>
+                <li><a href="<?php echo base_url('admin/measurements')?>"><i class="far fa-ruler-triangle"></i> Measurements</a></li>
             </ul>
         </li>
         <!--Menu-->
@@ -41,7 +41,7 @@
             </ul>
         </li>
         <!--Sales-->
-        <li><a href="<?php echo base_url('admin/sales')?>"><i class="far fa-receipt"></i> Sales</a></li>
+        <li><a href="<?php echo base_url('admin/sales')?>"><i class="far fa-chart-line"></i> Sales</a></li>
         <!--Sources-->
         <li><a href="<?php echo base_url('admin/supplier') ?>"><i class="far fa-user-tag"></i> Supplier</a></li>
         <!--Accounts-->
