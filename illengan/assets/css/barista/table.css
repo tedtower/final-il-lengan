@@ -1,0 +1,19 @@
+.table-cover {
+    position: relative;
+    right: 0;
+    float: right;
+    width: 80%;
+    margin-top: 50px;
+}
+
+.stock-btn {
+    margin-right: 68%;
+    margin-top: 4%;
+    margin-bottom: 1%;
+    float: right;
+}
+
+.btn {
+    margin-left: 10px;
+    scroll-behavior: auto;
+}

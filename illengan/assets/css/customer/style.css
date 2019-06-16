@@ -1,0 +1,170 @@
+body {
+    margin-top: 75px;
+}
+.nav-logo{
+    width: 38px;
+    height: 38px;
+}
+.c-focus a{
+    color: #ececec !important;
+}
+.c-focus:hover a{
+    color: #363636 !important;
+}
+.active-sbar input[type=search]:focus:not([readonly]) {
+    border: 1px solid #dbac76;
+    box-shadow: 0 0 0 1px #dbac76;
+}
+.sbar{
+    width: 200px;
+    height: 35px;
+}
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: #dfdfdf;
+    position: fixed;
+    margin-top: -29px;
+    z-index: 5;
+  }
+.progress-bar {
+    height: 8px;
+    background: #dbac76;
+    width: 0%;
+}
+.menu-title, .menu-price {
+    margin: 0px;
+    padding: 0px;
+    font-size: 23px;
+    letter-spacing: -0.5px;
+    color: #333534;
+}
+#mt {
+    width: 145px;
+    padding-left: 10px;
+    float: left;
+}
+#mp {
+    padding-right: 10px;
+    float: right;
+}
+.cd-mw {
+    max-width: 250px;
+    margin: 5px;
+}
+.fs-15 {
+    font-size: 15px;
+}
+.fs-24 {
+    font-size: 24px;
+}
+.subcategory {
+    border-bottom: 4px solid #EEB290;
+}
+.btn-accent {
+    background-color: #b96e43;
+    color: #ffffff;
+}
+.btn-outline-accent {
+  border: 2px solid #b96e43;
+  color: #b96e43;
+  background-color: white;
+}
+.btn-outline-accent:hover, .btn-outline-accent:focus {
+    color: #b96e43;
+}
+.btn-accent:hover, .btn-accent:focus {
+    color: #ffffff;
+}
+.rp-title {
+    font-size: 36px;
+    letter-spacing: -0.5px;
+}
+.p-ti {
+    font-size: 17px;
+    text-indent: 40px;
+}
+#quantity {
+    font-size: 17px;
+    font-family: Delius;
+    width: 30px !important;
+    text-align: center;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+.ty-logo {
+    width: 150px;
+}
+
+input .hc{
+    display: block;
+}
+.green-border-focus .form-control:focus {
+    border: 1px solid #b96e43;
+    box-shadow: 0 0 0 0.2rem #b96e434d;
+}
+input#addon-qty, input#edit-qty{
+    width: 75px;
+}
+.freebiemain {
+    position: relative;
+    display: -webkit-box;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.freebiemain p {
+    line-break: auto;
+    line-height: 0;
+    font-size: 15px;
+}
+.freebie {
+    position: relative;
+    display: inline-block;
+    float: left;
+    padding-left: 10px;
+    padding-top: 1px;
+    width: 60%;
+}
+
+.freeBOpt {
+    position: relative;
+    width: 100%;
+}
+
+@media (min-width : 320px) and (max-width : 480px){
+    .cd-mw {
+        max-width: 100%;
+    }
+}
+@media (min-width : 480px) and (max-width : 540px) {
+    .cd-mw {
+        max-width: 155px;
+    }
+    .card-body {
+        text-align: center;
+    }
+    #mt, #mp {
+        float: none;
+        padding: 0px 3px;
+        line-height: 24px;
+    }
+    #mt {
+        margin-top: 5px;
+    }
+}
+@media (min-width : 540px) and (max-width : 720px) {
+    .cd-mw {
+        max-width: 200px;
+    }
+}
+@media (min-width : 1281px) {
+    .cd-mw {
+        max-width: 320px;
+    }
+}

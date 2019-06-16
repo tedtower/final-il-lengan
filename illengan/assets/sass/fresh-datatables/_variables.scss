@@ -1,0 +1,136 @@
+/*
+    Fresh Bootstrap Table redesign by Creative Tim
+    http://www.creative-tim.com
+    @CreativeTim
+
+*/
+
+//== Buttons
+//
+//## For each of Bootstrap's buttons, define text, background and border color.
+
+$none:                       0   !default;
+$border-thin:                1px !default;
+$border-thick:               2px !default;
+
+$white-color:                #FFFFFF !default;
+$white-bg:                   #FFFFFF !default;
+$white-states-color:         #FFFFFF !default;
+
+$black-font:                 #666666 !default;
+
+$light-gray:                 #E3E3E3 !default;
+$medium-gray:                #DDDDDD !default;
+$dark-gray:                  #9A9A9A !default;
+
+$transparent-bg:             transparent !default;
+
+$default-color:              #AAAAAA !default;
+$default-states-color:       #898989 !default;
+
+$primary-color:              #3472F7 !default;
+$primary-states-color:       #1D62F0 !default;
+
+$success-color:              #05AE0E !default;
+$success-states-color:       #049F0C !default;
+
+$info-color:                 #2CA8FF !default;
+$info-states-color:          #109CFF !default;
+
+$warning-color:              #FF9500 !default;
+$warning-states-color:       #ED8D00 !default;
+
+$danger-color:               #FF3B30 !default;
+$danger-states-color:        #EE2D20 !default;
+
+$light-white:                rgba($white-color, .8);
+
+
+//== Components
+//
+
+$padding-base-vertical:         8px !default;
+$padding-base-horizontal:      16px !default;
+
+$padding-round-vertical:        9px !default;
+$padding-round-horizontal:     18px !default;
+
+$padding-large-vertical:       14px !default;
+$padding-large-horizontal:     30px !default;
+
+$padding-small-vertical:        5px !default;
+$padding-small-horizontal:     10px !default;
+
+$padding-xs-vertical:           1px !default;
+$padding-xs-horizontal:         5px !default;
+
+$border-radius-small:           3px !default;
+$border-radius-base:            4px !default;
+$border-radius-large:           6px !default;
+$border-radius-extreme:        10px !default;
+
+$btn-round-radius:             30px !default;
+
+$height-base:                  40px !default;
+
+$font-size-base:               14px !default;
+$font-size-medium:             16px !default;
+$font-size-large:              18px !default;
+
+$font-size-small:              12px !default;
+
+$font-weight-normal:         400 !default;
+$font-weight-semi:           500 !default;
+$font-weight-bold:           600 !default;
+
+$general-transition-time:  300ms !default;
+
+$slow-transition-time:           370ms !default;
+$fast-transition-time:           100ms !default;
+
+$transition-linear:                                   linear !default;
+$transition-bezier:         cubic-bezier(0.34, 1.61, 0.7, 1) !default;
+$transition-ease:           ease 0s;
+
+$icon-blue-color-top: 		#4087ea;
+$icon-blue-color-bottom: 	#533ce1;
+
+$icon-azure-color-top:   	#36AFEC;
+$icon-azure-color-bottom: 	#2D7CE7;
+
+$icon-green-color-top: 	    #83CB1E;
+$icon-green-color-bottom: 	#53A319;
+
+$icon-orange-color-top: 	#ffb33b;
+$icon-orange-color-bottom: 	#ff5221;
+
+$icon-red-color-top: 	    #ED362C;
+$icon-red-color-bottom: 	#C51E1B;
+
+$icon-purple-color-top: 	#df55e1;
+$icon-purple-color-bottom: 	#943bea;
+
+$icon-pink-color-top: 		#ff2a63;
+$icon-pink-color-bottom: 	#ff2e2e;
+
+$icon-black-color-top:	 	#787878;
+$icon-black-color-bottom: 	#343434;
+
+$icon-purple-color-top:     #9368E9;
+$icon-purple-color-bottom: 	#943bea;
+
+$icon-gray-color-top:       #bfbfbf;
+$icon-gray-color-bottom:    #737373;
+
+$social-facebook: 			#3b5998;
+$social-twitter: 			#55acee;
+$social-pinterest: 			#cc2127;
+$social-google: 			#dd4b39;
+$social-linkedin: 			#0976b4;
+$social-dribbble: 			#ea4c89;
+$social-github: 			#333333;
+$social-youtube: 			#e52d27;
+$social-stumbleupon: 		#eb4924;
+$social-reddit: 			#ff4500;
+$social-tumblr: 			#35465c;
+$social-behance: 			#1769ff;

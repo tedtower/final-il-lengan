@@ -1,0 +1,29 @@
+body {
+    margin-top: 75px;
+}
+.content{
+    width:96%;
+    margin: 1% 2%;
+    font-size: 13px;
+}
+th{
+    font-size: 13px;
+}
+tbody{
+    background: white;
+}
+table{
+    border:1px solid whitesmoke;
+}
+.nav-logo{
+    width: 38px;
+    height: 38px;
+    border:1px solid #ececec;
+    border-radius:38px;
+}
+.c-focus a{
+    color: #ececec !important;
+}
+.c-focus:hover a{
+    color: #363636 !important;
+}

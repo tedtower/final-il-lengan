@@ -1,0 +1,75 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-image: url(/assets/media/Coffee_1.jpg);
+    background-size: cover;
+    background-position: center;
+    font-family: sans-serif;
+}
+.form-box{
+    width: 420px;
+    height: 400px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    top: 50%;
+    left: 75%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+    padding-top: 125px;
+    padding-right: 20px;
+    padding-bottom: 40px;
+    padding-left: 20px;
+}
+.logo{
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: absolute;
+    top: -50px;
+    left: calc(45% - 50px);
+}
+.form-box p{
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+.form-box input{
+    width: 100%;
+    margin-bottom: 20px;
+}
+.form-box input[type="text"], input[type="password"]
+{
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+}
+.form-box input[type="submit"]
+{
+    border: none;
+    outline: none;
+    height: 40px;
+    background: #603f33;
+    color: #fff;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.form-box input[type="submit"]:hover
+{
+    cursor: pointer;
+    background: #a88c82;
+    color: #000;
+}
+.form-box a{
+    text-decoration: none;
+    font-size: 14px;
+    color: #fff;
+}
+.form-box a:hover
+{
+    color: #39dc79;
+}

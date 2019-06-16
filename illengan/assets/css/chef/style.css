@@ -1,0 +1,37 @@
+
+th{
+    font-size: 13px;
+}
+tbody{
+    background: white;
+    font-size: 14px;
+}
+table{
+    border:1px solid whitesmoke;
+}
+body{
+    background:white;
+}
+.accordion{
+    background:#fcfcfc;
+}
+.addons{
+    width:43%;
+    float:left;
+}
+.remarks{
+    width:50%;
+    float:left;
+}
+.nav-logo{
+    width: 38px;
+    height: 38px;
+    border:1px solid #ececec;
+    border-radius:38px;
+}
+.c-focus a{
+    color: #ececec !important;
+}
+.c-focus:hover a{
+    color: #363636 !important;
+}
