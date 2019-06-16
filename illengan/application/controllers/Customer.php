@@ -202,6 +202,40 @@ class Customer extends CI_Controller {
 		}
 	}
 
+	function editOrder() {	
+		if($this->isLoggedIn()){			
+			if($this->isCheckedIn()){
+				$id = $this->input->post('rowID');
+				$preference = $this->Customermodel->get_preference($this->input->post('preference'))[0];
+				$rawAddons = json_decode($this->input->post('addons'),true);
+				for($index = 0; $index < count($rawAddons['addonIds']); $index++){
+					$rawAddons['addonIds'][$index] = intval($rawAddons['addonIds'][$index]);
+					$rawAddons['addonQtys'][$index] = intval($rawAddons['addonQtys'][$index]);
+					$rawAddons['addonSubtotals'][$index] = floatval($rawAddons['addonSubtotals'][$index]);
+				}
+				$data = array(
+					'id' => intval($this->input->post('preference')),
+					'menu_id' => intval($preference['mID']),
+					'name' => $preference['order'],
+					'qty' => intval($this->input->post('quantity')),
+					'orderDesc' => $preference['order'],
+					'unit_price' => intval($preference['prPrice']),
+					'subtotal' => floatval($this->input->post('subtotal')),
+					'remarks' => $this->input->post('remarks'),
+					'addons' => $rawAddons
+				);
+				unset($_SESSION['orders'][$id]);
+				rsort($_SESSION['orders']);
+				array_push($_SESSION['orders'], $data);
+				echo json_encode($_SESSION['orders']);
+			}else{
+				redirect('customer/checkin');
+			}
+		}else{
+			redirect('login');
+		}
+	}
+
 	function removeOrder() {	
 		if($this->isLoggedIn()){			
 			if($this->isCheckedIn()){
