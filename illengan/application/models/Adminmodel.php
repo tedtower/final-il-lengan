@@ -1195,6 +1195,118 @@ function add_aospoil($date_recorded,$addons,$account_id){
             ) 
             VALUES (NULL, ?, ?, ?, ?, ?)";
             return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additinalRemarks));
-    }   
+    } 
+
+    // Get Transactions (PO, DR, OR)
+    // SELECT
+    //     tID AS id,
+    //     tNum AS num,
+    //     receiptNo AS receipt,
+    //     IF(
+    //         spID IS NULL,
+    //         supplierName,
+    //         spName
+    //     ) AS supplier,
+    //     tType AS type,
+    //     tTotal AS total,
+    //     tRemarks AS remarks,
+    //     tDate AS date,
+    //     dateRecorded AS daterecorded
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     isArchived = '0' and tType = 'purchase order'; 
+
+    //get transitems (PO, DR, OR)
+    // SELECT
+    //     tID AS transaction,
+    //     tiID AS id,
+    //     tiName AS name,
+    //     tiQty AS qty,
+    //     qtyPerItem AS equivalent,
+    //     actualQty AS actualqty,
+    //     tiPrice AS price,
+    //     tiDiscount AS discount,
+    //     drStatus AS deliverystatus,
+    //     payStatus AS paymentstatus,
+    //     rStatus AS returnstatus
+    // FROM
+    //     (
+    //         transitems
+    //     LEFT JOIN trans_items USING(tiID)
+    //     )
+    // LEFT JOIN transactions USING(tID)
+    // LEFT JOIN uom USING(uomID)
+    // WHERE
+    //     tType = 'purchase order'
+
+    //get last number or last transaction of type (Plus 1 to the value returned -> ilalagay as tNum sa transactions table)
+    // SELECT
+    //     MAX(tNum) AS lastnum
+    // FROM
+    //     transactions
+    // WHERE
+    //     tType = 'purchase order'
+
+    // Add transaction (PO, DR, OR)
+    // INSERT INTO transactions(
+    //     tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded, tTYpe, tTotal, tRemarks, isArchived
+    // )
+    // VALUES(
+    //     NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    // )
+
+    // Update transaction (PO, DR, OR)
+    // UPDATE transactions
+    // SET supplierName = ?, receiptNo = ?, tDate = ?, dateRecorded = ?, tTotal = ?, tRemarks = ?
+    // WHERE tID = ?
+
+    // Insert transitem (RETURN)
+    // INSERT INTO transactions(
+    //     tID, tNum, tDate, dateRecorded, tType, tRemarks, tTotal
+    // )
+    // VALUES(NULL, ?, ?, ?, ?, ?, ?)
+
+    // insert transaction (CONSUMED, SPOILAGE)
+    // INSERT INTO transactions(
+    //     tID, tNum, tDate, dateRecorded, tType, tRemarks
+    // )
+    // VALUES(NULL, ?, ?, ?, ?, ?)
+
+    // Update Transaction (CONSUMPTION, SPOILAGE)
+    // UPDATE transactions
+    // SET tDate = ?, dateRecorded = ?, tRemarks = ?
+    // WHERE tID = ?;
+
+    // Update Transaction (RETURN)
+    // UPDATE transactions
+    // SET tDate = ?, dateRecorded = ?, tRemarks = ?, tTotal = ?
+    // WHERE tID = ?;
+    
+    // get prefstock
+    // SELECT
+    //     prID AS menuitem,
+    //     CONCAT(mName, 
+    //         IF(prName IS NULL, '', CONCAT(' ', prName,)),
+    //         IF(mTemp IS NULL, '', CONCAT(' ',
+    //                 IF(mTemp = 'hc', '',
+    //                     IF(mTemp = 'h', 'Hot', 'Cold')
+    //                 )
+    //             )
+    //         )
+    //     ) AS prefname,
+    //     stID AS stockitem,
+    //     CONCAT(stName,
+    //         IF(stSize IS NULL, '', CONCAT(' ', stSize))
+    //     ) AS stockitemname,
+    //     prstQty AS qty
+    // FROM
+    //     prefstock
+    // LEFT JOIN(
+    //         preferences
+    //     LEFT JOIN menu USING(MID)
+    //     ) USING(prID)
+    // LEFT JOIN stockitems USING(stID)
 }
 ?>
