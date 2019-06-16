@@ -1216,9 +1216,43 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     transactions
     // LEFT JOIN supplier USING(spID)
     // WHERE
-    //     isArchived = '0' and tType = 'purchase order'; 
+    //     isArchived = '0' and tType = 'purchase order';
 
-    //get transitems (PO, DR, OR)
+    // get transaction (CONSUMED, SPOILAGE)
+    //     SELECT
+    //     tID AS id,
+    //     tNum AS num,
+    //     tType AS TYPE,
+    //     tRemarks AS remarks,
+    //     tDate AS DATE,
+    //     dateRecorded AS daterecorded
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     isArchived = '0' AND tType = 'consumed';
+
+    // get transaction (RETURN)
+    // SELECT
+    //     tID AS id,
+    //     tNum AS num,
+    //     IF(
+    //         spID IS NULL,
+    //         supplierName,
+    //         spName
+    //     ) AS supplier,
+    //     tType AS TYPE,
+    //     tTotal AS total,
+    //     tRemarks AS remarks,
+    //     tDate AS DATE,
+    //     dateRecorded AS daterecorded
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     isArchived = '0' AND tType = 'return';
+
+    //get transitems (PO, DR, OR, RETURN)
     // SELECT
     //     tID AS transaction,
     //     tiID AS id,
@@ -1241,6 +1275,22 @@ function add_aospoil($date_recorded,$addons,$account_id){
     // WHERE
     //     tType = 'purchase order'
 
+
+    // get transitems (CONSUMED, SPOILAGE)
+    // SELECT
+    //     tID AS transaction,
+    //     tiID AS id,
+    //     actualQty AS actualqty
+    // FROM
+    //     (
+    //         transitems
+    //     LEFT JOIN trans_items USING(tiID)
+    //     )
+    // LEFT JOIN transactions USING(tID)
+    // LEFT JOIN uom USING(uomID)
+    // WHERE
+    //     tType = 'consumed';
+
     //get last number or last transaction of type (Plus 1 to the value returned -> ilalagay as tNum sa transactions table)
     // SELECT
     //     MAX(tNum) AS lastnum
@@ -1257,12 +1307,37 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     // )
 
+    // insert transitem (PO, DR, OR, RETURN)
+    // INSERT INTO transitems(
+    //     tiID,
+    //     uomID,
+    //     stID,
+    //     tiName,
+    //     tiPrice,
+    //     tiDiscount,
+    //     drStatus,
+    //     paystatus,
+    //     rStatus
+    // )
+    // VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)
+
+    // insert trans_item (PO, DR, OR, RETURN)
+    // INSERT INTO trans_items(
+    //     tID,
+    //     tiID,
+    //     tiQty,
+    //     qtyPerItem,
+    //     actualQty,
+    //     tiSubtotal
+    // )
+    // VALUES(?, ?, ?, ?, ?, ?)
+
     // Update transaction (PO, DR, OR)
     // UPDATE transactions
     // SET supplierName = ?, receiptNo = ?, tDate = ?, dateRecorded = ?, tTotal = ?, tRemarks = ?
     // WHERE tID = ?
 
-    // Insert transitem (RETURN)
+    // Insert transaction (RETURN)
     // INSERT INTO transactions(
     //     tID, tNum, tDate, dateRecorded, tType, tRemarks, tTotal
     // )
@@ -1273,6 +1348,21 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     tID, tNum, tDate, dateRecorded, tType, tRemarks
     // )
     // VALUES(NULL, ?, ?, ?, ?, ?)
+
+    // insert transitem (CONSUMED, SPOILAGE)
+    // INSERT INTO transitems(
+    //     tiID,
+    //     stID
+    // )
+    // VALUES(NULL, ?)
+
+    // insert trans_item (CONSUMED, SPOILAGE)
+    // INSERT INTO trans_items(
+    //     tID,
+    //     tiID,
+    //     actualQty
+    // )
+    // VALUES(?, ?, ?)
 
     // Update Transaction (CONSUMPTION, SPOILAGE)
     // UPDATE transactions
