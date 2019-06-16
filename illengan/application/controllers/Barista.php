@@ -166,11 +166,18 @@ class Barista extends CI_Controller{
 
         function updatePayment(){
             $status = "paid";
-            $osID = $this->input->post('osID');
-            $custName = $this->input->post('custName');
+            $osID = json_decode($this->input->post('osArr'), true);
+            echo json_encode($osID, true);
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
-            $this->baristamodel->update_payment($status,$osID,$custName,$payDate, $date_recorded);
+            $this->baristamodel->update_payment($status,$osID,$payDate, $date_recorded);
+        }
+        function updatePayment2(){
+            $status = "paid";
+            $osID = $this->input->post('osID');
+            $payDate = date("Y-m-d H:i:s");
+            $date_recorded = date("Y-m-d H:i:s");
+            $this->baristamodel->update_payment2($status,$osID,$payDate, $date_recorded);
         }
         function updateStatus(){
             $stats = $this->input->post('status');

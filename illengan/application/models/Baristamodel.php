@@ -104,9 +104,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 }
             }
         }
-        function update_payment($status,$osID,$custName,$payDate, $date_recorded){
-            $query = "Update orderslips set payStatus = ?, osPayDateTime = ?, osDateRecorded = ? where osID = ? AND custName = ?";
-            $this->db->query($query, array($status,$payDate, $date_recorded, $osID, $custName));
+        function update_payment($status,$osID,$payDate,$date_recorded){
+            $query = "Update orderslips set payStatus = ?, osPayDateTime = ?, osDateRecorded = ? where osID = ?";
+            for($in = 0; $in < count($osID) ; $in++){
+            $this->db->query($query, array($status,$payDate, $date_recorded, $osID[$in]['osID']));
+            }
+        }
+        function update_payment2($status,$osID,$payDate, $date_recorded){
+            $query = "Update orderslips set payStatus = ?, osPayDateTime = ?, osDateRecorded = ? where osID = ?";
+            $this->db->query($query, array($status,$payDate, $date_recorded, $osID));
         }
 
         function slipData(){

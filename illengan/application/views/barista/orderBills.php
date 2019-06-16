@@ -101,12 +101,81 @@
               <input type="text" step="any" min="0" class="form-control" name="change" id="change" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change"); ?></span>
             </div>
-            <input type="hidden" class="form-control" name="osID" id="osID" readonly>
-            <input type="hidden" class="form-control" name="custName" id="custName" readonly>
+            
             <!--Footer-->
             <div class="modal-footer">
               <button type="button" id="closeBillModal" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
               <button class="btn btn-success btn-sm" id="updtbutton"type="submit">Update</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!--End MODAL for BILL COMPUTATION-->
+  <!--Start MODAL2 for BILL COMPUTATION-->
+  <div class="modal fade" id="Modal_Pay2" name="Modal_Pay2" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLable">Payment</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!--Modal Content-->
+          <!--Table containing the different input fields in billings -->
+          <table class="orderitemsTable table table-sm table-borderless">
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th>Item Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+          <!--End Table Content-->
+        <form id="formEdit" accept-charset="utf-8">
+          <div class="modal-body">
+            <!--Quantity-->
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm"
+                  style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                  Amount Payable</span>
+              </div>
+              <input type="text" step="any" min="0" class="form-control" name="amount_payable2" id="amount_payable2" readonly>
+              <span class="text-danger"><?php echo form_error("amount_payable2"); ?></span>
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm"
+                  style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                  Cash</span>
+              </div>
+              <input type="text" step="any" min="0" class="form-control" name="cash2" id="cash2" value="0.00" required>
+              <span class="text-danger"><?php echo form_error("cash2"); ?></span>
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm"
+                  style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                  Change</span>
+              </div>
+              <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
+              <span class="text-danger"><?php echo form_error("change2"); ?></span>
+            </div>
+            <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
+            <!--Footer-->
+            <div class="modal-footer">
+              <button type="button" id="closeBillModal" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-success btn-sm" id="updtbutton2"type="submit">Update</button>
             </div>
           </div>
         </form>
@@ -191,17 +260,18 @@
                                     <!--Action Buttons-->
                                     <div class="onoffswitch">
                                     <!--Pay Button-->
-                                    <button class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="setOsID(${orders.osID})">Pay</button>           
+                                    <button class="pay2 btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay2" onclick="setOsID(${orders.osID})">Pay</button>           
                                     </div>
                     </td>
             </tr>`);
         
-        $(".pay").last().on('click', function () {
-            $("#Modal_Pay").find("input[name='amount_payable']").val($(this).closest("tr").attr(
+        $(".pay2").last().on('click', function () {
+
+            $("#Modal_Pay2").find("input[name='amount_payable2']").val($(this).closest("tr").attr(
                 "data-payable"));
-            $("#Modal_Pay").find("input[name='osID']").val($(this).closest("tr").attr(
+            $("#Modal_Pay2").find("input[name='osID2']").val($(this).closest("tr").attr(
                     "data-osID"));
-            $("#Modal_Pay").find("input[name='custName']").val($(this).closest("tr").attr(
+            $("#Modal_Pay2").find("input[name='custName2']").val($(this).closest("tr").attr(
 					          "data-custName"));
             
         });
@@ -254,28 +324,52 @@
                             </tr>`
             }).join('')}`);
           }
-    //---------------------For Resolving Payment---------------------------
-    $(document).ready(function() {
-          $("#Modal_Pay form").on('submit', function(event) {
+    //---------------------For Resolving Payment Multiple Payment---------------------------
+    $(document).ready(function () {
+      $("#Modal_Pay form").on('submit', function (event) {
+        event.preventDefault();
+        var osIDarr = [];
+
+        for (var i = 0; i <= $(".stockelem").length - 1; i++) {
+          osID = $(".stockelem").eq(i).data("id");
+          if (osIDarr.includes(osID)) {} else {
+            osIDarr.push(osID);
+          }
+        }
+        console.log(osIDarr);
+        $.ajax({
+          url: "<?= site_url("barista/updatePayment")?>",
+          method: "post",
+          data: {
+            osArr: osIDarr
+          },
+          dataType: "json",
+          // complete: function() {
+          //     $("#Modal_Pay").modal("hide");
+          //     location.reload();
+          // },
+          error: function (error) {
+            console.log(error);
+          }
+
+        });
+      });
+    });
+     //---------------------For Resolving Payment Single Payment---------------------------
+     $(document).ready(function() {
+          $("#Modal_Pay2 form").on('submit', function(event) {
           event.preventDefault();
-              var osID = $(this).find("input[name='osID']").val();
-              var osIDarr = [];
-
-              for(var i = 0; i <= $(".stockelem").length-1; i++) {
-                osID = $(".stockelem").eq(i).data("id");
-
-                osIDarr.push(osID);
-              }
+              var osID = $(this).find("input[name='osID2']").val();
             
               $.ajax({
-                  url: "<?= site_url("barista/updatePayment")?>",
+                  url: "<?= site_url("barista/updatePayment2")?>",
                   method: "post",
                   data: {
-                      osID: osID
+                      osID: osID,
                   },
                   dataType: "json",
                   // complete: function() {
-                  //     $("#Modal_Pay").modal("hide");
+                  //     $("#Modal_Pay2").modal("hide");
                   //     location.reload();
                   // },
                   error: function(error) {
@@ -286,7 +380,7 @@
               });
           });
 
-//-----------------------For the Payment Modal-------------------------
+//-----------------------For the Payment Modal Multiple Payment-------------------------
     document.getElementById("updtbutton").disabled = true;
     $("#cash").on('change', function () {
       var payable = parseFloat(document.getElementById('amount_payable').value);
@@ -298,6 +392,20 @@
         var change = parseFloat(cash - payable);
         $("#Modal_Pay").find("input[name='change']").val(change);
         document.getElementById("updtbutton").disabled = false;
+      }
+    });
+//-----------------------For the Payment Modal Single Payment-------------------------
+document.getElementById("updtbutton2").disabled = true;
+    $("#cash2").on('change', function () {
+      var payable = parseFloat(document.getElementById('amount_payable2').value);
+      var cash = parseFloat(document.getElementById('cash2').value);
+      if(cash < payable){
+        $("#Modal_Pay2").find("input[name='change2']").val("Insufficient Amount");
+        document.getElementById("updtbutton2").disabled = true;
+      }else{
+        var change = parseFloat(cash - payable);
+        $("#Modal_Pay2").find("input[name='change2']").val(change);
+        document.getElementById("updtbutton2").disabled = false;
       }
     });
 //------------------------Stocks Get Brochure Function-----------------------------------
@@ -312,7 +420,6 @@ function getSelectedSlips() {
     for (var i = 0; i <= choices.length - 1; i++) {
         if (choices[i].checked) {
             value = choices[i].value;
-            console.log(value);
             $.ajax({
                 type: 'POST',
                 url: 'http://www.illengan.com/barista/slipJS',
@@ -353,7 +460,7 @@ function setTotal() {
    subtotal = parseFloat($('.olSubtotal').eq(i).val());
    total = total + subtotal;
  }
- console.log(total);
+ 
  $("#Modal_Pay").find("input[name='amount_payable']").val(parseFloat(total));
 }
 
