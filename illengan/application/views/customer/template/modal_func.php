@@ -352,6 +352,7 @@ function setOrderlist(ol){
         $('#ol_main').append(row);
         for(var rowid=0; rowid < orders.length; rowid++){
              var orderedaddon = orders[rowid].addons;
+             var mID = orders[rowid].menu_id;
              var name= "";
                     for(var keys in orderedaddon){
                         var id= orderedaddon[keys];
@@ -359,7 +360,7 @@ function setOrderlist(ol){
                     for(var row=0;  row < id.length; row++){       
                                 var val= orderedaddon[keys][row];
                                 var names = addon.filter(function (n) {
-                                    return n.aoID == val;
+                                    return n.aoID == id &&  n.mID == mID;
                                 });
                                 for(var na=0; na<names.length;na++){
                                     name += "<i>"+names[na].aoName+"</i><br>";
