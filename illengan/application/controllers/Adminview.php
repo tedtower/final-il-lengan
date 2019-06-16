@@ -584,6 +584,18 @@ function getStockItem(){
             redirect('login');
         }
     }
+    function jsonReturns() {
+        if($this->checkIfLoggedIn()){
+            $data = array(
+                'returns' => $this->adminmodel->get_returns(),
+                'returnitems' => $this->adminmodel->get_returnItems()
+            );
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_PRETTY_PRINT);
+        }else{
+            redirect('login');
+        }
+    }
     function viewConsumptions(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Returns";
