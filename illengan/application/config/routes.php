@@ -60,6 +60,7 @@ $route['verify'] = 'login/check_cred';
 $route['admin/menu'] = "adminview/viewmenu";
 $route['admin/menu/getDetails'] = "adminview/menuGetDetails";
 $route['admin/menu/addons'] = "adminview/menuAddons";
+$route['admin/menu/menustock'] = "adminview/menuStock";
 $route['admin/menu/promos'] = "adminview/menuPromos";
 $route['admin/sales'] = "adminview/viewSales";
 $route['admin/dashboard'] = "adminview/viewdashboard";
@@ -78,17 +79,22 @@ $route['admin/spoilages/menu/add'] ="adminview/viewInsertSpoilageMenu";
 $route['admin/spoilages/stock/add'] ="adminview/viewInsertSpoilageStock";
 $route['admin/spoilages/addons/add'] ="adminview/viewInsertSpoilageAo";
 $route['admin/menu/spoilages'] = "adminview/viewspoilagesmenu";
-$route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 $route['admin/addons/spoilages'] = "adminview/viewspoilagesaddons";
 $route['admin/log/stocks'] = "adminview/viewLogStock";
 $route['admin/log/activity'] = "adminview/viewActivityLog";
-$route['admin/consumption'] = "adminview/viewConsumptions";
-$route['admin/transactions'] = "adminview/viewtransactions";
-$route['admin/transactions/delivery'] = "adminview/viewDeliveryTransactions";
-$route['admin/transactions/purchase'] = "adminview/viewpurchasetransactions";
-$route['admin/transactions/return'] = "adminview/viewreturntransactions";
-$route['admin/transactions/getReturns'] = "adminview/getReturns";
+// $route['admin/transactions'] = "adminview/viewtransactions";
+// $route['admin/transactions/delivery'] = "adminview/viewDeliveryTransactions";
+// $route['admin/transactions/purchase'] = "adminview/viewpurchasetransactions";
+// $route['admin/transactions/return'] = "adminview/viewreturntransactions";
+// $route['admin/transactions/getReturns'] = "adminview/getReturns";
 $route['admin/stocklog/report'] = "adminview/getInventoryReport";
+$route['admin/purchaseorder'] = "adminview/viewPurchaseOrder";
+$route['admin/deliveryreceipt'] = "adminview/viewDeliveryReceipt";
+$route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
+$route['admin/return'] = "adminview/viewReturn";
+$route['admin/consumption'] = "adminview/viewConsumptions";
+$route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
+
 
 //End Viewing Routes
 
