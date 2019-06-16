@@ -12,133 +12,271 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addMenuStock"
-                                    data-original-title style="margin:0;">Add Item</button>
+                                <button id="addMenuStock" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#addEditMenuStock" data-original-title style="margin:0;">Add
+                                    Item</button>
                                 <br>
                                 <br>
-                    <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
-                        <thead class="thead-dark">
-                            <tr>
-                                <th><b class="pull-left">Menu Item</b></th>
-                                <th><b class="pull-left">Stock Item</b></th>
-                                <th><b class="pull-left">Quantity</b></th>
-                                <th><b class="pull-left">Actions</b></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editMS" >Edit</button>
-                                    <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteMS">Archive</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <!--Start of Modal "Add Stock Spoilages"-->
-                    <div class="modal fade bd-example-modal-lg" id="addMenuStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Add Menu-Stock</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="formAdd" action="<?= site_url('admin/stock/spoilages/add')?>" accept-charset="utf-8">
-                                    <div class="modal-body">
-                                        <!--Button to add launche the brochure modal-->
-                                        <a class="addSpoilageItem btn btn-default btn-sm" data-toggle="modal" data-target="#brochureMenu" data-original-title style="margin:0" id="addStockSpoilage">Add Menu Items</a>
-                                        <br><br>
-                                        <table class="stockSpoilageTable table table-sm table-borderless">
-                                            <!--Table containing the different input fields in adding stock spoilages -->
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th>Menu Name</th>
-                                                    <th>Stock Name</th>
-                                                    <th>Qty</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><input type="text" name="menuName[]" class="form-control form-control-sm"></td>
-                                                    <td><input type="text" name="StockName[]" class="form-control form-control-sm"></td>
-                                                    <td><input type="number" name="Quantity[]" class="form-control form-control-sm"></td>
-                                                    <td><img class="exitBtn1" src="/assets/media/admin/error.png" style="width:20px;height:20px"></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <!--Total of the trans items-->
-            
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-success btn-sm" onclick="addStockItems()">Add</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End of Modal "Add Stock Spoilage"-->
+                                <?php if(!empty($menuStock)){
+                                ?>
+                                <table id="menuStockTable" class="table table-bordered dt-responsive nowrap"
+                                    cellspacing="0" width="100%">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th><b class="pull-left">Menu Item</b></th>
+                                            <th><b class="pull-left">Stock Item</b></th>
+                                            <th><b class="pull-left">Quantity</b></th>
+                                            <th><b class="pull-left">Actions</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach($menuStock as $item){
+                                    ?>
+                                        <tr data-id1="<?= $item['prID']?>" data-id2="<?= $item['stockitem']?>">
+                                            <td><?= $item['prefname']?></td>
+                                            <td><?= $item['stockitemname']?></td>
+                                            <td><?= $item['qty']?></td>
+                                            <td>
+                                                <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal"
+                                                    data-target="#editMS">Edit</button>
+                                                <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
+                                                    data-target="#deleteMS">Archive</button>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }?>
+                                    </tbody>
+                                </table>
+                                <?php
+                                }else{?>
+                                <p>No items recorded!</p>
+                                <?php
+                                }?>
+                                <!--Start of Modal "Add Stock Spoilages"-->
+                                <div class="modal fade bd-example-modal-lg" id="addEditMenuStock" tabindex="-1"
+                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+                                    style="overflow: auto !important;">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Add Menu-Stock</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="formAdd" action="<?= site_url('admin/stock/spoilages/add')?>"
+                                                accept-charset="utf-8">
+                                                <div class="modal-body">
+                                                    <!--Button to add launche the brochure modal-->
+                                                    <a class="addItemBtn btn btn-default btn-sm"
+                                                        data-toggle="modal" data-target="#brochureMenu"
+                                                        data-original-title style="margin:0" id="addStockSpoilage">Add
+                                                        Menu Items</a>
+                                                    <br><br>
+                                                    <table class="stockSpoilageTable table table-sm table-borderless">
+                                                        <!--Table containing the different input fields in adding stock spoilages -->
+                                                        <thead class="thead-light">
+                                                            <tr>
+                                                                <th>Menu Name</th>
+                                                                <th>Stock Name</th>
+                                                                <th>Qty</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="ic-level-2">
+                                                        </tbody>
+                                                    </table>
+                                                    <!--Total of the trans items-->
 
-                    <!--Start of Brochure Modal"-->
-                    <div class="modal fade bd-example-modal" id="brochureMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Select Menu</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="formAdd"  method="post" accept-charset="utf-8">
-                                    <div class="modal-body">
-                                        <div style="margin:1% 3%" id="list">
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger btn-sm"
+                                                            data-dismiss="modal">Cancel</button>
+                                                        <button type="submit" class="btn btn-success btn-sm"
+                                                            onclick="">Add</button>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            data-dismiss="modal">Cancel</button>
-                                        <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedStocks()">Ok</button>
+                                </div>
+                                <!--End of Modal "Add Stock Spoilage"-->
+
+                                <!--Start of Brochure Modal"-->
+                                <div class="modal fade bd-example-modal" id="brochureMenu" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
+                                    style="background:rgba(0, 0, 0, 0.3)">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Select Menu</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form method="post" accept-charset="utf-8">
+                                                <div class="modal-body">
+                                                    <div style="margin:1% 3%" class="ic-level-2">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-success btn-sm"
+                                                        data-dismiss="modal">Ok</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
-                                </form>
+                                </div>
+                                <!--End of Brochure Modal"-->
+
+                                <!--Start of Brochure Modal"-->
+                                <div class="modal fade bd-example-modal" id="brochureStock" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
+                                    style="background:rgba(0, 0, 0, 0.3)">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form method="post" accept-charset="utf-8">
+                                                <div class="modal-body">
+                                                    <div style="margin:1% 3%" class="ic-level-2">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-success btn-sm"
+                                                        data-dismiss="modal">Ok</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of Brochure Modal"-->
                             </div>
                         </div>
                     </div>
-                <!--End of Brochure Modal"-->
-                
-                <!--Start of Brochure Modal"-->
-                <div class="modal fade bd-example-modal" id="brochureStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Select Stock</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form id="formAdd"  method="post" accept-charset="utf-8">
-                                <div class="modal-body">
-                                    <div style="margin:1% 3%" id="list">
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedStocks()">Ok</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            <!--End of Brochure Modal"-->
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-<?php include_once('templates/scripts.php') ?>
+            <?php include_once('templates/scripts.php') ?>
+            <script>
+            var getModalDataUrl = "<?= site_url('admin/menu/getMenuStockModalData')?>";
+            var addMenuStockUrl = "<?= site_url('admin/menu/addMenuStock')?>";
+            $(function() {
+                $("#addMenuStock").on('click', function() {
+                    $.ajax({
+                        method: 'POST',
+                        url: getModalDataUrl,
+                        dataType: 'JSON',
+                        success: function(data) {
+                            console.log(data);
+                            $("#brochureMenu").find(".ic-level-2").append(data.preferences.map(pref => {
+                                return `<div class="ic-level-1">
+                                        <label><input type="checkbox"
+                                                name="prID" value="${pref.id}" /> ${pref.prefname}
+                                        </label>
+                                    </div>`;
+                            }).join(''));
+                            $("#brochureStock").find(".ic-level-2").append(data.stocks.map(stock =>{
+                                return `<div class="ic-level-1">
+                                        <label><input type="radio"
+                                                name="stID" value="${stock.stID}" /> ${stock.stName} (${stock.uomAbbreviation})
+                                        </label>
+                                    </div>`;
+                            }).join(''));
+                            $("#ddEditMenuStock").find(".addItemBtn").on("click",function(){
+                                console.log("asfdrgearg");
+                                $("#brochureMenu form").on("submit",function(event){
+                                    event.preventDefault();
+                                    var item;
+                                    $(this).find("input[name='prID']:checked").each(function(index){
+                                        item = data.preferences.filter(pref => pref.id == $(this).val())[0];
+                                        console.log(item);
+                                        $("#addEditMenuStock").find(".ic-level-2").append(`
+                                            <tr class="ic-level-1" data-id1="${item.id}" data-id2="">
+                                                <td><input type="text" name="prefID"
+                                                        class="form-control form-control-sm"value="${item.prefname}" readonly="readonly"></td>
+                                                <td><input type="text" name="stID"
+                                                        class="form-control form-control-sm"value="${item.stName} (${item.uomAbbreviation})" readonly="readonly"></td>
+                                                <td><input type="number" name="qty"
+                                                        class="form-control form-control-sm" value="0"></td>
+                                                <td><img class="exitBtn1"
+                                                        src="/assets/media/admin/error.png"
+                                                        style="width:20px;height:20px"></td>
+                                            </tr>`);
+                                        $("#addEditMenuStock").find(".ic-level-1 *").last().on("focus",function(){
+                                            if(!$(this).closest(".ic-level-1").attr("data-focus")){
+                                                $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
+                                                $(this).closest(".ic-level-1").attr("data-focus",true);
+                                            }
+                                        });
+                                        $("#addEditMenuStock").find("input[name='stID']").last().on("focus",function(){
+                                            $("#brochureStock").modal("show");
+                                        });
+                                    });
+                                });
+                            });
+                            
+                        },
+                        error: function(response, setting, error) {
+                            console.log(response.responseText);
+                            console.log(error);
+                        }
+                    });
+                });
+                $("#brochureStock form").on("submit",function(event){
+                                event.preventDefault();
+                    var stID = $(this).find("input[name='stID']:checked").val();
+                    $("#addEditMenuStock").find(".ic-level-1[data-focus='true']").attr("data-id2",stID);
+                    $(this)[0].reset();
+                    $("#brochureStock").modal("hide");
+                });
+                $("#brochureMenu").on("hidden.bs.modal",function(){
+                    $(this).find("form")[0].reset();
+                });
+                $("#brochureStock").on("hidden.bs.modal",function(){
+                    $(this).find("form")[0].reset();
+                });
+                $("#addEditMenuStock").on("hidden.bs.modal",function(){
+                    $(this).find("form")[0].reset();
+                    $(this).find(".ic-level-2").empty();
+                    $(this).find("form").off("submit");
+                });
+                $("#addEditMenuStock form").on("submit",function(event){
+                    event.preventDefault();
+                    var menuStock = [];
+                    $(this).find(".ic-level-1").each(function(index){
+                        menuStock.push({
+                            prID: $(this).attr("data-id1"),
+                            stID: $(this).attr("data-id2"),
+                            prstQty: $(this).find("input[name='qty']")
+                        });
+                    });
+                    $.ajax({
+                        method: "POST",
+                        url: addMenuStockUrl,
+                        data: {
+                            items: JSON.stringify(menuStock)
+                        },
+                        dataType: "JSON",
+                        success: function(data){
+                            console.log(data);
+                        },
+                        error: function(response, setting, error) {
+                            console.log(response.responseText);
+                            console.log(error);
+                        }
+                    });
+                });
+
+            });
+            </script>
 </body>

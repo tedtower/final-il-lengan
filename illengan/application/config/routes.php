@@ -197,6 +197,8 @@ $route['admin/transactions/getDRs'] = "adminview/getDRs";
 $route['admin/transactions/getSPMs'] = "adminview/getSPMs";
 $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
+$route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
+$route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES
