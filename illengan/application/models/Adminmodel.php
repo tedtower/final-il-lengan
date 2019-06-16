@@ -1195,6 +1195,29 @@ function add_aospoil($date_recorded,$addons,$account_id){
             ) 
             VALUES (NULL, ?, ?, ?, ?, ?)";
             return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additinalRemarks));
-    }   
+    }  
+    // Get Transactions
+    // SELECT
+    //     tID AS id,
+    //     tNum AS num,
+    //     receiptNo AS receipt,
+    //     IF(
+    //         spID IS NULL,
+    //         supplierName,
+    //         spName
+    //     ) AS supplier,
+    //     tType AS TYPE,
+    //     tTotal AS total,
+    //     tRemarks AS remarks,
+    //     tDate AS DATE,
+    //     dateRecorded AS daterecorded
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     isArchived = '0' and tType = 'purchase order'; 
+
+    //get transitems
+     
 }
 ?>
