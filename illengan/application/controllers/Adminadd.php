@@ -145,15 +145,15 @@ function addspoilagesmenu(){
 }
 function addspoilagesstock(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $this->load->model('adminmodel');
+        $lastNumget = intval($this->adminmodel->getLastNum());
         $date_recorded = date("Y-m-d H:i:s");
-        $slType = "spoilage";
         $stocks = json_decode($this->input->post('stocks'), true);
-        echo json_encode($stocks, true);
-        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$slType);
-        
+        $account_id = $_SESSION["user_id"];
+
+        $lastNum = $lastNumget + 1;
+        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id, $lastNumget);
     }else{
-        redirect('login');
+    redirect('login');
     }
 }
 
