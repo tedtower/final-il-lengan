@@ -6,7 +6,7 @@ class Customermodel extends CI_Model {
         date_default_timezone_set('Asia/Manila'); 
     }
     //ADD  CONSUMPTION TRANSACTION
-    function add_consumption($consumption, $consumptionItems){
+    function add_consumption($consumption){
         $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
             VALUES(NULL, ?, ?, ?, 'consumption', ?)";
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
@@ -29,6 +29,23 @@ class Customermodel extends CI_Model {
         $query= "INSERT INTO trans_items(tID, tiID, actualQty)
             VALUES(?, ?, ?)";
         return $this->db->query($query,array($tID, $tiID, $qty));
+    }
+    function add_consumedLog($log){
+        $query = "INSERT INTO stocklog(
+            slID, stID, tID, slType, slQty, slRemainingQty, actualQty,
+            discrepancy, slDateTime, dateRecorded, slRemarks
+        )
+        VALUES(
+            NULL, ?, ?, 'consumed', ?, ?, NULL, NULL, NULL, ?, ?, ?
+        )";
+        return $this->db->query($query, array($log['stID'], $log['tID'], 
+        $log['slQty'], $log['slRemain'], $log['slDateTime'], $log['dateRecorded'], $log['slRemarks']));
+    }
+    function update_stQty($stID, $stQty){
+        $query = "UPDATE stockitems
+            SET stQty = stQty - ?
+            WHERE stID = ?";
+        return $this->db->query($query, array($stQty, $stID));
     }
     //END ADD  CONSUMPTION TRANSACTION
 	function get_tables(){ 
@@ -127,6 +144,23 @@ class Customermodel extends CI_Model {
             $query = $this->db->get_where('menu', array('ctID' => '12'));
             return $query->result();
         }
+        function add_orderslip($slip){
+            $query = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
+			if($this->db->query($query, array( $slip['table'], $slip['custName'], $slip['total'], 'unpaid', $slip['osDateTime'],'', $slip['dateRecorded']))){
+                return $this->db->insert_id();
+            }
+            return 0;
+        }
+        function add_orderlist($item){
+		    $query = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
+            if($this->db->query($query, array(NULL,$item['osID'], $item['prID'], $item['olDesc'],$item['qty'], $item['subtotal'], 'pending', $item['remarks'], $item['price'], ''))){
+                return $this->db->insert_id();
+            }
+            return 0;
+        }
+        function add_addon($olID, $addon){
+
+        }
         function orderInsert($total, $tableCode, $orderlist, $customer, $dateTime){//insert in table orderslip
             $query1 = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
 			$this->db->query($query1, array( $tableCode, $customer, $total, 'unpaid', $dateTime,'', $dateTime)); 
@@ -161,11 +195,11 @@ class Customermodel extends CI_Model {
             return true;
         }
 
-        function add_consumedItems($pref, $olID) {
-            $query = "SELECT * FROM orderlists left join prefstock using (prID) left join stockitems using (stID) where prefstock.prID = ? and olID = ?";
-            $array = $this->db->query($query, array($pref, $olID));
-            $this->automatic_deduction($array);
-        }
+        // function add_consumedItems($pref, $olID) {
+        //     $query = "SELECT * FROM orderlists left join prefstock using (prID) left join stockitems using (stID) where prefstock.prID = ? and olID = ?";
+        //     $array = $this->db->query($query, array($pref, $olID));
+        //     $this->automatic_deduction($array);
+        // }
 
         function automatic_deduction($array){
             $stID = $array['stID'];
@@ -217,6 +251,50 @@ class Customermodel extends CI_Model {
                         WHERE
                             aoID IN ?;";
             return $this->db->query($query,array($addonIds))->result_array();
+        }
+        function get_prefStocks($prID){
+            $query="SELECT
+                    prID,
+                    stID,
+                    prstQty
+                FROM
+                    prefstock
+                LEFT JOIN(
+                        preferences
+                    LEFT JOIN menu USING(MID)
+                    ) USING(prID)
+                LEFT JOIN stockitems USING(stID) where prID = ?";
+            return $this->db->query($query)->result_array()[0];
+        }
+
+        function get_priceAndName($prID){
+            $query = "SELECT
+                    prPrice AS price,
+                    CONCAT(
+                        mName,
+                        IF(
+                            prName IS NULL,
+                            '',
+                            CONCAT(' ', prName)
+                        ),
+                        IF(
+                            mTemp IS NULL,
+                            '',
+                            CONCAT(
+                                ' ',
+                                IF(
+                                    mTemp = 'hc',
+                                    '',
+                                    IF(mTemp = 'h', 'Hot', 'Cold')
+                                )
+                            )
+                        )
+                    ) AS NAME
+                FROM
+                    preferences
+                WHERE
+                    prID = ?;";
+            return $this->db->query($query,array($prID))->result_array()[0];
         }
     }
 ?>
