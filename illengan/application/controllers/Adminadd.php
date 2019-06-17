@@ -333,7 +333,25 @@ function addspoilagesstock(){
         }
     }
 
-
+    function addMenuStock(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $items = json_decode($this->input->post("items"),true);
+            $inputErr = false;
+            if($this->adminmodel->add_menuStock($items)){
+                echo json_encode(array(
+                    "inputErr" => $inputErr
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => !$inputErr
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 }
 ?>
 

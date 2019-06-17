@@ -10,6 +10,56 @@ class Adminmodel extends CI_Model{
     }
 
 //GET FUNCTIONS-------------------------------------------------------------------
+
+function get_transactions(){
+    $query = "SELECT
+                tID AS id,
+                tNum AS num,
+                receiptNo AS receipt,
+                IF(
+                    spID IS NULL,
+                    supplierName,
+                    spName
+                ) AS supplier,
+                tType AS type,
+                tTotal AS total,
+                tRemarks AS remarks,
+                tDate AS date,
+                dateRecorded AS daterecorded
+            FROM
+                transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE
+                isArchived = '0' and tType = 'purchase order'";
+    return $this->db->query($query)->result_array();
+}
+
+function get_transitems(){
+    $query = "SELECT
+                tID AS transaction,
+                tiID AS id,
+                tiName AS name,
+                tiQty AS qty,
+                qtyPerItem AS equivalent,
+                actualQty AS actualqty,
+                tiPrice AS price,
+                tiDiscount AS discount,
+                drStatus AS deliverystatus,
+                payStatus AS paymentstatus,
+                rStatus AS returnstatus,
+                tiSubtotal AS subtotal
+            FROM
+                (
+                    transitems
+                LEFT JOIN trans_items USING(tiID)
+                )
+            LEFT JOIN transactions USING(tID)
+            LEFT JOIN uom USING(uomID)
+            WHERE
+                tType = 'purchase order'";
+    return $this->db->query($query)->result_array();
+}
+
     function get_inventoryReport($stID, $sDate, $eDate){
         $query = "SELECT
                     slID,
@@ -30,6 +80,55 @@ class Adminmodel extends CI_Model{
                 LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
         return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
     }
+    function get_prefStocks(){
+        $query="SELECT
+                prID,
+                CONCAT(mName, 
+                    IF(prName IS NULL, '', CONCAT(' ', prName)),
+                    IF(mTemp IS NULL, '', CONCAT(' ',
+                            IF(mTemp = 'hc', '',
+                                IF(mTemp = 'h', 'Hot', 'Cold')
+                            )
+                        )
+                    )
+                ) AS prefname,
+                stID AS stockitem,
+                CONCAT(stName,
+                    IF(stSize IS NULL, '', CONCAT(' ', stSize))
+                ) AS stockitemname,
+                prstQty AS qty
+            FROM
+                prefstock
+            LEFT JOIN(
+                    preferences
+                LEFT JOIN menu USING(MID)
+                ) USING(prID)
+            LEFT JOIN stockitems USING(stID)";
+        return $this->db->query($query)->result_array();
+    }
+    function get_prefNames(){
+        $query = "SELECT 
+            CONCAT(mName,
+                    IF(prName IS NULL,
+                        '',
+                        CONCAT(' ', prName)),
+                    IF(mTemp IS NULL,
+                        '',
+                        CONCAT(' ',
+                                IF(mTemp IS NULL,
+                                    '',
+                                    IF(mTemp = 'h', 'Hot', 'Cold'))))) AS prefname,
+                prID AS id
+            FROM
+                preferences
+                    LEFT JOIN
+                menu USING (mID)
+            WHERE
+                NOT mAvailability = 'archived'
+            ORDER BY prefname;";
+        return $this->db->query($query)->result_array();
+    }
+
     function get_stockCategories(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) where ctType = 'inventory' group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
@@ -126,7 +225,7 @@ class Adminmodel extends CI_Model{
     function get_stockItemNames(){
         $query = "SELECT
             stID,
-            CONCAT(stName, ' ', stSize) as stName,
+            CONCAT(stName, if(stSize is NULL,'', concat(' ', stSize))) as stName,
             uomID,
             uomAbbreviation
         FROM
@@ -225,6 +324,96 @@ class Adminmodel extends CI_Model{
             return $this->db->query($query,array($id))->result_array();
         }
     }
+    // function get_transactions(){
+    //     $query = "SELECT
+    //         tID,
+    //         tNum,
+    //         tType,
+    //         DATE_FORMAT(tDate, '%b %d, %Y %r') AS tDate,
+    //         DATE_FORMAT(dateRecorded, '%b %d, %Y %r') AS dateRecorded,
+    //         spID,
+    //         spName,
+    //         SUM(tiSubtotal) AS tTotal,
+    //         tRemarks
+    //     FROM
+    //         (
+    //             transactions
+    //         LEFT JOIN trans_items USING(tID)
+    //         )
+    //     LEFT JOIN supplier USING(spID)
+    //     GROUP BY
+    //         tID
+    //     ORDER BY transactions.tDate DESC;";
+    //     return $this->db->query($query)->result_array();
+    // }
+    // function get_transaction($id){
+    //     $query = "SELECT
+    //         tID,
+    //         tNum,
+    //         tType,
+    //         tDate,
+    //         spID,
+    //         spName,
+    //         tRemarks
+    //     FROM
+    //         transactions
+    //     LEFT JOIN supplier USING(spID)
+    //     WHERE 
+    //         tID = ?;";
+    //     return $this->db->query($query, array($id))->result_array();
+    // }
+    // function get_transitems($id=null){
+    //     if($id == null){
+    //         $query = "SELECT
+    //             tID,
+    //             tiID,
+    //             tiName,
+    //             tiQty,
+    //             tiActualQty,
+    //             transitems.uomID,
+    //             uomAbbreviation,
+    //             tiPrice,
+    //             tiDiscount,
+    //             tiSubtotal,
+    //             tiStatus,
+    //             stID,
+    //             stName
+    //         FROM
+    //             (
+    //                 (
+    //                     (transitems left join stockitems using(stID))
+    //                 LEFT JOIN uom on (transitems.uomID = uom.uomID)
+    //                 )
+    //             LEFT JOIN trans_items USING(tiID)
+    //             )
+    //         LEFT JOIN transactions USING(tID);";
+    //         return $this->db->query($query)->result_array();
+    //     }else{
+    //         $query = "SELECT
+    //             tID,
+    //             tiID,
+    //             tiName,
+    //             tiQty,
+    //             tiActualQty,
+    //             transitems.uomID,
+    //             uomAbbreviation,
+    //             tiPrice,
+    //             tiDiscount,
+    //             tiSubtotal,
+    //             tiStatus,
+    //             stID,
+    //             stName
+    //         FROM
+    //                 ((
+    //                     (transitems left join stockitems using(stID))
+    //                 LEFT JOIN uom on (transitems.uomID = uom.uomID)
+    //                 )left join trans_items using (tiID))
+    //             LEFT JOIN transactions USING(tID)
+    //             WHERE
+    //                 tID = ?;";
+    //         return $this->db->query($query,array($id))->result_array();
+    //     }
+    // }
     function get_stockLog($stID){
         $query = "SELECT
                 slID,
@@ -433,7 +622,10 @@ class Adminmodel extends CI_Model{
         return $this->db->query($query)->result_array();
     }
     function get_prefDetails($prID){
-        $query = "SELECT * from preferences pr INNER JOIN menu USING (mID) WHERE pr.prID = ?";
+        $query = "SELECT * from preferences pr INNER JOIN menu USING (mID) 
+        LEFT JOIN prefstock USING (prID) 
+        LEFT JOIN stockitems USING (stID) 
+        WHERE pr.prID = ?";
         return $this->db->query($query,array($prID))->result_array();
     }
     function get_orderAddon() {
@@ -445,7 +637,8 @@ class Adminmodel extends CI_Model{
         return $this->db->query($query)->result_array();
     }
     function get_olSales(){
-        $query = "Select * from orderlists inner join preferences using (prID) inner join menu using (mID)";
+        $query = "Select * from orderlists inner join preferences using (prID) inner join menu using (mID) 
+        LEFT JOIN prefstock USING (prID) LEFT JOIN stockitems USING (stID)";
         return $this->db->query($query)->result_array();
     }
     function get_menuPref(){
@@ -476,6 +669,10 @@ class Adminmodel extends CI_Model{
         $query = "SELECT * FROM menu mn INNER JOIN menuaddons ma USING (mid) INNER JOIN addons ao USING (aoID) 
         WHERE mn.mID = ? AND ao.aoStatus = 'available'";
          return $this->db->query($query, array($mID))->result_array();
+    }
+    function get_supplierstocks(){
+        $query = "Select * from suppliermerchandise supp LEFT JOIN stockitems USING (stID) LEFT JOIN uom ON (supp.uomID = uom.uomID);";
+        return $this->db->query($query)->result_array();
     }
     function get_supplier(){
         $query = "Select * from supplier order by spName";
@@ -513,6 +710,20 @@ class Adminmodel extends CI_Model{
         $query = "SELECT * from categories where supcatID is null AND ctType = 'inventory' group by ctName order by ctName asc";
         return $this->db->query($query)->result_array();
     }
+    function get_stockitems() {
+        $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+        return $this->db->query($query)->result_array();
+    }
+    function get_returns() {
+        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
+        return $this->db->query($query)->result_array();
+    }
+    function get_returnItems() {
+        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, uom.uomName, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
+        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID) INNER JOIN uom USING (uomID);";
+        return $this->db->query($query)->result_array();
+    }
+
 //INSERT FUNCTIONS----------------------------------------------------------------
     function add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch){
         $query = "insert into supplier (spName, spContactNum, spEmail, spStatus, spAddress) values (?,?,?,?,?);";
@@ -585,6 +796,14 @@ class Adminmodel extends CI_Model{
     function add_addon($aoName, $aoPrice, $aoCategory, $aoStatus){
         $query = "INSERT into addons (aoName, aoPrice, aoCategory, aoStatus) values (?,?,?,?)";
         return $this->db->query($query,array($aoName, $aoPrice, $aoCategory, $aoStatus));
+    }
+    function add_menuStock($items){
+        $query = "INSERT INTO prefstock(prID, stID, prstQty)
+        VALUES(?, ?, ?)";
+        foreach($items as $item){
+            $this->db->query($query, array($item['prID'],$item['stID'],$item['prstQty']));
+        }
+        return true;
     }
     function add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore){
         $query = "INSERT into uom (uomName, uomAbbreviation, uomVariant, uomStore) values (?,?,?,?)";
@@ -841,91 +1060,6 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
     }
     return false;
 }
-function edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, $osDateTime, $osPayDateTime, 
-    $osDateRecorded, $osDiscount, $orderlists, $addons) {
-        $query = "UPDATE orderslips SET tableCode = ?, custName = ?, osTotal = ?, 
-        osDateTime = ?, osPayDateTime = ?, osDiscount = ? WHERE orderslips.osID = ?;";
-        if($this->db->query($query, array($tableCodes, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDiscount, $osID))) {
-            for($i = 0; $i < count($orderlists); $i++) {
-                $orlist = array(
-                    'olID' => $orderlists[$i]['olID'],
-                    'prID' => $orderlists[$i]['prID'],
-                    'osID' => $orderlists[$i]['osID'],
-                    'olDesc' => $orderlists[$i]['olDesc'],
-                    'olQty' => $orderlists[$i]['olQty'],
-                    'olSubtotal' => $orderlists[$i]['olSubtotal'],
-                    'olStatus' => $orderlists[$i]['olStatus'],
-                    'olRemarks' => $orderlists[$i]['olRemarks'],
-                    'olPrice' => $orderlists[$i]['olPrice'],
-                    'olDiscount' => $orderlists[$i]['olDiscount']
-                );
-
-                if($orderlists[$i]['del'] === 0) {
-                    $this->delete_salesOrderitem($orderlists[$i]['olID']);
-                }
-                else if($orderlists[$i]['olID'] != null) {
-                    $this->edit_salesorders($orlist, $addons);
-                } else{
-                    $orderlist = array();
-                    array_push($orderlist, $orlist);
-                    $this->add_salesList($osID, $orderlist, $addons);
-                } 
-            }   
-        }
-    }
-
-    function edit_salesorders($orlist, $addons) {
-        $query = "UPDATE orderlists SET prID = ?, osID = ?, olDesc = ?, 
-        olQty = ?, olSubtotal = ?, olPrice = ?, olDiscount = ? WHERE orderlists.olID = ?;";
-        if($this->db->query($query, array($orlist['prID'], $orlist['osID'], $orlist['olDesc'], 
-        $orlist['olQty'], $orlist['olSubtotal'],  $orlist['olPrice'],  $orlist['olDiscount'],  
-        $orlist['olID'])))  {
-            if(count($addons) > 0) {
-              $this->update_salesaddons($orlist['olID'], $orlist['prID'], $addons);
-            }
-        }
-        
-    }
-
-    function update_salesaddons($olID, $prID, $addons) {
-        for($i = 0; $i < count($addons); $i++) {
-            if($addons[$i]['del'] === 0 ) {
-                $this->delete_salesAddons($addons[$i]['aoID'], $addons[$i]['olID']);
-            } else if($addons[$i]['olID'] === null){
-                $addonsArr = array();
-                $aolist = array(
-                    'prID' => $addons[$i]['prID'],
-                    'aoID' => $addons[$i]['aoID'],
-                    'aoQty' => $addons[$i]['aoQty'],
-                    'aoTotal' => $addons[$i]['aoTotal']
-                );
-                array_push($addonsArr, $aolist);
-                $this->add_salesAddons($olID, $prID, $addonsArr);
-            } else if(intval($addons[$i]['oldaoID']) != intval($addons[$i]['aoID'])) {
-                $this->update_changedAddon($addons[$i]['aoID'], $addons[$i]['oldaoID'], $addons[$i]['olID']);
-            } else if($addons[$i]['prID'] == $prID && $addons[$i]['olID'] != null) {
-                $aolist = array(
-                    'aoID' => $addons[$i]['aoID'],
-                    'olID' => $addons[$i]['olID'],
-                    'aoQty' => $addons[$i]['aoQty'],
-                    'aoTotal' => $addons[$i]['aoTotal']
-                );
-                $this->edit_salesaddons($aolist);
-            } 
-        }
-}
-
-    function edit_salesaddons($addon) {
-        $query = "UPDATE orderaddons SET aoQty = ?, aoTotal = ? WHERE orderaddons.aoID = ?
-        AND orderaddons.olID = ?;";
-        $this->db->query($query, array($addon['aoQty'], $addon['aoTotal'], $addon['aoID'], $addon['olID']));
-    }
-
-    function update_changedAddon($aoID, $oldaoID, $olID) {
-        $query = "UPDATE orderaddons SET aoID = ? WHERE orderaddons.aoID = ? AND orderaddons.olID = ?;";
-        $this->db->query($query, array($aoID, $oldaoID, $olID));
-
-    }
     function edit_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore, $uomID){
         $query = "UPDATE uom SET uomName = ?, uomAbbreviation = ?, uomVariant = ?, uomStore = ? WHERE uomID = ?";
         return $this->db->query($query,array($uomName, $uomAbbreviation, $uomVariant, $uomStore, $uomID));
@@ -1018,8 +1152,11 @@ function edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, $osDate
         return $this->db->query($query,array($ctName, $ctStatus, $ctID));
     }
 //DELETE FUNCTIONS----------------------------------------------------------------
-    function delete_salesOrderitem($olID) {
+     function delete_salesOrderitem($olID, $stID, $stQty) {
         $query = "DELETE FROM orderlists WHERE orderlists.olID = ?";
+        if($stID !== null) {
+            $this->update_stock($stID, $stQty);
+        }
         return $this->db->query($query, array($olID));
     }
     function delete_salesAddons($aoID, $olID) {
@@ -1214,7 +1351,182 @@ function add_aospoil($date_recorded,$addons,$account_id){
             ) 
             VALUES (NULL, ?, ?, ?, ?, ?)";
             return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additinalRemarks));
-    } 
+    }   
+
+    // ------ Sales Functions ------
+    function add_salesOrder($tableCode, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons) {
+        $query = "insert into orderslips (osID, tableCode, custName, osTotal, payStatus, 
+        osDateTime, osPayDateTime, osDateRecorded, osDiscount) values (NULL,?,?,?,?,?,?,?,?);";
+        if($this->db->query($query,array($tableCode, $custName, $osTotal, 'paid', $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount))) {
+            $this->add_salesList($this->db->insert_id(), $orderlists, $addons);
+            }
+        }
+
+    function add_salesList($osID, $orderlists, $addons) {
+        $query = "insert into orderlists (olID, prID, osID, olDesc, olQty, 
+        olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (NULL,?,?,?,?,?,?,?,?,?);";
+        if(count($orderlists) > 0){
+             for($in = 0; $in < count($orderlists) ; $in++){
+              if($this->db->query($query, array($orderlists[$in]['prID'], $osID, $orderlists[$in]['olDesc'], 
+              $orderlists[$in]['olQty'], $orderlists[$in]['olSubtotal'],'served', ' ', $orderlists[$in]['olPrice'], 
+              $orderlists[$in]['olDiscount']))) {
+                if($orderlists[$in]['stID'] !== null) {
+                    $this->update_stock($orderlists[$in]['stID'], $orderlists[$in]['stQty']);
+                }
+                if(count($addons) > 0) {
+                    $this->update_salesaddons($this->db->insert_id(), $orderlists[$in]['prID'], $addons);
+                }
+              }
+        }
+    }else {
+        return false;
+    }
+    }
+
+    function add_salesAddons($olID, $olprID, $addons) {
+        $query = "INSERT INTO orderaddons (aoID, olID, aoQty, aoTotal) VALUES (?, ?, ?, ?);";
+          for($in = 0; $in < count($addons); $in++){
+            if($olprID == $addons[$in]['prID']) {
+            $this->db->query($query, array($addons[$in]['aoID'], $olID, $addons[$in]['aoQty'], 
+            $addons[$in]['aoTotal']));
+            }
+    }
+}
+    function update_stock($stID, $stQty) {
+        $query = "UPDATE `stockitems` SET `stQty` = ? WHERE `stockitems`.`stID` = ?;";
+        $this->db->query($query, array($stQty, $stID));
+    }
+
+    function get_prefstock() {
+        $query = "SELECT ol.osID, ol.olID, pr.prID, ps.stID, ps.prstQty, st.stQty FROM orderlists ol 
+        INNER JOIN preferences pr USING (prID) LEFT JOIN prefstock ps USING (prID) 
+        LEFT JOIN stockitems st USING (stID)";
+        return $this->db->query($query)->result_array();
+
+    }
+
+    function edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, $osDateTime, $osPayDateTime, 
+    $osDateRecorded, $osDiscount, $orderlists, $addons) {
+        $query = "UPDATE orderslips SET tableCode = ?, custName = ?, osTotal = ?, 
+        osDateTime = ?, osPayDateTime = ?, osDiscount = ? WHERE orderslips.osID = ?;";
+        if($this->db->query($query, array($tableCodes, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDiscount, $osID))) {
+            for($i = 0; $i < count($orderlists); $i++) {
+                $orlist = array(
+                    'olID' => $orderlists[$i]['olID'],
+                    'prID' => $orderlists[$i]['prID'],
+                    'stID' => $orderlists[$i]['stID'],
+                    'stQty' => $orderlists[$i]['stQty'],
+                    'osID' => $orderlists[$i]['osID'],
+                    'olDesc' => $orderlists[$i]['olDesc'],
+                    'olQty' => $orderlists[$i]['olQty'],
+                    'olSubtotal' => $orderlists[$i]['olSubtotal'],
+                    'olStatus' => $orderlists[$i]['olStatus'],
+                    'olRemarks' => $orderlists[$i]['olRemarks'],
+                    'olPrice' => $orderlists[$i]['olPrice'],
+                    'olDiscount' => $orderlists[$i]['olDiscount']
+                );
+
+                if($orderlists[$i]['del'] === 0) {
+                    $this->delete_salesOrderitem($orderlists[$i]['olID'], $orderlists[$i]['stID'],
+                    $orderlists[$i]['stQty']);
+                }
+                else if($orderlists[$i]['olID'] != null) {
+                    $this->edit_salesorders($orlist, $addons);
+                } else{
+                    $orderlist = array();
+                    array_push($orderlist, $orlist);
+                    $this->add_salesList($osID, $orderlist, $addons);
+                } 
+            }   
+        }
+    }
+
+    function edit_salesorders($orlist, $addons) {
+        $query = "UPDATE orderlists SET prID = ?, osID = ?, olDesc = ?, 
+        olQty = ?, olSubtotal = ?, olPrice = ?, olDiscount = ? WHERE orderlists.olID = ?;";
+        if($this->db->query($query, array($orlist['prID'], $orlist['osID'], $orlist['olDesc'], 
+        $orlist['olQty'], $orlist['olSubtotal'],  $orlist['olPrice'],  $orlist['olDiscount'],  
+        $orlist['olID'])))  {
+            if($orlist['stID'] !== null) {
+                $this->update_stock($orlist['stID'], $orlist['stQty']);
+            }
+            if(count($addons) > 0) {
+              $this->update_salesaddons($orlist['olID'], $orlist['prID'], $addons);
+            }
+        }
+        
+    }
+
+    function update_salesaddons($olID, $prID, $addons) {
+        for($i = 0; $i < count($addons); $i++) {
+            if($addons[$i]['del'] === 0 ) {
+                $this->delete_salesAddons($addons[$i]['aoID'], $addons[$i]['olID']);
+            } else if($addons[$i]['olID'] === null){
+                $addonsArr = array();
+                $aolist = array(
+                    'prID' => $addons[$i]['prID'],
+                    'aoID' => $addons[$i]['aoID'],
+                    'aoQty' => $addons[$i]['aoQty'],
+                    'aoTotal' => $addons[$i]['aoTotal']
+                );
+                array_push($addonsArr, $aolist);
+                $this->add_salesAddons($olID, $prID, $addonsArr);
+            } else if(intval($addons[$i]['oldaoID']) != intval($addons[$i]['aoID'])) {
+                $this->update_changedAddon($addons[$i]['aoID'], $addons[$i]['oldaoID'], $addons[$i]['olID']);
+            } else if($addons[$i]['prID'] == $prID && $addons[$i]['olID'] != null) {
+                $aolist = array(
+                    'aoID' => $addons[$i]['aoID'],
+                    'olID' => $addons[$i]['olID'],
+                    'aoQty' => $addons[$i]['aoQty'],
+                    'aoTotal' => $addons[$i]['aoTotal']
+                );
+                $this->edit_salesaddons($aolist);
+            } 
+        }
+}
+
+    function edit_salesaddons($addon) {
+        $query = "UPDATE orderaddons SET aoQty = ?, aoTotal = ? WHERE orderaddons.aoID = ?
+        AND orderaddons.olID = ?;";
+        $this->db->query($query, array($addon['aoQty'], $addon['aoTotal'], $addon['aoID'], $addon['olID']));
+    }
+
+    function update_changedAddon($aoID, $oldaoID, $olID) {
+        $query = "UPDATE orderaddons SET aoID = ? WHERE orderaddons.aoID = ? AND orderaddons.olID = ?;";
+        $this->db->query($query, array($aoID, $oldaoID, $olID));
+
+    }
+
+    // INSERT FUNCTIONS FOR PO, DR, OR, RETURN (NEW)
+    function add_receiptTransaction($transaction){
+        $query = "INSERT INTO transactions(
+                tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived
+            )
+            VALUES(
+                NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )";
+        if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $transaction['tNum'], $transaction['receipt'],
+            $transaction['date'], $transaction['dateRecorded'], $transaction['type'], $transaction['total'], $transaction['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+
+    function add_receiptTransactionItems($item){
+        $query = "INSERT INTO transitems(tiID, uomID, stID, tiName, tiPrice, tiDiscount, drStatus, paystatus, rStatus)
+            VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if($this->db->query($query, array($item['uom'], $item['stock'], $item['name'], $item['price'], $item['discount'], $item['delivery']
+            , $item['payment'], $item['return']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+
+    function add_receiptTransactionItemsQty($tID, $item){
+        $query = "INSERT INTO trans_items(tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal)
+            VALUES(?, ?, ?, ?, ?, ?)";
+        return $this->db->query($query, array($tID, $item['tiID'], $item['tiQty'], $item['perUnit'], $item['actual'], $item['subtotal']));
+    }
 
     //  Get Transactions (PO, DR, OR)
     // SELECT
@@ -1235,9 +1547,43 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     transactions
     // LEFT JOIN supplier USING(spID)
     // WHERE
-    //     isArchived = '0' and tType = 'purchase order'; 
+    //     isArchived = '0' and tType = 'purchase order';
 
-    //get transitems (PO, DR, OR)
+    // get transaction (CONSUMED, SPOILAGE)
+    //     SELECT
+    //     tID AS id,
+    //     tNum AS num,
+    //     tType AS TYPE,
+    //     tRemarks AS remarks,
+    //     tDate AS DATE,
+    //     dateRecorded AS daterecorded
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     isArchived = '0' AND tType = 'consumed';
+
+    // get transaction (RETURN)
+    // SELECT
+    //     tID AS id,
+    //     tNum AS num,
+    //     IF(
+    //         spID IS NULL,
+    //         supplierName,
+    //         spName
+    //     ) AS supplier,
+    //     tType AS TYPE,
+    //     tTotal AS total,
+    //     tRemarks AS remarks,
+    //     tDate AS DATE,
+    //     dateRecorded AS daterecorded
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     isArchived = '0' AND tType = 'return';
+
+    //get transitems (PO, DR, OR, RETURN)
     // SELECT
     //     tID AS transaction,
     //     tiID AS id,
@@ -1260,6 +1606,22 @@ function add_aospoil($date_recorded,$addons,$account_id){
     // WHERE
     //     tType = 'purchase order'
 
+
+    // get transitems (CONSUMED, SPOILAGE)
+    // SELECT
+    //     tID AS transaction,
+    //     tiID AS id,
+    //     actualQty AS actualqty
+    // FROM
+    //     (
+    //         transitems
+    //     LEFT JOIN trans_items USING(tiID)
+    //     )
+    // LEFT JOIN transactions USING(tID)
+    // LEFT JOIN uom USING(uomID)
+    // WHERE
+    //     tType = 'consumed';
+
     //get last number or last transaction of type (Plus 1 to the value returned -> ilalagay as tNum sa transactions table)
     // SELECT
     //     MAX(tNum) AS lastnum
@@ -1276,12 +1638,37 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
     // )
 
+    // insert transitem (PO, DR, OR, RETURN)
+    // INSERT INTO transitems(
+    //     tiID,
+    //     uomID,
+    //     stID,
+    //     tiName,
+    //     tiPrice,
+    //     tiDiscount,
+    //     drStatus,
+    //     paystatus,
+    //     rStatus
+    // )
+    // VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)
+
+    // insert trans_item (PO, DR, OR, RETURN)
+    // INSERT INTO trans_items(
+    //     tID,
+    //     tiID,
+    //     tiQty,
+    //     qtyPerItem,
+    //     actualQty,
+    //     tiSubtotal
+    // )
+    // VALUES(?, ?, ?, ?, ?, ?)
+
     // Update transaction (PO, DR, OR)
     // UPDATE transactions
     // SET supplierName = ?, receiptNo = ?, tDate = ?, dateRecorded = ?, tTotal = ?, tRemarks = ?
     // WHERE tID = ?
 
-    // Insert transitem (RETURN)
+    // Insert transaction (RETURN)
     // INSERT INTO transactions(
     //     tID, tNum, tDate, dateRecorded, tType, tRemarks, tTotal
     // )
@@ -1292,6 +1679,21 @@ function add_aospoil($date_recorded,$addons,$account_id){
     //     tID, tNum, tDate, dateRecorded, tType, tRemarks
     // )
     // VALUES(NULL, ?, ?, ?, ?, ?)
+
+    // insert transitem (CONSUMED, SPOILAGE)
+    // INSERT INTO transitems(
+    //     tiID,
+    //     stID
+    // )
+    // VALUES(NULL, ?)
+
+    // insert trans_item (CONSUMED, SPOILAGE)
+    // INSERT INTO trans_items(
+    //     tID,
+    //     tiID,
+    //     actualQty
+    // )
+    // VALUES(?, ?, ?)
 
     // Update Transaction (CONSUMPTION, SPOILAGE)
     // UPDATE transactions

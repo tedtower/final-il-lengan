@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                   <input type="submit" class="btn btn-dark-green" value="Login">
+                   <input type="submit" class="btn btn-dark-green" value="Check In">
                 </div>
             </div>
         </div>

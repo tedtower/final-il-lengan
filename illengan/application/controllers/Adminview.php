@@ -258,6 +258,7 @@ function jsonSales() {
     $data = array();
     $data['orderslips'] = $this->adminmodel->get_osSales();
     $data['orderlists'] = $this->adminmodel->get_olSales();
+    $data['stocks'] = $this->adminmodel->get_prefstock();
     $data['menuitems'] = $this->adminmodel->get_menuPref();
     $data['addons'] = $this->adminmodel->get_orderAddon();
     $data['tables'] = $this->adminmodel->get_tables();
@@ -465,12 +466,35 @@ function getStockItem(){
             $data['category'] = $this->adminmodel->get_menucategories();
             // $data['menuitem'] = array(
             //     'menus' => $this->adminmodel->get_menu(),
-            //     'preferences' => $this->adminmodel->get_preferences(),
+            //     'preferences' => $this->adminmodel->get_peferences(),
             //     'addons' => $this->adminmodel->get_addons2()
             // );
             $this->load->view('admin/menuitems',$data);
         }else{
             redirect('login');
+        }
+    }
+    function menuStock(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $head['title'] = "Menu - Stock";
+            $this->load->view('admin/templates/head',$head);
+            $this->load->view('admin/templates/sideNav');
+            $data['menuStock'] = $this->adminmodel->get_prefStocks();
+            $this->load->view('admin/menu-stock', $data);
+        }else{
+            redirect('login');
+        }
+    }
+    function getMenuStockModalData(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            echo json_encode(array(
+                "preferences" => $this->adminmodel->get_prefNames(),
+                "stocks" => $this->adminmodel->get_stockItemNames()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
         }
     }
 
@@ -533,18 +557,84 @@ function getStockItem(){
             redirect('login');
         }
     }
-//     function viewReturns(){
-//         $data['title'] = "Returns";
-//         $data['returns'] = $this->adminmodel->get_returns();
-//         $data['transactions'] = $this->adminmodel->get_transactions();
-//         $data['stock'] = $this->adminmodel->get_stocks();
-//         $this->load->view('admin/templates/head',$data);
-//         $this->load->view('admin/templates/sideNav');
-//         $this->load->view('admin/returns', $data);
-//         $this->load->view('admin/templates/scripts');
-//     }
-
-
+    function viewPurchaseOrder(){
+        if($this->checkIfLoggedIn()){
+            $data['title'] = "Purchase Order";
+            $this->load->view('admin/templates/head', $data);
+            $this->load->view('admin/templates/sideNav');
+            $data['transactions'] = $this->adminmodel->get_transactions();
+            $data['transitems'] = $this->adminmodel->get_transitems();
+            $this->load->view('admin/adminPurchaseOrder', $data);
+        }else{
+            redirect('login');
+        }
+    }
+    function viewDeliveryReceipt(){
+        if($this->checkIfLoggedIn()){
+            $data['title'] = "Delivery Receipt";
+            $this->load->view('admin/templates/head', $data);
+            $this->load->view('admin/templates/sideNav');
+            $this->load->view('admin/adminDeliveryReceipt');
+        }else{
+            redirect('login');
+        }
+    }
+    function viewOfficialReceipt(){
+        if($this->checkIfLoggedIn()){
+            $data['title'] = "Official Receipt";
+            $this->load->view('admin/templates/head', $data);
+            $this->load->view('admin/templates/sideNav');
+            $this->load->view('admin/adminOfficialReceipt');
+        }else{
+            redirect('login');
+        }
+    }
+    function viewReturn(){
+        if($this->checkIfLoggedIn()){
+            $data['title'] = "Returns";
+            $this->load->view('admin/templates/head', $data);
+            $this->load->view('admin/templates/sideNav');
+            $this->load->view('admin/adminReturns');
+        }else{
+            redirect('login');
+        }
+    }
+    function jsonReturns() {
+        if($this->checkIfLoggedIn()){
+            $data = array(
+                'returns' => $this->adminmodel->get_returns(),
+                'returnitems' => $this->adminmodel->get_returnItems(),
+                'stock' => $this->adminmodel->get_stockitems(),
+                'supplier' => $this->adminmodel->get_supplier(),
+                'suppmerch' => $this->adminmodel->get_supplierstocks()
+            );
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_PRETTY_PRINT);
+        }else{
+            redirect('login');
+        }
+    }
+    function viewConsumptions(){
+        if($this->checkIfLoggedIn()){
+            $data['title'] = "Returns";
+            $this->load->view('admin/templates/head', $data);
+            $this->load->view('admin/templates/sideNav');
+            $this->load->view('admin/adminConsumption');
+        }else{
+            redirect('login');
+        }
+    }
+    function viewActivityLog() {
+        if($this->checkIfLoggedIn()){
+            $data['title'] = "Activity Logs";
+            $this->load->view('admin/templates/head',$data);
+            $this->load->view('admin/templates/sideNav');
+            $this->load->view('admin/activityLogs');
+		    
+        }else {
+            redirect('login');
+        }
+    }
 
     function viewStockCategories(){
         if($this->checkIfLoggedIn()){
@@ -636,20 +726,7 @@ function getStockItem(){
 
 
 
-//     function viewPurchaseOrders(){
-//         if($this->checkIfLoggedIn()){
-//             $data['title'] = "Purchase Order";
-//             $this->load->view('admin/templates/head', $data);
-//             $this->load->view('admin/templates/sideNav');
-//             $data['purchaseOrders'] = array(
-//                 "purchorders" => $this->adminmodel->get_purchOrders(),
-//                 "poitems" => $this->adminmodel->get_poItemVariance()
-//             );
-//             $this->load->view('admin/adminPurchaseOrder',$data);
-//         }else{
-//             redirect('login');
-//         }
-//     }
+
 
 //     function jsonLogStock() {
 //         if($this->checkIfLoggedIn()){
@@ -700,18 +777,7 @@ function getStockItem(){
 
 //     // }
 
-//     function viewActivityLog() {
-//         if($this->checkIfLoggedIn()){
-//             $data['title'] = "Activity Logs";
-//             $this->load->view('admin/templates/head',$data);
-//             $this->load->view('admin/templates/sideNav');
-//             $this->load->view('admin/activityLogs');
-		    
-//         }else {
-//             redirect('login');
-//         }
 
-//     }
 //     function viewConsumptions(){
 //         if($this->checkIfLoggedIn()){
 //             $data['title'] = "Stock Consumption";

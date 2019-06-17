@@ -16,7 +16,7 @@
                             <div class="card-content">
                                 <button class="btn btn-primary btn-sm" data-toggle="modal"
                                     data-target="#addEditTransaction" data-original-title style="margin:0"
-                                    id="addBtn">Add Transaction</button>
+                                    id="addBtn">Add Delivery Receipt</button>
                                 <br>
                                 <br>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
@@ -30,79 +30,7 @@
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
-                                        <!--Start of Table row-->
-                                        <?php if($transactions[0] != null){
-                                        foreach($transactions as $transaction){
-                                    ?>
-                                        <tr data-id="<?= $transaction['tID']?>">
-                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn"
-                                                        src="/assets/media/admin/down-arrow%20(1).png"
-                                                        style="height:15px;width: 15px" /></a><?= $transaction['tNum'] == NULL ? "N/A" : $transaction['tNum'] ?>
-                                            </td>
-                                            <td><?= ucwords($transaction['spName'])?></td>
-                                            <td><?= ucwords($transaction['tType'])?></td>
-                                            <td><?= $transaction['tDate']?></td>
-                                            <td>&#8369; <?=$transaction['tTotal']?></td>
-                                            <td>
-                                                <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal"
-                                                    data-target="#addEditTransaction">Edit</button>
-                                                <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
-                                                    data-target="#delete">Archived</button>
-                                            </td>
-                                        </tr>
-                                        <!--End of Table row-->
-
-                                        <!--Start of Table accordion-->
-                                        <tr class="accordion" style="display:none">
-                                            <td colspan="8">
-                                                <div class="container" style="display:none">
-                                                    <span>Date Recorded:
-                                                        <?= $transaction['dateRecorded'] == null ? "N/A" : $transaction['dateRecorded']?></span>
-                                                    <div style="overflow:auto">
-                                                        <span style="float:left;margin-right:1%">Remarks: </span>
-                                                        <p style="float:left">
-                                                            <?= $transaction['tRemarks'] == null ? "No remarks" : $transaction['tRemarks']?>
-                                                        </p>
-                                                        <!--Remarks of Invoice-->
-                                                    </div>
-                                                    <table class="table">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Qty</th>
-                                                                <th>UOM</th>
-                                                                <th>Price</th>
-                                                                <th>Discount</th>
-                                                                <th>Status</th>
-                                                                <th>Subtotal</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php foreach($transitems as $transitem){
-                                                        if($transitem['tID'] == $transaction['tID']){?>
-                                                            <tr>
-                                                                <td><?= ucwords($transitem['tiName'])?></td>
-                                                                <td><?= $transitem['tiQty']?></td>
-                                                                <td><?= strtolower($transitem['uomAbbreviation'])?></td>
-                                                                <td><?= number_format($transitem['tiPrice'],2,".",',')?>
-                                                                </td>
-                                                                <td><?= number_format($transitem['tiDiscount'],2,".",',')?>
-                                                                </td>
-                                                                <td><?= ucwords($transitem['tiStatus'])?></td>
-                                                                <td><?= number_format($transitem['tiSubtotal'],2,".",',')?>
-                                                                </td>
-                                                            </tr>
-                                                            <?php }
-                                                    }?>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                        }
-                                    }?>
-                                        <!--End of Table accordion-->
+                                      
                                     </tbody>
                                 </table>
                                 <!--End Table Content-->

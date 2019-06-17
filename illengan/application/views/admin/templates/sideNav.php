@@ -13,10 +13,13 @@
             <ul class="collapse list-unstyled" id="homeSubmenu">
                 <li><a href="<?php echo base_url('admin/inventory')?>"><i class="far fa-boxes"></i> Stock Items</a></li>
                 <li><a href="<?php echo base_url('admin/stockcategories')?>"><i class="far fa-bookmark"></i> Categories</a></li>
-                <li><a href="<?php echo base_url('admin/transactions')?>"><i class="far fa-truck-loading"></i> Transactions</a></li>
+                <li><a href="<?php echo base_url('admin/purchaseorder')?>"><i class="far fa-dolly-flatbed-alt"></i> Purchase Order</a></li>
+                <li><a href="<?php echo base_url('admin/deliveryreceipt')?>"><i class="far fa-truck-loading"></i> Delivery Receipt</a></li>
+                <li><a href="<?php echo base_url('admin/officialreceipt')?>"><i class="far fa-receipt"></i> Official Receipt</a></li>
+                <li><a href="<?php echo base_url('admin/return')?>"><i class="far fa-exchange"></i> Returns</a></li>
                 <li><a href="<?= base_url('admin/consumption'); ?>"><i class="far fa-calendar-minus"></i> Consumption</a></li>
                 <li><a href="<?php echo base_url('admin/stock/spoilages')?>"><i class="far fa-trash"></i> Spoilages</a></li>
-                <li><a href="<?php echo base_url('admin/measurements')?>"><i class="far fa-trash"></i> Measurements</a></li>
+                <li><a href="<?php echo base_url('admin/measurements')?>"><i class="far fa-ruler-triangle"></i> Measurements</a></li>
             </ul>
         </li>
         <!--Menu-->
@@ -24,6 +27,7 @@
             <a href="#Menu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="far fa-bars"></i> Menu</a>
             <ul class="collapse list-unstyled" id="Menu">
                 <li><a href="<?php echo base_url('admin/menu') ?>"><i class="far fa-book"></i> Menu Items</a></li>
+                <li><a href="<?php echo base_url('admin/menu/menustock') ?>"><i class="far fa-book"></i> Menu - Stock</a></li>
                 <li><a href="<?php echo base_url('admin/menu/addons')?>"><i class="far fa-layer-group"></i> Addons</a></li>
                 <li><a href="<?php echo base_url('admin/menucategories')?>"><i class="far fa-bookmark"></i> Categories</a></li>
                 <li><a href="<?php echo base_url('admin/menu/promos')?>"><i class="far fa-gift"></i> Promos</a></li>
@@ -37,21 +41,13 @@
             </ul>
         </li>
         <!--Sales-->
-        <li><a href="<?php echo base_url('admin/sales')?>"><i class="far fa-receipt"></i> Sales</a></li>
+        <li><a href="<?php echo base_url('admin/sales')?>"><i class="far fa-chart-line"></i> Sales</a></li>
         <!--Sources-->
-        <li><a href="<?php echo base_url('admin/supplier') ?>"><i class="far fa-user-tag"></i> Sources</a></li>
+        <li><a href="<?php echo base_url('admin/supplier') ?>"><i class="far fa-user-tag"></i> Supplier</a></li>
         <!--Accounts-->
         <li><a href="<?php echo base_url('admin/accounts') ?>"><i class="far fa-users"></i> Accounts</a></li>
         <!--Tables-->
         <li><a  href="<?php echo base_url('admin/tables') ?>"><i class="far fa-cube"></i> Tables</a></li>
-        <!--Reports-->
-        <li class="has-oul">
-            <a href="#Reports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="far fa-chart-line"></i> Reports</a>
-            <ul  class="collapse list-unstyled" id="Reports">
-                <li><a href="#" ><i class="far fa-industry"></i> Inventory Report</a></li>
-                <li><a href="#"><i class="far fa-receipt"></i> Sales Report</a></li>
-            </ul>
-        </li>
         <!--Activity Logs-->
         <li><a href="<?php echo base_url('admin/log/activity')?>"><i class="far fa-history"></i> Activity Logs</a></li>
         <li><a href="<?php echo base_url('logout')?>"><i class="far fa-sign-out-alt"></i> Log Out</a></li>
