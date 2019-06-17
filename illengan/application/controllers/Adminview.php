@@ -715,6 +715,17 @@ function getStockItem(){
             redirect('login');
         }
     }
+    function getStockForBeginningBrochure(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                "stocks" => $this->adminmodel->get_stocksForBeginningBrochure()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 
 
 //     // function viewTransactions(){

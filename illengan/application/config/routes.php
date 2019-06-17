@@ -130,7 +130,7 @@ $route['admin/returns/add'] = "adminadd/addReturnTransactions";
 $route['admin/promos/add'] = "adminadd/addPromo";
 $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
-
+$route['admin/stocklog/ending/add'] = "adminadd/addBeginningLogs";
 //End Admin Add Routes ------------------------------------------
 
 //Admin Update Routes -------------------------------------------
@@ -206,6 +206,7 @@ $route['admin/jsonReturns'] = "adminview/jsonReturns";
 
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
+$route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES
