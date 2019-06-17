@@ -1,5 +1,36 @@
 <?php
-    class Customermodel extends CI_Model {
+class Customermodel extends CI_Model {
+    
+    function __construct(){
+        parent:: __construct();
+        date_default_timezone_set('Asia/Manila'); 
+    }
+    //ADD  CONSUMPTION TRANSACTION
+    function add_consumption($consumption, $consumptionItems){
+        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
+            VALUES(NULL, ?, ?, ?, 'consumption', ?)";
+        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
+            FROM transactions
+            WHERE tType = 'consumption'")->result_array()[0]['lastNum'];
+        if($this->db->query($query, array($lastNum+1,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function add_consumedItems($stID){
+        $query = "INSERT INTO transitems(tiID, stID)
+            VALUES(NULL, ?)";
+        if($this->db->query($query, array($stID))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function add_consumedItemsQty($tID, $tiID, $qty){
+        $query= "INSERT INTO trans_items(tID, tiID, actualQty)
+            VALUES(?, ?, ?)";
+        return $this->db->query($query,array($tID, $tiID, $qty));
+    }
+    //END ADD  CONSUMPTION TRANSACTION
 	function get_tables(){ 
 	    $query = $this->db->query('SELECT tableCode FROM tables');
 	    return $query->result();
@@ -161,7 +192,7 @@
                         prID = ?;";
             return $this->db->query($query, array($prefID))->result_array();
         }
-
+        
         function get_addonPrices($addonIds){
             $query = "SELECT 
                             aoID, aoPrice
