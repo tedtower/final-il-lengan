@@ -40,7 +40,7 @@
                                                 <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal"
                                                     data-target="#editMS">Edit</button>
                                                 <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
-                                                    data-target="#deleteMS">Archive</button>
+                                                    data-target="#deleteMS">Delete</button>
                                             </td>
                                         </tr>
                                         <?php
@@ -65,13 +65,13 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formAdd" action="<?= site_url('admin/stock/spoilages/add')?>"
+                                            <form id="formAdd"
                                                 accept-charset="utf-8">
                                                 <div class="modal-body">
                                                     <!--Button to add launche the brochure modal-->
                                                     <a class="addItemBtn btn btn-default btn-sm"
                                                         data-toggle="modal" data-target="#brochureMenu"
-                                                        data-original-title style="margin:0" id="addStockSpoilage">Add
+                                                        data-original-title style="margin:0">Add
                                                         Menu Items</a>
                                                     <br><br>
                                                     <table class="stockSpoilageTable table table-sm table-borderless">
@@ -92,8 +92,7 @@
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-danger btn-sm"
                                                             data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-success btn-sm"
-                                                            onclick="">Add</button>
+                                                        <button type="submit" class="btn btn-success btn-sm">Add</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -123,8 +122,7 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger btn-sm"
                                                         data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-success btn-sm"
-                                                        data-dismiss="modal">Ok</button>
+                                                    <button type="submit" class="btn btn-success btn-sm">Ok</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -153,8 +151,7 @@
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger btn-sm"
                                                         data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-success btn-sm"
-                                                        data-dismiss="modal">Ok</button>
+                                                    <button type="submit" class="btn btn-success btn-sm">Ok</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -172,6 +169,36 @@
             var addMenuStockUrl = "<?= site_url('admin/menu/addMenuStock')?>";
             $(function() {
                 $("#addMenuStock").on('click', function() {
+                    $("#addEditMenuStock form").on("submit",function(event){
+                        event.preventDefault();
+                        var menuStock = [];
+                        $(this).find(".ic-level-1").each(function(index){
+                            menuStock.push({
+                                prID: $(this).attr("data-id1"),
+                                stID: $(this).attr("data-id2"),
+                                prstQty: $(this).find("input[name='qty']").val()
+                            });
+                        });
+                        $.ajax({
+                            method: "POST",
+                            url: addMenuStockUrl,
+                            data: {
+                                items: JSON.stringify(menuStock)
+                            },
+                            dataType: "JSON",
+                            success: function(data){
+                                if(data.inputErr){
+                                    console.log(menuStock);
+                                }else{
+                                    location.reload();
+                                }
+                            },
+                            error: function(response, setting, error) {
+                                console.log(response.responseText);
+                                console.log(error);
+                            }
+                        });
+                    });
                     $.ajax({
                         method: 'POST',
                         url: getModalDataUrl,
@@ -192,36 +219,44 @@
                                         </label>
                                     </div>`;
                             }).join(''));
-                            $("#ddEditMenuStock").find(".addItemBtn").on("click",function(){
-                                console.log("asfdrgearg");
+                            $("#addEditMenuStock").find(".addItemBtn").on("click",function(){
+                                console.log($("#addEditMenuStock").find(".addItemBtn"));
                                 $("#brochureMenu form").on("submit",function(event){
                                     event.preventDefault();
                                     var item;
                                     $(this).find("input[name='prID']:checked").each(function(index){
                                         item = data.preferences.filter(pref => pref.id == $(this).val())[0];
-                                        console.log(item);
                                         $("#addEditMenuStock").find(".ic-level-2").append(`
                                             <tr class="ic-level-1" data-id1="${item.id}" data-id2="">
                                                 <td><input type="text" name="prefID"
                                                         class="form-control form-control-sm"value="${item.prefname}" readonly="readonly"></td>
                                                 <td><input type="text" name="stID"
-                                                        class="form-control form-control-sm"value="${item.stName} (${item.uomAbbreviation})" readonly="readonly"></td>
+                                                        class="form-control form-control-sm"value=""></td>
                                                 <td><input type="number" name="qty"
                                                         class="form-control form-control-sm" value="0"></td>
                                                 <td><img class="exitBtn1"
                                                         src="/assets/media/admin/error.png"
                                                         style="width:20px;height:20px"></td>
                                             </tr>`);
-                                        $("#addEditMenuStock").find(".ic-level-1 *").last().on("focus",function(){
+                                        $("#addEditMenuStock").find(".ic-level-1").last().find("*").on("focus",function(){
                                             if(!$(this).closest(".ic-level-1").attr("data-focus")){
-                                                $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
+                                                $("#addEditMenuStock").find(".ic-level-1").removeAttr("data-focus");
                                                 $(this).closest(".ic-level-1").attr("data-focus",true);
                                             }
                                         });
                                         $("#addEditMenuStock").find("input[name='stID']").last().on("focus",function(){
-                                            $("#brochureStock").modal("show");
+                                            $("#brochureStock").modal("show");                            
+                                            $("#brochureStock form").on("submit",function(event){
+                                                event.preventDefault();
+                                                var stID = $(this).find("input[name='stID']:checked").val();
+                                                $("#addEditMenuStock").find(".ic-level-1[data-focus='true']").attr("data-id2",stID);
+                                                $("#addEditMenuStock").find(".ic-level-1[data-focus='true']").find("input[name='stID']").val(data.stocks.filter(stock=>stock.stID == stID)[0].stName)
+                                                $(this)[0].reset();
+                                                $("#brochureStock").modal("hide");
+                                            });
                                         });
                                     });
+                                    $("#brochureMenu").modal("hide");
                                 });
                             });
                             
@@ -232,49 +267,18 @@
                         }
                     });
                 });
-                $("#brochureStock form").on("submit",function(event){
-                                event.preventDefault();
-                    var stID = $(this).find("input[name='stID']:checked").val();
-                    $("#addEditMenuStock").find(".ic-level-1[data-focus='true']").attr("data-id2",stID);
-                    $(this)[0].reset();
-                    $("#brochureStock").modal("hide");
-                });
                 $("#brochureMenu").on("hidden.bs.modal",function(){
                     $(this).find("form")[0].reset();
+                    $(this).find("form").off("submit");
                 });
                 $("#brochureStock").on("hidden.bs.modal",function(){
                     $(this).find("form")[0].reset();
+                    $(this).find("form").off("submit");
                 });
                 $("#addEditMenuStock").on("hidden.bs.modal",function(){
                     $(this).find("form")[0].reset();
                     $(this).find(".ic-level-2").empty();
                     $(this).find("form").off("submit");
-                });
-                $("#addEditMenuStock form").on("submit",function(event){
-                    event.preventDefault();
-                    var menuStock = [];
-                    $(this).find(".ic-level-1").each(function(index){
-                        menuStock.push({
-                            prID: $(this).attr("data-id1"),
-                            stID: $(this).attr("data-id2"),
-                            prstQty: $(this).find("input[name='qty']")
-                        });
-                    });
-                    $.ajax({
-                        method: "POST",
-                        url: addMenuStockUrl,
-                        data: {
-                            items: JSON.stringify(menuStock)
-                        },
-                        dataType: "JSON",
-                        success: function(data){
-                            console.log(data);
-                        },
-                        error: function(response, setting, error) {
-                            console.log(response.responseText);
-                            console.log(error);
-                        }
-                    });
                 });
 
             });

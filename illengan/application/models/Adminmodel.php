@@ -175,7 +175,7 @@ class Adminmodel extends CI_Model{
     function get_stockItemNames(){
         $query = "SELECT
             stID,
-            CONCAT(stName, ' ', stSize) as stName,
+            CONCAT(stName, if(stSize is NULL,'', concat(' ', stSize))) as stName,
             uomID,
             uomAbbreviation
         FROM
