@@ -100,11 +100,13 @@
             $query1 = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
 			$this->db->query($query1, array( $tableCode, $customer, $total, 'unpaid', $dateTime,'', $dateTime)); 
 			$order_id= $this->db->insert_id();
-			$bool = false;
-	foreach($orderlist as $items){
-		$query2 = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
-                 $this->db->query($query2, array(NULL,$order_id, $items['id'],'',$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
-                $olID = $this->db->insert_id(); 
+            $bool = false;
+            
+	    foreach($orderlist as $items){
+		    $query2 = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
+                $this->db->query($query2, array(NULL,$order_id, $items['id'],'',$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
+                $olID = $this->db->insert_id();
+                $this->add_consumedItems($items['prID'], $olID);
 
                 $addOns = $items['addons'];
                 if(!empty($addOns)){
@@ -128,15 +130,29 @@
             return true;
         }
 
+        function add_consumedItems($pref, $olID) {
+            $query = "SELECT * FROM orderlists left join prefstock using (prID) left join stockitems using (stID) where prefstock.prID = ? and olID = ?";
+            $array = $this->db->query($query, array($pref, $olID));
+            $this->automatic_deduction($array);
+        }
+
+        function automatic_deduction($array){
+            $stID = $array['stID'];
+            $newQty = $array['stQty'] - ($array['prstQty'] * $array['olQty']);
+            $query = "UPDATE `stockitems` SET `stQty` = ? WHERE `stockitems`.`stID` = ?;";
+            $this->db->query($query, array(5, 5));
+        }
 
         function get_menudetails($menu_id){
             $query = "select * from menu where mID = ?";
             return $this->db->query($query, array($menu_id))->result_array();
         }
+
         function get_sizes($menu_id){
             $query = "Select mID, prName, size_price from sizes where mID = ?";
             return $this->db->query($query, array($menu_id))->result_array();
         }
+
         function get_addons($menu_id){
             $query = "Select aoID, aoName, aoPrice, aoStatus from menuaddons inner join addons using where mID = ?";
             return $this->db->query($query, array($menu_id))->result_array();

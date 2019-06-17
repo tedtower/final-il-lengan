@@ -549,6 +549,8 @@ function getStockItem(){
             $data['title'] = "Purchase Order";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
+            $data['purchaseorder'] = $this->adminmodel->get_purchaseOrder();
+            $data['poitems'] = $this->adminmodel->get_purchaseOrder();
             $this->load->view('admin/adminPurchaseOrder');
         }else{
             redirect('login');
