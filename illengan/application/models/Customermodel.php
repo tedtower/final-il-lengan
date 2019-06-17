@@ -11,7 +11,7 @@ class Customermodel extends CI_Model {
             VALUES(NULL, ?, ?, ?, 'consumption', ?)";
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
             FROM transactions
-            WHERE tType = 'consumption'")->result_array()[0]['lastNum'];
+            WHERE tType = 'consumption'")->result_array()[0]['lastnum'];
         if($this->db->query($query, array($lastNum+1,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
             return $this->db->insert_id();
         }
@@ -264,7 +264,7 @@ class Customermodel extends CI_Model {
                     LEFT JOIN menu USING(MID)
                     ) USING(prID)
                 LEFT JOIN stockitems USING(stID) where prID = ?";
-            return $this->db->query($query)->result_array()[0];
+            return $this->db->query($query, array($prID))->result_array();
         }
 
         function get_priceAndName($prID){
@@ -289,12 +289,21 @@ class Customermodel extends CI_Model {
                                 )
                             )
                         )
-                    ) AS NAME
+                    ) AS 'name'
                 FROM
-                    preferences
+                    preferences left join menu using (mID)
                 WHERE
                     prID = ?;";
             return $this->db->query($query,array($prID))->result_array()[0];
+        }
+        function get_stockQty($stID){
+            $query = "SELECT
+                stQty
+            FROM
+                stockitems
+            WHERE
+                stID = ?";
+            return $this->db->query($query,array($stID))->result_array();
         }
     }
 ?>

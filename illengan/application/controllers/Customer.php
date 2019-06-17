@@ -202,7 +202,8 @@ class Customer extends CI_Controller {
 					);
 					$olID = $this->customermodel->add_orderlist($list);
 					$prefStocks = $this->customermodel->get_prefStocks($list['prID']);
-					if(isset($prefStocks)){
+					if(isset($prefStocks[0])){
+						$prefStock = $prefStock[0];
 						$stID = $prefStocks['stID'];
 						$qty = $prefStocks['prstQty'];
 						$index = array_search($stID, $consumptionItems['stID']);
@@ -219,11 +220,25 @@ class Customer extends CI_Controller {
 					"dateRecorded" => $dateTime,
 					"remarks" => "Orderslip #".$osID
 				);
-				$consumptionID = $this->customermodel->add_consumption($consumption);
-				$consumptionItems['id'] = array();
-				for($x = 0 ; $x < count($consumptionItems['stID']) ; $x++){
-					$consumptionItemID = $this->customermodel->add_consumedItems($consumptionItems['stID'][$x]);
-					$this->customermodel->add_consumedItemsQty($consumptionID, $consumptionItemID, $$consumptionItems['qty'][$x]);
+				if(count($consumptionItems['stID'])>0){
+					$consumptionID = $this->customermodel->add_consumption($consumption);
+					$consumptionItems['id'] = array();
+					echo json_encode($consumptionItems);
+					for($x = 0 ; $x < count($consumptionItems['stID']) ; $x++){
+						$consumptionItemID = $this->customermodel->add_consumedItems($consumptionItems['stID'][$x]);
+						$this->customermodel->add_consumedItemsQty($consumptionID, $consumptionItemID, $consumptionItems['qty'][$x]);
+						$log = array(
+							"stID" => $consumptionItems['stID'][$x],
+							"tID" => $consumptionID,
+							"slQty" => $consumptionItems['qty'][$x],
+							"slRemain"=> $this->customermodel->get_stockQty($consumptionItems['stID'][$x])[0]['stQty'] - $consumptionItems['qty'][$x],
+							"slDateTime" => $dateTime,
+							"dateRecorded" => $dateTime,
+							"slRemarks" => "Sales"
+						);
+						$this->customermodel->add_consumedLog($log);
+						$this->customermodel->update_stQty($consumptionItems['stID'][$x], $consumptionItems['qty'][$x]);
+					}
 				}
 				// $this->customermodel->orderInsert($total, $tableCode, $orderlist, $customer, $dateTime);
 			}else{
