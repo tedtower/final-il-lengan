@@ -16,7 +16,7 @@
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#restock" data-original-title
                         style="margin:0;color:blue" id="rBtn">Restock</a>
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#beginning" data-original-title
-                        style="margin:0;color:blue" id="rBtn">Beginning</a>
+                        style="margin:0;color:blue" id="begBtn">Beginning</a>
                     <br><br>
                     <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
                         <thead class="thead-dark">
@@ -103,7 +103,7 @@
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Perform Inventory Check</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Perform Ending Inventory</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -112,7 +112,7 @@
                                     <div class="modal-body">
                                         <!--Add Stock Item-->
                                         <a class="btn btn-primary btn-sm" style="color:blue;margin:0"
-                                            data-toggle="modal" data-target="#BeginningBrochure">Add Item</a>
+                                            data-toggle="modal" data-target="#BeginningBrochure">Add Items</a>
                                         <!--Button to add row in the table-->
                                         <br><br>
                                         <table class="varianceTable table table-sm table-borderless inputTable">
@@ -120,8 +120,8 @@
                                             <thead style="border-bottom:2px solid #cecece">
                                                 <tr class="text-center">
                                                     <th><b>Stock Name</b></th>
-                                                    <th><b>Remaining</b></th>
-                                                    <th><b>Quantity</b></th>
+                                                    <th><b>Current</b></th>
+                                                    <th><b>Actual</b></th>
                                                     <th><b>Discrepancy</b></th>
                                                     <th><b>Remarks</b></th>
                                                     <th></th>
@@ -182,7 +182,7 @@
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Stock Items</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -195,22 +195,13 @@
                                                 <tr class="text-center">
                                                     <th></th>
                                                     <th><b>Stock Name</b></th>
-                                                    <th><b>Current Qty</b></th>
+                                                    <th><b>Category</b></th>
+                                                    <th><b>Current</b></th>
                                                     <th><b>Unit</b></th>
-                                                    <th><b>Restock Qty</b></th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td><input type="checkbox" class="form-control"></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td><img class="exitBtn" src="/assets/media/admin/error.png"
-                                    style="width:20px;height:20px"></td>
-                                                </tr>
+                                            <tbody class="ic-level-2">
                                             </tbody>
                                         </table>
                                     </div>
@@ -462,6 +453,18 @@ $(document).ready(function() {
             }
         });
     });
+    $("#begBtn").on('click',function(){
+        var stocks = setBrochureForBeginning();
+        
+        $("#beginning form").on("submit",function(event){
+
+        });
+        $("#beginning").on("hidden.bs.modal",function(){
+            $("#BeginningBrochure").find("ic-level-2").empty();
+            $("#beginning form").find(".ic-level-2").empty();
+            $("#beginning form").off("submit");
+        });
+    });
     $("#restock form").on("submit",function(event){
         event.preventDefault();
         var stockQtys = [];
@@ -626,6 +629,40 @@ function populateModalForm(id, url){
             console.log(error);
         }
     });
+}
+function setBrochureForBeginning(){
+    var stocks;
+    $.ajax({
+        method: "POST",
+        url: '<?= site_url('admin/inventory/getStocksForBeginningBrochure')?>',
+        dataType: "JSON",
+        success: function(data){
+            stocks = data.stocks;
+        },
+        error: function(response, setting, error) {
+            console.log(response.responseText);
+            console.log(error);
+        }
+    });
+    $("#BeginningBrochure").find(".ic-level-2").append(stocks.map(stock =>{
+        return `<tr class="ic-level-1">
+                    <td><input type="checkbox" name="stID" value="${stock.stID}" class="form-control"></td>
+                    <td>${stock.stName}</td>
+                    <td>${stock.ctName}</td>
+                    <td>${stock.stQty}</td>
+                    <td>${stock.uomAbbreviation}</td>
+                    <td><img class="exitBtn" src="/assets/media/admin/error.png"
+    style="width:20px;height:20px"></td>
+                </tr>`;
+    }).join(''));
+    $("#BeginningBrochure form").on("submit",function(event){
+        event.preventDefault();
+        $(this).find("input[name='stID']:checked").each(function(index){
+            var item = stocks.filter(stock => stock.stID == $(this).val())[0];
+            $()
+        });
+    });
+    return stocks;
 }
 </script>
 </body>

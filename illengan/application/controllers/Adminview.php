@@ -729,7 +729,7 @@ function getStockItem(){
             redirect('login');
         }
     }
-    function getStockForBeginningBrochure(){
+    function getStocksForBeginningBrochure(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
                 "stocks" => $this->adminmodel->get_stocksForBeginningBrochure()
