@@ -82,7 +82,7 @@
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="inputContainerParent">
+                                            <tbody class="ic-level-2">
                                             </tbody>
                                         </table>
                                         <div class="modal-footer">
@@ -127,13 +127,7 @@
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="inputContainerParent">
-                                                <td><input type="text" name="" class="form-control form-control-sm"></td>
-                                                <td><input type="number" name="" class="form-control form-control-sm"></td>
-                                                <td><input type="number" name="" class="form-control form-control-sm"></td>
-                                                <td><input type="number" name="" class="form-control form-control-sm"></td>
-                                                <td><textarea type="text" name=""  class="form-control form-control-sm" rows="1"></textarea></td>
-                                                <td><img class="exitBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"></td>
+                                            <tbody class="ic-level-2">
                                             </tbody>
                                         </table>
                                         <div class="modal-footer">
@@ -162,7 +156,7 @@
                                 <form id="formAdd" method="post"
                                     accept-charset="utf-8">
                                     <div class="modal-body">
-                                        <div class="inputContainerParent" style="margin:1% 3%">
+                                        <div class="ic-level-2" style="margin:1% 3%">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -420,9 +414,9 @@ $(document).ready(function() {
             dataType: "JSON",
             success: function(data){
                 var selectItems = [];
-                $("#restock").find(".inputContainerParent").empty();
-                $("#stockBrochure").find(".inputContainerParent").empty();
-                $("#stockBrochure").find(".inputContainerParent").append(data.map(item => {
+                $("#restock").find(".ic-level-2").empty();
+                $("#stockBrochure").find(".ic-level-2").empty();
+                $("#stockBrochure").find(".ic-level-2").append(data.map(item => {
                     return `<label style="width:96%">
                 <input name="stock" type="checkbox" class="mr-2" value="${item.stID}">${item.stName} - ${item.stQty} ${item.uomAbbreviation}</label>`;
                 }).join(''));
@@ -433,7 +427,7 @@ $(document).ready(function() {
                     });
                     $("#stockBrochure").modal('hide');
                     $(this)[0].reset();
-                    $("#restock").find(".inputContainerParent").append(data.filter(stock => selectItems.includes(stock.stID)).map(stock=>{
+                    $("#restock").find(".ic-level-2").append(data.filter(stock => selectItems.includes(stock.stID)).map(stock=>{
                         return `
                             <tr data-id="${stock.stID}" class="inputContainer">
                                 <td>${stock.stName}</td>
@@ -454,10 +448,11 @@ $(document).ready(function() {
         });
     });
     $("#begBtn").on('click',function(){
-        var stocks = setBrochureForBeginning();
+        var stocks = 0;
+        setBrochureForBeginning();
         
         $("#beginning form").on("submit",function(event){
-
+            $("#beginning").modal("hide");
         });
         $("#beginning").on("hidden.bs.modal",function(){
             $("#BeginningBrochure").find("ic-level-2").empty();
@@ -631,38 +626,53 @@ function populateModalForm(id, url){
     });
 }
 function setBrochureForBeginning(){
-    var stocks;
+    var stocks = [];
     $.ajax({
         method: "POST",
         url: '<?= site_url('admin/inventory/getStocksForBeginningBrochure')?>',
         dataType: "JSON",
         success: function(data){
             stocks = data.stocks;
+            $("#BeginningBrochure").find(".ic-level-2").append(stocks.map(stock =>{
+                return `<tr class="ic-level-1">
+                            <td><input type="checkbox" name="stID" value="${stock.stID}" class="form-control"></td>
+                            <td>${stock.stName}</td>
+                            <td>${stock.ctName}</td>
+                            <td>${stock.stQty}</td>
+                            <td>${stock.uomAbbreviation}</td>
+                            <td><img class="exitBtn" src="/assets/media/admin/error.png"
+            style="width:20px;height:20px"></td>
+                        </tr>`;
+            }).join(''));
+            $("#BeginningBrochure").on("hidden.bs.modal",function(){
+                $("#BeginningBrochure form")[0].reset();
+            });
+            $("#BeginningBrochure form").on("submit",function(event){
+                event.preventDefault();
+                $(this).find("input[name='stID']:checked").each(function(index){
+                    var item = stocks.filter(stock => stock.stID == $(this).val())[0];
+                    $("#beginning").find(".ic-level-2").append(`
+                        <tr class="ic-level-1" data-id="${item.stID}">
+                            <td><input type="text" name="name" value="${item.stName}" class="form-control form-control-sm"></td>
+                            <td><input type="number" name="current" value="${item.stQty}" class="form-control form-control-sm"></td>
+                            <td><input type="number" name="actual" value='0' class="form-control form-control-sm"></td>
+                            <td><input type="number" name="discrep" class="form-control form-control-sm"></td>
+                            <td><textarea type="text" name="remarks" class="form-control form-control-sm" rows="1"></textarea></td>
+                            <td><img class="exitBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"></td>
+                        </tr>`);
+                });
+                $(this).find(".extBtn").on("click",function(){
+                    $(this).closest(".ic-level-1").remove();
+                });
+                $("#BeginningBrochure").modal("hide");
+            });
+            return stocks;
         },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);
         }
     });
-    $("#BeginningBrochure").find(".ic-level-2").append(stocks.map(stock =>{
-        return `<tr class="ic-level-1">
-                    <td><input type="checkbox" name="stID" value="${stock.stID}" class="form-control"></td>
-                    <td>${stock.stName}</td>
-                    <td>${stock.ctName}</td>
-                    <td>${stock.stQty}</td>
-                    <td>${stock.uomAbbreviation}</td>
-                    <td><img class="exitBtn" src="/assets/media/admin/error.png"
-    style="width:20px;height:20px"></td>
-                </tr>`;
-    }).join(''));
-    $("#BeginningBrochure form").on("submit",function(event){
-        event.preventDefault();
-        $(this).find("input[name='stID']:checked").each(function(index){
-            var item = stocks.filter(stock => stock.stID == $(this).val())[0];
-            $()
-        });
-    });
-    return stocks;
 }
 </script>
 </body>

@@ -364,23 +364,23 @@ function addspoilagesstock(){
         }
     }
 
-    function addBeginningLogs(){
-        $logs = array();
-        foreach($logs as $item){
-            $log = array(
-                "stock" => $item,
-                "qty" => 0,
-                "remain" => ,
-                "actual" => ,
-                "discrepancy" => actual - remain,
-                "dateTime" => ,
-                "dateRecorded" => ,
-                "remarks" => 
-            );
-            $this->adminmodel->add_beginnningLog($log);
-            $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
-        }
-    }
+    // function addBeginningLogs(){
+    //     $logs = array();
+    //     foreach($logs as $item){
+    //         $log = array(
+    //             "stock" => $item,
+    //             "qty" => 0,
+    //             "remain" => ,
+    //             "actual" => ,
+    //             "discrepancy" => actual - remain,
+    //             "dateTime" => ,
+    //             "dateRecorded" => ,
+    //             "remarks" => 
+    //         );
+    //         $this->adminmodel->add_beginnningLog($log);
+    //         $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
+    //     }
+    // }
 }
 ?>
 
