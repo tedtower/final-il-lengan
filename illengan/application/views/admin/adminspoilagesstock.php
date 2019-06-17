@@ -19,11 +19,12 @@
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
-									<th>ITEM NAME</th>
+									<th>TRANSACTION #</th>
+									<th>STOCK ITEM</th>
 									<th>QUANTITY</th>
 									<th>DATE SPOILED</th>
 									<th>DATE RECORDED</th>
-									<th>STORAGE</th>
+									<th>SPOILAGE PRICE</th>
 									<th>OPERATION</th>
 								
 								</thead>
@@ -262,12 +263,12 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr"  data-stID="${table.stID}" data-ssID="${table.ssID}" data-spoilname="${table.stName}" data-stQty="${table.stQty}" data-curSsQty="${table.ssQty}" data-ssDate="${table.ssDate}" data-ssRemarks="${table.ssRemarks}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${table.stName}</td>
-                <td>${table.ssQty}</td>
-				<td>${table.ssDate}</td>
-				<td>${table.ssDateRecorded}</td>
-				<td>${table.stLocation}</td>
+			<tr class="spoilagesTabletr"  data-stID="${table.stID}" data-ssID="${table.ssID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-curSsQty="${table.ssQty}" data-ssDate="${table.ssDate}" data-ssRemarks="${table.ssRemarks}">
+				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${table.tiName}</td>
+                <td>${table.actualQty}</td>
+				<td>${table.tDate}</td>
+				<td>${table.dateRecorded}</td>
+				<td>${table.tiSubtotal}</td>
                 <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
@@ -291,7 +292,7 @@
                             <div style="margin:0 46px;overflow:auto;">
 							<b style="float:left;">Remarks: </b><!-- label-->
 								<p style="float:left;margin-left:2%">
-								${table.ssRemarks == null || table.ssRemarks == '' ?  "No remarks." : table.ssRemarks}
+								${table.tRemarks == null || table.tRemarks == '' ?  "No remarks." : table.tRemarks}
                                 </p>
                             </div> 
                         </div>

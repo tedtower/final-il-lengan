@@ -94,6 +94,12 @@ $route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
 $route['admin/return'] = "adminview/viewReturn";
 $route['admin/consumption'] = "adminview/viewConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
+$route['admin/purchaseorder/formadd'] = "adminview/viewPOFormAdd";
+$route['admin/purchaseorder/formedit'] = "adminview/viewPOFormEdit";
+$route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
+$route['admin/deliveryreceipt/formedit'] = "adminview/viewDRFormEdit";
+$route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
+$route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 
 //End Viewing Routes
 

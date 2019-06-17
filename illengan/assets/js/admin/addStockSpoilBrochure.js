@@ -42,6 +42,7 @@ function getSelectedStocks() {
 var elements;
 function addStockItems() {
     elements = document.getElementsByClassName('stockelem');
+    console.log(elements);
     var ssDate = document.getElementById('spoilDate').value;
     var stockItems = [];
     var stocks = [];
@@ -61,6 +62,7 @@ function addStockItems() {
         };
         stocks.push(stockItems);
     }
+    
     $.ajax({
         type: 'POST',
         url: 'http://www.illengan.com/admin/stock/spoilages/add',
@@ -68,10 +70,10 @@ function addStockItems() {
             stocks: JSON.stringify(stocks)
         },
         dataType: 'json',
-        complete: function() {
-            $("#formAdd").modal("hide");
-            location.reload();
-            },
+        // complete: function() {
+        //     $("#formAdd").modal("hide");
+        //     location.reload();
+        //     },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);

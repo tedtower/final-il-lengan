@@ -43,6 +43,71 @@ function viewInventory($error = null){
         redirect('login');
     }
 }
+//---functions for viewing the different ADD and EDIT pages in the transaction
+function viewPOFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add PO";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/purchaseOrderAdd');
+    }else{
+        redirect('login');
+    }
+}
+
+function viewPOFormEdit(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit PO";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/purchaseOrderEdit');
+    }else{
+        redirect('login');
+    }
+}
+function viewDRFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add DR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/deliveryReceiptAdd');
+    }else{
+        redirect('login');
+    }
+}
+
+function viewDRFormEdit(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit DR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/deliveryReceiptEdit');
+    }else{
+        redirect('login');
+    }
+}
+function viewORFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add OR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/officialReceiptAdd');
+    }else{
+        redirect('login');
+    }
+}
+
+function viewORFormEdit(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit OR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/officialReceiptEdit');
+    }else{
+        redirect('login');
+    }
+}
+//-------------end-----------------------
 function viewStockCard($stID){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Admin - Stock Card";
