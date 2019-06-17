@@ -1,27 +1,31 @@
 <body style="background: white">
 <div class="content">
     <div class="container-fluid">
-        <br>
-        <p style="text-align:right; font-weight: regular; font-size: 16px">
-            <!-- Real Time Date & Time -->
-            <?php echo date("M j, Y -l"); ?>
-        </p>
-        <div class="content" style="margin-left:250px">
+    <br>
+        <div class="content" style="margin-left:250px;">
             <div class="container-fluid">
                 <div class="card-content">
+                    <!--Export button and Real Time Date & Time --> 
+                    <div style="overflow:auto;">
+                        <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
+                            <?php echo date("M j, Y -l"); ?>
+                        </p>
+                        <button class="btn btn-danger btn-sm m-0" data-toggle="modal" data-target="#addReport" style="background:#cc0000;color:white;font-weight:900"><i class="fas fa-file-pdf"></i> Export to PDF</button>
+                    </div>
                     <!--Card--> 
                     <div class="card" style="background:whitesmoke">
                         <div class="card-body">
                         <div style="width:100%;overflow:auto;">
                             <div style="overflow:auto;">
                             <span style="float:left;width:40%;"><b>Stock Item:</b> <?= $stock['stName'] . " " . $stock['stSize']?></span>
-                                <span style="float:left;width:35%"><b>Beginning Inventory Date:</b> <?= $currentInv['maxDate']?></span>
-                                <span style="float:left;width:25%"><b>Beginning Qty:</b> <?= $currentInv['slQty'] . " " . $stock['uomAbbreviation']?></span>
+                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $currentInv['maxDate']?></span>
+                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $currentInv['slQty'] . " " . $stock['uomAbbreviation']?></span>
                             </div>
+                            
                             <div style="overflow:auto;">
                                 <span style="float:left;width:40%"><b>Storage:</b> <?= $stock['stLocation']?></span>
-                                <span style="float:left;width:35%"><b>Category:</b> <?= $stock['ctName']?></span>
-                                <span style="float:left;width:25%"><b>Status:</b> <?= $stock['stStatus']?></span>
+                                <span style="float:left;width:40%"><b>Category:</b> <?= $stock['ctName']?></span>
+                                <span style="float:left;width:20%"><b>Status:</b> <?= $stock['stStatus']?></span>
                             </div>
                         </div>
                         </div>
@@ -72,12 +76,50 @@
                         }?>
                         </tbody>
                     </table>
+
+                    <!--Start of Add Report Modal-->
+                    <div class="modal fade" id="addReport" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Add Report</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form action="<?php echo base_url()?>admin/stocklog/report/add" method="post" accept-charset="utf-8">
+                                    <div class="modal-body">
+                                        <p>Please input the date for the following:</p>
+                                        <input type="hidden" name="stID" value="<?= $stock['stID'];?>" class="form-control form-control-sm">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                    Start Date</span>
+                                            </div>
+                                            <input type="date" name="sDate" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                    End Date</span>
+                                            </div>
+                                            <input type="date" name="eDate" class="form-control form-control-sm">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success btn-sm">Create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     </div>
             </div>
         </div>
     </div>
 </div>
-<!--   Core JS Files   -->
+  Core JS Files  
 <script src="<?= framework_url().'mdb/js/jquery-3.3.1.min.js';?>"></script>
 <script src="<?= framework_url().'bootstrap-native/bootstrap.bundle.min.js'?>"></script>
 <!--  Charts Plugin -->

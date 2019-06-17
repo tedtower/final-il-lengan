@@ -1,5 +1,4 @@
 <!--End Side Bar-->
-
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
@@ -14,23 +13,33 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <button class="btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#addEditTransaction" data-original-title style="margin:0"
-                                    id="addBtn">Add Delivery Receipt</button>
+                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/deliveryreceipt/formadd')?>" data-original-title style="margin:0"
+                                    id="addBtn">Add Delivery Receipt</a>
                                 <br>
                                 <br>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
-                                        <th><b class="pull-left">Receipt No.</b></th>
+                                        <th><b class="pull-left">Transaction #</b></th>
+                                        <th><b class="pull-left">Receipt #</b></th>
                                         <th><b class="pull-left">Supplier</b></th>
-                                        <th><b class="pull-left">Type</b></th>
                                         <th><b class="pull-left">Date</b></th>
                                         <th><b class="pull-left">Total</b></th>
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
-                                      
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
+                                                id="editBtn">Edit</a>
+                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                                 <!--End Table Content-->
@@ -42,7 +51,7 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Add Transactions</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Add Delivery Receipt</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -63,17 +72,15 @@
                                                                 <option value="" selected>Choose</option>
                                                             </select>
                                                         </div>
-                                                        <!--Invoice Type-->
+                                                        <!--Date-->
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
                                                                 <span class="input-group-text border border-secondary"
-                                                                    style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Type</span>
+                                                                    style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                                                    Transaction Date</span>
                                                             </div>
-                                                            <select class="form-control form-control-sm  border-left-0"
-                                                                name="tType">
-                                                                <option value="" selected>Choose</option>
-                                                            </select>
+                                                            <input type="date" class="form-control  border-left-0"
+                                                                name="tDate">
                                                         </div>
                                                     </div>
 
@@ -90,15 +97,7 @@
                                                                 name="tNum">
                                                         </div>
                                                         <!--Invoice Type-->
-                                                        <div class="input-group mb-3 col">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text border border-secondary"
-                                                                    style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Transaction Date</span>
-                                                            </div>
-                                                            <input type="date" class="form-control  border-left-0"
-                                                                name="tDate">
-                                                        </div>
+
                                                     </div>
 
                                                     <!--Remarks-->
@@ -115,17 +114,14 @@
 
                                                     <!--Transaction Items-->
                                                     <a id="addItemBtn" class="btn btn-primary btn-sm" data-original-title
-                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">Add Unknown Item</a>
+                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">New Item</a>
                                                     <a id="addMBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                                                         data-target="#merchandiseBrochure"  data-original-title
-                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">Add Merchandise</a>
+                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">Merchandise Item</a>
                                                     <!--Transaction PO Items-->
                                                     <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                                                         data-target="#transactionBrochure"
-                                                        style="color:white;font-weight:600;background:#0073e6">Add PO Items</a>
-                                                    <a id="addDRBtn" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                        data-target="#transactionBrochure"
-                                                        style="color:white;font-weight:600;background:#0073e6">Add DR Items</a>
+                                                        style="color:white;font-weight:600;background:#0073e6">PO Item</a>
                                                     <br><br>
 
                                                     <!--div containing the different input fields in adding trans items -->

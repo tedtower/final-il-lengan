@@ -13,9 +13,8 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <button class="btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#addEditTransaction" data-original-title style="margin:0"
-                                    id="addBtn">Add Purchase Order</button>
+                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/purchaseorder/formadd')?>" data-original-title style="margin:0"
+                                    id="addBtn">Add Purchase Order</a>
                                 <br>
                                 <br>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
@@ -37,7 +36,7 @@
                                             <td><?= $transaction['date']?></td>
                                             <td>&#8369; <?=$transaction['total']?></td>
                                             <td>
-                                                <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editPO" >Edit</button>
+                                                <a class="editBtn btn btn-sm btn-secondary" href="<?= site_url('admin/purchaseorder/formedit')?>">Edit</a>
                                                 <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
                                             </td>
                                         </tr>
@@ -88,203 +87,15 @@
                                     </tbody>
                                 </table>
                                 <!--End Table Content-->
-
-                                <!--Start of Modal "Add Transaction"-->
-                                <div class="modal fade bd-example-modal-lg" id="addEditTransaction" tabindex="-1"
-                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="overflow: auto !important;">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Add Purchase Order</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form accept-charset="utf-8">
-                                                <input type="text" name="tID" hidden="hidden">
-                                                <div class="modal-body">
-                                                    <div class="form-row">
-                                                        <!--Source Name-->
-                                                        <div class="input-group mb-3 col">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text border border-secondary"
-                                                                    style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Supplier</span>
-                                                            </div>
-                                                            <select class="form-control form-control-sm  border-left-0"
-                                                                name="spID">
-                                                                <option value="" selected>Choose</option>
-                                                            </select>
-                                                        </div>
-                                                        <!--Invoice Type-->
-                                                        <div class="input-group mb-3 col">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text border border-secondary"
-                                                                    style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Transaction Date</span>
-                                                            </div>
-                                                            <input type="date" class="form-control  border-left-0"
-                                                                name="tDate">
-                                                        </div>
-                                                    </div>
-                                                    <!--Remarks-->
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text border border-secondary"
-                                                                style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                Remarks</span>
-                                                        </div>
-                                                        <textarea type="text" name="tRemarks"
-                                                            class="form-control form-control-sm  border-left-0"
-                                                            rows="1"></textarea>
-                                                    </div>
-                                                    <a id="addMBtn" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                        data-target="#merchandiseBrochure"  data-original-title
-                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">Add Merchandise</a>
-                                                    <br><br>
-
-                                                    <!--div containing the different input fields in adding trans items -->
-                                                    <div class="ic-level-2">
-                                                    </div>
-                                                    <span>Total: &#8369;<span class="total">0</span></span>
-                                                    <!--Total of the trans items-->
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger btn-sm"
-                                                            data-dismiss="modal">Cancel</button>
-                                                        <button class="btn btn-success btn-sm"
-                                                            type="submit">Insert</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Modal "Add Transaction"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal-lg" id="transactionBrochure" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form>
-                                                <div class="modal-body">
-                                                    <div>
-                                                        <label><input type="checkbox" name="tType" value="po"/>Purchase Order</label>
-                                                        <label><input type="checkbox" name="tType" value="dr"/>Delivery Receipt</label>
-                                                    </div>
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text "
-                                                                style="width:130px;background:#737373;color:white;font-size:14px;font-weight:600">
-                                                                Purchase Order</span>
-                                                        </div>
-                                                        <select class="form-control form-control-sm" name="po">
-                                                            <option value="" selected>Choose</option>
-                                                        </select>
-                                                    </div>
-                                                    <br>
-                                                    <div class="ic-level-4">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal-sm" id="stockBrochure" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog " role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form>
-                                                <div class="modal-body">
-                                                    <div id="stockList">
-                                                        <div class="d-flex d-inline-block">
-                                                            <div><input name="stocks[]" type="radio" class="mr-3" value=/></div>
-                                                            <div>basta</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal-sm" id="merchandiseBrochure" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog " role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form>
-                                                <div class="modal-body">
-                                                    <table>
-                                                        <thead>
-                                                            <th></th>
-                                                            <th>Name</th>
-                                                            <th>UOM</th>
-                                                            <th>Price</th>
-                                                            <th>Stock</th>
-                                                            <th>Qty/UOM</th>
-                                                        </thead>
-                                                        <tbody class="ic-level-2">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
                                 
-                                <!--Start of Modal "Delete Stock Item"-->
-                                <div class="modal fade" id="delete" tabindex="-1" role="dialog"
+                                <!--Start of Modal "Delete PO"-->
+                                <div class="modal fade" id="deletePO" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle">Delete/Archive
-                                                    Transaction
+                                                   Purchase Order
                                                 </h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">

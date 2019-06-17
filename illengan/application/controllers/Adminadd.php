@@ -8,7 +8,8 @@ class Adminadd extends CI_Controller{
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d H:i:s")
     }
-    
+
+
 function addTable(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $this->form_validation->set_rules('tableCode', 'Table Code', 'trim|required|alpha_numeric_spaces|max_length[10]|is_unique[tables.tableCode]');

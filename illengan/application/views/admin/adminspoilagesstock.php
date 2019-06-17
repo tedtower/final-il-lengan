@@ -19,12 +19,13 @@
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
-									<th>ITEM NAME</th>
+									<th>TRANSACTION #</th>
+									<th>STOCK ITEM</th>
 									<th>QUANTITY</th>
 									<th>DATE SPOILED</th>
 									<th>DATE RECORDED</th>
 									<th>STORAGE</th>
-									<th>OPERATION</th>
+									<th>ACTIONS</th>
 								
 								</thead>
 								<tbody id="spoilage_data">
