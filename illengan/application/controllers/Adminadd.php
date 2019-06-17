@@ -353,6 +353,20 @@ function addspoilagesstock(){
             ));
         }
     }
+
+    function addPurchaseOrder(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function addBeginningLogs(){
+        
+    }
 }
 ?>
 

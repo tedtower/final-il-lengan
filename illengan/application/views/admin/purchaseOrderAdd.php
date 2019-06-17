@@ -135,10 +135,16 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                    <div style="margin:1% 3%" id="list">
+                                    <div style="margin:1% 3%" class="ic-level-2">
                                         <!--checkboxes-->
-                                        <label style="width:96%"><input type="checkbox" class="mr-2"
-                                                value="">Sample data 2</label>
+                                        <?php if(!empty($merchandise)){
+                                            foreach($merchandise as $merch){
+                                        ?>
+                                        <label style="width:96%"><input type="checkbox" name="merch[]" class="mr-2"
+                                                value="<?= $merch['spmID']?>"><?= ucWords($merch['spmName'])?></label>
+                                        <?php
+                                            }
+                                        }?>
                                     </div>
                                     </div>
                                     <div class="modal-footer">

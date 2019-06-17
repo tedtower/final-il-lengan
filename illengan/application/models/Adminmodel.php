@@ -256,22 +256,22 @@ function get_transitems(){
     //     ORDER BY transactions.tDate DESC;";
     //     return $this->db->query($query)->result_array();
     // }
-    function get_transaction($id){
-        $query = "SELECT
-            tID,
-            tNum,
-            tType,
-            tDate,
-            spID,
-            spName,
-            tRemarks
-        FROM
-            transactions
-        LEFT JOIN supplier USING(spID)
-        WHERE 
-            tID = ?;";
-        return $this->db->query($query, array($id))->result_array();
-    }
+    // function get_transaction($id){
+    //     $query = "SELECT
+    //         tID,
+    //         tNum,
+    //         tType,
+    //         tDate,
+    //         spID,
+    //         spName,
+    //         tRemarks
+    //     FROM
+    //         transactions
+    //     LEFT JOIN supplier USING(spID)
+    //     WHERE 
+    //         tID = ?;";
+    //     return $this->db->query($query, array($id))->result_array();
+    // }
     // function get_transitems($id=null){
     //     if($id == null){
     //         $query = "SELECT
@@ -687,11 +687,6 @@ function get_transitems(){
         ";
         return $this->db->query($query)->result_array();
     }
-    function get_suppMerchandise($spmID){
-        $query = "Select *, CONCAT(spm.spmDesc,' :',st.stName) as branditem from suppliermerchandise spm INNER JOIN supplier USING (spID) INNER JOIN variance 
-        USING (vID) INNER JOIN stockitems st USING (stID) WHERE spm.spmID = ?";
-        return $this->db->query($query, array($spmID))->result_array();
-    }
     function get_stockSubcategories(){
         $query = "SELECT 
             ctID, ctName, ctType, ctStatus, COUNT(stID) AS stockCount
@@ -967,7 +962,7 @@ function addEdit_transactionItem($item, $id, $type){
             array($item['uomID'],$item['stID'],$item['tiName'],$item['tiPrice'], 0,$item['rStatus'],$item['tiID']));
     }
 }
-function addEdit_trans_item($tiID, $tID, $tiQty, $qtyPerItem, $actualQty, $tiID){
+function addEdit_trans_item($tiID, $tID, $tiQty, $qtyPerItem, $actualQty){
     $result = $this->db->query('SELECT
                 tiID,
                 tID,
@@ -1339,6 +1334,23 @@ function add_aospoil($date_recorded,$addons,$account_id){
             VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
         return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
     }
+    function add_beginningLog($log){
+        $query = "INSERT INTO stocklog(
+            stID,
+            tID,
+            slType,
+            slQty,
+            slRemainingQty,
+            actualQty,
+            discrepancy,
+            slDateTime,
+            dateRecorded,
+            slRemarks
+        )
+        VALUES(?, NULL, 'beginning', ?, ?, ?, ?, ?, ?, ?)";
+        return $this->db->query($query, array($log['stock'], $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+        , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
+    }
     function add_actlog($aID, $alDate, $alDesc, $defaultType, $additinalRemarks){
         $query = "INSERT INTO `activitylog`(
             `alID`,
@@ -1401,7 +1413,6 @@ function add_aospoil($date_recorded,$addons,$account_id){
         INNER JOIN preferences pr USING (prID) LEFT JOIN prefstock ps USING (prID) 
         LEFT JOIN stockitems st USING (stID)";
         return $this->db->query($query)->result_array();
-
     }
 
     function edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, $osDateTime, $osPayDateTime, 
