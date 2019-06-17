@@ -198,6 +198,8 @@ $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 
+$route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
+$route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES

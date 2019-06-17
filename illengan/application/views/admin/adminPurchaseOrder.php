@@ -1,5 +1,4 @@
 <!--End Side Bar-->
-
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
@@ -59,7 +58,6 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                       
                                 </table>
                                 <!--End Table Content-->
 
