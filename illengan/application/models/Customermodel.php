@@ -36,7 +36,7 @@ class Customermodel extends CI_Model {
             discrepancy, slDateTime, dateRecorded, slRemarks
         )
         VALUES(
-            NULL, ?, ?, 'consumed', ?, ?, NULL, NULL, NULL, ?, ?, ?
+            NULL, ?, ?, 'consumed', ?, ?, NULL, NULL, ?, ?, ?
         )";
         return $this->db->query($query, array($log['stID'], $log['tID'], 
         $log['slQty'], $log['slRemain'], $log['slDateTime'], $log['dateRecorded'], $log['slRemarks']));
