@@ -364,23 +364,36 @@ function addspoilagesstock(){
         }
     }
 
-    // function addBeginningLogs(){
-    //     $logs = array();
-    //     foreach($logs as $item){
-    //         $log = array(
-    //             "stock" => $item,
-    //             "qty" => 0,
-    //             "remain" => ,
-    //             "actual" => ,
-    //             "discrepancy" => actual - remain,
-    //             "dateTime" => ,
-    //             "dateRecorded" => ,
-    //             "remarks" => 
-    //         );
-    //         $this->adminmodel->add_beginnningLog($log);
-    //         $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
-    //     }
-    // }
+    function addBeginningLogs(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $logs = json_decode($this->input->post('items'),true);
+            if(count($logs)> 0){
+                $dateTime = date("Y-m-d H:i:s");
+                foreach($logs as $item){
+                    $qty = $this->adminmodel->get_stockQty($item['stock'])[0]['stQty'];
+                    $log = array(
+                        "stock" => $item['stock'],
+                        "qty" => 0,
+                        "remain" => $qty,
+                        "actual" => $item['qty'],
+                        "discrepancy" => $item['qty'] - $qty,
+                        "dateTime" => $dateTime,
+                        "dateRecorded" => $dateTime,
+                        "remarks" => $item['remarks']
+                    );
+                    $this->adminmodel->add_beginningLog($log);
+                    $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
+                }
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 }
 ?>
 

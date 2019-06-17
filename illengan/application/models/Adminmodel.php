@@ -128,7 +128,10 @@ function get_transitems(){
             ORDER BY prefname;";
         return $this->db->query($query)->result_array();
     }
-
+    function get_stockQty($stID){
+        $query = "SELECT stQty from stockitems where stID =?";
+        return $this->db->query($query,array($stID))->result_array();
+    }
     function get_stockCategories(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) where ctType = 'inventory' group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
@@ -504,7 +507,7 @@ function get_transitems(){
             stName;";
         return $this->db->query($query)->result_array();
     }
-    
+
     function get_invPeriodStart($stID){
         return $this->db->query("SELECT
                     DATE_FORMAT(MAX(slDateTime), '%b %d, %Y %r') AS maxDate, slQty
