@@ -151,7 +151,7 @@ function addspoilagesstock(){
         $account_id = $_SESSION["user_id"];
 
         $lastNum = $lastNumget + 1;
-        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id, $lastNumget);
+        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNumget);
     }else{
     redirect('login');
     }
