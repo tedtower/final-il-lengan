@@ -203,6 +203,7 @@ $route['admin/transactions/getSPMs'] = "adminview/getSPMs";
 $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
+$route['admin/jsonPO'] = "adminview/jsonPO";
 
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";

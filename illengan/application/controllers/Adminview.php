@@ -49,8 +49,9 @@ function viewPOFormAdd(){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $data['suppliers'] = $this->adminmodel->get_supplierNames();
-        $data['merchandise'] = $this->adminmodel->get_suppliermerch();
+        $data['stock'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
         $this->load->view('admin/purchaseOrderAdd', $data);
     }else{
         redirect('login');
@@ -662,6 +663,19 @@ function getStockItem(){
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
             $this->load->view('admin/adminReturns');
+        }else{
+            redirect('login');
+        }
+    }
+    function jsonPO() {
+        if($this->checkIfLoggedIn()){
+            $data = array(
+                'stock' => $this->adminmodel->get_stockitems(),
+                'supplier' => $this->adminmodel->get_supplier(),
+                'suppmerch' => $this->adminmodel->get_supplierstocks()
+            );
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_PRETTY_PRINT);
         }else{
             redirect('login');
         }

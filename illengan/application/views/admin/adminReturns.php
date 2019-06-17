@@ -412,7 +412,7 @@ function setInputValues() {
        
     }
 
-     //Setting items total
+     //Setting items tota
     for(var i = 0; i <= $('.tiSubtotal').length-1; i++) {
         total = total + parseFloat($('.tiSubtotal').eq(i).val());
     }

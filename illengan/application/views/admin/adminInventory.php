@@ -15,6 +15,8 @@
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#restock" data-original-title
                         style="margin:0;color:blue" id="rBtn">Restock</a>
+                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#beginning" data-original-title
+                        style="margin:0;color:blue" id="rBtn">Beginning</a>
                     <br><br>
                     <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
                         <thead class="thead-dark">
@@ -95,6 +97,57 @@
                     </div>
                     <!--End of Modal "Restock item"-->
 
+                    <!--Start of Modal "Beginning"-->
+                    <div class="modal fade bd-example-modal-lg" id="beginning" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Perform Inventory Check</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form action="" method="get" accept-charset="utf-8">
+                                    <div class="modal-body">
+                                        <!--Add Stock Item-->
+                                        <a class="btn btn-primary btn-sm" style="color:blue;margin:0"
+                                            data-toggle="modal" data-target="#BeginningBrochure">Add Item</a>
+                                        <!--Button to add row in the table-->
+                                        <br><br>
+                                        <table class="varianceTable table table-sm table-borderless inputTable">
+                                            <!--Table containing the different input fields in adding trans items -->
+                                            <thead style="border-bottom:2px solid #cecece">
+                                                <tr class="text-center">
+                                                    <th><b>Stock Name</b></th>
+                                                    <th><b>Remaining</b></th>
+                                                    <th><b>Quantity</b></th>
+                                                    <th><b>Discrepancy</b></th>
+                                                    <th><b>Remarks</b></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="inputContainerParent">
+                                                <td><input type="text" name="" class="form-control form-control-sm"></td>
+                                                <td><input type="number" name="" class="form-control form-control-sm"></td>
+                                                <td><input type="number" name="" class="form-control form-control-sm"></td>
+                                                <td><input type="number" name="" class="form-control form-control-sm"></td>
+                                                <td><textarea type="text" name=""  class="form-control form-control-sm" rows="1"></textarea></td>
+                                                <td><img class="exitBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"></td>
+                                            </tbody>
+                                        </table>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-success btn-sm" type="submit">Insert</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Modal "Restock item"-->
+
                     <!--Start of Brochure Modal"-->
                     <div class="modal fade bd-example-modal" id="stockBrochure" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
@@ -111,6 +164,55 @@
                                     <div class="modal-body">
                                         <div class="inputContainerParent" style="margin:1% 3%">
                                         </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            data-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-success btn-sm" type="submit">Ok</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Brochure Modal"-->
+
+                    <!--Start of Brochure Modal"-->
+                    <div class="modal fade bd-example-modal-lg" id="BeginningBrochure" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="formAdd" method="post"
+                                    accept-charset="utf-8">
+                                    <div class="modal-body">
+                                        <table class="table table-borderless">
+                                            <thead style="border-bottom:2px solid #cecece">
+                                                <tr class="text-center">
+                                                    <th></th>
+                                                    <th><b>Stock Name</b></th>
+                                                    <th><b>Current Qty</b></th>
+                                                    <th><b>Unit</b></th>
+                                                    <th><b>Restock Qty</b></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><input type="checkbox" class="form-control"></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><img class="exitBtn" src="/assets/media/admin/error.png"
+                                    style="width:20px;height:20px"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger btn-sm"
