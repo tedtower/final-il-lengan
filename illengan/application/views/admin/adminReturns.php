@@ -412,7 +412,7 @@ function setInputValues() {
        
     }
 
-     //Setting items total
+     //Setting items tota
     for(var i = 0; i <= $('.tiSubtotal').length-1; i++) {
         total = total + parseFloat($('.tiSubtotal').eq(i).val());
     }
@@ -439,7 +439,7 @@ $(document).ready(function() {
             var row = $(this).find(".returnElements").eq(index);
             var subrow =  $(this).find(".returnElements").next('subreturnElements').eq(index);
             trans.push({
-                uomID:  row.find("input[name='uomID']").val()),
+                uomID:  row.find("input[name='uomID']").val(),
                 stID: parseInt(row.attr('data-stockid')),
                 tiName: row.find("input[name='stName']").val(),
                 tiPrice:  subrow.find("input[name='tiPrice']").val(),

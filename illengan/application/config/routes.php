@@ -94,6 +94,12 @@ $route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
 $route['admin/return'] = "adminview/viewReturn";
 $route['admin/consumption'] = "adminview/viewConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
+$route['admin/purchaseorder/formadd'] = "adminview/viewPOFormAdd";
+$route['admin/purchaseorder/formedit'] = "adminview/viewPOFormEdit";
+$route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
+$route['admin/deliveryreceipt/formedit'] = "adminview/viewDRFormEdit";
+$route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
+$route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 
 //End Viewing Routes
 
@@ -124,7 +130,7 @@ $route['admin/returns/add'] = "adminadd/addReturnTransactions";
 $route['admin/promos/add'] = "adminadd/addPromo";
 $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
-
+$route['admin/stocklog/ending/add'] = "adminadd/addBeginningLogs";
 //End Admin Add Routes ------------------------------------------
 
 //Admin Update Routes -------------------------------------------
@@ -197,9 +203,11 @@ $route['admin/transactions/getSPMs'] = "adminview/getSPMs";
 $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
+$route['admin/jsonPO'] = "adminview/jsonPO";
 
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
+$route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES

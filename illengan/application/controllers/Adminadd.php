@@ -8,7 +8,8 @@ class Adminadd extends CI_Controller{
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d H:i:s")
     }
-    
+
+
 function addTable(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $this->form_validation->set_rules('tableCode', 'Table Code', 'trim|required|alpha_numeric_spaces|max_length[10]|is_unique[tables.tableCode]');
@@ -352,6 +353,34 @@ function addspoilagesstock(){
             ));
         }
     }
+
+    function addPurchaseOrder(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    // function addBeginningLogs(){
+    //     $logs = array();
+    //     foreach($logs as $item){
+    //         $log = array(
+    //             "stock" => $item,
+    //             "qty" => 0,
+    //             "remain" => ,
+    //             "actual" => ,
+    //             "discrepancy" => actual - remain,
+    //             "dateTime" => ,
+    //             "dateRecorded" => ,
+    //             "remarks" => 
+    //         );
+    //         $this->adminmodel->add_beginnningLog($log);
+    //         $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
+    //     }
+    // }
 }
 ?>
 

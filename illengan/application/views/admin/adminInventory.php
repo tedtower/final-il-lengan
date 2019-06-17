@@ -15,6 +15,8 @@
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#restock" data-original-title
                         style="margin:0;color:blue" id="rBtn">Restock</a>
+                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#beginning" data-original-title
+                        style="margin:0;color:blue" id="begBtn">Beginning</a>
                     <br><br>
                     <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
                         <thead class="thead-dark">
@@ -80,7 +82,52 @@
                                                     <th></th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="inputContainerParent">
+                                            <tbody class="ic-level-2">
+                                            </tbody>
+                                        </table>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-success btn-sm" type="submit">Insert</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Modal "Restock item"-->
+
+                    <!--Start of Modal "Beginning"-->
+                    <div class="modal fade bd-example-modal-lg" id="beginning" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Perform Ending Inventory</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form action="" method="get" accept-charset="utf-8">
+                                    <div class="modal-body">
+                                        <!--Add Stock Item-->
+                                        <a class="btn btn-primary btn-sm" style="color:blue;margin:0"
+                                            data-toggle="modal" data-target="#BeginningBrochure">Add Items</a>
+                                        <!--Button to add row in the table-->
+                                        <br><br>
+                                        <table class="varianceTable table table-sm table-borderless inputTable">
+                                            <!--Table containing the different input fields in adding trans items -->
+                                            <thead style="border-bottom:2px solid #cecece">
+                                                <tr class="text-center">
+                                                    <th><b>Stock Name</b></th>
+                                                    <th><b>Current</b></th>
+                                                    <th><b>Actual</b></th>
+                                                    <th><b>Discrepancy</b></th>
+                                                    <th><b>Remarks</b></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="ic-level-2">
                                             </tbody>
                                         </table>
                                         <div class="modal-footer">
@@ -109,8 +156,48 @@
                                 <form id="formAdd" method="post"
                                     accept-charset="utf-8">
                                     <div class="modal-body">
-                                        <div class="inputContainerParent" style="margin:1% 3%">
+                                        <div class="ic-level-2" style="margin:1% 3%">
                                         </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            data-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-success btn-sm" type="submit">Ok</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End of Brochure Modal"-->
+
+                    <!--Start of Brochure Modal"-->
+                    <div class="modal fade bd-example-modal-lg" id="BeginningBrochure" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Stock Items</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="formAdd" method="post"
+                                    accept-charset="utf-8">
+                                    <div class="modal-body">
+                                        <table class="table table-borderless">
+                                            <thead style="border-bottom:2px solid #cecece">
+                                                <tr class="text-center">
+                                                    <th></th>
+                                                    <th><b>Stock Name</b></th>
+                                                    <th><b>Category</b></th>
+                                                    <th><b>Current</b></th>
+                                                    <th><b>Unit</b></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="ic-level-2">
+                                            </tbody>
+                                        </table>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger btn-sm"
@@ -327,9 +414,9 @@ $(document).ready(function() {
             dataType: "JSON",
             success: function(data){
                 var selectItems = [];
-                $("#restock").find(".inputContainerParent").empty();
-                $("#stockBrochure").find(".inputContainerParent").empty();
-                $("#stockBrochure").find(".inputContainerParent").append(data.map(item => {
+                $("#restock").find(".ic-level-2").empty();
+                $("#stockBrochure").find(".ic-level-2").empty();
+                $("#stockBrochure").find(".ic-level-2").append(data.map(item => {
                     return `<label style="width:96%">
                 <input name="stock" type="checkbox" class="mr-2" value="${item.stID}">${item.stName} - ${item.stQty} ${item.uomAbbreviation}</label>`;
                 }).join(''));
@@ -340,7 +427,7 @@ $(document).ready(function() {
                     });
                     $("#stockBrochure").modal('hide');
                     $(this)[0].reset();
-                    $("#restock").find(".inputContainerParent").append(data.filter(stock => selectItems.includes(stock.stID)).map(stock=>{
+                    $("#restock").find(".ic-level-2").append(data.filter(stock => selectItems.includes(stock.stID)).map(stock=>{
                         return `
                             <tr data-id="${stock.stID}" class="inputContainer">
                                 <td>${stock.stName}</td>
@@ -358,6 +445,19 @@ $(document).ready(function() {
                 console.log(response.responseText);
                 console.log(error);
             }
+        });
+    });
+    $("#begBtn").on('click',function(){
+        var stocks = 0;
+        setBrochureForBeginning();
+        
+        $("#beginning form").on("submit",function(event){
+            $("#beginning").modal("hide");
+        });
+        $("#beginning").on("hidden.bs.modal",function(){
+            $("#BeginningBrochure").find("ic-level-2").empty();
+            $("#beginning form").find(".ic-level-2").empty();
+            $("#beginning form").off("submit");
         });
     });
     $("#restock form").on("submit",function(event){
@@ -518,6 +618,55 @@ function populateModalForm(id, url){
                 $("#addEditStock").find("select[name='stockSizeUOM']").find(`option[value="${matches.pop().toLowerCase()}"]`).attr("selected","selected");
             }
             $("#addEditStock").find("input[name='stockSize']").val(matches.join(' '));
+        },
+        error: function(response, setting, error) {
+            console.log(response.responseText);
+            console.log(error);
+        }
+    });
+}
+function setBrochureForBeginning(){
+    var stocks = [];
+    $.ajax({
+        method: "POST",
+        url: '<?= site_url('admin/inventory/getStocksForBeginningBrochure')?>',
+        dataType: "JSON",
+        success: function(data){
+            stocks = data.stocks;
+            $("#BeginningBrochure").find(".ic-level-2").append(stocks.map(stock =>{
+                return `<tr class="ic-level-1">
+                            <td><input type="checkbox" name="stID" value="${stock.stID}" class="form-control"></td>
+                            <td>${stock.stName}</td>
+                            <td>${stock.ctName}</td>
+                            <td>${stock.stQty}</td>
+                            <td>${stock.uomAbbreviation}</td>
+                            <td><img class="exitBtn" src="/assets/media/admin/error.png"
+            style="width:20px;height:20px"></td>
+                        </tr>`;
+            }).join(''));
+            $("#BeginningBrochure").on("hidden.bs.modal",function(){
+                $("#BeginningBrochure form")[0].reset();
+            });
+            $("#BeginningBrochure form").on("submit",function(event){
+                event.preventDefault();
+                $(this).find("input[name='stID']:checked").each(function(index){
+                    var item = stocks.filter(stock => stock.stID == $(this).val())[0];
+                    $("#beginning").find(".ic-level-2").append(`
+                        <tr class="ic-level-1" data-id="${item.stID}">
+                            <td><input type="text" name="name" value="${item.stName}" class="form-control form-control-sm"></td>
+                            <td><input type="number" name="current" value="${item.stQty}" class="form-control form-control-sm"></td>
+                            <td><input type="number" name="actual" value='0' class="form-control form-control-sm"></td>
+                            <td><input type="number" name="discrep" class="form-control form-control-sm"></td>
+                            <td><textarea type="text" name="remarks" class="form-control form-control-sm" rows="1"></textarea></td>
+                            <td><img class="exitBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"></td>
+                        </tr>`);
+                });
+                $(this).find(".extBtn").on("click",function(){
+                    $(this).closest(".ic-level-1").remove();
+                });
+                $("#BeginningBrochure").modal("hide");
+            });
+            return stocks;
         },
         error: function(response, setting, error) {
             console.log(response.responseText);
