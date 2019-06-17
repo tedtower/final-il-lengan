@@ -201,6 +201,7 @@ class Customer extends CI_Controller {
 						"olDesc" => $priceaName['name']
 					);
 					$olID = $this->customermodel->add_orderlist($list);
+					$this->customermodel->add_addon($olID, $orderlist);
 					$prefStocks = $this->customermodel->get_prefStocks($list['prID']);
 					if(isset($prefStocks[0])){
 						$prefStock = $prefStocks[0];
