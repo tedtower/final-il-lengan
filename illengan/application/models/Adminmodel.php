@@ -597,11 +597,6 @@ function get_transitems(){
         ";
         return $this->db->query($query)->result_array();
     }
-    function get_suppMerchandise($spmID){
-        $query = "Select *, CONCAT(spm.spmDesc,' :',st.stName) as branditem from suppliermerchandise spm INNER JOIN supplier USING (spID) INNER JOIN variance 
-        USING (vID) INNER JOIN stockitems st USING (stID) WHERE spm.spmID = ?";
-        return $this->db->query($query, array($spmID))->result_array();
-    }
     function get_stockSubcategories(){
         $query = "SELECT 
             ctID, ctName, ctType, ctStatus, COUNT(stID) AS stockCount
@@ -1293,7 +1288,6 @@ function add_aospoil($date_recorded,$addons,$account_id){
         INNER JOIN preferences pr USING (prID) LEFT JOIN prefstock ps USING (prID) 
         LEFT JOIN stockitems st USING (stID)";
         return $this->db->query($query)->result_array();
-
     }
 
     function edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, $osDateTime, $osPayDateTime, 
