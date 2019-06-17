@@ -13,7 +13,7 @@
                         <h6 style="font-size: 16px;margin-left:15px">Add Purchase Order</h6>
                     </div>
                     <!--Card--> 
-                    <form accept-charset="utf-8">
+                    <form action="<?= site_url()?>" method="post" name="mainForm" accept-charset="utf-8">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
@@ -26,6 +26,13 @@
                                     </div>
                                     <select class="spID form-control form-control-sm  border-left-0" name="spID">
                                         <option value="" selected>Choose</option>
+                                    <?php if(!empty($suppliers)){
+                                        foreach($suppliers as $supplier){
+                                    ?>
+                                        <option value="<?= $supplier['spID']?>"><?= ucWords($supplier['spName'])?></option>
+                                    <?php
+                                        }
+                                    }?>
                                     </select>
                                 </div>
                                 <!--Invoice Type-->
@@ -56,7 +63,8 @@
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
-                            <div class="ic-level-2">
+                            <div class="ic-level-2"><!--div containing the different input fields in adding trans items -->
+                            <div class="ic-level-1" style="overflow:auto;margin-bottom:2%">
                                 <div style="float:left;width:95%;overflow:auto;">
                                     <div class="input-group mb-1">
                                         <input type="text" name="itemName[]"
@@ -99,12 +107,10 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+                                    <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
+                                </div>
                             </div>
-                            <div class="mt-4"
-                                style="float:left:width:3%;overflow:auto;">
-                                <img class="exitBtn"
-                                    src="/assets/media/admin/error.png"
-                                    style="width:20px;height:20px;float:right;">
                             </div>
                             <br><br>
                             <span>Total: &#8369;<span class="total">0</span></span>
@@ -125,17 +131,23 @@
                         <div class="modal-dialog " role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">SSelect Merchandise Item</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Merchandise Items</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                    <div style="margin:1% 3%" id="list">
+                                    <div style="margin:1% 3%" class="ic-level-2">
                                         <!--checkboxes-->
-                                        <label style="width:96%"><input type="checkbox" class="mr-2"
-                                                value="">Sample data 2</label>
+                                        <?php if(!empty($merchandise)){
+                                            foreach($merchandise as $merch){
+                                        ?>
+                                        <label style="width:96%"><input type="checkbox" name="merch[]" class="mr-2"
+                                                value="<?= $merch['spmID']?>"><?= ucWords($merch['spmName'])?></label>
+                                        <?php
+                                            }
+                                        }?>
                                     </div>
                                     </div>
                                     <div class="modal-footer">
@@ -163,4 +175,114 @@
 <script src="assets/js/admin/light-bootstrap-dashboard.js?v=1.4.0"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 <script src="assets/js/admin/demo.js"></script>
+<script>
+    // $(function(){
+    //     var merchTemplate = `<div class="ic-level-1" style="overflow:auto;margin-bottom:2%">
+    //                     <div style="float:left;width:95%;overflow:auto;">
+    //                         <div class="input-group mb-1">
+    //                             <input type="text" name="itemName[]"
+    //                                 class="form-control form-control-sm"
+    //                                 placeholder="Item Name" style="width:24%">
+    //                             <input type="number" name="itemQty[]"
+    //                                 class="form-control form-control-sm"
+    //                                 placeholder="Quantity">
+    //                             <select name="itemUnit[]"
+    //                                 class="form-control form-control-sm">
+    //                                 <option value="" selected="selected">Unit
+    //                                 </option>
+    //                             </select>
+    //                             <input type="number" name="itemPrice[]"
+    //                                 class="form-control form-control-sm "
+    //                                 placeholder="Price">
+    //                             <input type="number" name="discount[]"
+    //                                 class="form-control form-control-sm "
+    //                                 placeholder="Discount">
+    //                             <input type="number" name="itemSubtotal[]"
+    //                                 class="form-control form-control-sm"
+    //                                 placeholder="Subtotal">
+    //                         </div>
+
+    //                         <div class="input-group">
+    //                             <input name="stID[]" type="text"
+    //                                 class="form-control border-right-0"
+    //                                 placeholder="Stock" style="width:190px">
+    //                             <input name="actualQty[]" type="number"
+    //                                 class="form-control border-right-0"
+    //                                 placeholder="Actual Qty" style="width:15%">
+    //                             <select name="paymentStatus[]"
+    //                                 class="form-control form-control-sm">
+    //                                 <option value="" selected="selected">Payment Status
+    //                                 </option>
+    //                             </select>
+    //                             <select name="deliveryStatus[]"
+    //                                 class="form-control form-control-sm ">
+    //                                 <option value="" selected>Delivery Status</option>
+    //                             </select>
+    //                         </div>
+    //                     </div>
+    //                     <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+    //                         <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
+    //                     </div>
+    //                 </div>`;
+    //     $("#merchandiseBrochure form").on("submit",function(event){
+    //         event.preventDefault();
+    //         var spms = <?= json_encode($merchandise)?>;
+    //         $(this).find("input[name='merch[]']").each(function(index){
+    //             var item = spms.filter(merch => merch.spmID == $(this).val())[0];
+    //             appendMerchandise(item)
+    //         });
+            
+    //     });
+    // });
+    // function appendMerchandise(item){
+    //     $("form[name='mainForm']").find(".ic-level-2").append(`<div class="ic-level-1" style="overflow:auto;margin-bottom:2%">
+    //                     <div style="float:left;width:95%;overflow:auto;">
+    //                         <div class="input-group mb-1">
+    //                             <input type="text" name="itemName[]"
+    //                                 class="form-control form-control-sm"
+    //                                 placeholder="Item Name" style="width:24%" value="${item.spmName}">
+    //                             <input type="number" name="itemQty[]"
+    //                                 class="form-control form-control-sm"
+    //                                 placeholder="Quantity" value="0">
+    //                             <select name="itemUnit[]"
+    //                                 class="form-control form-control-sm">
+    //                                 <option value="${}" selected="selected">Unit
+    //                                 </option>
+    //                             </select>
+    //                             <input type="number" name="itemPrice[]"
+    //                                 class="form-control form-control-sm "
+    //                                 placeholder="Price">
+    //                             <input type="number" name="discount[]"
+    //                                 class="form-control form-control-sm "
+    //                                 placeholder="Discount">
+    //                             <input type="number" name="itemSubtotal[]"
+    //                                 class="form-control form-control-sm"
+    //                                 placeholder="Subtotal">
+    //                         </div>
+
+    //                         <div class="input-group">
+    //                             <input name="stID[]" type="text"
+    //                                 class="form-control border-right-0"
+    //                                 placeholder="Stock" style="width:190px">
+    //                             <input name="actualQty[]" type="number"
+    //                                 class="form-control border-right-0"
+    //                                 placeholder="Actual Qty" style="width:15%">
+    //                             <select name="paymentStatus[]"
+    //                                 class="form-control form-control-sm">
+    //                                 <option value="" selected="selected">Payment Status
+    //                                 </option>
+    //                             </select>
+    //                             <select name="deliveryStatus[]"
+    //                                 class="form-control form-control-sm ">
+    //                                 <option value="" selected>Delivery Status</option>
+    //                             </select>
+    //                         </div>
+    //                     </div>
+    //                     <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+    //                         <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
+    //                     </div>
+    //                 </div>`);
+    //     $("form[name='mainForm']").find(".ic-level-1").last().find("input[]")
+    // }
+</script>
 </body>

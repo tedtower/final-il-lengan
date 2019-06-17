@@ -49,7 +49,9 @@ function viewPOFormAdd(){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/purchaseOrderAdd');
+        $data['suppliers'] = $this->adminmodel->get_supplierNames();
+        $data['merchandise'] = $this->adminmodel->get_suppliermerch();
+        $this->load->view('admin/purchaseOrderAdd', $data);
     }else{
         redirect('login');
     }
