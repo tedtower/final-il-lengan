@@ -171,6 +171,7 @@ class Customer extends CI_Controller {
 		}
 	}
 
+	
 	function completeOrder(){		
 		if($this->isLoggedIn()){
 			if($this->isCheckedIn()){
