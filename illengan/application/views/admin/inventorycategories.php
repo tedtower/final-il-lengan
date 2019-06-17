@@ -17,7 +17,7 @@
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newSCategory" data-original-title style="margin:0" id="addCategroy">Add Subcategory</button>
                                 <br>
                                 <br>
-                                <table id="categTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                <table id="categTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                                     <thead class="thead-dark">
                                         <th><b class="pull-left">Category Name</b></th>
                                         <th><b class="pull-left">Number of Items</b></th>
@@ -162,7 +162,7 @@
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete Category</h5>
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Archive Category</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -170,7 +170,7 @@
                                             <form id="confirmDelete">
                                                 <div class="modal-body">
                                                     <h6 id="deleteCategoryItem"></h6>
-                                                    <p>Are you sure you want to delete this category?</p>
+                                                    <p>Are you sure you want to archive this category?</p>
                                                     <input type="text" name="categoryID" hidden="hidden">
                                                     <div>
                                                         Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
@@ -178,7 +178,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                    <button type="submit" class="btn btn-warning btn-sm">Archive</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -199,7 +199,7 @@
     $(document).ready(function() {
         $('.deleteBtn').click(function() {
             var id = $(this).attr("id");
-            $("#deleteCategoryItem").text(`delete ${$(this).attr("data-name")}`);
+            $("#deleteCategoryItem").text(`Archive ${$(this).attr("data-name")}`);
             // $("#deleteAddon").find("input[name='addonID']").val($(this).attr("data-id"));
             $("#confirmDelete").on('submit', function(event) {
                 event.preventDefault();
