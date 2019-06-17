@@ -95,7 +95,6 @@ $route['admin/return'] = "adminview/viewReturn";
 $route['admin/consumption'] = "adminview/viewConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 
-
 //End Viewing Routes
 
 //Not Sure Routes
@@ -197,6 +196,8 @@ $route['admin/transactions/getDRs'] = "adminview/getDRs";
 $route['admin/transactions/getSPMs'] = "adminview/getSPMs";
 $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
+$route['admin/jsonReturns'] = "adminview/jsonReturns";
+
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES
