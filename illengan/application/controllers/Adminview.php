@@ -562,9 +562,9 @@ function getStockItem(){
             $data['title'] = "Purchase Order";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $data['purchaseorder'] = $this->adminmodel->get_purchaseOrder();
-            $data['poitems'] = $this->adminmodel->get_purchaseOrder();
-            $this->load->view('admin/adminPurchaseOrder');
+            $data['transactions'] = $this->adminmodel->get_transactions();
+            $data['transitems'] = $this->adminmodel->get_transitems();
+            $this->load->view('admin/adminPurchaseOrder', $data);
         }else{
             redirect('login');
         }
@@ -603,7 +603,10 @@ function getStockItem(){
         if($this->checkIfLoggedIn()){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
-                'returnitems' => $this->adminmodel->get_returnItems()
+                'returnitems' => $this->adminmodel->get_returnItems(),
+                'stock' => $this->adminmodel->get_stockitems(),
+                'supplier' => $this->adminmodel->get_supplier(),
+                'suppmerch' => $this->adminmodel->get_supplierstocks()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);

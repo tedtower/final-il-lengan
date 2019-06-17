@@ -10,6 +10,56 @@ class Adminmodel extends CI_Model{
     }
 
 //GET FUNCTIONS-------------------------------------------------------------------
+
+function get_transactions(){
+    $query = "SELECT
+                tID AS id,
+                tNum AS num,
+                receiptNo AS receipt,
+                IF(
+                    spID IS NULL,
+                    supplierName,
+                    spName
+                ) AS supplier,
+                tType AS type,
+                tTotal AS total,
+                tRemarks AS remarks,
+                tDate AS date,
+                dateRecorded AS daterecorded
+            FROM
+                transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE
+                isArchived = '0' and tType = 'purchase order'";
+    return $this->db->query($query)->result_array();
+}
+
+function get_transitems(){
+    $query = "SELECT
+                tID AS transaction,
+                tiID AS id,
+                tiName AS name,
+                tiQty AS qty,
+                qtyPerItem AS equivalent,
+                actualQty AS actualqty,
+                tiPrice AS price,
+                tiDiscount AS discount,
+                drStatus AS deliverystatus,
+                payStatus AS paymentstatus,
+                rStatus AS returnstatus,
+                tiSubtotal AS subtotal
+            FROM
+                (
+                    transitems
+                LEFT JOIN trans_items USING(tiID)
+                )
+            LEFT JOIN transactions USING(tID)
+            LEFT JOIN uom USING(uomID)
+            WHERE
+                tType = 'purchase order'";
+    return $this->db->query($query)->result_array();
+}
+
     function get_inventoryReport($stID, $sDate, $eDate){
         $query = "SELECT
                     slID,
@@ -184,96 +234,96 @@ class Adminmodel extends CI_Model{
         return $this->db->query($query)->result_array();
     }
 
-    function get_transactions(){
-        $query = "SELECT
-            tID,
-            tNum,
-            tType,
-            DATE_FORMAT(tDate, '%b %d, %Y %r') AS tDate,
-            DATE_FORMAT(dateRecorded, '%b %d, %Y %r') AS dateRecorded,
-            spID,
-            spName,
-            SUM(tiSubtotal) AS tTotal,
-            tRemarks
-        FROM
-            (
-                transactions
-            LEFT JOIN trans_items USING(tID)
-            )
-        LEFT JOIN supplier USING(spID)
-        GROUP BY
-            tID
-        ORDER BY transactions.tDate DESC;";
-        return $this->db->query($query)->result_array();
-    }
-    function get_transaction($id){
-        $query = "SELECT
-            tID,
-            tNum,
-            tType,
-            tDate,
-            spID,
-            spName,
-            tRemarks
-        FROM
-            transactions
-        LEFT JOIN supplier USING(spID)
-        WHERE 
-            tID = ?;";
-        return $this->db->query($query, array($id))->result_array();
-    }
-    function get_transitems($id=null){
-        if($id == null){
-            $query = "SELECT
-                tID,
-                tiID,
-                tiName,
-                tiQty,
-                tiActualQty,
-                transitems.uomID,
-                uomAbbreviation,
-                tiPrice,
-                tiDiscount,
-                tiSubtotal,
-                tiStatus,
-                stID,
-                stName
-            FROM
-                (
-                    (
-                        (transitems left join stockitems using(stID))
-                    LEFT JOIN uom on (transitems.uomID = uom.uomID)
-                    )
-                LEFT JOIN trans_items USING(tiID)
-                )
-            LEFT JOIN transactions USING(tID);";
-            return $this->db->query($query)->result_array();
-        }else{
-            $query = "SELECT
-                tID,
-                tiID,
-                tiName,
-                tiQty,
-                tiActualQty,
-                transitems.uomID,
-                uomAbbreviation,
-                tiPrice,
-                tiDiscount,
-                tiSubtotal,
-                tiStatus,
-                stID,
-                stName
-            FROM
-                    ((
-                        (transitems left join stockitems using(stID))
-                    LEFT JOIN uom on (transitems.uomID = uom.uomID)
-                    )left join trans_items using (tiID))
-                LEFT JOIN transactions USING(tID)
-                WHERE
-                    tID = ?;";
-            return $this->db->query($query,array($id))->result_array();
-        }
-    }
+    // function get_transactions(){
+    //     $query = "SELECT
+    //         tID,
+    //         tNum,
+    //         tType,
+    //         DATE_FORMAT(tDate, '%b %d, %Y %r') AS tDate,
+    //         DATE_FORMAT(dateRecorded, '%b %d, %Y %r') AS dateRecorded,
+    //         spID,
+    //         spName,
+    //         SUM(tiSubtotal) AS tTotal,
+    //         tRemarks
+    //     FROM
+    //         (
+    //             transactions
+    //         LEFT JOIN trans_items USING(tID)
+    //         )
+    //     LEFT JOIN supplier USING(spID)
+    //     GROUP BY
+    //         tID
+    //     ORDER BY transactions.tDate DESC;";
+    //     return $this->db->query($query)->result_array();
+    // }
+    // function get_transaction($id){
+    //     $query = "SELECT
+    //         tID,
+    //         tNum,
+    //         tType,
+    //         tDate,
+    //         spID,
+    //         spName,
+    //         tRemarks
+    //     FROM
+    //         transactions
+    //     LEFT JOIN supplier USING(spID)
+    //     WHERE 
+    //         tID = ?;";
+    //     return $this->db->query($query, array($id))->result_array();
+    // }
+    // function get_transitems($id=null){
+    //     if($id == null){
+    //         $query = "SELECT
+    //             tID,
+    //             tiID,
+    //             tiName,
+    //             tiQty,
+    //             tiActualQty,
+    //             transitems.uomID,
+    //             uomAbbreviation,
+    //             tiPrice,
+    //             tiDiscount,
+    //             tiSubtotal,
+    //             tiStatus,
+    //             stID,
+    //             stName
+    //         FROM
+    //             (
+    //                 (
+    //                     (transitems left join stockitems using(stID))
+    //                 LEFT JOIN uom on (transitems.uomID = uom.uomID)
+    //                 )
+    //             LEFT JOIN trans_items USING(tiID)
+    //             )
+    //         LEFT JOIN transactions USING(tID);";
+    //         return $this->db->query($query)->result_array();
+    //     }else{
+    //         $query = "SELECT
+    //             tID,
+    //             tiID,
+    //             tiName,
+    //             tiQty,
+    //             tiActualQty,
+    //             transitems.uomID,
+    //             uomAbbreviation,
+    //             tiPrice,
+    //             tiDiscount,
+    //             tiSubtotal,
+    //             tiStatus,
+    //             stID,
+    //             stName
+    //         FROM
+    //                 ((
+    //                     (transitems left join stockitems using(stID))
+    //                 LEFT JOIN uom on (transitems.uomID = uom.uomID)
+    //                 )left join trans_items using (tiID))
+    //             LEFT JOIN transactions USING(tID)
+    //             WHERE
+    //                 tID = ?;";
+    //         return $this->db->query($query,array($id))->result_array();
+    //     }
+    // }
     function get_stockLog($stID){
         $query = "SELECT
                 slID,
@@ -530,6 +580,10 @@ class Adminmodel extends CI_Model{
         WHERE mn.mID = ? AND ao.aoStatus = 'available'";
          return $this->db->query($query, array($mID))->result_array();
     }
+    function get_supplierstocks(){
+        $query = "Select * from suppliermerchandise supp LEFT JOIN stockitems USING (stID) LEFT JOIN uom ON (supp.uomID = uom.uomID);";
+        return $this->db->query($query)->result_array();
+    }
     function get_supplier(){
         $query = "Select * from supplier order by spName";
         return $this->db->query($query)->result_array();
@@ -566,16 +620,20 @@ class Adminmodel extends CI_Model{
         $query = "SELECT * from categories where supcatID is null AND ctType = 'inventory' group by ctName order by ctName asc";
         return $this->db->query($query)->result_array();
     }
+    function get_stockitems() {
+        $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+        return $this->db->query($query)->result_array();
+    }
     function get_returns() {
-        $query = "SELECT tID, spID, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
+        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
         return $this->db->query($query)->result_array();
     }
     function get_returnItems() {
-        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
-        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID);";
+        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, uom.uomName, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
+        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID) INNER JOIN uom USING (uomID);";
         return $this->db->query($query)->result_array();
     }
-    
+
 //INSERT FUNCTIONS----------------------------------------------------------------
     function add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch){
         $query = "insert into supplier (spName, spContactNum, spEmail, spStatus, spAddress) values (?,?,?,?,?);";
