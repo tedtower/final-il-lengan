@@ -448,10 +448,15 @@ $(document).ready(function() {
         });
     });
     $("#begBtn").on('click',function(){
-        var stocks = 0;
-        setBrochureForBeginning();
-        
+        var stocks = setBrochureForBeginning();
+        var items = [];
         $("#beginning form").on("submit",function(event){
+            $(this).find(".ic-level-1").each(function(index){
+                items.push({
+                    stock: $(this).attr("data-id"),
+                    
+                });
+            });
             $("#beginning").modal("hide");
         });
         $("#beginning").on("hidden.bs.modal",function(){
