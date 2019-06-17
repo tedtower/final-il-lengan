@@ -8,6 +8,8 @@
 
 <body style="background:#c7ccd1;">
     <?php include_once('templates/navigation.php') ?>
+    <button class="btn btn-success btn-sm" onClick="window.location.href = '<?php echo base_url();?>customer/checkin';return false;">
+    <img class="addBtn" src="/assets/media/barista/add image.png" style="width:20px;height:20px; float:left;"> Add Order</button>
     <!--End Top Nav-->
     <div class="container-fluid">
         <section class="lists-container">
@@ -19,7 +21,7 @@
     <!--End Cards-->
                 <!--START "Remove Slip" MODAL-->
             
-<?= include_once('templates/scripts.php')?>
+<?php include_once('templates/scripts.php')?>
 <script>
       var orderslips = [];
       var orderlists = [];
@@ -64,7 +66,8 @@
                                 <div><b>Customer: </b>${item.orderslips.custName}</div>
                             </div>
                             <div style="float:right;text-align:left;width:27%">
-                                <div><b> Table No: </b>${item.orderslips.tableCode}</div>
+                                <div><b> Table No: </b>${item.orderslips.tableCode}<img class="editBtn" data-id="${item.orderslips.osID}" data-tableCode="${item.orderslips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px; float:right; cursor:pointer;" 
+                                data-toggle="modal" data-target="#editTable"></div></div>
                                 <div><b>Status: </b>${item.orderslips.payStatus}</div>
                             </div>
                         </div>

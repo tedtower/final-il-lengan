@@ -342,6 +342,43 @@
     var getPOsUrl = '<?= site_url('admin/transactions/getPOs')?>';
     var getDRsUrl = '<?= site_url('admin/transactions/getDRs')?>';
     var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs')?>';
+    $(function () {
+        $.ajax({
+            url: '/admin/jsonReturns',
+            dataType: 'json',
+            success: function (data) {
+                var poLastIndex = 0;
+                $.each(data.orderlists, function (index, items) {
+                    orderlists.push({
+                        "orderlists": items
+                    });
+                    orderlists[index].addons = data.addons.filter(ao => ao.olID == items.olID);
+                   
+                });
+                $.each(data.orderslips, function (index, item) {
+                    orderslips.push({
+                        "orderslips": item
+                    });
+                    orderslips[index].orders = orderlists.filter(ol => ol.orderlists.osID == item.osID);
+                });
+                sales = data;
+                menuItems = data.menuitems;
+                tables = data.tables;
+                stocks = data.stocks;
+                addons = data.addons;
+                showTable();
+            },
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+        });
+
+        $(".addMenuItem").on('click',function(){
+            setBrochureContent(menuItems);
+        });
+        
+    });
     $(function() {
         $("#addBtn").on("click", function(){
             setAddEditBtnHandlers();

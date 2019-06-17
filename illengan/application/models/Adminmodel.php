@@ -30,6 +30,55 @@ class Adminmodel extends CI_Model{
                 LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
         return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
     }
+    function get_prefStocks(){
+        $query="SELECT
+                prID,
+                CONCAT(mName, 
+                    IF(prName IS NULL, '', CONCAT(' ', prName)),
+                    IF(mTemp IS NULL, '', CONCAT(' ',
+                            IF(mTemp = 'hc', '',
+                                IF(mTemp = 'h', 'Hot', 'Cold')
+                            )
+                        )
+                    )
+                ) AS prefname,
+                stID AS stockitem,
+                CONCAT(stName,
+                    IF(stSize IS NULL, '', CONCAT(' ', stSize))
+                ) AS stockitemname,
+                prstQty AS qty
+            FROM
+                prefstock
+            LEFT JOIN(
+                    preferences
+                LEFT JOIN menu USING(MID)
+                ) USING(prID)
+            LEFT JOIN stockitems USING(stID)";
+        return $this->db->query($query)->result_array();
+    }
+    function get_prefNames(){
+        $query = "SELECT 
+            CONCAT(mName,
+                    IF(prName IS NULL,
+                        '',
+                        CONCAT(' ', prName)),
+                    IF(mTemp IS NULL,
+                        '',
+                        CONCAT(' ',
+                                IF(mTemp IS NULL,
+                                    '',
+                                    IF(mTemp = 'h', 'Hot', 'Cold'))))) AS prefname,
+                prID AS id
+            FROM
+                preferences
+                    LEFT JOIN
+                menu USING (mID)
+            WHERE
+                NOT mAvailability = 'archived'
+            ORDER BY prefname;";
+        return $this->db->query($query)->result_array();
+    }
+
     function get_stockCategories(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) where ctType = 'inventory' group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
@@ -126,7 +175,7 @@ class Adminmodel extends CI_Model{
     function get_stockItemNames(){
         $query = "SELECT
             stID,
-            CONCAT(stName, ' ', stSize) as stName,
+            CONCAT(stName, if(stSize is NULL,'', concat(' ', stSize))) as stName,
             uomID,
             uomAbbreviation
         FROM
@@ -517,7 +566,16 @@ class Adminmodel extends CI_Model{
         $query = "SELECT * from categories where supcatID is null AND ctType = 'inventory' group by ctName order by ctName asc";
         return $this->db->query($query)->result_array();
     }
-
+    function get_returns() {
+        $query = "SELECT tID, spID, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
+        return $this->db->query($query)->result_array();
+    }
+    function get_returnItems() {
+        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
+        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID);";
+        return $this->db->query($query)->result_array();
+    }
+    
 //INSERT FUNCTIONS----------------------------------------------------------------
     function add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch){
         $query = "insert into supplier (spName, spContactNum, spEmail, spStatus, spAddress) values (?,?,?,?,?);";
@@ -590,6 +648,14 @@ class Adminmodel extends CI_Model{
     function add_addon($aoName, $aoPrice, $aoCategory, $aoStatus){
         $query = "INSERT into addons (aoName, aoPrice, aoCategory, aoStatus) values (?,?,?,?)";
         return $this->db->query($query,array($aoName, $aoPrice, $aoCategory, $aoStatus));
+    }
+    function add_menuStock($items){
+        $query = "INSERT INTO prefstock(prID, stID, prstQty)
+        VALUES(?, ?, ?)";
+        foreach($items as $item){
+            $this->db->query($query, array($item['prID'],$item['stID'],$item['prstQty']));
+        }
+        return true;
     }
     function add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore){
         $query = "INSERT into uom (uomName, uomAbbreviation, uomVariant, uomStore) values (?,?,?,?)";

@@ -476,12 +476,25 @@ function getStockItem(){
     }
     function menuStock(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $data['title'] = "Menu - Addons";
-            $this->load->view('admin/templates/head',$data);
+            $head['title'] = "Menu - Stock";
+            $this->load->view('admin/templates/head',$head);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/menu-stock');
+            $data['menuStock'] = $this->adminmodel->get_prefStocks();
+            $this->load->view('admin/menu-stock', $data);
         }else{
             redirect('login');
+        }
+    }
+    function getMenuStockModalData(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            echo json_encode(array(
+                "preferences" => $this->adminmodel->get_prefNames(),
+                "stocks" => $this->adminmodel->get_stockItemNames()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
         }
     }
 
@@ -582,6 +595,18 @@ function getStockItem(){
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
             $this->load->view('admin/adminReturns');
+        }else{
+            redirect('login');
+        }
+    }
+    function jsonReturns() {
+        if($this->checkIfLoggedIn()){
+            $data = array(
+                'returns' => $this->adminmodel->get_returns(),
+                'returnitems' => $this->adminmodel->get_returnItems()
+            );
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_PRETTY_PRINT);
         }else{
             redirect('login');
         }
