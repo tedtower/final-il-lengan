@@ -580,6 +580,10 @@ function get_transitems(){
         WHERE mn.mID = ? AND ao.aoStatus = 'available'";
          return $this->db->query($query, array($mID))->result_array();
     }
+    function get_supplierstocks(){
+        $query = "Select * from suppliermerchandise supp LEFT JOIN stockitems USING (stID) LEFT JOIN uom ON (supp.uomID = uom.uomID);";
+        return $this->db->query($query)->result_array();
+    }
     function get_supplier(){
         $query = "Select * from supplier order by spName";
         return $this->db->query($query)->result_array();
@@ -616,16 +620,20 @@ function get_transitems(){
         $query = "SELECT * from categories where supcatID is null AND ctType = 'inventory' group by ctName order by ctName asc";
         return $this->db->query($query)->result_array();
     }
+    function get_stockitems() {
+        $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+        return $this->db->query($query)->result_array();
+    }
     function get_returns() {
-        $query = "SELECT tID, spID, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
+        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
         return $this->db->query($query)->result_array();
     }
     function get_returnItems() {
-        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
-        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID);";
+        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, uom.uomName, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
+        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID) INNER JOIN uom USING (uomID);";
         return $this->db->query($query)->result_array();
     }
-    
+
 //INSERT FUNCTIONS----------------------------------------------------------------
     function add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch){
         $query = "insert into supplier (spName, spContactNum, spEmail, spStatus, spAddress) values (?,?,?,?,?);";
