@@ -1388,6 +1388,37 @@ function add_aospoil($date_recorded,$addons,$account_id){
 
     }
 
+    // INSERT FUNCTIONS FOR PO, DR, OR, RETURN (NEW)
+    function add_receiptTransaction($transaction){
+        $query = "INSERT INTO transactions(
+                tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived
+            )
+            VALUES(
+                NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )";
+        if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $transaction['tNum'], $transaction['receipt'],
+            $transaction['date'], $transaction['dateRecorded'], $transaction['type'], $transaction['total'], $transaction['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+
+    function add_receiptTransactionItems($item){
+        $query = "INSERT INTO transitems(tiID, uomID, stID, tiName, tiPrice, tiDiscount, drStatus, paystatus, rStatus)
+            VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if($this->db->query($query, array($item['uom'], $item['stock'], $item['name'], $item['price'], $item['discount'], $item['delivery']
+            , $item['payment'], $item['return']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+
+    function add_receiptTransactionItemsQty($tID, $item){
+        $query = "INSERT INTO trans_items(tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal)
+            VALUES(?, ?, ?, ?, ?, ?)";
+        return $this->db->query($query, array($tID, $item['tiID'], $item['tiQty'], $item['perUnit'], $item['actual'], $item['subtotal']));
+    }
+
     // Get Transactions (PO, DR, OR)
     // SELECT
     //     tID AS id,

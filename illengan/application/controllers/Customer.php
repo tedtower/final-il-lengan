@@ -222,8 +222,6 @@ class Customer extends CI_Controller {
 				);
 				if(count($consumptionItems['stID'])>0){
 					$consumptionID = $this->customermodel->add_consumption($consumption);
-					$consumptionItems['id'] = array();
-					echo json_encode($consumptionItems);
 					for($x = 0 ; $x < count($consumptionItems['stID']) ; $x++){
 						$consumptionItemID = $this->customermodel->add_consumedItems($consumptionItems['stID'][$x]);
 						$this->customermodel->add_consumedItemsQty($consumptionID, $consumptionItemID, $consumptionItems['qty'][$x]);
