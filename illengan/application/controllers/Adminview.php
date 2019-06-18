@@ -74,7 +74,11 @@ function viewDRFormAdd(){
         $head['title'] = "Inventory - Add DR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/deliveryReceiptAdd');
+        $data['uom'] = $this->adminmodel->get_uomForStoring();
+        $data['stock'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
+        $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
     }
