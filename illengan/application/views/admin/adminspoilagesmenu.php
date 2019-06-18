@@ -164,7 +164,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="datetime-local" name="msDate" id="msDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("msDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
@@ -354,10 +354,7 @@
         });
     });
 });
-	//--------------------End of Function for Edit-----------------------------
 	
-	//End Function Delete
-
 </script> 
 </body>
 
