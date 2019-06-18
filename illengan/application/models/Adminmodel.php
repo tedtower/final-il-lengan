@@ -1897,6 +1897,15 @@ function add_aospoil($date_recorded,$addons,$account_id){
                 tType = 'purchase order' AND drStatus = 'pending'";
         return $this->db->query($query)->result_array();
     }
+    function edit_receiptTransactionTotal($tID, $total){
+        $query = "UPDATE
+                transactions
+            SET
+                tTotal = ?
+            WHERE
+                tID = ?;";
+        return $this->db->query($query,array($total, $tID));
+    }
     //getPosFor Brochure
     //     SELECT
     //     tID as transactionID,
