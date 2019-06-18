@@ -71,7 +71,7 @@
                                             data-toggle="modal" data-target="#stockBrochure">Add Item</a>
                                         <!--Button to add row in the table-->
                                         <br><br>
-                                        <table class="varianceTable table table-sm table-borderless inputTable">
+                                        <table class=" table table-sm table-borderless inputTable">
                                             <!--Table containing the different input fields in adding trans items -->
                                             <thead style="border-bottom:2px solid #cecece">
                                                 <tr class="text-center">
@@ -99,7 +99,7 @@
 
                     <!--Start of Modal "Beginning"-->
                     <div class="modal fade bd-example-modal-lg" id="beginning" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow:auto !important">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -115,7 +115,7 @@
                                             data-toggle="modal" data-target="#BeginningBrochure">Add Items</a>
                                         <!--Button to add row in the table-->
                                         <br><br>
-                                        <table class="varianceTable table table-sm table-borderless inputTable">
+                                        <table class=" table table-sm table-borderless inputTable">
                                             <!--Table containing the different input fields in adding trans items -->
                                             <thead style="border-bottom:2px solid #cecece">
                                                 <tr class="text-center">
