@@ -398,14 +398,17 @@ function setOrderlist(ol){
                             <button type="button" class="btn btn-mdb-color btn-sm m-0 p-2 ediOrder" data-toggle="modal" data-target="#editModal" data-name="`+orders[rowid].name+`" data-id="`+rowid+`">Edit</button>
                             <button type="button" class="btn btn-danger btn-sm m-0 p-2 remOrder" data-toggle="modal" data-target="#deleteModal" data-name="`+orders[rowid].name+`" data-id="`+rowid+`">Remove</button>
                         </td>
-                    </tr>
-                    <tr id="values">
-                    <td></td>
-                    <td id="qty">`+quantity+`</td>
-                    <td colspan="2" id="name">`+name+`</td>
-                    <td id="subtotal">`+subtotal+`</td>
                     </tr>`;
         $('#orderlists').append(row1);
+        console.log(quantity);
+        if(!quantity == ''){
+            $('#orderlists').append(`
+                            <tr id="values">
+                                <td id="qty">`+quantity+`</td>
+                                <td colspan="2" id="name">`+name+`</td>
+                                <td id="subtotal" colspan="2">`+subtotal+`</td>
+                            </tr>`);
+        }
         total_qty += orders[rowid].qty;
         total += orders[rowid].subtotal;
         }
