@@ -49,6 +49,7 @@ function viewPOFormAdd(){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
+        $data['uom'] = $this->adminmodel->get_uomForStoring();
         $data['stock'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
@@ -676,7 +677,8 @@ function getStockItem(){
             $data = array(
                 'stock' => $this->adminmodel->get_stockitems(),
                 'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_supplierstocks()
+                'suppmerch' => $this->adminmodel->get_supplierstocks(),
+                'uom' => $this->adminmodel->get_uomForStoring()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);
