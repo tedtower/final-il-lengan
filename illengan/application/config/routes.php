@@ -195,5 +195,19 @@ $route['barista/updateStatus'] = "barista/updateStatus";
 // $route['barista/pendingOrdersJS'] ="barista/pendingOrdersJS";
 
 // CHEF ROUTES
+$route['chef'] = "chef/index";
 $route['chef/orders'] = "chef/get_orderlist";
+$route['chef/inventory'] = "chef/viewInventory";
 $route['chef/change_status'] = "chef/change_status";
+$route['chef/inventoryJS'] = "chef/inventoryJS";
+$route['chef/viewStockJS'] ="chef/viewStockJS";
+$route['chef/viewMenuJS'] ="chef/viewMenuJS";
+$route['chef/spoilagesmenujson'] = "chef/viewSpoilagesMenuJs";
+$route['chef/spoilagesstockjson'] = "chef/viewSpoilagesStockJs";
+$route['chef/spoilages/menu'] = "chef/viewSpoilagesMenu";
+$route['chef/spoilages/menu/add'] = "chef/addspoilagesmenu";
+$route['chef/spoilages/menu/edit'] = "chef/editMenuSpoil";
+$route['chef/spoilages/stock'] = "chef/viewSpoilagesStock";
+$route['chef/spoilages/stock/add'] = "chef/addspoilagesstock";
+$route['chef/spoilages/stock/edit'] = "chef/editStockSpoil";
+$route['chef/spoilages/stock/delete'] ="chef/deletestockspoilages";

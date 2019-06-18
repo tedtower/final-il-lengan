@@ -16,8 +16,9 @@ function getSelectedPref() {
                 async: false,
                 success: function (data) {  
                     
-                    menuChecked = `<tr class="menuelem" data-id="` + data[i].prID + `" >
-                            <input type="hidden" id="prID` + i + `" name="prID" class="form-control form-control-sm" data-prID="` + data[i].prID + `" value="` + data[i].prID + `">
+                    menuChecked = `<tr class="menuelem" data-id="` + data[i].prID + `" data-stid="${data[i].stID}" data-stqty="${data[i].stQty}">
+                    <input type="hidden" id="menuQty" name="menuQty" class="menuQty form-control form-control-sm" value="${data[i].prstQty}">
+                    <input type="hidden" id="prID` + i + `" name="prID" class="form-control form-control-sm" data-prID="` + data[i].prID + `" value="` + data[i].prID + `">
                             <td><input type="text" id="mName` + i + `" name="mName"
                                     class="form-control form-control-sm" value="` + data[i].prName + `"  required disabled></td>
                             <td><input type="number" min="1" id="msQty` + i + `" name="msQty"
@@ -40,18 +41,25 @@ function getSelectedPref() {
 }
 
 var elements;
-function addMenuItems() {
+$("#addMenuSpoilage form").on('submit', function(event) {
+    event.preventDefault();
     elements = document.getElementsByClassName('menuelem');
     var msDate = document.getElementById('spoilDate').value;
     var menuItems = [];
     var menus = [];
-    var prID, msQty, msRemarks;
+    var prID, msQty, msRemarks, newQty;
     for (var i = 0; i <= elements.length - 1; i++) {
+        stID = $('.menuelem').eq(i).data('stid');
+        stQty = parseInt($('.menuelem').eq(i).data('stqty'));
+        menuQty = parseInt($('.menuQty').eq(i).val());
         prID = document.getElementsByName('prID')[i].value;
-        msQty = document.getElementsByName('msQty')[i].value;
+        msQty = parseInt(document.getElementsByName('msQty')[i].value);
         msRemarks = document.getElementsByName('msRemarks')[i].value;
-
+        newQty = stQty - parseInt(msQty * menuQty);
+        
         menuItems = {
+            'stID': isNaN(parseInt(stID)) ? (0) : stID,
+            'newQty': isNaN(parseInt(newQty)) ? (0) : newQty,
             'prID': prID,
             'msQty': msQty,
             'msDate': msDate,
@@ -59,6 +67,7 @@ function addMenuItems() {
         };
         menus.push(menuItems);
     }
+
     $.ajax({
         type: 'POST',
         url: 'http://www.illengan.com/chef/spoilages/menu/add',
@@ -75,7 +84,7 @@ function addMenuItems() {
             console.log(error);
         }
     });
-}
+});
 
 function newFunction(data) {
     console.log(data);

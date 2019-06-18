@@ -41,16 +41,18 @@
 										</div>
 										<form id="formAdd" action="<?= site_url('chef/menu/spoilages/add')?>" accept-charset="utf-8">
 											<div class="modal-body">
-												<div class="form-row">
+												<div class="form-row" style="margin-right: 20%;">
 													<!--Container of Menu Spoilage Date-->
 													<!--Spoilage Date-->
-													<div class="input-group mb-3">
-														<div class="input-group-prepend">
-															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-																Spoilage Date</span>
-														</div>
-														<input type="date" name="spoilDate" id="spoilDate" class="form-control form-control-sm" required>
-													</div>
+													<div class="input-group mb-3 col">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
+                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                            Spoilage Date</span>
+                                                    </div>
+                                                    <input type="date" name="spoilDate" id="spoilDate" style="width: 70%;";
+                                                        class="form-control form-control-sm" required>
+                                                </div>
 												</div>
 												<!--Add Menu Item-->
 												<!--Button to add row in the table-->
@@ -74,7 +76,7 @@
 					
 												<div class="modal-footer">
 													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-													<button type="button" class="btn btn-success btn-sm" onclick="addMenuItems()">Add</button>
+													<button type="submit" class="btn btn-success btn-sm">Add</button>
 												</div>
 											</div>
 										</form>
@@ -147,7 +149,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formEdit" accept-charset="utf-8" > 
+                                            <form id="formEdit" accept-charset="utf-8" action="<?= site_url('chef/spoilages/menu/edit')?>"> 
 												<div class="modal-body">
                                                     <!--Quantity-->
                                                     <div class="input-group mb-3">

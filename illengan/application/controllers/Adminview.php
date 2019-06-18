@@ -691,9 +691,8 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
-                'stock' => $this->adminmodel->get_stockitems(),
                 'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_supplierstocks()
+                'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);

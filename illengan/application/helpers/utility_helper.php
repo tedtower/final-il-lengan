@@ -38,4 +38,7 @@ function admin_css(){
 function admin_js(){
    return base_url().'assets/js/admin/';
 }
+function chef_js(){
+   return base_url().'assets/js/chef/';
+}
 ?>

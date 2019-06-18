@@ -714,8 +714,16 @@ function get_transitems(){
         $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
         return $this->db->query($query)->result_array();
     }
+    function get_stocktransitems() {
+        $query = "SELECT ti.stID, trans.tDate, trans.receiptNo, pf.prstQty, sp.spID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActualQty, sp.spmPrice 
+        FROM `transitems` ti INNER JOIN trans_items USING (tiID) INNER JOIN transactions trans USING (tID) 
+        INNER JOIN uom USING (uomID) INNER JOIN suppliermerchandise sp USING (stID) INNER JOIN stockitems st USING (stID) 
+        LEFT JOIN prefstock pf USING (stID) WHERE trans.tType = 'delivery receipt' ORDER BY 3 ";
+        return $this->db->query($query)->result_array();
+    }
     function get_returns() {
-        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions";
+        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions
+        WHERE tType = 'return'";
         return $this->db->query($query)->result_array();
     }
     function get_returnItems() {
@@ -773,9 +781,13 @@ function get_transitems(){
        $this->db->query($query, array($mID, $pref['prName'], $pref['mTemp'], $pref['prPrice'], $pref['prStatus']));
     }
     function set_tNum() {
-        $query = " SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'return';";
-        return $this->db->query($query)->result();
+        $this->db->select('MAX(tNum) AS lastnum');
+        $this->db->from('transactions');
+        $this->db->where('tType', 'return');
+
+        return $this->db->get()->row()->lastnum;
     }
+    
     function add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
     $isArchived, $trans, $ti) {
         $query = "INSERT INTO transactions (tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded,
