@@ -1343,6 +1343,23 @@ function add_aospoil($date_recorded,$addons,$account_id){
             VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
         return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
     }
+    function add_restockLog($tID, $log){
+        $query = "INSERT INTO stocklog(
+            stID,
+            tID,
+            slType,
+            slQty,
+            slRemainingQty,
+            actualQty,
+            discrepancy,
+            slDateTime,
+            dateRecorded,
+            slRemarks
+        )
+        VALUES(?, ?, 'restock', ?, ?, ?, NULL, ?, ?, ?);";
+        $this->db->query($query,array($log['stock'], $tID, $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+        , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
+    }
     function add_beginningLog($log){
         $query = "INSERT INTO stocklog(
             stID,
