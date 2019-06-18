@@ -36,11 +36,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 
         function get_availableTables(){
-            $query = "SELECT t.tableCode FROM tables t LEFT JOIN orderslips os on t.tableCode = os.tableCode where os.tableCode IS NULL ";
+            $query = "SELECT tableCode FROM tables";
             return $this->db->query($query)->result_array();
         }
 
-        function edit_tablenumber($tableCode, $osID){
+        function edit_tablenumber($osID, $tableCode){
              $query = "Update orderslips set tableCode = ? where osID=?";
              return $this->db->query($query,array($tableCode,$osID));
         }
@@ -138,7 +138,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         //$query2 = "SELECT olID, aoName, aoPrice, olRemarks from orderlists inner join orderaddons using (olID) inner join addons using (aoID)";
         function get_orderslips(){
-            $query = "select * from orderslips inner join orderlists on orderslips.osID = orderlists.osID where orderlists.olStatus = 'pending'";
+            $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'pending') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
             return $this->db->query($query)->result_array();
         }
         function get_olist(){

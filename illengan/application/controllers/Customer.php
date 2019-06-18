@@ -285,8 +285,8 @@ class Customer extends CI_Controller {
 					'addons' => $rawAddons
 				);
 				unset($_SESSION['orders'][$id]);
-				rsort($_SESSION['orders']);
 				array_push($_SESSION['orders'], $data);
+				rsort($_SESSION['orders']);
 				echo json_encode($_SESSION['orders']);
 			}else{
 				redirect('customer/checkin');
