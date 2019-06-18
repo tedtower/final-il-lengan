@@ -287,22 +287,15 @@ $(document).ready(function() {
         var supplier = $(this).find("select[name='spID']").val();
         var date = $(this).find("input[name='tDate']").val();
         var remarks = $(this).find("textarea[name='tRemarks']").val();
-        var trans = [];
+        var transitems = [];
         for (var index = 0; index < $(this).find(".poElements").length; index++) {
             var row = $(this).find(".poElements").eq(index);
-            trans.push({
+            transitems.push({
                 uomID:  row.find("select[name='itemUnit[]']").val(),
                 stID:  row.find("select[name='stID[]']").val(),
                 name: row.find("input[name='itemName[]']").val(),
                 price:  row.find("input[name='price[]']").val(),
                 discount: row.find("input[name='discount[]']").val(),
-            });
-        }
-
-        var transitems = [];
-        for (var index = 0; index < $(this).find(".poElements").length; index++) {
-            var row = $(this).find(".poElements").eq(index);
-            transitems.push({
                 qty:  row.find("input[name='itemQty[]']").val(),
                 actualQty:  row.find("input[name='actualQty[]']").val()
             });
@@ -315,7 +308,6 @@ $(document).ready(function() {
                 supplier: supplier,
                 date: date,
                 remarks:remarks,
-                trans: JSON.stringify(trans),
                 transitems: JSON.stringify(transitems)
             },
             dataType: "json",
