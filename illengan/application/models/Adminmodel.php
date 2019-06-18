@@ -1519,11 +1519,10 @@ function add_aospoil($date_recorded,$addons,$account_id){
     // INSERT FUNCTIONS FOR PO, DR, OR, RETURN (NEW)
     function add_receiptTransaction($transaction){
         $query = "INSERT INTO transactions(
-                tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived
+                tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded, tType, tTotal, tRemarks
             )
             VALUES(
-                NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-            )";
+                NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
             FROM transactions
             WHERE tType = 'purchase order'")->result_array()[0]['lastnum'];

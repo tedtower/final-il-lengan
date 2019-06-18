@@ -360,7 +360,7 @@ function addspoilagesstock(){
 
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $poItems = json_encode($this->input->post(),true);
+            $poItems = json_decode($this->input->post('transitems'),true);
             $po = array(
                 "supplier" => $this->input->post('supplier'),
                 "supplierName" => NULL,
@@ -371,6 +371,7 @@ function addspoilagesstock(){
                 "total" => $this->input->post('total'),
                 "remarks" => $this->input->post('remarks')
             );
+            echo json_encode($po);
             $poID = $this->adminmodel->add_receiptTransaction($po);
             if(count($poItems)>0){
                 foreach($poItems as $poItem){
