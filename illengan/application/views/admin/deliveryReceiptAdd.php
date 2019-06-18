@@ -26,6 +26,10 @@
                                     </div>
                                     <select class="spID form-control form-control-sm  border-left-0" name="spID">
                                         <option value="" selected>Choose</option>
+                                        <?php if(isset($supplier)){
+                                            foreach($supplier as $sup){?>
+                                            <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
+                                        <?php }}?>
                                     </select>
                                 </div>
                                 <!--Invoice Type-->
