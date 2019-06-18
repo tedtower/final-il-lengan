@@ -429,7 +429,7 @@ $(document).ready(function() {
                     $(this)[0].reset();
                     $("#restock").find(".ic-level-2").append(data.filter(stock => selectItems.includes(stock.stID)).map(stock=>{
                         return `
-                            <tr data-id="${stock.stID}" class="inputContainer">
+                            <tr data-id="${stock.stID}" class="ic-level-1">
                                 <td>${stock.stName}</td>
                                 <td>${stock.stQty}</td>
                                 <td>${stock.uomAbbreviation}</td>
@@ -451,11 +451,32 @@ $(document).ready(function() {
         var stocks = setBrochureForBeginning();
         var items = [];
         $("#beginning form").on("submit",function(event){
+            event.preventDefault();
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
                     stock: $(this).attr("data-id"),
-                    
+                    qty: $(this).find("input[name='actual']").val(),
+                    remarks: $(this).find("textarea[name='remarks']").val()
                 });
+            });
+            $.ajax({
+                method: 'POST',
+                url: '<?= site_url('admin/stocklog/ending/add')?>',
+                data: {
+                    items: JSON.stringify(items)
+                },
+                dataType: 'JSON',
+                success: function(data){
+                    if(data.sessErr){
+                        location.replace('login');
+                    }else{
+                        console.log(data);
+                    }
+                },
+                error: function(response, setting, error) {
+                    console.log(response.responseText);
+                    console.log(error);
+                }
             });
             $("#beginning").modal("hide");
         });
@@ -468,11 +489,11 @@ $(document).ready(function() {
     $("#restock form").on("submit",function(event){
         event.preventDefault();
         var stockQtys = [];
-        for(var x = 0 ;x<$(this).find(".inputContainer").length;x++){
-            console.log($(this).find(".inputContainer").eq(x));
+        for(var x = 0 ;x<$(this).find(".ic-level-1").length;x++){
+            console.log($(this).find(".ic-level-1").eq(x));
             stockQtys.push({
-                id: $(this).find(".inputContainer").eq(x).attr("data-id"),
-                qty: $(this).find(".inputContainer").eq(x).find("input[name='restockQty[]']").val()
+                id: $(this).find(".ic-level-1").eq(x).attr("data-id"),
+                qty: $(this).find(".ic-level-1").eq(x).find("input[name='restockQty[]']").val()
             });
         }
         $.ajax({
