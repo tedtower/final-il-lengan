@@ -1586,7 +1586,8 @@ function add_aospoil($date_recorded,$addons,$account_id){
                 transactions
             LEFT JOIN supplier USING(spID)
             WHERE
-                isArchived = '0' and tType = 'purchase order'";
+                isArchived = '0' and tType = 'purchase order'
+        ORDER BY tID desc";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceipts(){
@@ -1608,7 +1609,8 @@ function add_aospoil($date_recorded,$addons,$account_id){
                 transactions
             LEFT JOIN supplier USING(spID)
             WHERE
-                isArchived = '0' and tType = 'delivery receipt'";
+                isArchived = '0' and tType = 'delivery receipt'
+        ORDER BY tID desc";
         return $this->db->query($query)->result_array();
     }
     function get_officialReceipts(){
@@ -1630,7 +1632,8 @@ function add_aospoil($date_recorded,$addons,$account_id){
                 transactions
             LEFT JOIN supplier USING(spID)
             WHERE
-                isArchived = '0' and tType = 'official receipt'";
+                isArchived = '0' and tType = 'official receipt'
+        ORDER BY tID desc";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceiptItems(){

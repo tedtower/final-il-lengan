@@ -17,6 +17,8 @@
                                     id="addBtn">Add Delivery Receipt</a>
                                 <br>
                                 <br>
+                                <?php if(isset($drs[0])){
+                                ?>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
@@ -28,20 +30,30 @@
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                    <?php foreach($drs as $dr){
+                                    ?>
+                                        <tr data-id="<?= $dr['id']?>">
+                                            <td><?= $dr['num']?></td>
+                                            <td><?= $dr['receipt']?></td>
+                                            <td><?= $dr['supplier']?></td>
+                                            <td><?= $dr['date']?></td>
+                                            <td><?= $dr['total']?></td>
                                             <td>
                                             <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
                                                 id="editBtn">Edit</a>
                                             <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
                                             </td>
                                         </tr>
+                                    <?php
+                                    }?>
                                     </tbody>
                                 </table>
+                                <?php
+                                }else{
+                                ?>
+                                <p>No deliveries recorded!</p>
+                                <?php
+                                }?>
                                 <!--End Table Content-->
 
                                 <!--Start of Modal "Add Transaction"-->

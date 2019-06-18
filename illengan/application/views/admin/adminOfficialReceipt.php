@@ -18,32 +18,43 @@
                                     id="addBtn">Add Official Receipt</a>
                                 <br>
                                 <br>
+                                <?php if(isset($ors[0])){
+                                ?>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
-                                    <tr>
                                         <th><b class="pull-left">Transaction #</b></th>
                                         <th><b class="pull-left">Receipt #</b></th>
                                         <th><b class="pull-left">Supplier</b></th>
                                         <th><b class="pull-left">Date</b></th>
                                         <th><b class="pull-left">Total</b></th>
                                         <th><b class="pull-left">Actions</b></th>
-                                    </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <a class="editBtn btn btn-sm btn-secondary" href="<?= site_url('admin/officialreceipt/formedit')?>">Edit</a>
-                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteOR">Archive</button>
-                                        </td>
-                                    </tr>
+                                    <?php foreach($ors as $or){
+                                    ?>
+                                        <tr data-id="<?= $or['id']?>">
+                                            <td><?= $or['num']?></td>
+                                            <td><?= $or['receipt']?></td>
+                                            <td><?= $or['supplier']?></td>
+                                            <td><?= $or['date']?></td>
+                                            <td><?= $or['total']?></td>
+                                            <td>
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
+                                                id="editBtn">Edit</a>
+                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }?>
                                     </tbody>
                                 </table>
+                                <?php
+                                }else{
+                                ?>
+                                <p>No invoices recorded!</p>
+                                <?php
+                                }?>
                                 <!--End Table Content-->
 
                               <!--Start of Modal "Add Transaction"-->
