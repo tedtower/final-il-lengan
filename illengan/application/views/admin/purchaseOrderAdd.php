@@ -60,7 +60,7 @@
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
-                            <div class="ic-level-1"></div>
+                            <div class="ic-level-2"></div>
 
                             <br>
                             <span>Total: &#8369;<span class="total">0</span></span>
@@ -232,7 +232,7 @@ function getSelectedStocks() {
                     </div>
                 </div>
                  `;
-                $('.ic-level-1').append(merchChecked);
+                $('.ic-level-2').append(merchChecked);
                     setInputValues();
             }
         }
@@ -270,7 +270,6 @@ function setInputValues() {
         var actualqty = tiQty * qtyPerItem;
         $('.actualQty').eq(i).val(actualqty);
         $('.tiSubtotal').eq(i).val(subtotal);
-       
     }
 
      //Setting items tota
