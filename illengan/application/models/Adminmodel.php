@@ -420,7 +420,7 @@ function get_transitems(){
 
     function get_invPeriodStart($stID){
         return $this->db->query("SELECT
-                    DATE_FORMAT(MAX(slDateTime), '%b %d, %Y %r') AS maxDate, slQty
+                    DATE_FORMAT(MAX(slDateTime), '%b %d, %Y %r') AS maxDate, actualQty
                 FROM
                     stocklog
                 WHERE
