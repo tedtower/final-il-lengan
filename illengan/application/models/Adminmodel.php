@@ -592,6 +592,28 @@ function get_transitems(){
         FROM promoconstraint pc INNER JOIN preferences pref USING (prID) INNER JOIN menu mn USING (mID)";
         return $this->db->query($query)->result_array(); 
     }
+    function get_promoconstraint() {
+        $query = "SELECT pmID, pc.prID, pc.pcQty, 
+        CONCAT(mn.mName,' ',pref.prName) AS menu_item
+        FROM promoconstraint pc 
+        INNER JOIN preferences pref USING (prID) 
+        INNER JOIN menu mn USING (mID)";
+        return $this->db->query($query)->result_array(); 
+    }
+    function get_fb() {
+        $query = "SELECT * FROM freebies";
+        return $this->db->query($query)->result_array(); 
+    }
+    function get_menudc() {
+        $query = "SELECT pmID, CONCAT(mn.mName,' ',pref.prName) AS menu_item, md.dcAmount FROM 
+        menudiscount md INNER JOIN preferences pref 
+        USING (prID) INNER JOIN menu mn USING (mID)";
+        return $this->db->query($query)->result_array(); 
+    }
+    function get_dc() {
+        $query = "SELECT * FROM discounts";
+        return $this->db->query($query)->result_array(); 
+    }
     function get_menu(){
         $query = "Select * from menu inner join categories using (ctID) order by ctName asc, mName asc";
         return $this->db->query($query)->result_array();
@@ -750,11 +772,63 @@ function get_transitems(){
        $query = "INSERT into preferences (mID, prName, mTemp, prPrice, prStatus) values (?,?,?,?,?)";
        $this->db->query($query, array($mID, $pref['prName'], $pref['mTemp'], $pref['prPrice'], $pref['prStatus']));
     }
+    function set_tNum() {
+        $query = " SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'return';";
+        return $this->db->query($query)->result();
+    }
+    function add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
+    $isArchived, $trans, $ti) {
+        $query = "INSERT INTO transactions (tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded,
+        tType, tTotal, tRemarks, isArchived) values (NULL, ?,?,?,?,?,?,?,?,?,?)";
+        if($this->db->query($query, array($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType,
+        $tTotal, $tRemarks, $isArchived ))) {
+            if(count($trans) > 0) {
+                $this->add_transitems($this->db->insert_id(),$trans, $ti);
+            }
+        }
+        
+    }
+    function add_transitems($tID, $trans, $ti) {
+        $query = "INSERT INTO transitems (tiID, uomID, stID, tiName, tiPrice, rStatus) VALUES (NULL,?,?,?,?,?)";
+        for($in = 0; $in < count($trans) ; $in++){
+            if($this->db->query($query, array($trans[$in]['uomID'], $trans[$in]['stID'], $trans[$in]['tiName'], 
+            $trans[$in]['tiPrice'], $trans[$in]['rStatus']))) {
+                if(count($ti) > 0) {
+                    $this->add_trans_items($this->db->insert_id(), $tID, $ti, $trans[$in]['stID']);
+                }
+            }
+        }  
+    }
+
+    function add_trans_items($tiID, $tID, $ti, $stID) {
+        $query = "INSERT INTO trans_items (tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal) VALUES (?,?,?,?,?,?)";
+        for($in = 0; $in < count($ti) ; $in++){
+            if(intval($stID) == intval($ti[$in]['stID'])) {
+                $this->db->query($query, array($tID, $tiID, $ti[$in]['tiQty'], $ti[$in]['qtyPerItem'],
+                $ti[$in]['actualQty'], $ti[$in]['tiSubtotal']));
+
+                $this->update_stockitemqty($stID, $ti[$in]['actualQty']);
+            }
+            }
+        } 
 
     function add_menuaddon($mID, $ao){
         $query = "INSERT into menuaddons (mID, aoID) values (?,?)";
         $this->db->query($query, array($mID, $ao['aoID']));
     }
+
+    function update_stockitemqty($stID, $deductQty) {
+        $this->db->select('stQty');
+        $this->db->from('stockitems');
+        $this->db->where('stID', $stID);
+        $stQty = $this->db->get()->row()->stQty;
+
+        $query = "UPDATE stockitems SET stQty = (? - ?) WHERE stID = ?";
+        $this->db->query($query, array(intval($stQty), intval($deductQty), $stID));
+        echo $stQty;
+        echo $deductQty;
+    }
+
     function add_menucategory($ctName){
         $query = "Insert into categories (ctName, ctType) values (?,'menu')";
         return $this->db->query($query,array($ctName));
@@ -1407,11 +1481,12 @@ function add_aospoil($date_recorded,$addons,$account_id){
               if($this->db->query($query, array($orderlists[$in]['prID'], $osID, $orderlists[$in]['olDesc'], 
               $orderlists[$in]['olQty'], $orderlists[$in]['olSubtotal'],'served', ' ', $orderlists[$in]['olPrice'], 
               $orderlists[$in]['olDiscount']))) {
+                $olID = $this->db->insert_id();
+                if(count($addons) > 0) {
+                    $this->update_salesaddons($olID, $orderlists[$in]['prID'], $addons);
+                }
                 if($orderlists[$in]['stID'] !== null) {
                     $this->update_stock($orderlists[$in]['stID'], $orderlists[$in]['stQty']);
-                }
-                if(count($addons) > 0) {
-                    $this->update_salesaddons($this->db->insert_id(), $orderlists[$in]['prID'], $addons);
                 }
               }
         }
@@ -1533,6 +1608,38 @@ function add_aospoil($date_recorded,$addons,$account_id){
 
     }
 
+    function edit_returns($tID, $spID, $spName, $receiptNo, $tDate, $tTotal, $tRemarks, $trans, $ti) {
+        $query = "UPDATE transactions SET receiptNo = ?, tDate = ?, tTotal = ?, tRemarks = ? WHERE tID = ?";
+        if($this->db->query($query, array($receiptNo, $tDate, $tTotal, $tRemarks, $tID))) {
+            if(count($trans) > 0) {
+                for($in = 0; $in < count($trans) ; $in++){
+                    $retItems = array(
+                        'tiID' => $trans[$in]['tiID'],
+                        'uomID' => $trans[$in]['uomID'],
+                        'stID' => $trans[$in]['stID'],
+                        'tiName' => $trans[$in]['tiName'],
+                        'tiPrice' => $trans[$in]['tiPrice'],
+                        'rStatus' => $trans[$in]['rStatus']
+                    );
+                    array_push($returns, $retItems);
+
+                    if($trans[$in]['tiID'] == null) {
+                        $this->add_transitems($tID, $retItems, $ti);
+                    } else if($trans[$in]['del'] === 0) {
+                        $this->delete_transitem($returns, $ti);
+                    } else {
+                        $this->update_transitem($returns, $ti);
+                    }
+                }
+            }
+        }
+    }
+
+    function update_transitem($trans, $ti) {
+
+    }
+    
+    // Get Transactions (PO, DR, OR)
     // INSERT FUNCTIONS FOR PO, DR, OR, RETURN (NEW)
     function add_receiptTransaction($transaction){
         $query = "INSERT INTO transactions(
