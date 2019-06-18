@@ -367,7 +367,7 @@ function addspoilagesstock(){
                 "receipt" => NULL,
                 "date" => $this->input->post('date'),
                 "dateRecorded" => date("Y-m-d H:i:s"),
-                "type" => $this->input->post('puchase order'),
+                "type" => "purchase order",
                 "total" => $this->input->post('total'),
                 "remarks" => $this->input->post('remarks')
             );

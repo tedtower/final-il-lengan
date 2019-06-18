@@ -1526,7 +1526,7 @@ function add_aospoil($date_recorded,$addons,$account_id){
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
             FROM transactions
             WHERE tType = 'purchase order'")->result_array()[0]['lastnum'];
-        $lastNum = $lastNum == NULL ? 1 : $lastNum++;
+        $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
         if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $lastNum, $transaction['receipt'],
             $transaction['date'], $transaction['dateRecorded'], $transaction['type'], $transaction['total'], $transaction['remarks']))){
             return $this->db->insert_id();

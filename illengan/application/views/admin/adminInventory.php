@@ -679,13 +679,20 @@ function setBrochureForBeginning(){
                     var item = stocks.filter(stock => stock.stID == $(this).val())[0];
                     $("#beginning").find(".ic-level-2").append(`
                         <tr class="ic-level-1" data-id="${item.stID}">
-                            <td><input type="text" name="name" value="${item.stName}" class="form-control form-control-sm"></td>
-                            <td><input type="number" name="current" value="${item.stQty}" class="form-control form-control-sm"></td>
+                            <td><input type="text" name="name" value="${item.stName}" class="form-control form-control-sm" readonly="readonly"></td>
+                            <td><input type="number" name="current" value="${item.stQty}" class="form-control form-control-sm"  readonly="readonly"></td>
                             <td><input type="number" name="actual" value='0' class="form-control form-control-sm"></td>
-                            <td><input type="number" name="discrep" class="form-control form-control-sm"></td>
+                            <td><input type="number" name="discrep" class="form-control form-control-sm"  readonly="readonly"></td>
                             <td><textarea type="text" name="remarks" class="form-control form-control-sm" rows="1"></textarea></td>
                             <td><img class="exitBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"></td>
                         </tr>`);
+                });
+                $("#beginning").find("input[name='actual']").on("change",function(){
+                    var discrep = $(this).val()- $(this).closest(".ic-level-1").find("input[name='current']").val();
+                    $(this).closest(".ic-level-1").find("input[name='discrep']").val(discrep);
+                });
+                $("#beginning").find("input[name='discrep']").on("change",function(){
+                    $(this).closest(".ic-level-1").find("input[name='actual']").trigger("click");
                 });
                 $(this).find(".extBtn").on("click",function(){
                     $(this).closest(".ic-level-1").remove();
