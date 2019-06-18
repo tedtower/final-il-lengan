@@ -202,7 +202,7 @@ function getSelectedStocks() {
                                 class="tiQty form-control form-control-sm"
                                 placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
                             <select name="itemUnit[]"
-                                class="itemUnit form-control form-control-sm">
+                                class="itemUnit form-control form-control-sm" readonly>
                                 <option value="" selected="selected">Unit</option>
                             </select>
                             <input type="number" name="price[]"
@@ -257,6 +257,7 @@ function getSelectedStocks() {
     });
     $("#merchandiseBrochure").modal("hide");
 }
+
 function setInputValues() {
     var total = 0;
     for(var i = 0; i <= $('.poElements').length -1 ; i++) {
@@ -289,8 +290,8 @@ $(document).ready(function() {
         for (var index = 0; index < $(this).find(".poElements").length; index++) {
             var row = $(this).find(".poElements").eq(index);
             trans.push({
-                uomID:  row.find("input[name='itemUnit[]']").val(),
-                stID:  row.find("select[name='stID']").val(),
+                uomID:  row.find("select[name='itemUnit[]']").val(),
+                stID:  row.find("select[name='stID[]']").val(),
                 name: row.find("input[name='itemName[]']").val(),
                 price:  row.find("input[name='price[]']").val(),
                 discount: row.find("input[name='discount[]']").val(),
@@ -306,28 +307,27 @@ $(document).ready(function() {
             });
         }
 
-
-        // $.ajax({
-        //     url: "<?= site_url("admin/sales/edit")?>",
-        //     method: "post",
-        //     // data: {
-        //     //     spID 
-        //     //     spName 
-        //     //     tDate 
-        //     //     tTotal 
-        //     //     tRemarks
-        //     //     orderlists: JSON.stringify(ol),
-        //     //     addons: JSON.stringify(addons)
-        //     // },
-        //     success: function() {
-        //         location.reload();
-        //     },
-        //     error: function (response, setting, errorThrown) {
-        //         alert("There are add on duplicates on an item");
-        //         console.log(errorThrown);
-        //         console.log(response.responseText);
-        //     }
-        // });
+        $.ajax({
+            method: "post",
+            url: "<?= site_url("admin/purchaseorder/add")?>",
+            data: {
+                supplier: supplier,
+                date: date,
+                remarks:remarks,
+                trans: JSON.stringify(trans),
+                transitems: JSON.stringify(transitems)
+            },
+            dataType: "json",
+            beforeSend: function() {
+                console.log(supplier,date,remarks,trans,transitems);
+            },
+            success: function(data) {
+            },
+            error: function(response, setting, error) {
+                console.log(error);
+                console.log(response);
+            }
+        });
     });
 });
 
