@@ -378,6 +378,9 @@ function addspoilagesstock(){
             $this->adminmodel->add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
             $isArchived, $trans, $ti);
         }else{
+
+        }
+    }
          
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -400,6 +403,7 @@ function addspoilagesstock(){
                         "uom" => $poItem['uomID'],
                         "stock" => $poItem['stID'],
                         "price" => $poItem['price'],
+                        "name" => $poItem['name'],
                         "discount" => $poItem['discount'],
                         "delivery" => 'pending',
                         "payment" => NULL,
@@ -411,10 +415,13 @@ function addspoilagesstock(){
                         "tiID" => NULL
                     );
                     $poiID = $this->adminmodel->add_receiptTransactionItems($po);
-                    $po['tiID'] = $poID;
+                    $po['tiID'] = $poiID;
                     $this->adminmodel->add_receiptTransactionItemsQty($poID, $po);
                 }
             }
+            echo json_encode(array(
+                "success" => true
+            ));
         }else{
             echo json_encode(array(
                 "sessErr" => true
@@ -441,6 +448,7 @@ function addspoilagesstock(){
                     $dr = array(
                         "uom" => $poItem['uomID'],
                         "stock" => $poItem['stID'],
+                        "name" => $poItem['name'],
                         "price" => $poItem['price'],
                         "discount" => $poItem['discount'],
                         "delivery" => 'pending',
@@ -506,4 +514,3 @@ function addspoilagesstock(){
     }
 }
 ?>
-

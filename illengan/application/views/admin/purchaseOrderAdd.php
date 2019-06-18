@@ -314,10 +314,13 @@ $(document).ready(function() {
                 console.log(supplier,date,remarks,transitems);
             },
             success: function(data) {
+                if(data.success){
+                    location.replace('admin/purchaseorder');
+                }
             },
             error: function(response, setting, error) {
                 console.log(error);
-                console.log(response);
+                console.log(response.responseText);
             }
         });
     });
