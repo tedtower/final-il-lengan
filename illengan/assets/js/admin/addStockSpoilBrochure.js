@@ -24,7 +24,7 @@ function getSelectedStocks() {
                             <input type="hidden" id="uomStore` + i + `" name="uomStore" class="form-control form-control-sm" data-uomStore="` + data[i].uomStore + `" value="` + data[i].uomStore + `">
                             <td><input type="text" id="stName` + i + `" name="stName"
                                     class="form-control form-control-sm"  value="` + data[i].stName + `"  required></td>
-                            <td><input type="number" min="1" id="tiQTy` + i + `" name="tiQTy"
+                            <td><input type="number" min="1" id="actualQty` + i + `" name="actualQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="tRemarks` + i + `" name="tRemarks"
                                     class="form-control form-control-sm"  value="" required></td>
@@ -49,23 +49,23 @@ function addStockItems() {
     var tDate = document.getElementById('tDate').value;
     var stockItems = [];
     var stocks = [];
-    var stID,tiQTy, tRemarks, curQty,uomID,spmActualQty,uomStore;
+    var stID,actualQty, tRemarks, curQty,uomID,spmActualQty,uomStore;
     for (var i = 0; i <= elements.length - 1; i++) {
         uomID = document.getElementsByName('uomID')[i].value;
         stID = document.getElementsByName('stID')[i].value;
         stName = document.getElementsByName('stName')[i].value;
         curQty = document.getElementsByName('curQty')[i].value;
-        tiQTy = document.getElementsByName('tiQTy')[i].value;
+        actualQty = document.getElementsByName('actualQty')[i].value;
         tRemarks = document.getElementsByName('tRemarks')[i].value;
         spmActualQty = document.getElementsByName('spmActualQty')[i].value;
         uomStore =document.getElementsByName('uomStore')[i].value;
-
+        
         stockItems = {
             'uomID': uomID,
             'stID': stID,
             'stName':stName,
             'curQty': curQty,
-            'tiQTy': tiQTy,
+            'actualQty': actualQty,
             'tRemarks': tRemarks,
             'tDate': tDate,
             'spmActualQty':spmActualQty,
@@ -81,10 +81,10 @@ function addStockItems() {
             stocks: JSON.stringify(stocks)
         },
         dataType: 'json',
-        // complete: function() {
-        //     $("#formAdd").modal("hide");
-        //     location.reload();
-        //     },
+        complete: function() {
+            $("#formAdd").modal("hide");
+            location.reload();
+            },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);

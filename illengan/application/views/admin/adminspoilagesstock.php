@@ -19,6 +19,7 @@
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
+									<th></th>
 									<th>TRANSACTION #</th>
 									<th>STOCK ITEM</th>
 									<th>QUANTITY</th>
@@ -262,9 +263,11 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr" data-tiQty="${table.tiQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-dateRecorded="${table.tiQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${table.tiName}</td>
-                <td>${table.tiQty}</td>
+			<tr class="spoilagesTabletr" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-dateRecorded="${table.actualQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
+				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
+				<td>${table.tID}</td>
+				<td>${table.tiName}</td>
+				<td>${table.actualQty}</td>
 				<td>${table.tDate}</td>
 				<td>${table.dateRecorded}</td>
                 <td>
@@ -283,7 +286,7 @@
 
 			var accordion = `
             <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="6"> <!-- table row ng accordion -->
+                <td colspan="7"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none"> <!-- container ng accordion -->
                         
                         <div style="overflow:auto;"> <!-- description, preferences, and addons container -->

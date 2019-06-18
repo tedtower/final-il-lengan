@@ -125,8 +125,10 @@ function addspoilagesaddons(){
         $this->load->model('adminmodel');
         $date_recorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
+        $account_id = $_SESSION["user_id"];
+
         echo json_encode($addons, true);
-        $this->adminmodel->add_aospoil($date_recorded,$addons);
+        $this->adminmodel->add_aospoil($date_recorded,$addons,$account_id);
        
     }else{
         redirect('login');
@@ -137,8 +139,10 @@ function addspoilagesmenu(){
         $this->load->model('adminmodel');
         $date_recorded = date("Y-m-d H:i:s");
         $menus = json_decode($this->input->post('menus'), true);
+        $account_id = $_SESSION["user_id"];
+
         echo json_encode($menus, true);
-        $this->adminmodel->add_menuspoil($date_recorded,$menus);
+        $this->adminmodel->add_menuspoil($date_recorded,$menus,$account_id);
        
     }else{
         redirect('login');
