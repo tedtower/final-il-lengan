@@ -59,11 +59,10 @@ $(document).ready(function(){
     $('#addonSelectBtn').on('click', function(event){
         var ao_select = `<!--Select For Addons-->
             <div class="input-group mb-3 delius">
-                <select class="browser-default custom-select w-50 addonSelect" name="addon[]">
+                <select class="browser-default custom-select w-50 addonSelect" name="addon[]" required>
                     <option selected disabled>Choose...</option>
                 </select>
-                <input type="number" min="1" value="1" placeholder="Qty" aria-label="Add-on Quantity"
-                class="form-control" name="addonQty[]">
+                <input type="number" min="1" value="1" placeholder="Qty" aria-label="Add-on Quantity" class="form-control" name="addonQty[]" required>
                 <div class="input-group-prepend">
                     <!--Subtotal-->
                     <span class="aoSub mt-2 ml-1"></span>
@@ -147,8 +146,9 @@ $(document).ready(function(){
         var table_no = $("input#table_no").val();
         var cust_name = $("input#cust_name").val();
         var total = $("input#total").val();
-        console.log(table_no, cust_name, total)
-
+        console.log(table_no, cust_name, total);
+        $('#order_modal').modal('hide');
+        $('#proceed_modal').modal('hide');
         $.ajax({
             method: "post",
             url: "<?php echo site_url('customer/completeOrder')?>",
@@ -462,6 +462,7 @@ $('#edit_orderlist').click(function(){
     var addonIds = [],addonQtys = [], addonSubtotals = [];
     var rowID = parseInt($('#edit_row').text());
     var epqty = parseFloat($('input[name="edit_qty"]').val());
+    console.log(rowID)
     if($('select[name="edit_addons[]"]').val()){
         for(var ai=0; ai < $('select[name="edit_addons[]"]').length; ai++){
             var aoi = parseFloat($("select[name='edit_addons[]']").eq(ai).find("option:selected").val()),
