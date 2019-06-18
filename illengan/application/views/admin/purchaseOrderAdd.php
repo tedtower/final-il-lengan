@@ -60,7 +60,7 @@
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
-                            <div class="ic-level-1"></div>
+                            <div class="ic-level-2"></div>
 
                             <br>
                             <span>Total: &#8369;<span class="total">0</span></span>
@@ -232,11 +232,10 @@ function getSelectedStocks() {
                     </div>
                 </div>
                  `;
-                $('.ic-level-1').append(merchChecked);
+                $('.ic-level-2').append(merchChecked);
                     setInputValues();
             }
         }
-        $(".poElements").append(row);
         $(".exitBtn").on('click',function(){
             $(this).closest(".poElements").remove();
         });
@@ -270,7 +269,6 @@ function setInputValues() {
         var actualqty = tiQty * qtyPerItem;
         $('.actualQty').eq(i).val(actualqty);
         $('.tiSubtotal').eq(i).val(subtotal);
-       
     }
 
      //Setting items tota
@@ -294,7 +292,7 @@ $(document).ready(function() {
                 uomID:  row.find("input[name='itemUnit[]']").val(),
                 stID:  row.find("select[name='stID']").val(),
                 name: row.find("input[name='itemName[]']").val(),
-                price:  row.find("input[name='price'[]]").val(),
+                price:  row.find("input[name='price[]']").val(),
                 discount: row.find("input[name='discount[]']").val(),
             });
         }

@@ -119,13 +119,14 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div>    
                             <div class="mt-4"
-                                style="float:left:width:3%;overflow:auto;">
-                                <img class="exitBtn"
-                                    src="/assets/media/admin/error.png"
-                                    style="width:20px;height:20px;float:right;">
-                            </div>
+                                    style="float:left:width:3%;overflow:auto;">
+                                    <img class="exitBtn"
+                                        src="/assets/media/admin/error.png"
+                                        style="width:20px;height:20px;float:right;">
+                                </div>
+                                
                             <br><br>
                             <span>Total: &#8369;<span class="total">0</span></span>
                             <!--Total of the trans items-->
