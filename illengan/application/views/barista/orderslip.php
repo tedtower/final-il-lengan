@@ -171,7 +171,7 @@
                   </div>
                   <div class="modal-footer" id="updateTable" >
                   <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-                  
+                  <input type="hidden" id="updateDB" data-osID="${item.orderslips.osID}"/>
                   </div>
                 </div>
                 </form>
@@ -202,7 +202,6 @@
                 updateStatus(stats, id);
                 }
             });
-
             var btn;
             $("button.deleteOS").on("click", function() {
                  btn = $(this);
@@ -210,7 +209,6 @@
             $("button#remSlip").on("click", function(){
             $(btn).closest("div.list").remove();
             });
-
             $("img.cancelBtn").on("click", function() {
                 var cancelID = $(this).attr('data-id');
                 var chckStats = $(this).attr('data-status');
@@ -223,9 +221,8 @@
             $("img.editBtn").on("click", function() {
                 var tableCode = $(this).attr('data-tableCode');
                 var  slipId = $(this).attr('data-id');
-                setTableData(tableCode, slipId);
+                setTableData(slipId);
             });
-
             addAddons();
         }
        
@@ -274,7 +271,6 @@
                 });
             });
             }
-
         function updateStatus(stats, id){
             console.log(stats, id);
             $.ajax({
@@ -294,7 +290,6 @@
             }
             });
     }
-
     function addAddons() {
        // addons.forEach(ao => {
            for(var i=0; i < addons.length; i++){
@@ -309,23 +304,26 @@
   //  });
     }
 }
-    function setTableData(tableCode, slipID){
-        console.log( slipID);
+    function setTableData(slipID){
+        console.log(slipID);
                 $("#tableCode").empty();
-                    for(var t=0; t < tables.length; t++){
-                    $("#tableCode").append(`<option name= "tableCode" id ="tableCode" data-tcode="${tables[t].tableCode}">${tables[t].tableCode}</option>`);
-                    }
-                    $("#updateTable").append(`<button type="button" class="btn btn-success btn-sm" id="updateDB" data-osID="${slipID}">Update</button>`);
+                $("#tableCode").append(`<option>--Select--</option>`);
+                $(tables).each(function(i) { //to list cities
+                $("#tableCode").append(`<option id="table" value=` + tables[i].tableCode + `>` + tables[i].tableCode + `</option>`);
+                });
+                    // for(var t=0; t < tables.length; t++){
+                    // $("#tableCode").append(`<option name= "tableCode" id ="table" value="${tables[t].tableCode}">${tables[t].tableCode}</option>`);
+                    // }   
     
-    $("button#updateDB").on('click', function(event) {
-            var osID = $('#updateDB').attr("data-osID");
-            var tableCode = $("option#tableCode").attr("data-tcode");
-            console.log(osID, tableCode);
+    $("select#tableCode").on('change', function(event) {
+            var optionSelected = $("option:selected", this);
+            var tableCode = this.value;
+            console.log(slipID, tableCode);
             $.ajax({
                 url: "<?= site_url("barista/editTableNumber")?>",
                 method: "post",
                 data: {
-                    'osID': osID,
+                    'osID': slipID,
                     'tableCode': tableCode
                 },
                 success: function(data) {
@@ -341,4 +339,4 @@
     }
     </script>
 </body>
-</htmL>
+</htmL
