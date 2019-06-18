@@ -158,7 +158,9 @@
                 supplier = data.supplier;
                 suppmerch = data.suppmerch;
                 uom = data.uom;
-            },
+                po = data.po;
+                poitems = data.poitems;            
+                },
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
                 console.log(response.responseText);
@@ -247,12 +249,10 @@ function getSelectedStocks() {
         $("select[name='itemUnit[]']").find(`option[value=${spm[0].uomID}]`).attr("selected","selected");
         console.log(uom);
 
-        $('.stock').empty();
-        $(".stock").append(`${stocks.map(stock => {
+        $('.stock').last().empty();
+        $(".stock").last().append(`${stocks.map(stock => {
             return `<option value="${stock.stID}">${stock.stName}</option>`
         }).join('')}`);
-
-        
 
     });
     $("#merchandiseBrochure").modal("hide");
