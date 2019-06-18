@@ -112,14 +112,14 @@
         $("#addBtn").on("click", function(){
             setAddEditBtnHandlers();
         });
-        $('#addEditTransaction').on('hidden.bs.modal', function () {
-            $("#addEditTransaction form")[0].reset();
+        $('#addTransaction').on('hidden.bs.modal', function () {
+            $("#addTransaction form")[0].reset();
             $(this).find("select[name='spID']").off('change');
             $("#addItemBtn").off('click');
             $("#addPOBtn").off('click');
             $("#addDRBtn").off('click');
             $("#addMBtn").off('click');
-            $("#addEditTransaction").find(".ic-level-2").empty();
+            $("#addTransaction").find(".ic-level-2").empty();
         });
         $(".accordionBtn").on('click', function() {
             if ($(this).closest('tr').next('.accordion').css('display') === 'none') {
@@ -135,7 +135,7 @@
             setAddEditBtnHandlers();
             populateModalForm(getTransUrl, id);
         });
-        $("#addEditTransaction form").on('submit', function(event) {
+        $("#addTransaction form").on('submit', function(event) {
             event.preventDefault();
             var id = $(this).find('input[name="tID"]').val();
             var supplier = $(this).find('select[name="spID"]').val();
@@ -185,9 +185,9 @@
         });
         $("#stockBrochure form").on('submit',function(event){
             event.preventDefault();
-            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).find("input[name='stocks']:checked").attr("data-name"));
-            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id", $(this).find("input[name='stocks']:checked").val());
-            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("select[name='actualUnit[]']").trigger('change');
+            $("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).find("input[name='stocks']:checked").attr("data-name"));
+            $("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id", $(this).find("input[name='stocks']:checked").val());
+            $("#addTransaction").find(".ic-level-1[data-focus='true']").find("select[name='actualUnit[]']").trigger('change');
             $(this)[0].reset();
             $("#stockBrochure").modal("hide");
         });
@@ -211,16 +211,16 @@
             success: function(data) {
                 console.log(data);
                 var input;
-                $("#addEditTransaction").find('select[name="spID"]').children().first().siblings().remove();
-                $("#addEditTransaction").find('select[name="tType"]').children().first().siblings().remove();
-                $("#addEditTransaction").find('select[name="spID"]').append(data.suppliers.map(supplier => {
+                $("#addTransaction").find('select[name="spID"]').children().first().siblings().remove();
+                $("#addTransaction").find('select[name="tType"]').children().first().siblings().remove();
+                $("#addTransaction").find('select[name="spID"]').append(data.suppliers.map(supplier => {
                     return `<option value="${supplier.spID}">${supplier.spName}</option>`;
                 }).join(''));
-                $("#addEditTransaction").find('select[name="tType"]').append(data.tTypes.map(type => {
+                $("#addTransaction").find('select[name="tType"]').append(data.tTypes.map(type => {
                     return `<option value="${type}">${type.toUpperCase()}</option>`;
                 }).join(''));
                 $("#addItemBtn").on('click',function(){
-                    $("#addEditTransaction").find(".ic-level-2").append(`
+                    $("#addTransaction").find(".ic-level-2").append(`
                     <div class="container mb-3 ic-level-1"
                         style="overflow:auto;width:100%" data-id="">
                         <div style="float:left;width:95%;overflow:auto;">
@@ -271,25 +271,25 @@
                                 style="width:20px;height:20px;float:right;">
                         </div>
                     </div>`);
-                    $("#addEditTransaction").find(".exitBtn").last().on('click',function(){
+                    $("#addTransaction").find(".exitBtn").last().on('click',function(){
                         $(this).closest(".ic-level-1").remove();
                     });
-                    $("#addEditTransaction").find("select[name='itemUnit[]']").last().append(data.uoms.map(uom=>{
+                    $("#addTransaction").find("select[name='itemUnit[]']").last().append(data.uoms.map(uom=>{
                         return `<option value="${uom.uomID}">${uom.uomAbbreviation}</option>`;
                     }).join(''));
-                    $("#addEditTransaction").find("select[name='actualUnit[]']").last().append(data.uoms.map(uom=>{
+                    $("#addTransaction").find("select[name='actualUnit[]']").last().append(data.uoms.map(uom=>{
                         return `<option value="${uom.uomID}">${uom.uomAbbreviation}</option>`;
                     }).join(''));
-                    $("#addEditTransaction").find("select[name='itemStatus[]']").last().append(data.tiStatuses.map(status=>{
+                    $("#addTransaction").find("select[name='itemStatus[]']").last().append(data.tiStatuses.map(status=>{
                         return `<option value="${status}">${status.toUpperCase()}</option>`;
                     }).join(''));
-                    $("#addEditTransaction").find(".ic-level-1 *").on("focus",function(){
+                    $("#addTransaction").find(".ic-level-1 *").on("focus",function(){
                         if(!$(this).closest(".ic-level-1").attr("data-focus")){
-                            $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
+                            $("#addTransaction").find(".ic-level-1").removeAttr("data-focus");
                             $(this).closest(".ic-level-1").attr("data-focus",true);
                         }
                     });
-                    $("#addEditTransaction").find("input[name='stID[]']").last().on('focus', function(){
+                    $("#addTransaction").find("input[name='stID[]']").last().on('focus', function(){
                         $("#stockList").empty();
                         $("#stockList").append(data.stocks.map(stock =>{
                             return `<div class="d-flex d-inline-block"><label>
@@ -299,17 +299,17 @@
                         }).join(''));
                         $("#stockBrochure").modal('show');
                     });
-                    $("#addEditTransaction").find("select[name='actualUnit[]']").last().on('change', function(event){
-                        var stID = $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id");
+                    $("#addTransaction").find("select[name='actualUnit[]']").last().on('change', function(event){
+                        var stID = $("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id");
                         $(this).find(`option[value=${data.stocks.filter(stock=>stock.stID == stID)[0].uomID}]`).attr("selected","selected");
                     });
-                    $("#addEditTransaction").find("input[name='itemPrice[]']").last().on('change', function(event){
+                    $("#addTransaction").find("input[name='itemPrice[]']").last().on('change', function(event){
                         computeICSubtotal();
                     });
-                    $("#addEditTransaction").find("input[name='itemQty[]']").last().on('change', function(event){
+                    $("#addTransaction").find("input[name='itemQty[]']").last().on('change', function(event){
                         computeICSubtotal();
                     });
-                    $("#addEditTransaction").find("input[name='itemSubtotal[]']").last().on('change', function(event){
+                    $("#addTransaction").find("input[name='itemSubtotal[]']").last().on('change', function(event){
                         computeICSubtotal();
                     });
                 });
@@ -321,19 +321,19 @@
         });
     }
     function computeICSubtotal(){
-        var qty = parseInt($("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemQty[]']").val());
-        var price = parseFloat($("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemPrice[]']").val());
+        var qty = parseInt($("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemQty[]']").val());
+        var price = parseFloat($("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemPrice[]']").val());
         var subtotal;
         if(isNaN(qty)){
-            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemQty[]']").val(0);
+            $("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemQty[]']").val(0);
             qty = 0;
         }
         if(isNaN(price)){
-            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemPrice[]']").val(0);
+            $("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemPrice[]']").val(0);
             price = 0;
         }
         subtotal = qty * price;
-        $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemSubtotal[]']").val(subtotal.toFixed(2));
+        $("#addTransaction").find(".ic-level-1[data-focus='true']").find("input[name='itemSubtotal[]']").val(subtotal.toFixed(2));
     }
     function populateModalForm(url, id) {
         $.ajax({
@@ -345,28 +345,28 @@
             dataType: 'JSON',
             success: function(data) {
                 if(!data.inputErr){
-                    $("#addEditTransaction").find('input[name="tID"]').val(data.transaction[0].tID);
-                    $("#addEditTransaction").find('select[name="spID"]').children(`option[value=${data.transaction[0].spID}]`).attr('selected', 'selected');
-                    $("#addEditTransaction").find('select[name="tType"]').children(`option[value="${data.transaction[0].tType}"]`).attr(
+                    $("#addTransaction").find('input[name="tID"]').val(data.transaction[0].tID);
+                    $("#addTransaction").find('select[name="spID"]').children(`option[value=${data.transaction[0].spID}]`).attr('selected', 'selected');
+                    $("#addTransaction").find('select[name="tType"]').children(`option[value="${data.transaction[0].tType}"]`).attr(
                         'selected', 'selected');
-                    $("#addEditTransaction").find('input[name="tNum"]').val(data.transaction[0].tNum);
-                    $("#addEditTransaction").find('input[name="tDate"]').val(data.transaction[0].tDate);
-                    $("#addEditTransaction").find('textarea[name="tRemarks"]').val(data.transaction[0].tRemarks);
+                    $("#addTransaction").find('input[name="tNum"]').val(data.transaction[0].tNum);
+                    $("#addTransaction").find('input[name="tDate"]').val(data.transaction[0].tDate);
+                    $("#addTransaction").find('textarea[name="tRemarks"]').val(data.transaction[0].tRemarks);
                     data.transitems.forEach(item =>{
                         $("#addItemBtn").trigger("click");
-                        $("#addEditTransaction").find(".ic-level-1").last().attr("data-id",item.tiID);
-                        $("#addEditTransaction").find(".ic-level-1").last().attr("data-focus",true);
-                        $("#addEditTransaction").find("input[name='itemName[]']").last().val(item.tiName);
-                        $("#addEditTransaction").find("input[name='stID[]']").last().attr("data-id",item.stID);
-                        $("#addEditTransaction").find("input[name='stID[]']").last().val(item.stName);
-                        $("#addEditTransaction").find("input[name='itemQty[]']").last().val(item.tiQty);
-                        $("#addEditTransaction").find("input[name='actualQty[]']").last().val(item.tiActualQty);
-                        $("#addEditTransaction").find("select[name='itemUnit[]']").last().children(`option[value=${item.uomID}]`).attr("selected","selected");
-                        $("#addEditTransaction").find("input[name='itemPrice[]']").last().val(parseFloat(item.tiPrice).toFixed(2));
-                        $("#addEditTransaction").find("input[name='itemSubtotal[]']").last().val(parseFloat(item.tiSubtotal).toFixed(2));
-                        $("#addEditTransaction").find("select[name='itemStatus[]']").last().children(`option[value='${item.tiStatus}']`).attr("selected","selected");
-                        $("#addEditTransaction").find("select[name='actualUnit[]']").last().trigger("change");
-                        $("#addEditTransaction").find(".ic-level-1").last().removeAttr("data-focus");
+                        $("#addTransaction").find(".ic-level-1").last().attr("data-id",item.tiID);
+                        $("#addTransaction").find(".ic-level-1").last().attr("data-focus",true);
+                        $("#addTransaction").find("input[name='itemName[]']").last().val(item.tiName);
+                        $("#addTransaction").find("input[name='stID[]']").last().attr("data-id",item.stID);
+                        $("#addTransaction").find("input[name='stID[]']").last().val(item.stName);
+                        $("#addTransaction").find("input[name='itemQty[]']").last().val(item.tiQty);
+                        $("#addTransaction").find("input[name='actualQty[]']").last().val(item.tiActualQty);
+                        $("#addTransaction").find("select[name='itemUnit[]']").last().children(`option[value=${item.uomID}]`).attr("selected","selected");
+                        $("#addTransaction").find("input[name='itemPrice[]']").last().val(parseFloat(item.tiPrice).toFixed(2));
+                        $("#addTransaction").find("input[name='itemSubtotal[]']").last().val(parseFloat(item.tiSubtotal).toFixed(2));
+                        $("#addTransaction").find("select[name='itemStatus[]']").last().children(`option[value='${item.tiStatus}']`).attr("selected","selected");
+                        $("#addTransaction").find("select[name='actualUnit[]']").last().trigger("change");
+                        $("#addTransaction").find(".ic-level-1").last().removeAttr("data-focus");
                     });
                 }
             },
@@ -380,15 +380,15 @@
         var previousVal;
         $("#addPOBtn").prop("disabled",true);
         $("#addDRBtn").prop("disabled",true);
-        $('#addEditTransaction').find("select[name='spID']").on("focus",function(){
+        $('#addTransaction').find("select[name='spID']").on("focus",function(){
             previousVal = $(this).val();
         }).change(function(){
             if(!isNaN(parseInt(previousVal))){
-                $("#addEditTransaction").find(".ic-level-2").children().remove();
+                $("#addTransaction").find(".ic-level-2").children().remove();
             }
             previousVal = $(this).val();
         });
-        $("#addEditTransaction").find("select[name='tType']").on("change",function(){
+        $("#addTransaction").find("select[name='tType']").on("change",function(){
             switch($(this).val()){
                 case "purchase order" : 
                     $("#addPOBtn").prop("disabled",true);
@@ -418,7 +418,7 @@
         });
     }
     function setTransactionBrochure(url){
-        var spID = $("#addEditTransaction").find("select[name='spID']").val();
+        var spID = $("#addTransaction").find("select[name='spID']").val();
         $.ajax({
             method: "POST",
             url: url,
@@ -475,19 +475,19 @@
                             selectItems = data.transitems.filter(item=> selectItems.includes(item.tiID));
                             selectItems.forEach(item =>{
                                 $("#addItemBtn").trigger("click");
-                                $("#addEditTransaction").find(".ic-level-1").last().attr("data-id",item.tiID);
-                                $("#addEditTransaction").find(".ic-level-1").last().attr("data-focus",true);
-                                $("#addEditTransaction").find("input[name='itemName[]']").last().val(item.tiName);
-                                $("#addEditTransaction").find("input[name='stID[]']").last().attr("data-id",item.stID);
-                                $("#addEditTransaction").find("input[name='stID[]']").last().val(item.stName);
-                                $("#addEditTransaction").find("input[name='itemQty[]']").last().val(item.tiQty);
-                                $("#addEditTransaction").find("input[name='actualQty[]']").last().val(item.tiActualQty);
-                                $("#addEditTransaction").find("select[name='itemUnit[]']").last().children(`option[value=${item.uomID}]`).attr("selected","selected");
-                                $("#addEditTransaction").find("input[name='itemPrice[]']").last().val(parseFloat(item.tiPrice).toFixed(2));
-                                $("#addEditTransaction").find("input[name='itemSubtotal[]']").last().val(parseFloat(item.tiSubtotal).toFixed(2));
-                                $("#addEditTransaction").find("select[name='itemStatus[]']").last().children(`option[value='${item.tiStatus}']`).attr("selected","selected");
-                                $("#addEditTransaction").find("select[name='actualUnit[]']").last().trigger("change");
-                                $("#addEditTransaction").find(".ic-level-1").last().removeAttr("data-focus");
+                                $("#addTransaction").find(".ic-level-1").last().attr("data-id",item.tiID);
+                                $("#addTransaction").find(".ic-level-1").last().attr("data-focus",true);
+                                $("#addTransaction").find("input[name='itemName[]']").last().val(item.tiName);
+                                $("#addTransaction").find("input[name='stID[]']").last().attr("data-id",item.stID);
+                                $("#addTransaction").find("input[name='stID[]']").last().val(item.stName);
+                                $("#addTransaction").find("input[name='itemQty[]']").last().val(item.tiQty);
+                                $("#addTransaction").find("input[name='actualQty[]']").last().val(item.tiActualQty);
+                                $("#addTransaction").find("select[name='itemUnit[]']").last().children(`option[value=${item.uomID}]`).attr("selected","selected");
+                                $("#addTransaction").find("input[name='itemPrice[]']").last().val(parseFloat(item.tiPrice).toFixed(2));
+                                $("#addTransaction").find("input[name='itemSubtotal[]']").last().val(parseFloat(item.tiSubtotal).toFixed(2));
+                                $("#addTransaction").find("select[name='itemStatus[]']").last().children(`option[value='${item.tiStatus}']`).attr("selected","selected");
+                                $("#addTransaction").find("select[name='actualUnit[]']").last().trigger("change");
+                                $("#addTransaction").find(".ic-level-1").last().removeAttr("data-focus");
                             });
                             $("#transactionBrochure").modal("hide");
                         });
@@ -503,7 +503,7 @@
         });
     }
     function setMerchandiseBrochure(url){
-        var spID = $("#addEditTransaction").find("select[name='spID']").val();
+        var spID = $("#addTransaction").find("select[name='spID']").val();
         $.ajax({
             method: "POST",
             url: url,
@@ -532,15 +532,15 @@
                         selectedMerch = data.merchandise.filter(merchandise => selectedMerch.includes(merchandise.spmID));
                         selectedMerch.forEach(merch => {
                             $("#addItemBtn").trigger("click");
-                            $("#addEditTransaction").find(".ic-level-1").last().attr("data-focus",true);
-                            $("#addEditTransaction").find("input[name='itemName[]']").last().val(merch.spmName);
-                            $("#addEditTransaction").find("input[name='stID[]']").last().attr("data-id",merch.stID);
-                            $("#addEditTransaction").find("input[name='stID[]']").last().val(merch.stName);
-                            $("#addEditTransaction").find("input[name='actualQty[]']").last().val(merch.spmActualQty);
-                            $("#addEditTransaction").find("select[name='itemUnit[]']").last().children(`option[value=${merch.uomID}]`).attr("selected","selected");
-                            $("#addEditTransaction").find("input[name='itemPrice[]']").last().val(merch.spmPrice);
-                            $("#addEditTransaction").find("select[name='actualUnit[]']").last().trigger("change");
-                            $("#addEditTransaction").find(".ic-level-1").last().removeAttr("data-focus");
+                            $("#addTransaction").find(".ic-level-1").last().attr("data-focus",true);
+                            $("#addTransaction").find("input[name='itemName[]']").last().val(merch.spmName);
+                            $("#addTransaction").find("input[name='stID[]']").last().attr("data-id",merch.stID);
+                            $("#addTransaction").find("input[name='stID[]']").last().val(merch.stName);
+                            $("#addTransaction").find("input[name='actualQty[]']").last().val(merch.spmActualQty);
+                            $("#addTransaction").find("select[name='itemUnit[]']").last().children(`option[value=${merch.uomID}]`).attr("selected","selected");
+                            $("#addTransaction").find("input[name='itemPrice[]']").last().val(merch.spmPrice);
+                            $("#addTransaction").find("select[name='actualUnit[]']").last().trigger("change");
+                            $("#addTransaction").find(".ic-level-1").last().removeAttr("data-focus");
                         });
                         $("#merchandiseBrochure").modal("hide");
                     });

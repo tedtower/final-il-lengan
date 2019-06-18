@@ -1429,6 +1429,23 @@ function add_aospoil($date_recorded,$addons,$account_id){
             VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
         return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
     }
+    function add_restockLog($tID, $log){
+        $query = "INSERT INTO stocklog(
+            stID,
+            tID,
+            slType,
+            slQty,
+            slRemainingQty,
+            actualQty,
+            discrepancy,
+            slDateTime,
+            dateRecorded,
+            slRemarks
+        )
+        VALUES(?, ?, 'restock', ?, ?, ?, NULL, ?, ?, ?);";
+        $this->db->query($query,array($log['stock'], $tID, $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+        , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
+    }
     function add_beginningLog($log){
         $query = "INSERT INTO stocklog(
             stID,
@@ -1663,6 +1680,21 @@ function add_aospoil($date_recorded,$addons,$account_id){
         return 0;
     }
 
+    function edit_receiptTransactionItems($item){
+        $query = "UPDATE
+                transitems
+            SET
+                tiPrice = ?,
+                tiDiscount = ?,
+                drStatus = ?,
+                payStatus = ?,
+                rStatus = ?
+            WHERE
+                tiID = ?;";
+        return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
+        , $item['payment'], $item['return']), $item['tiID']);
+    }
+
     function add_receiptTransactionItemsQty($tID, $item){
         $query = "INSERT INTO trans_items(tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal)
             VALUES(?, ?, ?, ?, ?, ?)";
@@ -1743,6 +1775,31 @@ function add_aospoil($date_recorded,$addons,$account_id){
         ORDER BY tID desc";
         return $this->db->query($query)->result_array();
     }
+    
+    function get_purchaseOrderItems(){
+        $query = "SELECT
+            tID AS transaction,
+            tiID AS id,
+            tiName AS name,
+            tiQty AS qty,
+            qtyPerItem AS equivalent,
+            actualQty AS actualqty,
+            tiPrice AS price,
+            tiDiscount AS discount,
+            drStatus AS deliverystatus,
+            payStatus AS paymentstatus,
+            rStatus AS returnstatus
+        FROM
+            (
+                transitems
+            LEFT JOIN trans_items USING(tiID)
+            )
+        LEFT JOIN transactions USING(tID)
+        LEFT JOIN uom USING(uomID)
+        WHERE
+            tType = 'purchase order'";
+        return $this->db->query($query)->result_array();
+    }
     function get_deliveryReceiptItems(){
         $query = "SELECT
             tID AS transaction,
@@ -1791,6 +1848,126 @@ function add_aospoil($date_recorded,$addons,$account_id){
             tType = 'official receipt'";
         return $this->db->query($query)->result_array();
     }
+
+    function get_poItem($tiID){
+        $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus
+            FROM (transitems LEFT JOIN trans_items USING(tiID))
+            LEFT JOIN transactions USING(tID)
+            WHERE tType = 'purchase order' AND drStatus = 'pending' and tiID = ?;";
+        return $this->db->query($query,array($tiID))->result_array();
+    }
+    function get_posForBrochure(){
+        $query = "SELECT
+                tID as transactionID,
+                spID suppID,
+                spName suppName,
+                supplierName altName,
+                tNum as transNum,
+                receiptNo as receipt,
+                tDate as date,
+                tTotal as total,
+                tRemarks as remarks
+            FROM
+                transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE
+                tID IN(
+                SELECT
+                    tID AS transactionID
+                FROM
+                    (
+                        transitems
+                    LEFT JOIN trans_items USING(tiID)
+                    )
+                LEFT JOIN transactions USING(tID)
+                WHERE
+                    tType = 'purchase order' AND drStatus = 'pending'
+                GROUP BY
+                    tID
+            )";
+        return $this->db->query($query)->result_array();
+    }
+    function get_poItemsForBrochure(){
+        $query = "SELECT
+                tID AS transactionID,
+                tiID AS itemID,
+                tiName AS NAME,
+                tiPrice AS price,
+                tiDiscount AS discount,
+                uomID AS uom,
+                stID AS stock,
+                tiQty AS qty,
+                qtyPerItem AS equivalent,
+                tiSubtotal AS subtotal
+            FROM
+                (
+                    transitems
+                LEFT JOIN trans_items USING(tiID)
+                )
+            LEFT JOIN transactions USING(tID)
+            WHERE
+                tType = 'purchase order' AND drStatus = 'pending'";
+        return $this->db->query($query)->result_array();
+    }
+    function edit_receiptTransactionTotal($tID, $total){
+        $query = "UPDATE
+                transactions
+            SET
+                tTotal = ?
+            WHERE
+                tID = ?;";
+        return $this->db->query($query,array($total, $tID));
+    }
+    //getPosFor Brochure
+    //     SELECT
+    //     tID as transactionID,
+    //     spID suppID,
+    //     spName suppName,
+    //     supplierName altName,
+    //     tNum as transNum,
+    //     receiptNo as receipt,
+    //     tDate as date,
+    //     tTotal as total,
+    //     tRemarks as remarks
+    // FROM
+    //     transactions
+    // LEFT JOIN supplier USING(spID)
+    // WHERE
+    //     tID IN(
+    //     SELECT
+    //         tID AS transactionID
+    //     FROM
+    //         (
+    //             transitems
+    //         LEFT JOIN trans_items USING(tiID)
+    //         )
+    //     LEFT JOIN transactions USING(tID)
+    //     WHERE
+    //         tType = "purchase order" AND drStatus = "pending"
+    //     GROUP BY
+    //         tID
+    // )
+
+    // getPoItemsForBrochure
+    //     SELECT
+    //     tID AS transactionID,
+    //     tiID AS itemID,
+    //     tiName AS NAME,
+    //     tiPrice AS price,
+    //     tiDiscount AS discount,
+    //     uomID AS uom,
+    //     stID AS stock,
+    //     tiQty AS qty,
+    //     qtyPerItem AS equivalent,
+    //     tiSubtotal AS subtotal
+    // FROM
+    //     (
+    //         transitems
+    //     LEFT JOIN trans_items USING(tiID)
+    //     )
+    // LEFT JOIN transactions USING(tID)
+    // WHERE
+    //     tType = "purchase order" AND drStatus = "pending"
 
     //  Get Transactions (PO, DR, OR)
     // SELECT
@@ -1931,6 +2108,28 @@ function add_aospoil($date_recorded,$addons,$account_id){
     // UPDATE transactions
     // SET supplierName = ?, receiptNo = ?, tDate = ?, dateRecorded = ?, tTotal = ?, tRemarks = ?
     // WHERE tID = ?
+
+    //Update transaitem
+    //     UPDATE
+    //     transitems
+    // SET
+    //     tiPrice = ?,
+    //     tiDiscount = ?,
+    //     drStatus = ?,
+    //     payStatus = ?,
+    //     rStatus = ?
+    // WHERE
+    //     tiID = ?;
+
+    //update trans_item
+    //     UPDATE
+    //     trans_items
+    // SET
+    //     tiQty = ?,
+    //     tiSubtotal = ?,
+    //     actualQty = ?
+    // WHERE
+    //     tiID = ? AND tID = ?;
 
     // Insert transaction (RETURN)
     // INSERT INTO transactions(

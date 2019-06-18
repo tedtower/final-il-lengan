@@ -37,7 +37,7 @@ class Login extends CI_Controller{
                 redirect('admin/dashboard');
                 break;
             case 'barista':
-                redirect('barista/orders');
+                redirect('barista/orderslip');
                 break;
             case 'chef':
                 redirect('chef');

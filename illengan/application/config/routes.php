@@ -189,6 +189,7 @@ $route['barista/inventoryJS'] = "barista/inventoryJS";
 $route['barista/restock'] = "barista/restockitem";
 $route['barista/destock'] = "barista/destockitem";
 $route['barista/updateStatus'] = "barista/updateStatus";
+$route['barista/editTableNumber'] = "barista/editTableNumber";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

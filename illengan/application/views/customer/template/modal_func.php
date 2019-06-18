@@ -59,11 +59,10 @@ $(document).ready(function(){
     $('#addonSelectBtn').on('click', function(event){
         var ao_select = `<!--Select For Addons-->
             <div class="input-group mb-3 delius">
-                <select class="browser-default custom-select w-50 addonSelect" name="addon[]">
+                <select class="browser-default custom-select w-50 addonSelect" name="addon[]" required>
                     <option selected disabled>Choose...</option>
                 </select>
-                <input type="number" min="1" value="1" placeholder="Qty" aria-label="Add-on Quantity"
-                class="form-control" name="addonQty[]">
+                <input type="number" min="1" value="1" placeholder="Qty" aria-label="Add-on Quantity" class="form-control" name="addonQty[]" required>
                 <div class="input-group-prepend">
                     <!--Subtotal-->
                     <span class="aoSub mt-2 ml-1"></span>
@@ -147,8 +146,9 @@ $(document).ready(function(){
         var table_no = $("input#table_no").val();
         var cust_name = $("input#cust_name").val();
         var total = $("input#total").val();
-        console.log(table_no, cust_name, total)
-
+        console.log(table_no, cust_name, total);
+        $('#order_modal').modal('hide');
+        $('#proceed_modal').modal('hide');
         $.ajax({
             method: "post",
             url: "<?php echo site_url('customer/completeOrder')?>",
@@ -398,14 +398,17 @@ function setOrderlist(ol){
                             <button type="button" class="btn btn-mdb-color btn-sm m-0 p-2 ediOrder" data-toggle="modal" data-target="#editModal" data-name="`+orders[rowid].name+`" data-id="`+rowid+`">Edit</button>
                             <button type="button" class="btn btn-danger btn-sm m-0 p-2 remOrder" data-toggle="modal" data-target="#deleteModal" data-name="`+orders[rowid].name+`" data-id="`+rowid+`">Remove</button>
                         </td>
-                    </tr>
-                    <tr id="values">
-                    <td></td>
-                    <td id="qty">`+quantity+`</td>
-                    <td colspan="2" id="name">`+name+`</td>
-                    <td id="subtotal">`+subtotal+`</td>
                     </tr>`;
         $('#orderlists').append(row1);
+        console.log(quantity);
+        if(!quantity == ''){
+            $('#orderlists').append(`
+                            <tr id="values">
+                                <td id="qty">`+quantity+`</td>
+                                <td colspan="2" id="name">`+name+`</td>
+                                <td id="subtotal" colspan="2">`+subtotal+`</td>
+                            </tr>`);
+        }
         total_qty += orders[rowid].qty;
         total += orders[rowid].subtotal;
         }
@@ -462,6 +465,7 @@ $('#edit_orderlist').click(function(){
     var addonIds = [],addonQtys = [], addonSubtotals = [];
     var rowID = parseInt($('#edit_row').text());
     var epqty = parseFloat($('input[name="edit_qty"]').val());
+    console.log(rowID)
     if($('select[name="edit_addons[]"]').val()){
         for(var ai=0; ai < $('select[name="edit_addons[]"]').length; ai++){
             var aoi = parseFloat($("select[name='edit_addons[]']").eq(ai).find("option:selected").val()),

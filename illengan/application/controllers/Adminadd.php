@@ -385,6 +385,7 @@ function addspoilagesstock(){
 
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $total = 0;
             $poItems = json_decode($this->input->post('transitems'),true);
             $po = array(
                 "supplier" => $this->input->post('supplier'),
@@ -396,7 +397,6 @@ function addspoilagesstock(){
                 "total" => $this->input->post('total'),
                 "remarks" => $this->input->post('remarks')
             );
-            echo json_encode($po);
             $poID = $this->adminmodel->add_receiptTransaction($po);
             if(count($poItems)>0){
                 foreach($poItems as $poItem){
@@ -404,6 +404,7 @@ function addspoilagesstock(){
                         "uom" => $poItem['uomID'],
                         "stock" => $poItem['stID'],
                         "price" => $poItem['price'],
+                        "name" => $poItem['name'],
                         "discount" => $poItem['discount'],
                         "delivery" => 'pending',
                         "payment" => NULL,
@@ -415,8 +416,78 @@ function addspoilagesstock(){
                         "tiID" => NULL
                     );
                     $poiID = $this->adminmodel->add_receiptTransactionItems($po);
-                    $po['tiID'] = $poID;
+                    $po['tiID'] = $poiID;
+                    $total += floatval($po['subtotal']);
                     $this->adminmodel->add_receiptTransactionItemsQty($poID, $po);
+                }
+                $this->adminmodel->edit_receiptTransactionTotal($poID, $total);
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function addDeliveryReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $drItems = json_decode($this->input->post(''),true);
+            $dr = array(
+                "supplier" => $this->input->post('supplier'),
+                "supplierName" => NULL,
+                "receipt" => $this->input->post('receipt'),
+                "date" => $this->input->post('date'),
+                "dateRecorded" => date("Y-m-d H:i:s"),
+                "type" => "delivery receipt",
+                "total" => $this->input->post('total'),
+                "remarks" => $this->input->post('remarks')
+            );
+            $drID = $this->adminmodel->add_receiptTransaction($dr);
+            if(count($drItems) > 0){
+                foreach($drItems as $drItem){
+                    $tiID = $drItem['tiID'];
+                    $qty = $drItem['qty'];
+                    $status = "complete";
+                    $item = $this->adminmodel->get_poItem($tiID);
+                    if(!isset($item[0])){
+                        $tiID = NULL;
+                    }else if($item[0]['tiQty'] > $drItem['qty']){
+                        $status = "partial";
+                    }
+                    $dr = array(
+                        "uom" => $drItem['uomID'],
+                        "stock" => $drItem['stID'],
+                        "name" => $drItem['name'],
+                        "price" => $drItem['price'],
+                        "discount" => $drItem['discount'],
+                        "delivery" => $status,
+                        "payment" => NULL,
+                        "return" => NULL,
+                        "tiQty" => $drItem['qty'],
+                        "perUnit" => $drItem['actualQty'],
+                        "actual" => $drItem['qty'] * $drItem['actualQty'],
+                        "subtotal" => ($drItem['price'] - $drItem['discount']) * $drItem['qty'],
+                        "tiID" => $tiID
+                    );
+                    if($dr['tiID'] == NULL){
+                        $dr['tiID'] = $this->adminmodel->add_receiptTransactionItems($dr);
+                        $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $this->adminmodel->add_restockLog($drID, $dr);
+                        $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
+                    }else{
+                        $this->adminmodel->edit_receiptTransactionItems($dr);
+                        $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $this->adminmodel->add_restockLog($drID, $dr);
+                        $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
+                    }
+                    if($this->adminmodel->checkIfExistingItemsQty($drID, $dr['tiID'] > 0)){
+    
+                    }else{
+                        $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
+                    }
                 }
             }
         }else{
@@ -425,56 +496,6 @@ function addspoilagesstock(){
             ));
         }
     }
-
-    // function addDeliveryReceipt(){
-    //     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-    //         $drItems = json_decode($this->input->post(''),true);
-    //         $dr = array(
-    //             "supplier" => $this->input->post(''),
-    //             "supplierName" => NULL,
-    //             "receipt" => NULL,
-    //             "date" => $this->input->post(''),
-    //             "dateRecorded" => date("Y-m-d H:i:s"),
-    //             "type" => $this->input->post(''),
-    //             "total" => $this->input->post(''),
-    //             "remarks" => $this->input->post('')
-    //         );
-    //         $drID = $this->adminmodel->add_receiptTransaction($po);
-    //         if(count($drItems) > 0){
-    //             foreach($drItems as $drItem){
-    //                 $dr = array(
-    //                     "uom" => $this->input->post(''),
-    //                     "stock" => $this->input->post(''),
-    //                     "price" => $this->input->post(''),
-    //                     "discount" => $this->input->post(''),
-    //                     "delivery" => 'pending',
-    //                     "payment" => NULL,
-    //                     "return" => $this->input->post(''),
-    //                     "tiQty" => $this->input->post(''),
-    //                     "perUnit" => $this->input->post(''),
-    //                     "actual" => $this->input->post(''),
-    //                     "subtotal" => $this->input->post(''),
-    //                     "tiID" => $this->input->post('')
-    //                 );
-    //                 if(!isset(drID)){
-    //                     $driID = $this->adminmodel->add_receiptTransactionItems($dr);
-    //                     $dr['tiID'] = $drID;
-    //                 }else{
-    
-    //                 }
-    //                 if($this->adminmodel->checkIfExistingItemsQty($drID, $dr['tiID'] > 0)){
-    
-    //                 }else{
-    //                     $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
-    //                 }
-    //             }
-    //         }
-    //     }else{
-    //         echo json_encode(array(
-    //             "sessErr" => true
-    //         ));
-    //     }
-    // }
 
     function addBeginningLogs(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){

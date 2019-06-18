@@ -8,11 +8,6 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto delius">
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/orders')?>"><i class="fal fa-tasks"></i> Order Lists</a>
-          </li>
-      </ul>
-      <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('barista/orderslip')?>"><i class="fal fa-tasks"></i> Order Slips</a>
           </li>
       </ul>

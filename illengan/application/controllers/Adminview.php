@@ -74,7 +74,11 @@ function viewDRFormAdd(){
         $head['title'] = "Inventory - Add DR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/deliveryReceiptAdd');
+        $data['uom'] = $this->adminmodel->get_uomForStoring();
+        $data['stock'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
+        $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
     }
@@ -738,6 +742,18 @@ function getStockItem(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
                 "stocks" => $this->adminmodel->get_stocksForBeginningBrochure()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getPOItemsForBrochure(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                "pos" => $this->adminmodel->get_posForBrochure(),
+                "poItems" => $this->adminmodel->get_poItemsForBrochure()
             ));
         }else{
             echo json_encode(array(
