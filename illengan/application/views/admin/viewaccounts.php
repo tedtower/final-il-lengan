@@ -295,7 +295,7 @@
         }
         accounts.forEach(table => {
             $("#accountsTable> tbody").append(`
-            <tr data-id="${table.aID}">
+            <tr data-id="${table.aID}" data-username="${table.aUsername}">
                 <td>${table.aID}</td>
                 <td>${table.aType}</td>
                 <td>${table.aUsername}</td>
@@ -318,6 +318,8 @@
             $(".updateBtn").last().on('click', function() {
                 $("#editAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
                     "data-id"));
+                $("#editAccount").find("input[name='new_aUsername']").val($(this).closest("tr").attr(
+                    "data-username"));
             });
             $(".updatePassBtn").last().on('click', function() {
                 $("#editPassword").find("input[name='accountId']").val($(this).closest("tr").attr(

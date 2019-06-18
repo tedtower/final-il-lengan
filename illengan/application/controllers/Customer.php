@@ -201,11 +201,12 @@ class Customer extends CI_Controller {
 						"olDesc" => $priceaName['name']
 					);
 					$olID = $this->customermodel->add_orderlist($list);
+					$this->customermodel->add_addon($olID, $orderlist);
 					$prefStocks = $this->customermodel->get_prefStocks($list['prID']);
 					if(isset($prefStocks[0])){
-						$prefStock = $prefStock[0];
-						$stID = $prefStocks['stID'];
-						$qty = $prefStocks['prstQty'];
+						$prefStock = $prefStocks[0];
+						$stID = $prefStock['stID'];
+						$qty = $prefStock['prstQty'];
 						$index = array_search($stID, $consumptionItems['stID']);
 						if($index !== FALSE){
 							$consumptionItems['qty'][$index] += $qty * $list['qty'];

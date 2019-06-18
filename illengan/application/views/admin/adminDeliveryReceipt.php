@@ -17,6 +17,8 @@
                                     id="addBtn">Add Delivery Receipt</a>
                                 <br>
                                 <br>
+                                <?php if(isset($drs[0])){
+                                ?>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
@@ -28,234 +30,31 @@
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                    <?php foreach($drs as $dr){
+                                    ?>
+                                        <tr data-id="<?= $dr['id']?>">
+                                            <td><?= $dr['num']?></td>
+                                            <td><?= $dr['receipt']?></td>
+                                            <td><?= $dr['supplier']?></td>
+                                            <td><?= $dr['date']?></td>
+                                            <td><?= $dr['total']?></td>
                                             <td>
                                             <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
                                                 id="editBtn">Edit</a>
                                             <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
                                             </td>
                                         </tr>
+                                    <?php
+                                    }?>
                                     </tbody>
                                 </table>
+                                <?php
+                                }else{
+                                ?>
+                                <p>No deliveries recorded!</p>
+                                <?php
+                                }?>
                                 <!--End Table Content-->
-
-                                <!--Start of Modal "Add Transaction"-->
-                                <div class="modal fade bd-example-modal-lg" id="addEditTransaction" tabindex="-1"
-                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="overflow: auto !important;">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Add Delivery Receipt</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form accept-charset="utf-8">
-                                                <input type="text" name="tID" hidden="hidden">
-                                                <div class="modal-body">
-                                                    <div class="form-row">
-                                                        <!--Source Name-->
-                                                        <div class="input-group mb-3 col">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text border border-secondary"
-                                                                    style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Supplier</span>
-                                                            </div>
-                                                            <select class="form-control form-control-sm  border-left-0"
-                                                                name="spID">
-                                                                <option value="" selected>Choose</option>
-                                                            </select>
-                                                        </div>
-                                                        <!--Date-->
-                                                        <div class="input-group mb-3 col">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text border border-secondary"
-                                                                    style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Transaction Date</span>
-                                                            </div>
-                                                            <input type="date" class="form-control  border-left-0"
-                                                                name="tDate">
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-row">
-                                                        <!--Container of supplier and receipt no.-->
-                                                        <!--Receipt Number-->
-                                                        <div class="input-group mb-3 col">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text border border-secondary"
-                                                                    style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                    Receipt No.</span>
-                                                            </div>
-                                                            <input type="text" class="form-control  border-left-0"
-                                                                name="tNum">
-                                                        </div>
-                                                        <!--Invoice Type-->
-
-                                                    </div>
-
-                                                    <!--Remarks-->
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text border border-secondary"
-                                                                style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                                                Remarks</span>
-                                                        </div>
-                                                        <textarea type="text" name="tRemarks"
-                                                            class="form-control form-control-sm  border-left-0"
-                                                            rows="1"></textarea>
-                                                    </div>
-
-                                                    <!--Transaction Items-->
-                                                    <a id="addItemBtn" class="btn btn-primary btn-sm" data-original-title
-                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">New Item</a>
-                                                    <a id="addMBtn" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                        data-target="#merchandiseBrochure"  data-original-title
-                                                        style="margin:0;color:white;font-weight:600;background:#0073e6">Merchandise Item</a>
-                                                    <!--Transaction PO Items-->
-                                                    <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
-                                                        data-target="#transactionBrochure"
-                                                        style="color:white;font-weight:600;background:#0073e6">PO Item</a>
-                                                    <br><br>
-
-                                                    <!--div containing the different input fields in adding trans items -->
-                                                    <div class="ic-level-2">
-                                                    </div>
-                                                    <span>Total: &#8369;<span class="total">0</span></span>
-                                                    <!--Total of the trans items-->
-
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger btn-sm"
-                                                            data-dismiss="modal">Cancel</button>
-                                                        <button class="btn btn-success btn-sm"
-                                                            type="submit">Insert</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Modal "Add Transaction"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal-lg" id="transactionBrochure" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog modal-lg" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form>
-                                                <div class="modal-body">
-                                                    <div>
-                                                        <label><input type="checkbox" name="tType" value="po"/>Purchase Order</label>
-                                                        <label><input type="checkbox" name="tType" value="dr"/>Delivery Receipt</label>
-                                                    </div>
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text "
-                                                                style="width:130px;background:#737373;color:white;font-size:14px;font-weight:600">
-                                                                Purchase Order</span>
-                                                        </div>
-                                                        <select class="form-control form-control-sm" name="po">
-                                                            <option value="" selected>Choose</option>
-                                                        </select>
-                                                    </div>
-                                                    <br>
-                                                    <div class="ic-level-4">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal-sm" id="stockBrochure" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog " role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form>
-                                                <div class="modal-body">
-                                                    <div id="stockList">
-                                                        <div class="d-flex d-inline-block">
-                                                            <div><input name="stocks[]" type="radio" class="mr-3" value=/></div>
-                                                            <div>basta</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal-sm" id="merchandiseBrochure" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog " role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form>
-                                                <div class="modal-body">
-                                                    <table>
-                                                        <thead>
-                                                            <th></th>
-                                                            <th>Name</th>
-                                                            <th>UOM</th>
-                                                            <th>Price</th>
-                                                            <th>Stock</th>
-                                                            <th>Qty/UOM</th>
-                                                        </thead>
-                                                        <tbody class="ic-level-2">
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
                                 
                                 <!--Start of Modal "Delete Stock Item"-->
                                 <div class="modal fade" id="delete" tabindex="-1" role="dialog"

@@ -25,7 +25,6 @@
 									<th>DATE SPOILED</th>
 									<th>DATE RECORDED</th>
 									<th>OPERATION</th>
-									
 								</thead>
 								<tbody id="addon_data">
 								</tbody>
@@ -166,7 +165,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="datetime-local" name="aosDate" id="aosDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="aosDate" id="aosDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("aosDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">

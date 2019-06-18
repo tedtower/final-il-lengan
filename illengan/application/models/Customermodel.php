@@ -12,7 +12,8 @@ class Customermodel extends CI_Model {
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
             FROM transactions
             WHERE tType = 'consumption'")->result_array()[0]['lastnum'];
-        if($this->db->query($query, array($lastNum+1,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
+        $lastNum = $lastNum == NULL ? 1 : $lastNum++;
+        if($this->db->query($query, array($lastNum,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
             return $this->db->insert_id();
         }
         return 0;
@@ -36,7 +37,7 @@ class Customermodel extends CI_Model {
             discrepancy, slDateTime, dateRecorded, slRemarks
         )
         VALUES(
-            NULL, ?, ?, 'consumed', ?, ?, NULL, NULL, NULL, ?, ?, ?
+            NULL, ?, ?, 'consumed', ?, ?, NULL, NULL, ?, ?, ?
         )";
         return $this->db->query($query, array($log['stID'], $log['tID'], 
         $log['slQty'], $log['slRemain'], $log['slDateTime'], $log['dateRecorded'], $log['slRemarks']));
@@ -158,41 +159,27 @@ class Customermodel extends CI_Model {
             }
             return 0;
         }
-        function add_addon($olID, $addon){
-
-        }
-        function orderInsert($total, $tableCode, $orderlist, $customer, $dateTime){//insert in table orderslip
-            $query1 = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
-			$this->db->query($query1, array( $tableCode, $customer, $total, 'unpaid', $dateTime,'', $dateTime)); 
-			$order_id= $this->db->insert_id();
-            $bool = false;
-            echo json_encode($orderlist);
-	    foreach($orderlist as $items){
-		    $query2 = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
-                $this->db->query($query2, array(NULL,$order_id, $items['id'],'',$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
-                $olID = $this->db->insert_id();
-                $this->add_consumedItems($items['prID'], $olID);
-
-                $addOns = $items['addons'];
-                if(!empty($addOns)){
-                $bool3= false;
-                foreach($addOns as $key => $value){
-                   if($key == 'addonIds'){
-                    $addonIds = $value;
-                    }else if($key == 'addonQtys'){
-                        $addonQtys = $value;
-                    }else if($key == 'addonSubtotals'){
-                        $addonSubtotals = $value;
+        function add_addon($olID, $orderlist){
+            foreach($orderlist as $items){
+                    $addOns = $items['addons'];
+                    if(!empty($addOns)){
+                    $bool3= false;
+                    foreach($addOns as $key => $value){
+                       if($key == 'addonIds'){
+                        $addonIds = $value;
+                        }else if($key == 'addonQtys'){
+                            $addonQtys = $value;
+                        }else if($key == 'addonSubtotals'){
+                            $addonSubtotals = $value;
+                        }
                     }
+                    for($i = 0, $q=0, $s=0; $i < count($addonIds), $q <  count($addonQtys),$s <  count($addonSubtotals)
+                         ; $i++, $q++, $s++){
+                    $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
+                    return $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
+                   }
+                  }
                 }
-                for($i = 0, $q=0, $s=0; $i < count($addonIds), $q <  count($addonQtys),$s <  count($addonSubtotals)
-                     ; $i++, $q++, $s++){
-                $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
-                $bool3 = $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
-               }
-              }
-            }
-            return true;
         }
 
         // function add_consumedItems($pref, $olID) {

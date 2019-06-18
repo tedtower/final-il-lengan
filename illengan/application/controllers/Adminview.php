@@ -643,7 +643,9 @@ function getStockItem(){
             $data['title'] = "Delivery Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminDeliveryReceipt');
+            $data['drs'] = $this->adminmodel->get_deliveryReceipts();
+            $data['drItems'] = $this->adminmodel->get_deliveryReceiptItems();
+            $this->load->view('admin/adminDeliveryReceipt', $data);
         }else{
             redirect('login');
         }
@@ -653,7 +655,9 @@ function getStockItem(){
             $data['title'] = "Official Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminOfficialReceipt');
+            $data['ors'] = $this->adminmodel->get_officialReceipts();
+            $data['orItems'] = $this->adminmodel->get_officialReceiptItems();
+            $this->load->view('admin/adminOfficialReceipt', $data);
         }else{
             redirect('login');
         }
@@ -729,6 +733,17 @@ function getStockItem(){
             $this->load->view('admin/inventorycategories',$data);
         }else{
             redirect('login');
+        }
+    }
+    function getStocksForBeginningBrochure(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                "stocks" => $this->adminmodel->get_stocksForBeginningBrochure()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
         }
     }
 

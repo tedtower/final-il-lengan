@@ -38,26 +38,25 @@
                                 <th><b class="pull-left">Transaction</b></th>
                                 <th><b class="pull-left">Receipt No.</b></th>
                                 <th><b class="pull-left">Date</b></th>
-                                <th><b class="pull-left">Quantity</b></th>
+                                <th><b class="pull-left">Log Quantity</b></th>
                                 <th><b class="pull-left">Remaining Qty</b></th>
+                                <th><b class="pull-left">Actual Qty</b></th>
+                                <th><b class="pull-left">Discrepancy</b></th>
                                 <th><b class="pull-left">Remarks</b></th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php if(!empty($logs)){
-                            $bQty = $currentInv['slQty'];
                             $icon;
                             foreach($logs as $log){
                                 switch($log['slType']){
                                     case 'restock':
-                                        $bQty = $bQty + $log['slQty'];
                                         $icon = "plus";
                                         break;
                                     case 'beginning':
                                         $icon = "plus";
                                         break;
                                     default:
-                                        $bQty = $bQty - $log['slQty'];
                                         $icon = "negative";
                                         break;
                                 }
@@ -68,7 +67,9 @@
                                 <td><?= $log['tNum'] == NULL ? "N/A" : $log['tNum']?></td>
                                 <td><?= $log['slDateTime']?></td>
                                 <td><?= $log['slQty']?></td>
-                                <td><?= $bQty?></td>
+                                <td><?= $log['slRemainingQty']?></td>
+                                <td><?= isset($log['actualQty']) ? $log['actualQty'] : "N/A"?></td>                                
+                                <td><?= $log['discrepancy'] > 0 && isset($log['discrepancy']) ? $log['discrepancy'] : "(".($log['discrepancy']*-1).")"?></td>
                                 <td><?= $log['slRemarks']?></td>
                             </tr>
                         <?php
