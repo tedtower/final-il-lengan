@@ -1668,6 +1668,21 @@ function add_aospoil($date_recorded,$addons,$account_id){
         return 0;
     }
 
+    function edit_receiptTransactionItems($item){
+        $query = "UPDATE
+                transitems
+            SET
+                tiPrice = ?,
+                tiDiscount = ?,
+                drStatus = ?,
+                payStatus = ?,
+                rStatus = ?
+            WHERE
+                tiID = ?;";
+        return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
+        , $item['payment'], $item['return']), $item['tiID']);
+    }
+
     function add_receiptTransactionItemsQty($tID, $item){
         $query = "INSERT INTO trans_items(tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal)
             VALUES(?, ?, ?, ?, ?, ?)";
@@ -1822,6 +1837,13 @@ function add_aospoil($date_recorded,$addons,$account_id){
         return $this->db->query($query)->result_array();
     }
 
+    function get_poItem($tiID){
+        $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus
+            FROM (transitems LEFT JOIN trans_items USING(tiID))
+            LEFT JOIN transactions USING(tID)
+            WHERE tType = 'purchase order' AND drStatus = 'pending' and tiID = ?;";
+        return $this->db->query($query,array($tiID));
+    }
     //  Get Transactions (PO, DR, OR)
     // SELECT
     //     tID AS id,
@@ -1961,6 +1983,28 @@ function add_aospoil($date_recorded,$addons,$account_id){
     // UPDATE transactions
     // SET supplierName = ?, receiptNo = ?, tDate = ?, dateRecorded = ?, tTotal = ?, tRemarks = ?
     // WHERE tID = ?
+
+    //Update transaitem
+    //     UPDATE
+    //     transitems
+    // SET
+    //     tiPrice = ?,
+    //     tiDiscount = ?,
+    //     drStatus = ?,
+    //     payStatus = ?,
+    //     rStatus = ?
+    // WHERE
+    //     tiID = ?;
+
+    //update trans_item
+    //     UPDATE
+    //     trans_items
+    // SET
+    //     tiQty = ?,
+    //     tiSubtotal = ?,
+    //     actualQty = ?
+    // WHERE
+    //     tiID = ? AND tID = ?;
 
     // Insert transaction (RETURN)
     // INSERT INTO transactions(

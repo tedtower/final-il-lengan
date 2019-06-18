@@ -69,7 +69,7 @@
                                                             <td><?= $transitem['equivalent']?></td>
                                                             <td><?= $transitem['actualqty']?></td>
                                                             <td><?= $transitem['price']?></td>
-                                                            <td><?= $transitem['discount'] == null ? "N/A" : $transitem['discount']?></td>
+                                                            <td><?= $transitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?></td>
                                                             <td><?= $transitem['subtotal']?></td>
                                                             <td><?= $transitem['paymentstatus']?></td>
                                                             <td><?= $transitem['deliverystatus']?></td>

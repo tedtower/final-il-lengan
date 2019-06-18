@@ -442,23 +442,32 @@ function addspoilagesstock(){
                 "total" => $this->input->post('total'),
                 "remarks" => $this->input->post('remarks')
             );
-            $drID = $this->adminmodel->add_receiptTransaction($po);
+            $drID = $this->adminmodel->add_receiptTransaction($dr);
             if(count($drItems) > 0){
                 foreach($drItems as $drItem){
+                    $tiID = $drItem['tiID'];
+                    $qty = $drItem['qty'];
+                    $status = "complete";
+                    $item = $this->adminmodel->get_poItem($tiID);
+                    if(!isset($item[0])){
+                        $tiID = NULL;
+                    }else if($item[0]['tiQty'] > $drItem['qty']){
+                        $status = "partial";
+                    }
                     $dr = array(
-                        "uom" => $poItem['uomID'],
-                        "stock" => $poItem['stID'],
-                        "name" => $poItem['name'],
-                        "price" => $poItem['price'],
-                        "discount" => $poItem['discount'],
-                        "delivery" => 'pending',
+                        "uom" => $drItem['uomID'],
+                        "stock" => $drItem['stID'],
+                        "name" => $drItem['name'],
+                        "price" => $drItem['price'],
+                        "discount" => $drItem['discount'],
+                        "delivery" => $status,
                         "payment" => NULL,
                         "return" => NULL,
-                        "tiQty" => $poItem['qty'],
-                        "perUnit" => $poItem['actualQty'],
-                        "actual" => $poItem['qty'] * $poItem['actualQty'],
-                        "subtotal" => ($poItem['price'] - $poItem['discount']) * $poItem['qty'],
-                        "tiID" => NULL
+                        "tiQty" => $drItem['qty'],
+                        "perUnit" => $drItem['actualQty'],
+                        "actual" => $drItem['qty'] * $drItem['actualQty'],
+                        "subtotal" => ($drItem['price'] - $drItem['discount']) * $drItem['qty'],
+                        "tiID" => $tiID
                     );
                     if($dr['tiID'] == NULL){
                         $dr['tiID'] = $this->adminmodel->add_receiptTransactionItems($dr);
@@ -466,7 +475,10 @@ function addspoilagesstock(){
                         $this->adminmodel->add_restockLog($drID, $dr);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }else{
-    
+                        $this->adminmodel->edit_receiptTransactionItems($dr);
+                        $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $this->adminmodel->add_restockLog($drID, $dr);
+                        $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }
                     if($this->adminmodel->checkIfExistingItemsQty($drID, $dr['tiID'] > 0)){
     
