@@ -746,6 +746,18 @@ function getStockItem(){
             ));
         }
     }
+    function getPOItemsForBrochure(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                "pos" => $this->adminmodel->get_posForBrochure(),
+                "poItems" => $this->adminmodel->get_poItemsForBrochure()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 
 
 //     // function viewTransactions(){
