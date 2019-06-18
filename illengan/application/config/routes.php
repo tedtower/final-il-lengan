@@ -1,54 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-/*
-| -------------------------------------------------------------------------
-| URI ROUTING
-| -------------------------------------------------------------------------
-| This file lets you re-map URI requests to specific controller functions.
-|
-| Typically there is a one-to-one relationship between a URL string
-| and its corresponding controller class/method. The segments in a
-| URL normally follow this pattern:
-|
-|	example.com/class/method/id/
-|
-| In some instances, however, you may want to remap this relationship
-| so that a different class/function is called than the one
-| corresponding to the URL.
-|
-| Please see the user guide for complete details:
-|
-|	https://codeigniter.com/user_guide/general/routing.html
-|
-| -------------------------------------------------------------------------
-| RESERVED ROUTES
-| -------------------------------------------------------------------------
-|
-| There are three reserved routes:
-|
-|	$route['default_controller'] = 'welcome';
-|
-| This route indicates which controller class should be loaded if the
-| URI contains no data. In the above example, the "welcome" class
-| would be loaded.
-|
-|	$route['404_override'] = 'errors/page_missing';
-|
-| This route will tell the Router which controller/method to use if those
-| provided in the URL cannot be matched to a valid route.
-|
-|	$route['translate_uri_dashes'] = FALSE;
-|
-| This is not exactly a route, but allows you to automatically route
-| controller and method names that contain dashes. '-' isn't a valid
-| class or method name character, so it requires translation.
-| When you set this option to TRUE, it will replace ALL dashes in the
-| controller and method URI segments.
-|
-| Examples:	my-controller/index	-> my_controller/index
-|		my-controller/my-method	-> my_controller/my_method
-*/
 $route['default_controller'] = 'login/viewlogin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -124,6 +76,7 @@ $route['admin/returns/add'] = "adminadd/addReturnTransactions";
 $route['admin/promos/add'] = "adminadd/addPromo";
 $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
+$route['admin/returns/add'] = "adminadd/addReturns";
 
 //End Admin Add Routes ------------------------------------------
 
@@ -146,7 +99,7 @@ $route['admin/stock/spoilage/edit'] = "adminupdate/editStockSpoil";
 $route['admin/tables/edit'] = "adminupdate/edittable";
 $route['admin/menu/spoilage/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
-$route['admin/returntransactions/edit'] = "adminupdate/editReturnTrans";
+$route['admin/returns/edit'] = "adminupdate/editReturns";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------
@@ -217,7 +170,6 @@ $route['customer/menu/removeOrder'] = "customer/removeOrder";
 $route['customer/menu/editOrder'] = "customer/editOrder";
 
 // BARISTA ROUTES
-// BARISTA ROUTES
 $route['barista/orderslip'] = "barista/vieworderslip";
 $route['barista/orders'] = "barista/pendingOrders";
 $route['barista/servedOrderlist'] = "barista/servedOrders";
@@ -229,7 +181,6 @@ $route['barista/inventoryJS'] = "barista/inventoryJS";
 $route['barista/restock'] = "barista/restockitem";
 $route['barista/destock'] = "barista/destockitem";
 $route['barista/updateStatus'] = "barista/updateStatus";
-
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

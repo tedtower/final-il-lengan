@@ -267,10 +267,12 @@ $(document).ready(function() {
             aoTotal = document.getElementsByName('aoSubtotal')[i].value;
 
         addonItems = {
+            'olID': null,
             'prID': prID,
             'aoID': aoID,
             'aoQty': aoQty,
-            'aoTotal': aoTotal
+            'aoTotal': aoTotal,
+            'del' : null
         }
         addons.push(addonItems);
         
@@ -290,8 +292,9 @@ $(document).ready(function() {
             orderlists: JSON.stringify(orderlists),
             addons: JSON.stringify(addons)
         },
-        success: function() {
+        success: function(data) {
             location.reload();
+            console.log(data);
         },
         error: function (response, setting, errorThrown) {
             console.log(errorThrown);

@@ -89,6 +89,8 @@ function addSales() {
         $osDateRecorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
        
+        header('Content-Type: application/json');
+        echo json_encode($addons, JSON_PRETTY_PRINT);
         $this->adminmodel->add_salesOrder($tableCode, $custName, $osTotal, $osDateTime,
         $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons);
 
@@ -350,6 +352,28 @@ function addspoilagesstock(){
             echo json_encode(array(
                 "sessErr" => true
             ));
+        }
+    }
+
+    function addReturns() {
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $spID = $this->input->post('spID'); 
+            $spName = $this->input->post('spName'); 
+            $receiptNo = $this->input->post('receiptNo');
+            $tDate = $this->input->post('tDate'); 
+            $tNum = intval($this->adminmodel->set_tNum()) + 1;
+            $dateRecorded = date("Y-m-d H:i:s");
+            $tType = 'return';
+            $tTotal = $this->input->post('tTotal'); 
+            $tRemarks = $this->input->post('tRemarks');
+            $isArchived = 0;
+            $trans = json_decode($this->input->post('trans'), true);
+            $ti = json_decode($this->input->post('ti'), true);
+
+            $this->adminmodel->add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
+            $isArchived, $trans, $ti);
+        }else{
+         
         }
     }
 }
