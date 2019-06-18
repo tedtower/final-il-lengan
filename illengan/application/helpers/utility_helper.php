@@ -38,4 +38,7 @@ function admin_css(){
 function admin_js(){
    return base_url().'assets/js/admin/';
 }
+function barista_js(){
+   return base_url().'assets/js/barista/';
+}
 ?>

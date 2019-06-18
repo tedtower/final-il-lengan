@@ -808,19 +808,19 @@ function get_transitems(){
         $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
        
         if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
-            $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$spmActualQty,$uomStore,$date,$dateRecorded,$remarks,$account_id);
+            $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id);
             return true;
          }
     }
-    function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$spmActualQty,$uomStore,$date,$dateRecorded,$remarks,$account_id){
+    function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id){
         $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
          if($this->db->query($query,array($uomID, $stID, $stName))){
-            $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty,$spmActualQty,$uomStore);
+            $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
             $this->add_stocklog($stID, $tID, "spoilage", $date, $dateRecorded, $actualQty, $remarks);
             $this->add_actlog($account_id,$dateRecorded, "Admin added a stockitem spoilage.", "add", $remarks);
          }
     }
-    function add_spoiltrans_items($tiID, $stID, $tID, $actualQty,$uomStore){
+    function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
         $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
         return  $this->db->query($query,array($tID, $tiID, $actualQty));
     }
@@ -1292,13 +1292,13 @@ function add_aospoil($date_recorded,$addons,$account_id){
             return false;
         }
     }
-    function edit_stockspoilage($ssID,$stID,$tDate,$tRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded){
-        $query = "Update stockspoil set ssDateRecorded = ? where ssID=?";
+    function edit_stockspoilage($tDate,$date_recorded,$actualQty,$tID, $tiID){
+        $query = "UPDATE `transactions` SET `tDate`= ?,`dateRecorded` = ? where tID = ?";
         
-        if($this->db->query($query,array($date_recorded,$ssID))){
-                $query = "Update spoiledstock set ssQty = ?,tDate = ?, tRemarks = ? where ssID = ? AND stID = ?";
-                $this->db->query($query,array($ssQtyUpdate ,$tDate, $tRemarks, $ssID, $stID));
-                $this->stockitemQty($updateQtyh,$updateQtyl,$stQty, $ssQtyUpdate, $curSsQty, $stID);  
+        if($this->db->query($query,array($tDate,$date_recorded,$tID))){
+            $query = "UPDATE `transactions` SET `actualQty`= ?  where tID = ? AND tiID = ?";
+            $this->db->query($query,array($actualQty ,$tID, $tiID));
+            // $this->stockitemQty($updateQtyh,$updateQtyl,$stQty, $ssQtyUpdate, $curSsQty, $stID);  
         }else{
             return false;
         }
