@@ -1748,6 +1748,31 @@ function add_aospoil($date_recorded,$addons,$account_id){
         ORDER BY tID desc";
         return $this->db->query($query)->result_array();
     }
+    
+    function get_purchaseOrderItems(){
+        $query = "SELECT
+            tID AS transaction,
+            tiID AS id,
+            tiName AS name,
+            tiQty AS qty,
+            qtyPerItem AS equivalent,
+            actualQty AS actualqty,
+            tiPrice AS price,
+            tiDiscount AS discount,
+            drStatus AS deliverystatus,
+            payStatus AS paymentstatus,
+            rStatus AS returnstatus
+        FROM
+            (
+                transitems
+            LEFT JOIN trans_items USING(tiID)
+            )
+        LEFT JOIN transactions USING(tID)
+        LEFT JOIN uom USING(uomID)
+        WHERE
+            tType = 'purchase order'";
+        return $this->db->query($query)->result_array();
+    }
     function get_deliveryReceiptItems(){
         $query = "SELECT
             tID AS transaction,

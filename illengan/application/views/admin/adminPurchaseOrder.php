@@ -62,7 +62,7 @@
                                                     </thead>
                                                     <tbody>
                                                     <?php foreach($transitems as $transitem){
-                                                        if($transitem['id'] == $transaction['id']){?>
+                                                        if($transitem['transaction'] == $transaction['id']){?>
                                                         <tr>
                                                             <td><?= $transitem['name']?></td>
                                                             <td><?= $transitem['qty']?></td>
