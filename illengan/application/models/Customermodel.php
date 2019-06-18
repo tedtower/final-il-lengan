@@ -1,5 +1,54 @@
 <?php
-    class Customermodel extends CI_Model {
+class Customermodel extends CI_Model {
+    
+    function __construct(){
+        parent:: __construct();
+        date_default_timezone_set('Asia/Manila'); 
+    }
+    //ADD  CONSUMPTION TRANSACTION
+    function add_consumption($consumption){
+        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
+            VALUES(NULL, ?, ?, ?, 'consumption', ?)";
+        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
+            FROM transactions
+            WHERE tType = 'consumption'")->result_array()[0]['lastnum'];
+        $lastNum = $lastNum == NULL ? 1 : $lastNum++;
+        if($this->db->query($query, array($lastNum,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function add_consumedItems($stID){
+        $query = "INSERT INTO transitems(tiID, stID)
+            VALUES(NULL, ?)";
+        if($this->db->query($query, array($stID))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function add_consumedItemsQty($tID, $tiID, $qty){
+        $query= "INSERT INTO trans_items(tID, tiID, actualQty)
+            VALUES(?, ?, ?)";
+        return $this->db->query($query,array($tID, $tiID, $qty));
+    }
+    function add_consumedLog($log){
+        $query = "INSERT INTO stocklog(
+            slID, stID, tID, slType, slQty, slRemainingQty, actualQty,
+            discrepancy, slDateTime, dateRecorded, slRemarks
+        )
+        VALUES(
+            NULL, ?, ?, 'consumed', ?, ?, NULL, NULL, ?, ?, ?
+        )";
+        return $this->db->query($query, array($log['stID'], $log['tID'], 
+        $log['slQty'], $log['slRemain'], $log['slDateTime'], $log['dateRecorded'], $log['slRemarks']));
+    }
+    function update_stQty($stID, $stQty){
+        $query = "UPDATE stockitems
+            SET stQty = stQty - ?
+            WHERE stID = ?";
+        return $this->db->query($query, array($stQty, $stID));
+    }
+    //END ADD  CONSUMPTION TRANSACTION
 	function get_tables(){ 
 	    $query = $this->db->query('SELECT tableCode FROM tables');
 	    return $query->result();
@@ -96,45 +145,48 @@
             $query = $this->db->get_where('menu', array('ctID' => '12'));
             return $query->result();
         }
-        function orderInsert($total, $tableCode, $orderlist, $customer, $dateTime){//insert in table orderslip
-            $query1 = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
-			$this->db->query($query1, array( $tableCode, $customer, $total, 'unpaid', $dateTime,'', $dateTime)); 
-			$order_id= $this->db->insert_id();
-            $bool = false;
-            
-	    foreach($orderlist as $items){
-		    $query2 = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
-                $this->db->query($query2, array(NULL,$order_id, $items['id'],'',$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
-                $olID = $this->db->insert_id();
-                $this->add_consumedItems($items['prID'], $olID);
-
-                $addOns = $items['addons'];
-                if(!empty($addOns)){
-                $bool3= false;
-                foreach($addOns as $key => $value){
-                   if($key == 'addonIds'){
-                    $addonIds = $value;
-                    }else if($key == 'addonQtys'){
-                        $addonQtys = $value;
-                    }else if($key == 'addonSubtotals'){
-                        $addonSubtotals = $value;
-                    }
-                }
-                for($i = 0, $q=0, $s=0; $i < count($addonIds), $q <  count($addonQtys),$s <  count($addonSubtotals)
-                     ; $i++, $q++, $s++){
-                $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
-                $bool3 = $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
-               }
-              }
+        function add_orderslip($slip){
+            $query = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
+			if($this->db->query($query, array( $slip['table'], $slip['custName'], $slip['total'], 'unpaid', $slip['osDateTime'],'', $slip['dateRecorded']))){
+                return $this->db->insert_id();
             }
-            return true;
+            return 0;
+        }
+        function add_orderlist($item){
+		    $query = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
+            if($this->db->query($query, array(NULL,$item['osID'], $item['prID'], $item['olDesc'],$item['qty'], $item['subtotal'], 'pending', $item['remarks'], $item['price'], ''))){
+                return $this->db->insert_id();
+            }
+            return 0;
+        }
+        function add_addon($olID, $orderlist){
+            foreach($orderlist as $items){
+                    $addOns = $items['addons'];
+                    if(!empty($addOns)){
+                    $bool3= false;
+                    foreach($addOns as $key => $value){
+                       if($key == 'addonIds'){
+                        $addonIds = $value;
+                        }else if($key == 'addonQtys'){
+                            $addonQtys = $value;
+                        }else if($key == 'addonSubtotals'){
+                            $addonSubtotals = $value;
+                        }
+                    }
+                    for($i = 0, $q=0, $s=0; $i < count($addonIds), $q <  count($addonQtys),$s <  count($addonSubtotals)
+                         ; $i++, $q++, $s++){
+                    $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
+                    return $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
+                   }
+                  }
+                }
         }
 
-        function add_consumedItems($pref, $olID) {
-            $query = "SELECT * FROM orderlists left join prefstock using (prID) left join stockitems using (stID) where prefstock.prID = ? and olID = ?";
-            $array = $this->db->query($query, array($pref, $olID));
-            $this->automatic_deduction($array);
-        }
+        // function add_consumedItems($pref, $olID) {
+        //     $query = "SELECT * FROM orderlists left join prefstock using (prID) left join stockitems using (stID) where prefstock.prID = ? and olID = ?";
+        //     $array = $this->db->query($query, array($pref, $olID));
+        //     $this->automatic_deduction($array);
+        // }
 
         function automatic_deduction($array){
             $stID = $array['stID'];
@@ -177,7 +229,7 @@
                         prID = ?;";
             return $this->db->query($query, array($prefID))->result_array();
         }
-
+        
         function get_addonPrices($addonIds){
             $query = "SELECT 
                             aoID, aoPrice
@@ -186,6 +238,59 @@
                         WHERE
                             aoID IN ?;";
             return $this->db->query($query,array($addonIds))->result_array();
+        }
+        function get_prefStocks($prID){
+            $query="SELECT
+                    prID,
+                    stID,
+                    prstQty
+                FROM
+                    prefstock
+                LEFT JOIN(
+                        preferences
+                    LEFT JOIN menu USING(MID)
+                    ) USING(prID)
+                LEFT JOIN stockitems USING(stID) where prID = ?";
+            return $this->db->query($query, array($prID))->result_array();
+        }
+
+        function get_priceAndName($prID){
+            $query = "SELECT
+                    prPrice AS price,
+                    CONCAT(
+                        mName,
+                        IF(
+                            prName IS NULL,
+                            '',
+                            CONCAT(' ', prName)
+                        ),
+                        IF(
+                            mTemp IS NULL,
+                            '',
+                            CONCAT(
+                                ' ',
+                                IF(
+                                    mTemp = 'hc',
+                                    '',
+                                    IF(mTemp = 'h', 'Hot', 'Cold')
+                                )
+                            )
+                        )
+                    ) AS 'name'
+                FROM
+                    preferences left join menu using (mID)
+                WHERE
+                    prID = ?;";
+            return $this->db->query($query,array($prID))->result_array()[0];
+        }
+        function get_stockQty($stID){
+            $query = "SELECT
+                stQty
+            FROM
+                stockitems
+            WHERE
+                stID = ?";
+            return $this->db->query($query,array($stID))->result_array();
         }
     }
 ?>

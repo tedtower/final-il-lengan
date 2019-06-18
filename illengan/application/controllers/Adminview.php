@@ -43,6 +43,75 @@ function viewInventory($error = null){
         redirect('login');
     }
 }
+//---functions for viewing the different ADD and EDIT pages in the transaction
+function viewPOFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add PO";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $data['uom'] = $this->adminmodel->get_uomForStoring();
+        $data['stock'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
+        $this->load->view('admin/purchaseOrderAdd', $data);
+    }else{
+        redirect('login');
+    }
+}
+
+function viewPOFormEdit(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit PO";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/purchaseOrderEdit');
+    }else{
+        redirect('login');
+    }
+}
+function viewDRFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add DR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/deliveryReceiptAdd');
+    }else{
+        redirect('login');
+    }
+}
+
+function viewDRFormEdit(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit DR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/deliveryReceiptEdit');
+    }else{
+        redirect('login');
+    }
+}
+function viewORFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add OR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/officialReceiptAdd');
+    }else{
+        redirect('login');
+    }
+}
+
+function viewORFormEdit(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit OR";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/officialReceiptEdit');
+    }else{
+        redirect('login');
+    }
+}
+//-------------end-----------------------
 function viewStockCard($stID){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Admin - Stock Card";
@@ -562,9 +631,9 @@ function getStockItem(){
             $data['title'] = "Purchase Order";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $data['purchaseorder'] = $this->adminmodel->get_purchaseOrder();
-            $data['poitems'] = $this->adminmodel->get_purchaseOrder();
-            $this->load->view('admin/adminPurchaseOrder');
+            $data['transactions'] = $this->adminmodel->get_transactions();
+            $data['transitems'] = $this->adminmodel->get_transitems();
+            $this->load->view('admin/adminPurchaseOrder', $data);
         }else{
             redirect('login');
         }
@@ -574,7 +643,9 @@ function getStockItem(){
             $data['title'] = "Delivery Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminDeliveryReceipt');
+            $data['drs'] = $this->adminmodel->get_deliveryReceipts();
+            $data['drItems'] = $this->adminmodel->get_deliveryReceiptItems();
+            $this->load->view('admin/adminDeliveryReceipt', $data);
         }else{
             redirect('login');
         }
@@ -584,7 +655,9 @@ function getStockItem(){
             $data['title'] = "Official Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminOfficialReceipt');
+            $data['ors'] = $this->adminmodel->get_officialReceipts();
+            $data['orItems'] = $this->adminmodel->get_officialReceiptItems();
+            $this->load->view('admin/adminOfficialReceipt', $data);
         }else{
             redirect('login');
         }
@@ -595,6 +668,20 @@ function getStockItem(){
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
             $this->load->view('admin/adminReturns');
+        }else{
+            redirect('login');
+        }
+    }
+    function jsonPO() {
+        if($this->checkIfLoggedIn()){
+            $data = array(
+                'stock' => $this->adminmodel->get_stockitems(),
+                'supplier' => $this->adminmodel->get_supplier(),
+                'suppmerch' => $this->adminmodel->get_supplierstocks(),
+                'uom' => $this->adminmodel->get_uomForStoring()
+            );
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_PRETTY_PRINT);
         }else{
             redirect('login');
         }
@@ -646,6 +733,17 @@ function getStockItem(){
             $this->load->view('admin/inventorycategories',$data);
         }else{
             redirect('login');
+        }
+    }
+    function getStocksForBeginningBrochure(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                "stocks" => $this->adminmodel->get_stocksForBeginningBrochure()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
         }
     }
 

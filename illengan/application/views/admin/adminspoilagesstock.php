@@ -19,11 +19,12 @@
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
-									<th>ITEM NAME</th>
+									<th></th>
+									<th>TRANSACTION #</th>
+									<th>STOCK ITEM</th>
 									<th>QUANTITY</th>
 									<th>DATE SPOILED</th>
 									<th>DATE RECORDED</th>
-									<th>STORAGE</th>
 									<th>OPERATION</th>
 								
 								</thead>
@@ -51,7 +52,7 @@
 															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 																Spoilage Date</span>
 														</div>
-														<input type="date" name="spoilDate" id="spoilDate" class="form-control form-control-sm" required>
+														<input type="date" name="tDate" id="tDate" class="form-control form-control-sm" required>
 													</div>
 												</div>
 												<!--Add Stock Item-->
@@ -125,7 +126,7 @@
 											<div class="modal-body">
 												<h6 id="deleteTableCode"></h6>
 												<p>Are you sure you want to delete the selected stock spoilages?</p>
-												<input type="text" name="ssID" hidden="hidden">
+												<input type="text" name="tiID" hidden="hidden">
 												<div class="input-group mb-2">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
@@ -162,8 +163,8 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Quantity</span>
                                                         </div>
-                                                        <input type="number" min="1" name="ssQtyUpdate" id="ssQtyUpdate" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("ssQtyUpdate"); ?></span>
+                                                        <input type="number" min="1" name="stQtyUpdate" id="stQtyUpdate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("stQtyUpdate"); ?></span>
                                                     </div>
                                                     <!--Date Spoiled-->
 													<div class="input-group mb-3">
@@ -171,21 +172,21 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="datetime-local" name="ssDate" id="ssDate" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("ssDate"); ?></span>
+                                                        <input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("tDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Remarks</span>
                                                         </div>
-                                                        <input type="text" name="ssRemarks" id="ssRemarks" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
+                                                        <input type="text" name="tRemarks" id="tRemarks" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("tRemarks"); ?></span>
                                                     </div>
 													<input name="stID" id="stID" hidden="hidden">
-													<input name="ssID" id="ssID" hidden="hidden">
+													<input name="tiID" id="tiID" hidden="hidden">
 													<input name="stQty" id="stQty" hidden="hidden">
-													<input name="curSsQty" id="curSsQty" hidden="hidden">
+													<input name="dateRecorded" id="dateRecorded" hidden="hidden">
                                                     <!--Footer-->
                                                     <div class="modal-footer">
 													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -262,12 +263,13 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr"  data-stID="${table.stID}" data-ssID="${table.ssID}" data-spoilname="${table.stName}" data-stQty="${table.stQty}" data-curSsQty="${table.ssQty}" data-ssDate="${table.ssDate}" data-ssRemarks="${table.ssRemarks}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${table.stName}</td>
-                <td>${table.ssQty}</td>
-				<td>${table.ssDate}</td>
-				<td>${table.ssDateRecorded}</td>
-				<td>${table.stLocation}</td>
+			<tr class="spoilagesTabletr" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-dateRecorded="${table.actualQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
+				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
+				<td>${table.tID}</td>
+				<td>${table.tiName}</td>
+				<td>${table.actualQty}</td>
+				<td>${table.tDate}</td>
+				<td>${table.dateRecorded}</td>
                 <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
@@ -284,14 +286,14 @@
 
 			var accordion = `
             <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="6"> <!-- table row ng accordion -->
+                <td colspan="7"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none"> <!-- container ng accordion -->
                         
                         <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
                             <div style="margin:0 46px;overflow:auto;">
 							<b style="float:left;">Remarks: </b><!-- label-->
 								<p style="float:left;margin-left:2%">
-								${table.ssRemarks == null || table.ssRemarks == '' ?  "No remarks." : table.ssRemarks}
+								${table.tRemarks == null || table.tRemarks == '' ?  "No remarks." : table.tRemarks}
                                 </p>
                             </div> 
                         </div>
@@ -303,26 +305,24 @@
 			
 			$(".updateBtn").last().on('click', function () {
 				
-                $("#editSpoil").find("input[name='ssID']").val($(this).closest("tr").attr(
-					"data-ssID"));
+                $("#editSpoil").find("input[name='tiID']").val($(this).closest("tr").attr(
+					"data-tiID"));
 				$("#editSpoil").find("input[name='stID']").val($(this).closest("tr").attr(
 					"data-stID")); 
-				$("#editSpoil").find("input[name='curSsQty']").val($(this).closest("tr").attr(
-					"data-curSsQty"));
+				$("#editSpoil").find("input[name='dateRecorded']").val($(this).closest("tr").attr(
+					"data-dateRecorded"));
 				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
 					"data-stQty"));
-				$("#editSpoil").find("input[name='ssQtyUpdate']").val($(this).closest("tr").attr(
-					"data-curSsQty"));
-				$("#editSpoil").find("input[name='ssDate']").val($(this).closest("tr").attr(
-					"data-ssDate"));
-				$("#editSpoil").find("input[name='ssRemarks']").val($(this).closest("tr").attr(
-					"data-ssRemarks"));
+				$("#editSpoil").find("input[name='tDate']").val($(this).closest("tr").attr(
+					"data-tDate"));
+				$("#editSpoil").find("input[name='tRemarks']").val($(this).closest("tr").attr(
+					"data-tRemarks"));
             });
             $(".item_delete").last().on('click', function () {
                 $("#deleteSpoilageId").text(
                     `Delete spoilage code ${$(this).closest("tr").attr("data-spoilname")}`);
-				$("#deleteSpoilage").find("input[name='ssID']").val($(this).closest("tr").attr(
-                    "data-ssID"));
+				$("#deleteSpoilage").find("input[name='tiID']").val($(this).closest("tr").attr(
+                    "data-tiID"));
             });
 			$("#spoilagesTable > tbody").append(accordion);
 		});
@@ -344,24 +344,24 @@
     $("#editSpoil form").on('submit', function(event) {
 		event.preventDefault();
 		var stID = $(this).find("input[name='stID']").val();
-		var ssID = $(this).find("input[name='ssID']").val(); 
+		var tiID = $(this).find("input[name='tiID']").val(); 
 		var stQty = $(this).find("input[name='stQty']").val(); 
-        var ssQtyUpdate = $(this).find("input[name='ssQtyUpdate']").val();
-		var curSsQty = $(this).find("input[name='curSsQty']").val();
-        var ssDate = $(this).find("input[name='ssDate']").val();
-        var ssRemarks = $(this).find("input[name='ssRemarks']").val();
+        var stQtyUpdate = $(this).find("input[name='stQtyUpdate']").val();
+		var dateRecorded = $(this).find("input[name='dateRecorded']").val();
+        var tDate = $(this).find("input[name='tDate']").val();
+        var tRemarks = $(this).find("input[name='tRemarks']").val();
       
         $.ajax({
             url: "<?= site_url("admin/stock/spoilage/edit")?>",
             method: "post",
             data: {
 				stID: stID,
-				ssID: ssID,
+				tiID: tiID,
 				stQty: stQty,
-				ssQtyUpdate: ssQtyUpdate,
-				curSsQty: curSsQty,
-                ssDate: ssDate,
-                ssRemarks: ssRemarks
+				stQtyUpdate: stQtyUpdate,
+				dateRecorded: dateRecorded,
+                tDate: tDate,
+                tRemarks: tRemarks
             },
             dataType: "json",
             success: function(data) {
@@ -389,7 +389,7 @@
                 url: '<?= site_url('admin/stock/spoilage/delete') ?>',
                 method: 'POST',
                 data: {
-					ssID: ssID,
+					tiID: tiID,
 					delRemarks:delRemarks
                 },
                 dataType: 'json',

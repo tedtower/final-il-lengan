@@ -4,7 +4,7 @@ class Customer extends CI_Controller {
 
 	function __construct(){
 		parent:: __construct();
-		$this->load->model("Customermodel");
+		$this->load->model("customermodel");
         date_default_timezone_set('Asia/Manila');  
 	}
 
@@ -32,7 +32,7 @@ class Customer extends CI_Controller {
 			if($this->isCheckedIn()){
 				redirect('customer/menu');
 			}else{
-				$data['number'] = $this->Customermodel->get_tables();
+				$data['number'] = $this->customermodel->get_tables();
 				$this->load->view('customer/checkin', $data);
 			}
 		}else{
@@ -73,12 +73,12 @@ class Customer extends CI_Controller {
 		if($this->isLoggedIn()){			
 			if($this->isCheckedIn()){
 				$data = array ();
-				$data['categories'] = $this->Customermodel->fetch_category();
-				$data['menu'] = $this->Customermodel->fetch_menu();
-				$data['subcats'] = $this->Customermodel->fetch_availableSubcategory();
+				$data['categories'] = $this->customermodel->fetch_category();
+				$data['menu'] = $this->customermodel->fetch_menu();
+				$data['subcats'] = $this->customermodel->fetch_availableSubcategory();
 				sort($data['subcats']);
-				$data['pref_menu'] = $this->Customermodel->fetch_menupref();
-				$data['addons'] = $this->Customermodel->fetch_addon();
+				$data['pref_menu'] = $this->customermodel->fetch_menupref();
+				$data['addons'] = $this->customermodel->fetch_addon();
 				$data['orders'] = $this->session->userdata('orders');
 				$this->load->view('customer/template/head',$data);
 				$this->load->view('customer/menu');
@@ -95,11 +95,11 @@ class Customer extends CI_Controller {
 		if($this->isLoggedIn()){			
 			if($this->isCheckedIn()){
 				$data = array(
-					'categories' => $this->Customermodel->fetch_category(),
-					'subcats' => $this->Customermodel->fetch_availableSubcategory1($id),
-					'menu' => $this->Customermodel->fetch_menu(),
-					'pref_menu'=> $this->Customermodel->fetch_menupref(),
-					'addons' => $this->Customermodel->fetch_addon(),
+					'categories' => $this->customermodel->fetch_category(),
+					'subcats' => $this->customermodel->fetch_availableSubcategory1($id),
+					'menu' => $this->customermodel->fetch_menu(),
+					'pref_menu'=> $this->customermodel->fetch_menupref(),
+					'addons' => $this->customermodel->fetch_addon(),
 					'orders' => $this->session->userdata('orders')
 				);
 				$this->load->view('customer/template/head',$data);
@@ -117,12 +117,12 @@ class Customer extends CI_Controller {
 	function addOrder() {
 		if($this->isLoggedIn()){
 			if($this->isCheckedIn()){
-				$preference = $this->Customermodel->get_preference($this->input->post('preference'))[0];
+				$preference = $this->customermodel->get_preference($this->input->post('preference'))[0];
 				$rawAddons = json_decode($this->input->post('addons'),true);
 				if(empty($rawAddons['addonIds'])){
 					$rawAddons = "";
 				}else{
-					$addonsPrices = $this->Customermodel->get_addonPrices($rawAddons['addonIds']);					
+					$addonsPrices = $this->customermodel->get_addonPrices($rawAddons['addonIds']);					
 					for($index = 0 ; $index < count($rawAddons['addonIds']) ; $index++){
 						foreach($addonsPrices as $addon){
 							if($addon['aoID'] == $rawAddons['addonIds'][$index]){
@@ -180,7 +180,66 @@ class Customer extends CI_Controller {
 				$customer = $this->input->post('cust_name');
 				$orderlist = $this->session->userdata('orders');
 				$total = $this->input->post('total');
-				$this->Customermodel->orderInsert($total, $tableCode, $orderlist, $customer, $dateTime);
+				$slip = array(
+					"table" => $tableCode,
+					"custName" => $customer,
+					"total" => $total,
+					"osDateTime" => $dateTime,
+					"dateRecorded" => $dateTime
+				);
+				$osID = $this->customermodel->add_orderslip($slip);
+				$consumptionItems = array("stID"=> array() , "qty" => array());
+				foreach($orderlist as $list){
+					$priceaName = $this->customermodel->get_priceAndName($list['id']);
+					$list = array(
+						"osID" => $osID,
+						"prID" => $list['id'],
+						"qty" => $list['qty'],
+						"subtotal" => $list['subtotal'],
+						"remarks" => $list['remarks'],
+						"price" => $priceaName['price'],
+						"olDesc" => $priceaName['name']
+					);
+					$olID = $this->customermodel->add_orderlist($list);
+					$this->customermodel->add_addon($olID, $orderlist);
+					$prefStocks = $this->customermodel->get_prefStocks($list['prID']);
+					if(isset($prefStocks[0])){
+						$prefStock = $prefStocks[0];
+						$stID = $prefStock['stID'];
+						$qty = $prefStock['prstQty'];
+						$index = array_search($stID, $consumptionItems['stID']);
+						if($index !== FALSE){
+							$consumptionItems['qty'][$index] += $qty * $list['qty'];
+						}else{
+							array_push($consumptionItems['stID'], $stID);
+							array_push($consumptionItems['qty'], $list['qty'] * $qty);
+						}
+					}
+				}
+				$consumption = array(
+					"date" => $dateTime,
+					"dateRecorded" => $dateTime,
+					"remarks" => "Orderslip #".$osID
+				);
+				if(count($consumptionItems['stID'])>0){
+					$consumptionID = $this->customermodel->add_consumption($consumption);
+					for($x = 0 ; $x < count($consumptionItems['stID']) ; $x++){
+						$consumptionItemID = $this->customermodel->add_consumedItems($consumptionItems['stID'][$x]);
+						$this->customermodel->add_consumedItemsQty($consumptionID, $consumptionItemID, $consumptionItems['qty'][$x]);
+						$log = array(
+							"stID" => $consumptionItems['stID'][$x],
+							"tID" => $consumptionID,
+							"slQty" => $consumptionItems['qty'][$x],
+							"slRemain"=> $this->customermodel->get_stockQty($consumptionItems['stID'][$x])[0]['stQty'] - $consumptionItems['qty'][$x],
+							"slDateTime" => $dateTime,
+							"dateRecorded" => $dateTime,
+							"slRemarks" => "Sales"
+						);
+						$this->customermodel->add_consumedLog($log);
+						$this->customermodel->update_stQty($consumptionItems['stID'][$x], $consumptionItems['qty'][$x]);
+					}
+				}
+				// $this->customermodel->orderInsert($total, $tableCode, $orderlist, $customer, $dateTime);
 			}else{
 				redirect('customer/checkin');
 			}
@@ -203,11 +262,11 @@ class Customer extends CI_Controller {
 		}
 	}
 
-	function editOrder() {	
+	function editOrder() {
 		if($this->isLoggedIn()){			
 			if($this->isCheckedIn()){
 				$id = $this->input->post('rowID');
-				$preference = $this->Customermodel->get_preference($this->input->post('preference'))[0];
+				$preference = $this->customermodel->get_preference($this->input->post('preference'))[0];
 				$rawAddons = json_decode($this->input->post('addons'),true);
 				for($index = 0; $index < count($rawAddons['addonIds']); $index++){
 					$rawAddons['addonIds'][$index] = intval($rawAddons['addonIds'][$index]);
@@ -255,7 +314,7 @@ class Customer extends CI_Controller {
 	function promos() {
 		if($this->isLoggedIn()){
 			if($this->isCheckedIn()){
-				$data = $this->Customermodel->fetch_promos();
+				$data = $this->customermodel->fetch_promos();
 				echo json_encode($data);
 			}else{
 				redirect('customer/checkin');
@@ -268,8 +327,8 @@ class Customer extends CI_Controller {
 	function freebies_discounts() {
 			$pref_id = $this->input->post('pref_id');
 			$data = array();
-			$data['freebies'] = $this->Customermodel->fetch_freebies($pref_id);
-			$data['discounts'] = $this->Customermodel->fetch_discounts($pref_id);
+			$data['freebies'] = $this->customermodel->fetch_freebies($pref_id);
+			$data['discounts'] = $this->customermodel->fetch_discounts($pref_id);
 	
 			echo json_encode($data);
 	}

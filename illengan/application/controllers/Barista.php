@@ -195,7 +195,7 @@ class Barista extends CI_Controller{
         }
         function getOrderslip(){
             $data = array(
-                'orderslips' => $this->baristamodel->get_orderslips(),
+                'orderslips' => $this->baristamodel->get_orderslip(),
                 'orderlists' => $this->baristamodel->get_olist(),
                 'addons' => $this->baristamodel->get_addons()
             );
