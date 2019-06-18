@@ -146,8 +146,9 @@
 							</div>
 							<!--End of Delete Modal-->
 							<!--Edit Spoilage-->
+							
 							<div class="modal fade" id="editSpoil" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
+							<div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Edit Spoilage</h5>
@@ -163,8 +164,8 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Quantity</span>
                                                         </div>
-                                                        <input type="number" min="1" name="stQtyUpdate" id="stQtyUpdate" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("stQtyUpdate"); ?></span>
+                                                        <input type="number" min="1" name="ssQtyUpdate" id="ssQtyUpdate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("ssQtyUpdate"); ?></span>
                                                     </div>
                                                     <!--Date Spoiled-->
 													<div class="input-group mb-3">
@@ -172,7 +173,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="tDate" id="tDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("tDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
@@ -181,7 +182,7 @@
                                                                 Remarks</span>
                                                         </div>
                                                         <input type="text" name="tRemarks" id="tRemarks" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("tRemarks"); ?></span>
+                                                        <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
                                                     </div>
 													<input name="stID" id="stID" hidden="hidden">
 													<input name="tiID" id="tiID" hidden="hidden">
@@ -197,6 +198,8 @@
                                         </div>
                                     </div>
                             </div>
+
+							
 							<!--End of Edit Modal-->
 						</div>
 					</div>
@@ -305,16 +308,14 @@
 			
 			$(".updateBtn").last().on('click', function () {
 				
-                $("#editSpoil").find("input[name='tiID']").val($(this).closest("tr").attr(
-					"data-tiID"));
-				$("#editSpoil").find("input[name='stID']").val($(this).closest("tr").attr(
-					"data-stID")); 
-				$("#editSpoil").find("input[name='dateRecorded']").val($(this).closest("tr").attr(
-					"data-dateRecorded"));
-				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
-					"data-stQty"));
+                $("#editSpoil").find("input[name='tID']").val($(this).closest("tr").attr(
+					"data-tID"));
+				$("#editSpoil").find("input[name='tiID']").val($(this).closest("tr").attr(
+					"data-tiID")); 
 				$("#editSpoil").find("input[name='tDate']").val($(this).closest("tr").attr(
 					"data-tDate"));
+				$("#editSpoil").find("input[name='ssQtyUpdate']").val($(this).closest("tr").attr(
+					"data-actualQty"));
 				$("#editSpoil").find("input[name='tRemarks']").val($(this).closest("tr").attr(
 					"data-tRemarks"));
             });
@@ -343,14 +344,13 @@
 	$(document).ready(function() {
     $("#editSpoil form").on('submit', function(event) {
 		event.preventDefault();
-		var stID = $(this).find("input[name='stID']").val();
+		var tID = $(this).find("input[name='tID']").val();
 		var tiID = $(this).find("input[name='tiID']").val(); 
-		var stQty = $(this).find("input[name='stQty']").val(); 
-        var stQtyUpdate = $(this).find("input[name='stQtyUpdate']").val();
-		var dateRecorded = $(this).find("input[name='dateRecorded']").val();
+		var iniActQty = $(this).find("input[name='actualQty']").val(); 
+        var ssQtyUpdate = $(this).find("input[name='ssQtyUpdate']").val();
         var tDate = $(this).find("input[name='tDate']").val();
         var tRemarks = $(this).find("input[name='tRemarks']").val();
-      
+		console.log()
         $.ajax({
             url: "<?= site_url("admin/stock/spoilage/edit")?>",
             method: "post",
@@ -361,7 +361,7 @@
 				stQtyUpdate: stQtyUpdate,
 				dateRecorded: dateRecorded,
                 tDate: tDate,
-                tRemarks: tRemarks
+                tRemarks: tRemarks                                                                                                                                                                                                                               
             },
             dataType: "json",
             success: function(data) {

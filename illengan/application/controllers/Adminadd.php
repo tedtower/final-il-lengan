@@ -366,7 +366,8 @@ function addspoilagesstock(){
             $spName = $this->input->post('spName'); 
             $receiptNo = $this->input->post('receiptNo');
             $tDate = $this->input->post('tDate'); 
-            $tNum = intval($this->adminmodel->set_tNum()) + 1;
+            $maxtNum = intval($this->adminmodel->set_tNum());
+            $tNum = $maxtNum + 1;
             $dateRecorded = date("Y-m-d H:i:s");
             $tType = 'return';
             $tTotal = $this->input->post('tTotal'); 
@@ -378,12 +379,13 @@ function addspoilagesstock(){
             $this->adminmodel->add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
             $isArchived, $trans, $ti);
         }else{
-
+            redirect("login");
         }
     }
-         
+
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $total = 0;
             $poItems = json_decode($this->input->post('transitems'),true);
             $po = array(
                 "supplier" => $this->input->post('supplier'),
@@ -395,7 +397,6 @@ function addspoilagesstock(){
                 "total" => $this->input->post('total'),
                 "remarks" => $this->input->post('remarks')
             );
-            echo json_encode($po);
             $poID = $this->adminmodel->add_receiptTransaction($po);
             if(count($poItems)>0){
                 foreach($poItems as $poItem){
@@ -416,8 +417,10 @@ function addspoilagesstock(){
                     );
                     $poiID = $this->adminmodel->add_receiptTransactionItems($po);
                     $po['tiID'] = $poiID;
+                    $total += floatval($po['subtotal']);
                     $this->adminmodel->add_receiptTransactionItemsQty($poID, $po);
                 }
+                $this->adminmodel->edit_receiptTransactionTotal($poID, $total);
             }
             echo json_encode(array(
                 "success" => true
@@ -524,5 +527,9 @@ function addspoilagesstock(){
             ));
         }
     }
-}
+
+        
+
+}    
 ?>
+

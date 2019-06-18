@@ -143,7 +143,7 @@
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Add Returns</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit Returns</h5>
                                                 <button type="button" class="close" data-dismiss="modal"
                                                     aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -164,7 +164,7 @@
                                                             </div>
                                                             <select
                                                                 class="spID form-control form-control-sm  border-left-0"
-                                                                name="spID">
+                                                                name="spID" disabled>
                                                                 <option value="" selected>Choose</option>
                                                             </select>
                                                         </div>
@@ -241,10 +241,10 @@
                                 <!-- End of Modal "Edit Returns" -->
 
                                 <!--Start of Stock Items Modal"-->
-                                <div class="modal fade bd-example-modal" id="stockItemsModal" tabindex="-1"
+                                <div class="modal fade bd-example-modal-lg" id="stockItemsModal" tabindex="-1"
                                     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                                     style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog" role="document">
+                                    <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Select Stock Items</h5>
@@ -295,9 +295,9 @@ var suppmerch = [];
                     returns[index].returnitems = data.returnitems.filter(ret => ret.tID == items.tID);
                 });
 
-                stocks = data.stock;
                 supplier = data.supplier;
                 suppmerch = data.suppmerch;
+                console.log(suppmerch);
                 showTable();
             },
             error: function (response, setting, errorThrown) {
@@ -314,10 +314,36 @@ var suppmerch = [];
 
     function setBrochureContent(suppstocks) {
         $("#list").empty();
-        $("#list").append(`${suppstocks.map(st => {
-            return `<label style="width:96%"><input type="checkbox" id="stID${st.stID}" name="stockitems" class="stockitems mr-2" 
-            value="${st.stID}"> ${st.spmName} </label>`
+        $("#list").append(`<table class="table"><thead>
+                    <th></th>
+                    <th>Receipt No.</th>
+                    <th>Date</th>
+                    <th>Stock</th>
+                </thead><tbody></tbody></table>`);
+
+        $("#list").find('table > tbody').append(`${suppstocks.map(st => {
+            return ` <tr><td><input type="checkbox" id="stID${st.stID}" name="stockitems" onchange="disableReceipts(this)" 
+            class="${st.receiptNo} stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
+                    <td>${st.receiptNo}</td>
+                    <td>${st.tDate}</td>
+                    <td>${st.spmName}</td></tr>`
         }).join('')}`);
+    }
+
+    function disableReceipts(checkbox) {
+        var receiptNo = $(checkbox).data('receipt');
+        var checkboxes = $("input[name='stockitems']");
+
+        if($(checkbox).prop('checked')) {
+            for(var i = 0; i <= checkboxes.length - 1; i++) {
+            if(!($(checkboxes).eq(i).hasClass(receiptNo))) {
+                $(checkboxes).eq(i).attr('disabled', "disabled");
+            }
+        }
+        } else {
+            $(checkboxes).removeAttr('disabled');
+        }
+        
     }
 
     function showTable() {
@@ -428,7 +454,6 @@ var suppmerch = [];
 
 
     var subPrice = 0;
-
     function getSelectedStocks() {
         $(document).ready(function () {
             var value = 0;
@@ -437,13 +462,13 @@ var suppmerch = [];
             for (var i = 0; i <= choices.length - 1; i++) {
                 if (choices[i].checked) {
                     value = choices[i].value;
-                    st = stocks.filter(st => st.stID === value);
+                    st = suppmerch.filter(st => st.stID === value);
                    
                     merchChecked = `
                     <tr class="returnElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}"
                         data-currqty="${st[0].stQty}">
                         <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
-                                value="${st[0].stName}" readonly="readonly"></td>
+                                value="${st[0].spmName}" readonly="readonly"></td>
                         <td><input type="number" id="tiQty" onchange="setInputValues()" name="tiQty"
                                 class="tiQty form-control form-control-sm" value="1" required min="1"></td>
                         <td><input type="text" id="uomID" data-id="${st[0].uomID}" name="uomID"
@@ -509,9 +534,13 @@ var suppmerch = [];
 
                     if ($('#addReturns').is(':visible')) {
                         $('#addReturns .returnsTable > tbody').append(merchChecked);
+                        $('#addReturns').find("input[name='receiptNo']").val(st[0].receiptNo);
+                        $('#addReturns').find("input[name='receiptNo']").attr('disabled','disabled');
                         setInputValues();
                     } else {
                         $('#editReturns .returnsTable > tbody').append(merchChecked);
+                        $('#editReturns').find("input[name='receiptNo']").val(st[0].receiptNo);
+                        $('#editReturns').find("input[name='receiptNo']").attr('disabled','disabled');
                     }
                 }
             }
@@ -615,7 +644,7 @@ var suppmerch = [];
             }
 
             $.ajax({
-                url: "<?= site_url("admin/returns/edit")?>",
+                url: "<?= site_url("admin/returns/add")?>",
                 method: "post",
                 data: {
                     spID: spID,
