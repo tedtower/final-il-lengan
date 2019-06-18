@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+<<<<<<< HEAD
+=======
 
+>>>>>>> b2409213142c6921d440d22a2cb0be7ffb6dc5af
 $route['default_controller'] = 'login/viewlogin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -157,6 +160,7 @@ $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
+$route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
 
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
@@ -189,6 +193,11 @@ $route['barista/inventoryJS'] = "barista/inventoryJS";
 $route['barista/restock'] = "barista/restockitem";
 $route['barista/destock'] = "barista/destockitem";
 $route['barista/updateStatus'] = "barista/updateStatus";
+$route['barista/stock/spoilages'] = "barista/viewSpoilagesStock";
+$route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
+$route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
+$route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
+$route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 
 //BARISTA JS ROUTES
@@ -196,5 +205,19 @@ $route['barista/editTableNumber'] = "barista/editTableNumber";
 // $route['barista/pendingOrdersJS'] ="barista/pendingOrdersJS";
 
 // CHEF ROUTES
+$route['chef'] = "chef/index";
 $route['chef/orders'] = "chef/get_orderlist";
+$route['chef/inventory'] = "chef/viewInventory";
 $route['chef/change_status'] = "chef/change_status";
+$route['chef/inventoryJS'] = "chef/inventoryJS";
+$route['chef/viewStockJS'] ="chef/viewStockJS";
+$route['chef/viewMenuJS'] ="chef/viewMenuJS";
+$route['chef/spoilagesmenujson'] = "chef/viewSpoilagesMenuJs";
+$route['chef/spoilagesstockjson'] = "chef/viewSpoilagesStockJs";
+$route['chef/spoilages/menu'] = "chef/viewSpoilagesMenu";
+$route['chef/spoilages/menu/add'] = "chef/addspoilagesmenu";
+$route['chef/spoilages/menu/edit'] = "chef/editMenuSpoil";
+$route['chef/spoilages/stock'] = "chef/viewSpoilagesStock";
+$route['chef/spoilages/stock/add'] = "chef/addspoilagesstock";
+$route['chef/spoilages/stock/edit'] = "chef/editStockSpoil";
+$route['chef/spoilages/stock/delete'] ="chef/deletestockspoilages";

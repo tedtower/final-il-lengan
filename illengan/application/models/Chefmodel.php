@@ -80,19 +80,10 @@
         }
         
         function get_menuPref(){
-            $query = "SELECT 
-            prID, 
-            mName,
-            CONCAT(mName,
-                       ' ',
-                    '(',prName,')',
-                    IF(mTemp IS NULL,' ', CONCAT(' ',mTemp))) as prName,
-            prPrice,
-            mAvailability 
-        FROM 
-            preferences 
-                    INNER JOIN 
-            menu USING (mID)";
+            $query = "SELECT prID, stID, prstQty, stQty, mName, CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ', 
+            CONCAT(' ',mTemp))) as prName, prPrice, mAvailability FROM preferences INNER JOIN menu USING (mID) 
+            LEFT JOIN prefstock USING (prID) LEFT JOIN stockitems USING (stID)";
+
             return $this->db->query($query)->result_array();
         }
 
@@ -119,7 +110,12 @@
         if(count($menus) > 0){
             for($in = 0; $in < count($menus) ; $in++){
                 $this->db->query($query, array($msID, $menus[$in]['prID'], $menus[$in]['msQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks']));
-            }    
+                if($menus[$in]['stID'] !== 0) {
+                    $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?";
+                    $this->db->query($query, array($menus[$in]['newQty'], $menus[$in]['stID']));
+                }
+            }
+            
         }
     }
 

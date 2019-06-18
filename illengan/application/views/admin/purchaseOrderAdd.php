@@ -290,77 +290,6 @@
 
     
 var subPrice = 0;
-// function getSelectedStocks() {
-//     $(document).ready(function () {
-//         var value = 0;
-//         var choices = document.getElementsByClassName('stockitems');
-//         var merchChecked, st, spm;
-//         for (var i = 0; i <= choices.length - 1; i++) {
-//             if (choices[i].checked) {
-//                 value = choices[i].value;
-//                 st = stocks.filter(st => st.stID === value);
-//                 spm = suppmerch.filter(sp => sp.stID === value);
-//                 console.log(suppmerch);
-//                 merchChecked = `
-//                 <div style="overflow:auto;margin-bottom:2%" class="ic-level-1" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
-//                     <div style="float:left;width:95%;overflow:auto;">
-//                         <div class="find input-group mb-1">
-//                             <input type="text" name="itemName[]"
-//                                 class="form-control form-control-sm"
-//                                 value="${st[0].stName} ${st[0].stSize}" style="width:24%" readonly>
-//                             <input type="number" name="itemQty[]"
-//                                 class="tiQty form-control form-control-sm"
-//                                 placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
-//                             <select name="itemUnit[]"
-//                                 class="itemUnit form-control form-control-sm" readonly>
-//                                 <option value="" selected="selected">Unit</option>
-//                             </select>
-//                             <input type="number" name="price[]"
-//                                 class="tiPrice form-control form-control-sm"
-//                                 value="${spm[0].spmPrice}" readonly>
-//                             <input type="number" name="discount[]"
-//                                 class="form-control form-control-sm "
-//                                 placeholder="Discount">
-//                             <input type="number" name="itemSubtotal[]"
-//                                 class="tiSubtotal form-control form-control-sm"
-//                                 placeholder="Subtotal" readonly>
-//                         </div>
-//                         <div class="input-group">
-//                             <select name="stID[]"
-//                                 class="stock form-control form-control-sm" readonly="readonly">
-//                                 <option value="" selected="selected">Stock Item
-//                                 </option>
-//                             </select>
-//                             <input name="actualQty[]" type="number"
-//                                 class="qtyPerItem form-control border-right"
-//                                 value="${spm[0].spmActualQty}" readonly="readonly">
-//                         </div>
-//                     </div>
-//                     <div class="mt-4"style="float:left:width:3%;overflow:auto;">
-//                         <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
-//                     </div>
-//                 </div>
-//                  `;
-//                 $('.ic-level-2').append(merchChecked);
-//                 setInputValues();
-//             }
-//         }
-//         $(".exitBtn").on('click',function(){
-//             $(this).closest(".ic-level-1").remove();
-//         });
-//         $('.itemUnit').empty();
-//         $(".itemUnit").append(`${uom.map(uom => {
-//             return `<option value="${uom.uomID}">${uom.uomName}</option>`
-//         }).join('')}`);
-//         $("select[name='itemUnit[]']").find(`option[value=${spm[0].uomID}]`).attr("selected","selected");
-//         $('.stock').empty();
-//         $(".stock").append(`${stocks.map(stock => {
-//             return `<option value="${stock.stID}">${stock.stName}</option>`
-//         }).join('')}`);
-//         $(`.ic-level-1 select[name='stID[]'] > option[value='${spm[0].stID}']`).attr("selected","selected");
-//     });
-//     $("#merchandiseBrochure").modal("hide");
-// }
 
 function setInputValues() {
     var total = 0;
@@ -382,9 +311,5 @@ function setInputValues() {
         $('.total').text(total);
     }
 }
-
-// ----------------------- A D D I N G  T R A N S A C T I O N --------------------------
-
-
     </script>
 </body>

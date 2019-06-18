@@ -366,7 +366,8 @@ function addspoilagesstock(){
             $spName = $this->input->post('spName'); 
             $receiptNo = $this->input->post('receiptNo');
             $tDate = $this->input->post('tDate'); 
-            $tNum = intval($this->adminmodel->set_tNum()) + 1;
+            $maxtNum = intval($this->adminmodel->set_tNum());
+            $tNum = $maxtNum + 1;
             $dateRecorded = date("Y-m-d H:i:s");
             $tType = 'return';
             $tTotal = $this->input->post('tTotal'); 
@@ -378,10 +379,10 @@ function addspoilagesstock(){
             $this->adminmodel->add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
             $isArchived, $trans, $ti);
         }else{
-
+            redirect("login");
         }
     }
-         
+
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
@@ -530,5 +531,9 @@ function addspoilagesstock(){
             ));
         }
     }
-}
+
+        
+
+}    
 ?>
+

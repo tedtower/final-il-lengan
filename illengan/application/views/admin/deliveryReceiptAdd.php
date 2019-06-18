@@ -145,7 +145,7 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                        Content
+                                        
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger btn-sm"
@@ -164,14 +164,15 @@
 </div>
 <?php include_once('templates/scripts.php') ?>
 <script>
-
     var stocks = [];
     var uom = [];
     var supplier = [];
     var suppmerch = [];
+    var po = [];
+    var poitems = [];
     $(function () {
         $.ajax({
-            url: '/admin/jsonPO',
+            url: '/admin/jsonDR',
             dataType: 'json',
             success: function (data) {
                 var poLastIndex = 0;
@@ -179,6 +180,8 @@
                 supplier = data.supplier;
                 suppmerch = data.suppmerch;
                 uom = data.uom;
+                po = data.po;
+                poitems = data.poitems;
             },
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
@@ -190,6 +193,11 @@
             var spID = parseInt($(this).closest('.form').find('.spID').val());
             setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
         });
+
+        $(".addPOBtn").on('click', function(){
+            var poID = parseInt($(this).closest('.form').find('.spID').val());
+            setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
+        });
     });
     function setBrochureContent(suppstocks){
         $("#list").empty();
@@ -198,7 +206,13 @@
             value="${st.stID}"> ${st.spmName} </label>`
         }).join('')}`);
     }
-
+    function setBrochureContent(suppstocks){
+        $("#list").empty();
+        $("#list").append(`${suppstocks.map(st => {
+            return `<label style="width:96%"><input type="checkbox" id="stID${st.stID}" name="stockitems" class="stockitems mr-2" 
+            value="${st.stID}"> ${st.spmName} </label>`
+        }).join('')}`);
+    }
     
 var subPrice = 0;
 var merchChecked;

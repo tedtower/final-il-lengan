@@ -81,6 +81,7 @@ class Chef extends CI_Controller {
 			$data['title'] = " Menu Spoilages";
 			$this->load->view('chef/head', $data);
 			$this->load->view('chef/navigation');
+			$this->load->view('chef/scripts');
 			$this->load->view('chef/chefMenuSpoilages');
 		}else{
 			redirect('login');
@@ -115,7 +116,8 @@ class Chef extends CI_Controller {
 	function addspoilagesmenu(){
 		if($this->checkIfLoggedIn()){
             $date_recorded = date("Y-m-d H:i:s");
-            $menus = json_decode($this->input->post('menus'), true);
+			$menus = json_decode($this->input->post('menus'), true);
+			
             echo json_encode($menus, true);
             $this->Chefmodel->add_menuspoil($date_recorded,$menus);
            
