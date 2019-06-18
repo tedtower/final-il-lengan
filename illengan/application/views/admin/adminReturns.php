@@ -409,6 +409,7 @@ function setInputValues() {
         var actualqty = tiQty * qtyPerItem;
         $('.actualQty').eq(i).val(actualqty);
         $('.tiSubtotal').eq(i).val(subtotal);
+        console.log(subtotal);
        
     }
 

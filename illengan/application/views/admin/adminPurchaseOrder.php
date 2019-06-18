@@ -170,6 +170,15 @@
             }).join('')}`);
 
         }
+        $(".accordionBtn").on('click', function () {
+            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+                $(this).closest("tr").next(".accordion").css("display", "table-row");
+                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+            } else {
+                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                $(this).closest("tr").next(".accordion").hide("slow");
+            }
+        });
 
 
     </script>
