@@ -1,5 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+<<<<<<< HEAD
+=======
+
+>>>>>>> b2409213142c6921d440d22a2cb0be7ffb6dc5af
 $route['default_controller'] = 'login/viewlogin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -81,6 +85,7 @@ $route['admin/returns/add'] = "adminadd/addReturnTransactions";
 $route['admin/promos/add'] = "adminadd/addPromo";
 $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
+$route['admin/returns/add'] = "adminadd/addReturns";
 $route['admin/stocklog/ending/add'] = "adminadd/addBeginningLogs";
 //End Admin Add Routes ------------------------------------------
 
@@ -103,7 +108,7 @@ $route['admin/stock/spoilage/edit'] = "adminupdate/editStockSpoil";
 $route['admin/tables/edit'] = "adminupdate/edittable";
 $route['admin/menu/spoilage/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
-$route['admin/returntransactions/edit'] = "adminupdate/editReturnTrans";
+$route['admin/returns/edit'] = "adminupdate/editReturns";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------
@@ -176,7 +181,6 @@ $route['customer/menu/removeOrder'] = "customer/removeOrder";
 $route['customer/menu/editOrder'] = "customer/editOrder";
 
 // BARISTA ROUTES
-// BARISTA ROUTES
 $route['barista/orderslip'] = "barista/vieworderslip";
 $route['barista/orders'] = "barista/pendingOrders";
 $route['barista/servedOrderlist'] = "barista/servedOrders";
@@ -193,11 +197,26 @@ $route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
 $route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
 $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
+$route['barista/editTableNumber'] = "barista/editTableNumber";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
 // $route['barista/pendingOrdersJS'] ="barista/pendingOrdersJS";
 
 // CHEF ROUTES
+$route['chef'] = "chef/index";
 $route['chef/orders'] = "chef/get_orderlist";
+$route['chef/inventory'] = "chef/viewInventory";
 $route['chef/change_status'] = "chef/change_status";
+$route['chef/inventoryJS'] = "chef/inventoryJS";
+$route['chef/viewStockJS'] ="chef/viewStockJS";
+$route['chef/viewMenuJS'] ="chef/viewMenuJS";
+$route['chef/spoilagesmenujson'] = "chef/viewSpoilagesMenuJs";
+$route['chef/spoilagesstockjson'] = "chef/viewSpoilagesStockJs";
+$route['chef/spoilages/menu'] = "chef/viewSpoilagesMenu";
+$route['chef/spoilages/menu/add'] = "chef/addspoilagesmenu";
+$route['chef/spoilages/menu/edit'] = "chef/editMenuSpoil";
+$route['chef/spoilages/stock'] = "chef/viewSpoilagesStock";
+$route['chef/spoilages/stock/add'] = "chef/addspoilagesstock";
+$route['chef/spoilages/stock/edit'] = "chef/editStockSpoil";
+$route['chef/spoilages/stock/delete'] ="chef/deletestockspoilages";

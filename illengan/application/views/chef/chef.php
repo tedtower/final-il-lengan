@@ -17,16 +17,14 @@
             <div class="container-fluid">
                 <!--Table-->
                     
-                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                        <thead>
+                <table id="orders" class="table table-bordered" cellspacing="0" width="100%">
+                        <thead class="thead-light">
                             <tr>
-                                <th></th>
-                                <th><b class="pull-left">Order No.</b></th>
-                                <th><b class="pull-left">Order</b></th>
-                                <th><b class="pull-left">Quantity</b></th>
-                                <th><b class="pull-left">Date & Time</b></th>
-                                <th><b class="pull-left">Table No.</b></th>
-                                <th><b class="pull-left">Customer</b></th>
+                            <th width="10%">No.</th>
+                                <th>Order</th>
+                                <th>Qty</th>
+                                <th>Table</th>
+                                <th>Customer</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,7 +55,15 @@ var orders = [];
                    
                 });
                
-                //showTable();
+                $.each(data.orderlists, function (index, items) {
+                    orders.push({
+                        "orders": items
+                    });
+                    orders[index].addons = data.addons.filter(ao => ao.olID == items.olID);
+                   
+                });
+               
+                showTable();
                 console.log(orders);
             },
             error: function (response, setting, errorThrown) {
@@ -70,44 +76,39 @@ var orders = [];
     });
     function showTable() {
        orders.forEach(function (item) {
+           console.log(item.orders);
             var tableRow = `
                 <tr class="table_row" data-id="${item.orders.osID}">   <!-- table row ng table -->
-                    <td><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></td>
-                    <td>${item.orders.olID}</td>
-                    <td>${item.orders.olDesc}</td>
-                    <td>${item.orders.olQty}</td>
-                    <td>${item.orders.osDateTime}</td>
+                <td>
+                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" 
+                    style="height:13px;width:13px;margin-right:5px;margin-left:0"/> 
+                    ${item.orders.olID}</td>
+                    <td><b>${item.orders.olDesc}</b></td>
+                    <td><b>${item.orders.olQty}</b></td>
                     <td>${item.orders.tableCode}</td>
                     <td>${item.orders.custName}</td>
-                    <td>
-                        <button class="editBtn btn btn-sm btn-primary" data-toggle="modal" data-target="#editPO" id="editPOBtn">Edit</button>
-                        <button class="deleteBtn btn btn-sm btn-danger" data-toggle="modal" data-target="#delete">Delete</button>
-                    </td>
                 </tr>
             `;
-            var ordersDiv = `
-            <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
-                ${parseInt(item.orders[0].orderlists) === 0 ? "No orders" : 
-                `<caption><b>Orders</b></caption>
+            var addonsDiv = `
+            <div class="addons" > <!-- Preferences table container-->
+                ${parseInt(item.addons.length) === 0 && item.orders.olRemarks === null ? "No addons and remarks" : 
+                `<caption><b>Addons:</b></caption>
                 <br>
                 <table id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
                     <thead class="thead-light">
                         <tr>
                             <th scope="col">Item Name</th>
                             <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Subtotal Price</th>
                         </tr>
                     </thead>
                     <tbody>
-                    ${item.orders.map(ol => {
+                    ${item.addons.map(ao => {
                         return `
                         <tr>
-                            <td>${ol.orderlists.mName} ${ol.orderlists.prName === 'Normal' ? " " : ol.orderlists.prName }</td>
-                            <td>${ol.orderlists.olQty}</td>
-                            <td>&#8369; ${ol.orderlists.prPrice}</td>
-                            <td>&#8369; ${(parseFloat(ol.orderlists.olSubtotal)).toFixed(2)}</td>
-                        </tr>
+                        <div>
+                            <div style="margin-left:5%">> (${ao.aoQty}) ${ao.aoName}</div>
+                            <div style="margin-left:5%">> (${ao.aoQty}) ${ao.aoName}</div>
+                        </div>
                         `;
                     }).join('')}
                     </tbody>
@@ -117,12 +118,11 @@ var orders = [];
             `;
             var accordion = `
             <tr class="accordion" style="display:none">
-                <td colspan="10"> <!-- table row ng accordion -->
+            <td colspan="5"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none"> <!-- container ng accordion -->
                         
-                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
-                            
-                            <div class="poAccordionContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
+                        <div style="width:100%;overflow:auto;margin-left:9%;"> <!-- description, preferences, and addons container -->
+                        <div class="AOaccordion" style="overflow:auto;"> <!-- Preferences and addons container-->
                                 
                             </div>
                         </div>
@@ -131,41 +131,22 @@ var orders = [];
             </tr>
             `;
 
-            var addonsDiv = `
-            <div class="addons" style="float:left;margin-right:3%" > <!-- Preferences table container-->
-                ${parseInt(item.orders[0].addons.length) === 0 ? " " : 
-                `<caption><b>Add Ons</b></caption>
+            var remarks = `
+            <div class="remarks"> <!-- Preferences table container-->
+                ${item.orders.olRemarks === null || item.orders.olRemarks === "" ? " " : 
+                `<caption><b>Remarks:</b></caption>
                 <br>
-                <table class="table table-bordered"> <!-- Preferences table-->
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Add On</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Subtotal Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    ${item.orders[0].addons.map(or => {
-                        return `
-                        <tr>
-                            <td>${or.aoName}</td>
-                            <td>${or.aoQty}</td>
-                            <td>&#8369; ${or.aoPrice}</td>
-                            <td>&#8369; ${(parseFloat(or.aoTotal)).toFixed(2)}</td>
-                        </tr>
-                        `;
-                    }).join('')}
-                    </tbody>
-                </table>
+                <div>
+                    <div style="margin-left:5%">${item.orders.olRemarks}</div>
+                </div>
                 `}
             </div>
             `;
         
-            $("#salesTable > tbody").append(tableRow);
-            $("#salesTable > tbody").append(accordion);
-            $(".poAccordionContent").last().append(ordersDiv);
-            $(".poAccordionContent").append(addonsDiv);
+            $("#orders > tbody").append(tableRow);
+            $("#orders > tbody").append(accordion);
+            $(".AOaccordion").last().append(addonsDiv);
+            $(".AOaccordion").last().append(remarks);
         });
         $(".accordionBtn").on('click', function () {
             if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
@@ -177,20 +158,9 @@ var orders = [];
             }
         });
 
-    showAddOns();
     }
 
- function showAddOns() {
-    for(var i = 0; i <= addons.length-1; i++) {
-     var addonsTr = '<tr><td>Add On</td>'+
-     '<td>'+addons[i].aoName+'</td>'+
-     '<td>'+addons[i].aoQty+'</td>'+
-     '<td>'+addons[i].aoPrice+'</td>'+
-     '<td>'+addons[i].aoTotal+'</td></tr>';
-     
-     $('#'+addons[i].olID).after(addonsTr);
-    }
- }
+
 
  
 </script>

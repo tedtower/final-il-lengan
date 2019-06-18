@@ -13,7 +13,7 @@
                         <h6 style="font-size: 16px;margin-left:15px">Add Purchase Order</h6>
                     </div>
                     <!--Card--> 
-                    <form accept-charset="utf-8" class="form">
+                    <form id="addPurchaseOrder" accept-charset="utf-8" class="form">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
@@ -60,55 +60,8 @@
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
-                            <div class="ic-level-1">
-                            <div style="overflow:auto;margin-bottom:2%">
-                                <div style="float:left;width:95%;overflow:auto;">
-                                    <div class="input-group mb-1">
-                                        <input type="text" name="itemName[]"
-                                            class="form-control form-control-sm"
-                                            placeholder="Item Name" style="width:24%">
-                                        <input type="number" name="itemQty[]"
-                                            class="form-control form-control-sm"
-                                            placeholder="Quantity">
-                                        <select name="itemUnit[]"
-                                            class="form-control form-control-sm">
-                                            <option value="" selected="selected">Unit
-                                            </option>
-                                        </select>
-                                        <input type="number" name="itemPrice[]"
-                                            class="form-control form-control-sm "
-                                            placeholder="Price">
-                                        <input type="number" name="discount[]"
-                                            class="form-control form-control-sm "
-                                            placeholder="Discount">
-                                        <input type="number" name="itemSubtotal[]"
-                                            class="form-control form-control-sm"
-                                            placeholder="Subtotal">
-                                    </div>
+                            <div class="ic-level-2"></div>
 
-                                    <div class="input-group">
-                                        <input name="stID[]" type="text"
-                                            class="form-control border-right-0"
-                                            placeholder="Stock" style="width:190px">
-                                        <input name="actualQty[]" type="number"
-                                            class="form-control border-right-0"
-                                            placeholder="Actual Qty" style="width:15%">
-                                        <select name="paymentStatus[]"
-                                            class="form-control form-control-sm">
-                                            <option value="" selected="selected">Payment Status
-                                            </option>
-                                        </select>
-                                        <select name="deliveryStatus[]"
-                                            class="form-control form-control-sm ">
-                                            <option value="" selected>Delivery Status</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mt-4"style="float:left:width:3%;overflow:auto;">
-                                    <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
-                                </div>
-                            </div>
-                            </div>
                             <br>
                             <span>Total: &#8369;<span class="total">0</span></span>
                             <!--Total of the trans items-->
@@ -121,7 +74,34 @@
                             </div>
                         </div>
                     </form>
-
+                                <!--Start of Brochure Modal"-->
+                                <div class="modal fade bd-example-modal" id="brochureStock" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
+                                    style="background:rgba(0, 0, 0, 0.3)">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form method="post" accept-charset="utf-8">
+                                                <div class="modal-body">
+                                                    <div style="margin:1% 3%" class="ic-level-2">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger btn-sm"
+                                                        data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-success btn-sm">Ok</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of Brochure Modal"-->
                     <!--Start of Brochure Modal"-->
                     <div class="modal fade bd-example-modal-sm" id="merchandiseBrochure" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
@@ -135,7 +115,7 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                    <div style="margin:1% 3%" class="ic-level-2">
+                                    <div style="margin:1% 3%" class="ic-level-2" id="list">
                                         <!--checkboxes-->
                                         <?php if(!empty($merchandise)){
                                             foreach($merchandise as $merch){
@@ -165,6 +145,7 @@
 <?php include_once('templates/scripts.php') ?>
     <script>
     var stocks = [];
+    var uom = [];
     var supplier = [];
     var suppmerch = [];
     $(function () {
@@ -176,6 +157,7 @@
                 stocks = data.stock;
                 supplier = data.supplier;
                 suppmerch = data.suppmerch;
+                uom = data.uom;
             },
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
@@ -186,72 +168,63 @@
         $(".addMBtn").on('click', function(){
             var spID = parseInt($(this).closest('.form').find('.spID').val());
             setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
-            console.log('eye');
         });
     });
     function setBrochureContent(suppstocks){
         $("#list").empty();
-        
         $("#list").append(`${suppstocks.map(st => {
             return `<label style="width:96%"><input type="checkbox" id="stID${st.stID}" name="stockitems" class="stockitems mr-2" 
             value="${st.stID}"> ${st.spmName} </label>`
         }).join('')}`);
     }
+
     
 var subPrice = 0;
 function getSelectedStocks() {
     $(document).ready(function () {
         var value = 0;
         var choices = document.getElementsByClassName('stockitems');
-        var merchChecked, st;
+        var merchChecked, st, spm;
         for (var i = 0; i <= choices.length - 1; i++) {
             if (choices[i].checked) {
                 value = choices[i].value;
                 st = stocks.filter(st => st.stID === value);
-                var name = st[0].stName+' '+st[0].stSize;
-                console.log(st);
+                spm = suppmerch.filter(sp => sp.stID === value);
+                console.log(suppmerch);
                 merchChecked = `
-                <div style="overflow:auto;margin-bottom:2%">
-                    <div style="float:left;width:95%;overflow:auto;" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
-                        <div class="input-group mb-1">
+                <div style="overflow:auto;margin-bottom:2%" class="poElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
+                    <div style="float:left;width:95%;overflow:auto;">
+                        <div class="find input-group mb-1">
                             <input type="text" name="itemName[]"
                                 class="form-control form-control-sm"
                                 value="${st[0].stName} ${st[0].stSize}" style="width:24%" readonly>
                             <input type="number" name="itemQty[]"
-                                class="form-control form-control-sm"
-                                placeholder="Quantity">
+                                class="tiQty form-control form-control-sm"
+                                placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
                             <select name="itemUnit[]"
-                                class="form-control form-control-sm">
-                                <option value="" selected="selected">Unit
-                                </option>
+                                class="itemUnit form-control form-control-sm" readonly>
+                                <option value="" selected="selected">Unit</option>
                             </select>
-                            <input type="number" name="itemPrice[]"
-                                class="form-control form-control-sm "
-                                placeholder="Price">
+                            <input type="number" name="price[]"
+                                class="tiPrice form-control form-control-sm"
+                                value="${spm[0].spmPrice}" readonly>
                             <input type="number" name="discount[]"
                                 class="form-control form-control-sm "
                                 placeholder="Discount">
                             <input type="number" name="itemSubtotal[]"
-                                class="form-control form-control-sm"
-                                placeholder="Subtotal">
+                                class="tiSubtotal form-control form-control-sm"
+                                placeholder="Subtotal" readonly>
                         </div>
 
                         <div class="input-group">
-                            <input name="stID[]" type="text"
-                                class="form-control border-right-0"
-                                placeholder="Stock" style="width:190px">
-                            <input name="actualQty[]" type="number"
-                                class="form-control border-right-0"
-                                placeholder="Actual Qty" style="width:15%">
-                            <select name="paymentStatus[]"
-                                class="form-control form-control-sm">
-                                <option value="" selected="selected">Payment Status
+                            <select name="stID[]"
+                                class="stock form-control form-control-sm">
+                                <option value="" selected="selected">Stock Item
                                 </option>
                             </select>
-                            <select name="deliveryStatus[]"
-                                class="form-control form-control-sm ">
-                                <option value="" selected>Delivery Status</option>
-                            </select>
+                            <input name="actualQty[]" type="number"
+                                class="qtyPerItem form-control border-right"
+                                value="${spm[0].spmActualQty}">
                         </div>
                     </div>
                     <div class="mt-4"style="float:left:width:3%;overflow:auto;">
@@ -259,13 +232,99 @@ function getSelectedStocks() {
                     </div>
                 </div>
                  `;
-                
-                $('.ic-level-1').append(merchChecked);
-                    // setInputValues();
-             
+                $('.ic-level-2').append(merchChecked);
+                    setInputValues();
             }
         }
+        $(".exitBtn").on('click',function(){
+            $(this).closest(".poElements").remove();
+        });
+
+        $('.itemUnit').empty();
+        $(".itemUnit").append(`${uom.map(uom => {
+            return `<option value="${uom.uomID}">${uom.uomName}</option>`
+        }).join('')}`);
+        $("select[name='itemUnit[]']").find(`option[value=${spm[0].uomID}]`).attr("selected","selected");
+        console.log(uom);
+
+        $('.stock').empty();
+        $(".stock").append(`${stocks.map(stock => {
+            return `<option value="${stock.stID}">${stock.stName}</option>`
+        }).join('')}`);
+
+        
+
     });
+    $("#merchandiseBrochure").modal("hide");
 }
+
+function setInputValues() {
+    var total = 0;
+    for(var i = 0; i <= $('.poElements').length -1 ; i++) {
+        var tiQty = parseInt($('.tiQty').eq(i).val());
+        var qtyPerItem = parseInt($('.qtyPerItem').eq(i).val());
+        var price = parseFloat($('.tiPrice').eq(i).val());
+
+        // Setting item subtotal
+        var subtotal = price * tiQty;
+        var actualqty = tiQty * qtyPerItem;
+        $('.actualQty').eq(i).val(actualqty);
+        $('.tiSubtotal').eq(i).val(subtotal);
+    }
+
+     //Setting items tota
+    for(var i = 0; i <= $('.tiSubtotal').length-1; i++) {
+        total = total + parseFloat($('.tiSubtotal').eq(i).val());
+        $('.total').text(total);
+    }
+}
+
+// ----------------------- A D D I N G  T R A N S A C T I O N --------------------------
+$(document).ready(function() {
+    $("#addPurchaseOrder").on('submit', function(event) {
+        event.preventDefault();
+        var supplier = $(this).find("select[name='spID']").val();
+        var date = $(this).find("input[name='tDate']").val();
+        var remarks = $(this).find("textarea[name='tRemarks']").val();
+        var transitems = [];
+        for (var index = 0; index < $(this).find(".poElements").length; index++) {
+            var row = $(this).find(".poElements").eq(index);
+            transitems.push({
+                uomID:  row.find("select[name='itemUnit[]']").val(),
+                stID:  row.find("select[name='stID[]']").val(),
+                name: row.find("input[name='itemName[]']").val(),
+                price:  row.find("input[name='price[]']").val(),
+                discount: row.find("input[name='discount[]']").val(),
+                qty:  row.find("input[name='itemQty[]']").val(),
+                actualQty:  row.find("input[name='actualQty[]']").val()
+            });
+        }
+
+        $.ajax({
+            method: "post",
+            url: "<?= site_url("admin/purchaseorder/add")?>",
+            data: {
+                supplier: supplier,
+                date: date,
+                remarks:remarks,
+                transitems: JSON.stringify(transitems)
+            },
+            dataType: "json",
+            beforeSend: function() {
+                console.log(supplier,date,remarks,transitems);
+            },
+            success: function(data) {
+                if(data.success){
+                    location.replace('admin/purchaseorder');
+                }
+            },
+            error: function(response, setting, error) {
+                console.log(error);
+                console.log(response.responseText);
+            }
+        });
+    });
+});
+
     </script>
 </body>

@@ -48,6 +48,26 @@ class Adminupdate extends CI_Controller{
             redirect('login');
         }
     }
+
+    function editReturns() {
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $tID = $this->input->post('tID');
+            $spID = $this->input->post('spID');
+            $spName = $this->input->post('spName');
+            $receiptNo = $this->input->post('receiptNo');
+            $tDate = $this->input->post('tDate');
+            $tTotal = $this->input->post('tTotal');
+            $tRemarks = $this->input->post('tRemarks');
+            $trans = json_decode($this->input->post('trans'), true);
+            $ti = json_decode($this->input->post('ti'), true);
+
+            $this->adminmodel->edit_returns($tID, $spID, $spName, $receiptNo, $tDate, $tTotal, $tRemarks, $trans, $ti);
+            }else{
+                redirect('login');
+            }
+        
+    }
+    
     function editStockSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         

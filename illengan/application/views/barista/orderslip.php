@@ -26,6 +26,7 @@
       var orderslips = [];
       var orderlists = [];
       var addons = [];
+      var tables = [];
       $(function() {
         $.ajax({
             url: '<?= base_url("barista/getOrderslip") ?>',
@@ -37,11 +38,9 @@
                     });
                     orderslips[index].orderlists = data.orderlists.filter(ol => ol.osID == item.osID);
                 });
-             
-                console.log(orderslips);
-                console.log(data.addons);
                 orderlists = data.orderlists;
                 addons = data.addons;
+                tables = data.tables;
                 setPenOrdersData();
                 console.log('Success');
             },
@@ -50,7 +49,7 @@
                 console.log(response.responseText);
             }
         });
-    });
+      });
     var olID;
       function setPenOrdersData() {
               orderslips.forEach(function(item) {
@@ -149,8 +148,39 @@
                     </div>
                 </div>
             </div>`;
+            var tableModal = `<div class="modal fade" id="editTable" tabindex="-1" role="dialog" aria-labelledby="editTableModal" aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Table Code</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form id="formEdit" accept-charset="utf-8" > 
+                  <div class="modal-body">
+                        <h6 id="editTableCode"></h6>
+                        <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                            Change Table</span>
+                        </div>
+                          <select name="tableCode" id="tableCode" class="form-control form-control-sm" required>
+                          </select>                    
+                        <input name="osID" id="osID" hidden="hidden">
+                  </div>
+                  <div class="modal-footer" id="updateTable" >
+                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                  <input type="hidden" id="updateDB" data-osID="${item.orderslips.osID}"/>
+                  </div>
+                </div>
+                </form>
+              </div>
+            </div>
+            </div>`;
             $('.lists-container').append(header);
             $('.lists-container').append(modal);
+            $('.lists-container').append(tableModal);
           
             }); 
               $("input#item_status").on('click', function () {
@@ -172,7 +202,6 @@
                 updateStatus(stats, id);
                 }
             });
-
             var btn;
             $("button.deleteOS").on("click", function() {
                  btn = $(this);
@@ -180,7 +209,6 @@
             $("button#remSlip").on("click", function(){
             $(btn).closest("div.list").remove();
             });
-
             $("img.cancelBtn").on("click", function() {
                 var cancelID = $(this).attr('data-id');
                 var chckStats = $(this).attr('data-status');
@@ -190,7 +218,11 @@
                     cancelOrder(cancelID);
                 }
             });
-
+            $("img.editBtn").on("click", function() {
+                var tableCode = $(this).attr('data-tableCode');
+                var  slipId = $(this).attr('data-id');
+                setTableData(slipId);
+            });
             addAddons();
         }
        
@@ -239,7 +271,6 @@
                 });
             });
             }
-
         function updateStatus(stats, id){
             console.log(stats, id);
             $.ajax({
@@ -259,7 +290,6 @@
             }
             });
     }
-
     function addAddons() {
        // addons.forEach(ao => {
            for(var i=0; i < addons.length; i++){
@@ -274,6 +304,39 @@
   //  });
     }
 }
+    function setTableData(slipID){
+        console.log(slipID);
+                $("#tableCode").empty();
+                $("#tableCode").append(`<option>--Select--</option>`);
+                $(tables).each(function(i) { //to list cities
+                $("#tableCode").append(`<option id="table" value=` + tables[i].tableCode + `>` + tables[i].tableCode + `</option>`);
+                });
+                    // for(var t=0; t < tables.length; t++){
+                    // $("#tableCode").append(`<option name= "tableCode" id ="table" value="${tables[t].tableCode}">${tables[t].tableCode}</option>`);
+                    // }   
+    
+    $("select#tableCode").on('change', function(event) {
+            var optionSelected = $("option:selected", this);
+            var tableCode = this.value;
+            console.log(slipID, tableCode);
+            $.ajax({
+                url: "<?= site_url("barista/editTableNumber")?>",
+                method: "post",
+                data: {
+                    'osID': slipID,
+                    'tableCode': tableCode
+                },
+                success: function(data) {
+                    alert('Table Updated');
+                    location.reload();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+                
+            });
+    });
+    }
     </script>
 </body>
-</htmL>
+</htmL

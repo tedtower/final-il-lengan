@@ -375,6 +375,7 @@ $(document).ready(function() {
             $(this).closest("tr").remove();
         });
     });
+    
     $(".addAddon").on('click',function(){
         var row=`
         <tr>

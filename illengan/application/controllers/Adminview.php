@@ -49,6 +49,7 @@ function viewPOFormAdd(){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
+        $data['uom'] = $this->adminmodel->get_uomForStoring();
         $data['stock'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
@@ -73,7 +74,11 @@ function viewDRFormAdd(){
         $head['title'] = "Inventory - Add DR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/deliveryReceiptAdd');
+        $data['uom'] = $this->adminmodel->get_uomForStoring();
+        $data['stock'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
+        $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
     }
@@ -642,7 +647,9 @@ function getStockItem(){
             $data['title'] = "Delivery Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminDeliveryReceipt');
+            $data['drs'] = $this->adminmodel->get_deliveryReceipts();
+            $data['drItems'] = $this->adminmodel->get_deliveryReceiptItems();
+            $this->load->view('admin/adminDeliveryReceipt', $data);
         }else{
             redirect('login');
         }
@@ -652,7 +659,9 @@ function getStockItem(){
             $data['title'] = "Official Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminOfficialReceipt');
+            $data['ors'] = $this->adminmodel->get_officialReceipts();
+            $data['orItems'] = $this->adminmodel->get_officialReceiptItems();
+            $this->load->view('admin/adminOfficialReceipt', $data);
         }else{
             redirect('login');
         }
@@ -672,7 +681,8 @@ function getStockItem(){
             $data = array(
                 'stock' => $this->adminmodel->get_stockitems(),
                 'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_supplierstocks()
+                'suppmerch' => $this->adminmodel->get_supplierstocks(),
+                'uom' => $this->adminmodel->get_uomForStoring()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);
@@ -685,9 +695,8 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
-                'stock' => $this->adminmodel->get_stockitems(),
                 'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_supplierstocks()
+                'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);
@@ -733,6 +742,18 @@ function getStockItem(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
                 "stocks" => $this->adminmodel->get_stocksForBeginningBrochure()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getPOItemsForBrochure(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                "pos" => $this->adminmodel->get_posForBrochure(),
+                "poItems" => $this->adminmodel->get_poItemsForBrochure()
             ));
         }else{
             echo json_encode(array(

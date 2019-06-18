@@ -62,14 +62,14 @@
                                                     </thead>
                                                     <tbody>
                                                     <?php foreach($transitems as $transitem){
-                                                        if($transitem['id'] == $transaction['id']){?>
+                                                        if($transitem['transaction'] == $transaction['id']){?>
                                                         <tr>
                                                             <td><?= $transitem['name']?></td>
                                                             <td><?= $transitem['qty']?></td>
                                                             <td><?= $transitem['equivalent']?></td>
                                                             <td><?= $transitem['actualqty']?></td>
                                                             <td><?= $transitem['price']?></td>
-                                                            <td><?= $transitem['discount'] == null ? "N/A" : $transitem['discount']?></td>
+                                                            <td><?= $transitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?></td>
                                                             <td><?= $transitem['subtotal']?></td>
                                                             <td><?= $transitem['paymentstatus']?></td>
                                                             <td><?= $transitem['deliverystatus']?></td>
@@ -170,6 +170,15 @@
             }).join('')}`);
 
         }
+        $(".accordionBtn").on('click', function () {
+            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+                $(this).closest("tr").next(".accordion").css("display", "table-row");
+                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+            } else {
+                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                $(this).closest("tr").next(".accordion").hide("slow");
+            }
+        });
 
 
     </script>

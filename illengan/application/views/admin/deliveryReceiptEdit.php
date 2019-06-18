@@ -24,7 +24,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID">
+                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" readonly="readonly">
                                         <option value="" selected>Choose</option>
                                     </select>
                                 </div>
@@ -77,40 +77,40 @@
                                     <div class="input-group mb-1">
                                         <input type="text" name="itemName[]"
                                             class="form-control form-control-sm"
-                                            placeholder="Item Name" style="width:24%">
+                                            placeholder="Item Name" style="width:24%" readonly="readonly">
                                         <input type="number" name="itemQty[]"
                                             class="form-control form-control-sm"
                                             placeholder="Quantity">
                                         <select name="itemUnit[]"
-                                            class="form-control form-control-sm">
+                                            class="form-control form-control-sm" readonly="readonly">
                                             <option value="" selected="selected">Unit
                                             </option>
                                         </select>
                                         <input type="number" name="itemPrice[]"
                                             class="form-control form-control-sm "
-                                            placeholder="Price">
+                                            placeholder="Price" >
                                         <input type="number" name="discount[]"
                                             class="form-control form-control-sm "
                                             placeholder="Discount">
                                         <input type="number" name="itemSubtotal[]"
                                             class="form-control form-control-sm"
-                                            placeholder="Subtotal">
+                                            placeholder="Subtotal" readonly="readonly">
                                     </div>
 
                                     <div class="input-group">
                                         <input name="stID[]" type="text"
                                             class="form-control border-right-0"
-                                            placeholder="Stock" style="width:190px">
+                                            placeholder="Stock" style="width:190px" readonly="readonly">
                                         <input name="actualQty[]" type="number"
                                             class="form-control border-right-0"
-                                            placeholder="Actual Qty" style="width:15%">
+                                            placeholder="Actual Qty" style="width:15%" readonly="readonly">
                                         <select name="paymentStatus[]"
-                                            class="form-control form-control-sm">
+                                            class="form-control form-control-sm" readonly="readonly">
                                             <option value="" selected="selected">Payment Status
                                             </option>
                                         </select>
                                         <select name="deliveryStatus[]"
-                                            class="form-control form-control-sm ">
+                                            class="form-control form-control-sm " readonly="readonly">
                                             <option value="" selected>Delivery Status</option>
                                         </select>
                                     </div>

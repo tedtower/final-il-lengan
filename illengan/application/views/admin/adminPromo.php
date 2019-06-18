@@ -396,7 +396,8 @@ function showTable(){
         $(".editBtn").on("click",function(){
             var menuID = $(this).closest("tr").attr("data-menuID");
             //set Modal contents;
-
+        });
+}
 var btn;
 function getSelectedMenu() {
     $(document).ready(function() {
