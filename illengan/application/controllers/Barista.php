@@ -39,7 +39,7 @@ class Barista extends CI_Controller{
     function editTableNumber(){
         $osID = $this->input->post('osID');
         $tableCode =$this->input->post('tableCode');
-        $data=$this->baristamodel->edit_tablenumber($tableCode,$osID);
+        $this->baristamodel->edit_tablenumber($tableCode,$osID);
     }
     
     //BARISTA BILLINGS FUNCTIONS
