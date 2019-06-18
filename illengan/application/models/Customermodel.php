@@ -12,7 +12,8 @@ class Customermodel extends CI_Model {
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
             FROM transactions
             WHERE tType = 'consumption'")->result_array()[0]['lastnum'];
-        if($this->db->query($query, array($lastNum+1,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
+        $lastNum = $lastNum == NULL ? 1 : $lastNum++;
+        if($this->db->query($query, array($lastNum,$consumption['date'],$consumption['dateRecorded'],$consumption['remarks']))){
             return $this->db->insert_id();
         }
         return 0;

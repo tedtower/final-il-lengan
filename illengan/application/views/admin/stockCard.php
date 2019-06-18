@@ -69,7 +69,7 @@
                                 <td><?= $log['slQty']?></td>
                                 <td><?= $log['slRemainingQty']?></td>
                                 <td><?= isset($log['actualQty']) ? $log['actualQty'] : "N/A"?></td>                                
-                                <td><?= $log['discrepancy'] > 0 ? $log['discrepancy'] : "(".($log['discrepancy']*-1).")"?></td>
+                                <td><?= $log['discrepancy'] > 0 && isset($log['discrepancy']) ? $log['discrepancy'] : "(".($log['discrepancy']*-1).")"?></td>
                                 <td><?= $log['slRemarks']?></td>
                             </tr>
                         <?php

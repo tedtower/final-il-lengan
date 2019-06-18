@@ -1535,7 +1535,11 @@ function add_aospoil($date_recorded,$addons,$account_id){
             VALUES(
                 NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )";
-        if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $transaction['tNum'], $transaction['receipt'],
+        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
+            FROM transactions
+            WHERE tType = 'purchase order'")->result_array()[0]['lastnum'];
+        $lastNum = $lastNum == NULL ? 1 : $lastNum++;
+        if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $lastNum, $transaction['receipt'],
             $transaction['date'], $transaction['dateRecorded'], $transaction['type'], $transaction['total'], $transaction['remarks']))){
             return $this->db->insert_id();
         }
@@ -1556,6 +1560,13 @@ function add_aospoil($date_recorded,$addons,$account_id){
         $query = "INSERT INTO trans_items(tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal)
             VALUES(?, ?, ?, ?, ?, ?)";
         return $this->db->query($query, array($tID, $item['tiID'], $item['tiQty'], $item['perUnit'], $item['actual'], $item['subtotal']));
+    }
+
+    function checkIfExistingItemsQty($tID, $tiID){
+        $query="SELECT tiID, tID
+        FROM transactions
+        WHERE tiID = ? AND tID = ?;";
+        return $this->db->query($query, array($tiID, $tID))->num_rows();
     }
     function get_purchaseOrders(){
         $query = "SELECT
@@ -1620,6 +1631,54 @@ function add_aospoil($date_recorded,$addons,$account_id){
             LEFT JOIN supplier USING(spID)
             WHERE
                 isArchived = '0' and tType = 'official receipt'";
+        return $this->db->query($query)->result_array();
+    }
+    function get_deliveryReceiptItems(){
+        $query = "SELECT
+            tID AS transaction,
+            tiID AS id,
+            tiName AS name,
+            tiQty AS qty,
+            qtyPerItem AS equivalent,
+            actualQty AS actualqty,
+            tiPrice AS price,
+            tiDiscount AS discount,
+            drStatus AS deliverystatus,
+            payStatus AS paymentstatus,
+            rStatus AS returnstatus
+        FROM
+            (
+                transitems
+            LEFT JOIN trans_items USING(tiID)
+            )
+        LEFT JOIN transactions USING(tID)
+        LEFT JOIN uom USING(uomID)
+        WHERE
+            tType = 'delivery receipt'";
+        return $this->db->query($query)->result_array();
+    }
+    function get_officialReceiptItems(){
+        $query = "SELECT
+            tID AS transaction,
+            tiID AS id,
+            tiName AS name,
+            tiQty AS qty,
+            qtyPerItem AS equivalent,
+            actualQty AS actualqty,
+            tiPrice AS price,
+            tiDiscount AS discount,
+            drStatus AS deliverystatus,
+            payStatus AS paymentstatus,
+            rStatus AS returnstatus
+        FROM
+            (
+                transitems
+            LEFT JOIN trans_items USING(tiID)
+            )
+        LEFT JOIN transactions USING(tID)
+        LEFT JOIN uom USING(uomID)
+        WHERE
+            tType = 'official receipt'";
         return $this->db->query($query)->result_array();
     }
 
