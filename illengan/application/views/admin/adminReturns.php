@@ -176,7 +176,7 @@
                                                                     Delivery Receipt</span>
                                                             </div>
                                                             <input type="text" name="receiptNo" id="receiptNo"
-                                                                class="form-control form-control-sm">
+                                                                class="form-control form-control-sm" disabled>
                                                         </div>
                                                     </div>
 

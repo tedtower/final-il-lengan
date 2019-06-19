@@ -360,7 +360,7 @@ function setOrderlist(ol){
                     for(var row=0;  row < id.length; row++){       
                                 var val= orderedaddon[keys][row];
                                 var names = addon.filter(function (n) {
-                                    return n.aoID == id &&  n.mID == mID;
+                                    return n.aoID == id[row] &&  n.mID == mID;
                                 });
                                 for(var na=0; na<names.length;na++){
                                     name += "<i>"+names[na].aoName+"</i><br>";

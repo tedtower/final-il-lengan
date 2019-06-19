@@ -83,27 +83,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query, array($payment_date_time, $date_recorded, $osID));
         }
 
-        function get_inventory(){
-            $query = "Select * from stockitems left join variance using (stID)";
-            $query = "Select stID,stName,stStatus,stQty from stockitems";
-            return $this->db->query($query)->result_array();
-        }
-        function restock($stocks){
-            $query = "Update stockitems set stQty = ? + ? where stID = ?";
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                    $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['stQty'], $stocks[$in]['stID'],  )); 
-                }
-            }
-        }
-        function destock($stocks){
-            $query = "Update stockitems set stQty = ? - ? where stID = ?";
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                    $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['stQty'], $stocks[$in]['stID'],  )); 
-                }
-            }
-        }
+        // function restock($stocks){
+        //     $query = "Update stockitems set stQty = ? + ? where stID = ?";
+        //     if(count($stocks) > 0){
+        //         for($in = 0; $in < count($stocks) ; $in++){
+        //             $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['stQty'], $stocks[$in]['stID'],  )); 
+        //         }
+        //     }
+        // }
+
         function update_payment($status,$osID,$payDate,$date_recorded){
             $query = "Update orderslips set payStatus = ?, osPayDateTime = ?, osDateRecorded = ? where osID = ?";
             for($in = 0; $in < count($osID) ; $in++){
@@ -181,6 +169,55 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $result=$this->db->delete('orderlists');
             return $result;
         }
+        //---------------------------------CONSUMPTION------------------------------------
+        function get_inventory(){
+            $query = "SELECT * FROM `transactions` LEFT JOIN trans_items USING (tID) left JOIN transitems using (tiID) WHERE tType = 'consumption'";
+            return $this->db->query($query)->result_array();
+        }
+        
+        function getconsumptionItems(){
+            $query="SELECT * FROM `prefstock` LEFT join stockitems using (stID)";
+            return $this->db->query($query)->result_array();
+        }
+
+        function add_consumption($date_recorded,$stocks,$account_id,$lastNum){
+            if(count($stocks) > 0){
+                for($in = 0; $in < count($stocks) ; $in++){
+                    $this->destock($stocks);  
+                    $this->add_contransaction(NULL, $stocks[$in]['tDate'], "consumption", $date_recorded, NULL, $lastNum, $stocks[$in]['stID'], $stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['consQty'],$account_id,$stocks);
+                }
+            }
+        }
+        function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$consQty,$account_id,$stocks){
+            $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
+           
+            if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
+                $this->add_contransitems($this->db->insert_id(), $stID, $uomID,$stName,$consQty,$date,$dateRecorded,$remarks,$account_id,$stocks);
+                return true;
+             }
+        }
+        function add_contransitems($tID,$stID,$uomID,$stName,$consQty,$date,$dateRecorded,$remarks,$account_id,$stocks){
+            $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
+             if($this->db->query($query,array($uomID, $stID, $stName))){
+                $this->add_contrans_items($this->db->insert_id(), $stID, $tID, $consQty);
+                for($in = 0; $in < count($stocks)-1 ; $in++){
+                $this->add_stocklog($stocks[$in]['stID'], $tID, "consumed",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['consQty'], NULL);
+                $this->add_actlog($account_id, $dateRecorded, "Barista added a consumption.", "add", NULL);
+            }
+             }
+        }
+        function add_contrans_items($tiID, $stID, $tID, $consQty){
+            $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
+            return  $this->db->query($query,array($tID, $tiID, $consQty));
+        }
+        function destock($stocks){
+            $query = "Update stockitems set stQty = ? - ? where stID = ?";
+            if(count($stocks) > 0){
+                for($in = 0; $in < count($stocks) ; $in++){
+                    $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['consQty'], $stocks[$in]['stID'],  )); 
+                }
+            }
+        }
         //Stock Spoilage---------------------------------------------------------------------------------------------------
         function get_spoilagesstock(){
             $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID)";
@@ -220,6 +257,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             stID";
             return $this->db->query($query)->result_array();
         }
+        //-----------------------------------------TRANSACTIONS------------------------------------
         function getLastNum(){
             $query = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'spoilage'";
             return $result = $this->db->query($query)->result();

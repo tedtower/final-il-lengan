@@ -138,6 +138,10 @@ class Barista extends CI_Controller{
         function inventoryJS(){
             echo json_encode($this->baristamodel->get_inventory());
         }
+        function getConsumptionItems(){
+            $data=$this->baristamodel->getconsumptionItems();
+            echo json_encode($data);
+        }
 
         //barista functions for orderslips-cards
 
@@ -213,19 +217,27 @@ class Barista extends CI_Controller{
                 echo json_encode($data, JSON_PRETTY_PRINT);
         }
         
-    function restockitem(){
-                $stocks = json_decode($this->input->post('stocks'), true);
-                echo json_encode($stocks, true);
-                $date_recorded = date("Y-m-d H:i:s");
-                $account_id = $_SESSION["user_id"];
-                $this->baristamodel->restock($stocks,$date_recorded,$account_id);
-            }
+    // function restockitem(){
+    //             $stocks = json_decode($this->input->post('stocks'), true);
+    //             echo json_encode($stocks, true);
+    //             $date_recorded = date("Y-m-d H:i:s");
+    //             $account_id = $_SESSION["user_id"];
+    //             $this->baristamodel->restock($stocks,$date_recorded,$account_id);
+    //         }
     function destockitem(){
-                $stocks = json_decode($this->input->post('stocks'), true);
-                echo json_encode($stocks, true);
-                $date_recorded = date("Y-m-d H:i:s");
-                $account_id = $_SESSION["user_id"];
-                $this->baristamodel->destock($stocks,$date_recorded,$account_id);
+                
+                if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+                    $lastNumget = intval($this->baristamodel->getLastNum());
+                    $stocks = json_decode($this->input->post('stocks'), true);
+                    echo json_encode($stocks, true);
+                    $date_recorded = date("Y-m-d H:i:s");
+                    $account_id = $_SESSION["user_id"];
+                    $lastNum = $lastNumget + 1;
+                   
+                    $this->baristamodel->add_consumption($date_recorded,$stocks,$account_id,$lastNum);
+                }else{
+                redirect('login');
+                }
                 
             }
     //STOCK SPOILAGES
