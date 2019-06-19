@@ -170,7 +170,8 @@ function addspoilagesstock(){
         $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
         $this->form_validation->set_rules('aType','Account Type','trim|required');
 
-            $password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
+            //$password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
+            $password = $this->input->post("password");
             $username = $this->input->post("aUsername");
             $aType = $this->input->post("aType");
             $date_recorded = date("Y-m-d H:i:s");

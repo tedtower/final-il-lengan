@@ -1,9 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-<<<<<<< HEAD
-=======
-
->>>>>>> b2409213142c6921d440d22a2cb0be7ffb6dc5af
 $route['default_controller'] = 'login/viewlogin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

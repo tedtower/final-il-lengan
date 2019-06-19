@@ -291,7 +291,7 @@ class Barista extends CI_Controller{
                 $account_id = $_SESSION["user_id"];
         
                 $lastNum = $lastNumget + 1;
-                $this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNumget);
+                $this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum);
             }else{
             redirect('login');
             }
