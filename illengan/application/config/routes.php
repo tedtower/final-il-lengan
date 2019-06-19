@@ -61,6 +61,7 @@ $route['admin/menu/datatables'] = "adminview/datatables_menu";
 //Admin Add Routes ----------------------------------------------
 $route['admin/transactions/add'] = "adminadd/addtransaction";
 $route['admin/purchaseorder/add'] = "adminadd/addPurchaseOrder";
+$route['admin/deliveryreceipt/add'] = "adminadd/addDeliveryReceipt";
 $route['admin/inventory/addEdit'] = "adminadd/addstockitem";
 $route['admin/menu/add'] = "adminadd/addMenu";
 $route['admin/measurement/add'] = "adminadd/addUOM";
@@ -157,7 +158,7 @@ $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
 $route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
-
+$route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 $route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";

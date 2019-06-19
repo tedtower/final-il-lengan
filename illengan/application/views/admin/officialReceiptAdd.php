@@ -13,7 +13,7 @@
                         <h6 style="font-size: 16px;margin-left:15px">Add Official Receipt</h6>
                     </div>
                     <!--Card--> 
-                    <form accept-charset="utf-8">
+                    <form id="orForm" accept-charset="utf-8">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
@@ -70,7 +70,7 @@
                             style="margin:0;color:blue;font-weight:600">New Item</a>
                         <a id="addMBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                             data-target="#merchandiseBrochure"  data-original-title
-                            style="margin:0;color:blue;font-weight:600;">Merchandise Item</a>
+                            style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getSupplierMerchandise')?>">Merchandise Item</a>
                         <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                             data-target="#poBrochure"
                             style="color:blue;font-weight:600;">PO Item</a>
@@ -81,56 +81,8 @@
 
                             <!--div containing the different input fields in addig trans items -->
                             <div class="ic-level-2">
-                                <div style="float:left;width:95%;overflow:auto;">
-                                    <div class="input-group mb-1">
-                                        <input type="text" name="itemName[]"
-                                            class="form-control form-control-sm"
-                                            placeholder="Item Name" style="width:24%">
-                                        <input type="number" name="itemQty[]"
-                                            class="form-control form-control-sm"
-                                            placeholder="Quantity">
-                                        <select name="itemUnit[]"
-                                            class="form-control form-control-sm">
-                                            <option value="" selected="selected">Unit
-                                            </option>
-                                        </select>
-                                        <input type="number" name="itemPrice[]"
-                                            class="form-control form-control-sm "
-                                            placeholder="Price">
-                                        <input type="number" name="discount[]"
-                                            class="form-control form-control-sm "
-                                            placeholder="Discount">
-                                        <input type="number" name="itemSubtotal[]"
-                                            class="form-control form-control-sm"
-                                            placeholder="Subtotal">
-                                    </div>
-
-                                    <div class="input-group">
-                                        <input name="stID[]" type="text"
-                                            class="form-control border-right-0"
-                                            placeholder="Stock" style="width:190px">
-                                        <input name="actualQty[]" type="number"
-                                            class="form-control border-right-0"
-                                            placeholder="Actual Qty" style="width:15%">
-                                        <select name="paymentStatus[]"
-                                            class="form-control form-control-sm">
-                                            <option value="" selected="selected">Payment Status
-                                            </option>
-                                        </select>
-                                        <select name="deliveryStatus[]"
-                                            class="form-control form-control-sm ">
-                                            <option value="" selected>Delivery Status</option>
-                                        </select>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="mt-4"
-                                style="float:left:width:3%;overflow:auto;">
-                                <img class="exitBtn"
-                                    src="/assets/media/admin/error.png"
-                                    style="width:20px;height:20px;float:right;">
-                            </div>
-                            <br><br>
+                            <br>
                             <span>Total: &#8369;<span class="total">0</span></span>
                             <!--Total of the trans items-->
 
@@ -196,11 +148,9 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                    <div style="margin:1% 3%" id="list">
-                                        <!--checkboxes-->
-                                        <label style="width:96%"><input type="checkbox" class="mr-2"
-                                                value="">Sample data 2</label>
-                                    </div>
+                                        <div class="ic-level-2" style="margin:1% 3%" >
+                                            <!--checkboxes-->
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger btn-sm"
@@ -263,11 +213,24 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                        <div id="stockList">
-                                            <div class="d-flex d-inline-block">
-                                                <div><input name="stocks[]" type="radio" class="mr-3" value=/></div>
-                                                <div>basta</div>
+                                        <div id="ic-level-2">
+                                            <?php
+                                                if(empty($stocks)){
+                                                    echo json_encode($stocks);
+                                            ?>
+                                            <p>No stock items recorded.</p>
+                                            <?php
+                                                }else{
+                                                    foreach($stocks as $stock){
+                                            ?>
+                                            <div class="d-flex d-inline-block ic-level-1">
+                                                <div><input name="stocks" type="radio" class="mr-3" value="<?= $stock['stID']?>" data-name="<?= $stock['stName']?>"/></div>
+                                                <div><?= $stock['stName']?> (<?= $stock['uomAbbreviation']?>)</div>
                                             </div>
+                                            <?php
+                                                    }
+                                                }
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -295,4 +258,204 @@
 <script src="assets/js/admin/light-bootstrap-dashboard.js?v=1.4.0"></script>
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 <script src="assets/js/admin/demo.js"></script>
+<script>
+$(function(){
+    var newItemTemplate = `
+        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1"">
+            <div style="float:left;width:95%;overflow:auto;">
+                <div class="input-group mb-1">
+                    <input type="text" name="itemName[]"
+                        class="form-control form-control-sm"
+                        placeholder="Item Name" style="width:24%">
+                    <input type="number" name="itemQty[]"
+                        class="form-control form-control-sm"
+                        placeholder="Quantity">
+                    <select name="itemUnit[]"
+                        class="form-control form-control-sm">
+                        <option value="" selected="selected">Unit
+                        </option>
+                    </select>
+                    <input type="number" name="itemPrice[]"
+                        class="form-control form-control-sm "
+                        placeholder="Price">
+                    <input type="number" name="discount[]"
+                        class="form-control form-control-sm "
+                        placeholder="Discount">
+                    <input type="number" name="itemSubtotal[]"
+                        class="form-control form-control-sm"
+                        placeholder="Subtotal" readonly>
+                </div>
+
+                <div class="input-group">
+                    <input name="stID[]" type="text"
+                        class="form-control border-right-0"
+                        placeholder="Stock" style="width:190px">
+                    <input name="actualQty[]" type="number"
+                        class="form-control border-right-0"
+                        placeholder="Actual Qty" style="width:15%">
+                    <select name="paymentStatus[]"
+                        class="form-control form-control-sm">
+                        <option value="" selected="selected">Payment Status
+                        </option>
+                    </select>
+                    <select name="deliveryStatus[]"
+                        class="form-control form-control-sm ">
+                        <option value="" selected>Delivery Status</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4"
+                style="float:left:width:3%;overflow:auto;">
+                <img class="exitBtn"
+                    src="/assets/media/admin/error.png"
+                    style="width:20px;height:20px;float:right;">
+            </div>
+        </div>`;
+    $("#addItemBtn").on("click",function(){
+        $("#orForm").find(".ic-level-2").append(newItemTemplate);
+        $(".exitBtn").last().on("click",function(){
+            $(this).closest(".ic-level-1").remove();
+        });
+        $("#orForm").find(".ic-level-1 input[name='stID[]']").last().on('focus',function(){
+            $("#stockBrochure").modal("show");
+            $("#stockBrochure form").on("submit",function(){
+                $(this).find(".ic-level-2 input[name='stocks']").each(function(index){
+                    $("#orForm .ic-level-2 .ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id",$(this).val());
+                    $("#orForm .ic-level-2 .ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).attr("data-name"));
+                });
+                $("#stockBrochure").modal("hide");
+            });
+        });
+        $("#orForm").find(".ic-level-1").last().find("*").on("focus",function(){
+            if(!$(this).closest(".ic-level-1").attr("data-focus")){
+                $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
+                $(this).closest(".ic-level-1").attr("data-focus",true);
+            }
+        });
+
+    });
+    $("#addMBtn").on("click",function(){
+        var url = $(this).attr("data-url");
+        var supplier = $("#orForm").find("select[name='spID']").val();
+        if(!isNaN(parseInt(supplier))){
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: {
+                    id: supplier
+                },
+                dataType: "JSON",
+                success: function(data){
+                    setMerchandiseBrochure(supplier, data);
+                    $("#merchandiseBrochure").on("submit",function(event){
+                        event.preventDefault();
+                        merchBrochureOnSubmit(data.uom, data.merchandise, $(this).find("input[name='merch']:checked"));
+                    });
+                },
+                error: function (response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+            });
+        }
+    });
+    $("#addPOBtn").on("click",function(){
+
+    });
+    $("#addDRBtn").on("click",function(){
+
+    });
+    $("#stockBrochure").on("hidden.bs.modal",function(){
+        $(this).find("form")[0].reset();
+        $(this).find("form").off("submit");
+    });
+});
+
+function setMerchandiseBrochure(supplier, merch){
+    $("#merchandiseBrochure").find(".ic-level-2").append(merch.merchandise.map(item =>{
+        return `
+        <label style="width:96%"><input name="merch" type="checkbox" class="mr-2"
+            value="${item.spmID}">${item.spmName}</label>`;
+    }));
+}
+
+function setSubformValues(){
+
+}
+
+function merchBrochureOnSubmit(uom, merchandise, selectedMerch){
+    var y;
+    var merchItemTemplate = `
+        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1"">
+            <div style="float:left;width:95%;overflow:auto;">
+                <div class="input-group mb-1">
+                    <input type="text" name="itemName[]"
+                        class="form-control form-control-sm"
+                        placeholder="Item Name" style="width:24%" readonly>
+                    <input type="number" name="itemQty[]"
+                        class="form-control form-control-sm"
+                        placeholder="Quantity">
+                    <select name="itemUnit[]"
+                        class="form-control form-control-sm" readonly>
+                        <option value="" selected="selected">Unit
+                        </option>
+                    </select>
+                    <input type="number" name="itemPrice[]"
+                        class="form-control form-control-sm "
+                        placeholder="Price" readonly>
+                    <input type="number" name="discount[]"
+                        class="form-control form-control-sm "
+                        placeholder="Discount">
+                    <input type="number" name="itemSubtotal[]"
+                        class="form-control form-control-sm"
+                        placeholder="Subtotal" readonly>
+                </div>
+
+                <div class="input-group">
+                    <input name="stID[]" type="text"
+                        class="form-control border-right-0"
+                        placeholder="Stock" style="width:190px" data-id="" readonly>
+                    <input name="actualQty[]" type="number"
+                        class="form-control border-right-0"
+                        placeholder="Actual Qty" style="width:15%" readonly>
+                    <select name="paymentStatus[]"
+                        class="form-control form-control-sm">
+                        <option value="" selected="selected">Payment Status
+                        </option>
+                    </select>
+                    <select name="deliveryStatus[]"
+                        class="form-control form-control-sm ">
+                        <option value="" selected>Delivery Status</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-4"
+                style="float:left:width:3%;overflow:auto;">
+                <img class="exitBtn"
+                    src="/assets/media/admin/error.png"
+                    style="width:20px;height:20px;float:right;">
+            </div>
+        </div>`;
+    selectedMerch.each(function(index) {
+        y = merchandise.filter(x => x.spmID == $(this).val());
+        $("#orForm").find(".ic-level-2").append(merchItemTemplate);
+        $("#orForm .ic-level-2").find("input[name='itemName[]']").last().val(y[0].spmName);
+        $("#orForm .ic-level-2").find("select[name='itemUnit[]']").last().append(uom.map(unit =>{
+            return `<option value="${unit.uomID}">${unit.uomAbbreviation}</option>`;
+        }).join(''));
+        $("#orForm .ic-level-2").find("select[name='itemUnit[]']").last().find(`option[value=${y[0].uomID}]`).attr("selected","selected");
+        $("#orForm .ic-level-2").find("input[name='itemPrice[]']").last().val(y[0].spmPrice);
+        $("#orForm .ic-level-2").find("input[name='stID[]']").last().val(y[0].stName);
+        $("#orForm .ic-level-2").find("input[name='stID[]']").last().attr("data-id",y[0].stID);
+        $("#orForm .ic-level-2").find("input[name='actualQty[]']").last().val(y[0].spmActualQty);
+        $("#orForm").find(".ic-level-1").last().find("*").on("focus",function(){
+            if(!$(this).closest(".ic-level-1").attr("data-focus")){
+                $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
+                $(this).closest(".ic-level-1").attr("data-focus",true);
+            }
+        });
+    });
+    $("#merchandiseBrochure").modal("hide");
+}
+</script>
 </body>

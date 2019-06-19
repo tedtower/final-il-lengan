@@ -43,8 +43,8 @@
                                         <tr class="accordion" style="display:none">
                                             <td colspan="5">
                                                 <div class="container" style="display:none">
-                                                <div>Date Recorded:<?= $transaction['daterecorded'] == null ? "N/A" : $transaction['daterecorded']?></div>
-                                                <div>Remarks:<?= $transaction['remarks'] == null ? "N/A" : $transaction['remarks']?></div>
+                                                <div>Date Recorded:<?= $transaction['daterecorded'] == null ? "No recorded date." : $transaction['daterecorded']?></div>
+                                                <div>Remarks:<?= $transaction['remarks'] == null ? "None" : $transaction['remarks']?></div>
 
                                                 <table class="table table-bordered">
                                                     <thead class="thead-light">

@@ -13,7 +13,7 @@
                         <h6 style="font-size: 16px;margin-left:15px">Add Delivery Receipt</h6>
                     </div>
                     <!--Card--> 
-                    <form id="addPurchaseOrder" accept-charset="utf-8" class="form">
+                    <form id="addDeliveryReceipt" accept-charset="utf-8" class="form">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
@@ -40,7 +40,7 @@
                                             Receipt</span>
                                     </div>
                                     <input type="text" class="form-control  border-left-0"
-                                        name="tDate">
+                                        name="receipt">
                                 </div>
                                 <!--Date-->
                                 <div class="input-group mb-3 col">
@@ -50,7 +50,7 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="tDate">
+                                        name="date">
                                 </div>
                             </div>
                             <!--Remarks-->
@@ -60,7 +60,7 @@
                                         style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                         Remarks</span>
                                 </div>
-                                <textarea type="text" name="tRemarks"
+                                <textarea type="text" name="remarks"
                                     class="form-control form-control-sm  border-left-0"
                                     rows="1"></textarea>
                             </div>
@@ -104,7 +104,7 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                    <div style="margin:1% 3%" class="ic-level-2" id="list">
+                                    <div style="margin:1% 3%" id="list">
                                         <!--checkboxes-->
                                         <?php if(!empty($merchandise)){
                                             foreach($merchandise as $merch){
@@ -131,26 +131,53 @@
                     </div>
                     <!--End of Brochure Modal"-->
                 
-                    
                     <!--Start of POSelect Merchandise ItemModal"-->
                     <div class="modal fade bd-example-modal-lg" id="poBrochure" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Select Merchandise Item</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Purchase Order</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <form>
+                                <form class="poForm">
                                     <div class="modal-body">
-                                        
+                                        <div class="input-group mb-3 col">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:143px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                            Purchase Order</span>
+                                        </div>
+                                        <select class="tID custom-select" name="po">
+                                            <option value="" selected>Choose</option>
+                                            <?php if(isset($pos)){
+                                                foreach($pos as $po){?>
+                                                <option value="<?= $po['transactionID']?>"><?= $po['transNum']?> - <?= $po['suppName']?></option>
+                                            <?php }}?>
+                                        </select>
+                                        </div>
+
+                                        <div style="margin:1% 3%">
+                                            <table class="poitemsTable table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Item Name</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                        <th>Subtotal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger btn-sm"
                                             data-dismiss="modal">Cancel</button>
-                                        <button class="btn btn-success btn-sm" type="submit">Ok</button>
+                                        <button class="btn btn-success btn-sm" type="button" onclick="getSelectedPOs()" >Ok</button>
                                     </div>
                                 </form>
                             </div>
@@ -168,7 +195,7 @@
     var uom = [];
     var supplier = [];
     var suppmerch = [];
-    var po = [];
+    var pos = [];
     var poitems = [];
     $(function () {
         $.ajax({
@@ -180,8 +207,13 @@
                 supplier = data.supplier;
                 suppmerch = data.suppmerch;
                 uom = data.uom;
-                po = data.po;
-                poitems = data.poitems;
+                pos = data.pos;
+                poitems = data.poItems;
+                console.log('POS');
+                console.log(pos);
+                console.log('positems');
+                console.log(poitems);
+                
             },
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
@@ -194,9 +226,62 @@
             setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
         });
 
+        $(".tID").on('change', function(){
+            var poID = parseInt($('.tID').val());
+            setPOBrochureContent(poitems.filter(poitem => poitem.transactionID == poID));
+            
+        });
+
         $(".addPOBtn").on('click', function(){
-            var poID = parseInt($(this).closest('.form').find('.spID').val());
-            setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
+            $('.poForm')[0].reset();
+            console.log($('.poForm'));
+        });
+        $("#poBrochure").on("hidden.bs.modal",function(){
+            $(this).find("form")[0].reset();
+            $(this).find(".poitemsTable > tbody").empty();
+        });
+        $("#addDeliveryReceipt").on('submit', function(event) {
+            event.preventDefault();
+            var supplier = $(this).find("select[name='spID']").val();
+            var date = $(this).find("input[name='date']").val();
+            var receipt = $(this).find("input[name='receipt']").val();
+            var remarks = $(this).find("textarea[name='remarks']").val();
+            var transitems = [];
+            for (var index = 0; index < $(this).find(".drElements").length; index++) {
+                var row = $(this).find(".drElements").eq(index);
+                transitems.push({
+                    tiID : row.attr('data-id'),
+                    uomID:  row.find("select[name='itemUnit[]']").val(),
+                    stID:  row.find("select[name='stID[]']").val(),
+                    name: row.find("input[name='itemName[]']").val(),
+                    price:  row.find("input[name='price[]']").val(),
+                    discount: row.find("input[name='discount[]']").val(),
+                    qty:  row.find("input[name='itemQty[]']").val(),
+                    actualQty:  row.find("input[name='actualQty[]']").val()
+                });
+            }
+
+            $.ajax({
+                method: "post",
+                url: "<?= site_url("admin/deliveryreceipt/add")?>",
+                data: {
+                    supplier: supplier,
+                    date: date,
+                    receipt:receipt,
+                    remarks:remarks,
+                    transitems: JSON.stringify(transitems)
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    console.log(supplier,date,receipt,remarks,transitems);
+                },
+                success: function(data) {
+                },
+                error: function(response, setting, error) {
+                    console.log(error);
+                    console.log(response.responseText);
+                }
+            });
         });
     });
     function setBrochureContent(suppstocks){
@@ -204,14 +289,24 @@
         $("#list").append(`${suppstocks.map(st => {
             return `<label style="width:96%"><input type="checkbox" id="stID${st.stID}" name="stockitems" class="stockitems mr-2" 
             value="${st.stID}"> ${st.spmName} </label>`
+            console.log(st.stID);
         }).join('')}`);
+        
     }
-    function setBrochureContent(suppstocks){
-        $("#list").empty();
-        $("#list").append(`${suppstocks.map(st => {
-            return `<label style="width:96%"><input type="checkbox" id="stID${st.stID}" name="stockitems" class="stockitems mr-2" 
-            value="${st.stID}"> ${st.spmName} </label>`
+
+    function setPOBrochureContent(items){
+        $(".poitemsTable > tbody").empty();
+        $(".poitemsTable > tbody").append(`${items.map(item => {
+            return `
+            <tr>
+                <td><input type="checkbox" name="poitems" class="poitems mr-2" value="${item.itemID}"></td>
+                <td>${item.NAME}</td>
+                <td>${item.qty}</td>
+                <td>${item.price}</td>
+                <td>${item.subtotal}</td>
+            </tr>`
         }).join('')}`);
+        
     }
     
 var subPrice = 0;
@@ -228,7 +323,7 @@ function getSelectedStocks() {
                 spm = suppmerch.filter(sp => sp.stID === value);
                 console.log(suppmerch);
                 merchChecked = `
-                <div style="overflow:auto;margin-bottom:2%" class="poElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
+                <div style="overflow:auto;margin-bottom:2%" class="drElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
                     <div style="float:left;width:95%;overflow:auto;">
                         <div class="find input-group mb-1">
                             <input type="text" name="itemName[]"
@@ -273,7 +368,7 @@ function getSelectedStocks() {
 
             }
         }
-        $('.itemUnit').empty();
+        $('.stock').empty();
         $(".itemUnit").append(`${uom.map(uom => {
             return `<option value="${uom.uomID}">${uom.uomName}</option>`
         }).join('')}`);
@@ -287,17 +382,85 @@ function getSelectedStocks() {
         }).join('')}`);
 
         $(".exitBtn").on('click',function(){
-            $(this).closest(".poElements").remove();
+            $(this).closest(".drElements").remove();
         });
-
-
     });
     $("#merchandiseBrochure").modal("hide");
 }
+
+function getSelectedPOs() {
+    var value = 0;
+    var choices = document.getElementsByClassName('poitems');
+    var poi;
+    for (var i = 0; i <= choices.length - 1; i++) {
+        if (choices[i].checked) {
+            value = choices[i].value;
+            poi = poitems.filter(poi => poi.itemID === value);
+            merchChecked = `
+            <div style="overflow:auto;margin-bottom:2%" class="drElements" data-id="${poi[0].itemID}" >
+                <div style="float:left;width:95%;overflow:auto;">
+                    <div class="find input-group mb-1">
+                        <input type="text" name="itemName[]"
+                            class="form-control form-control-sm"
+                            value="${poi[0].NAME}" style="width:24%" readonly>
+                        <input type="number" name="itemQty[]"
+                            class="tiQty form-control form-control-sm"
+                            placeholder="Quantity" value="${poi[0].qty}" onchange="setInputValues()" required>
+                        <select name="itemUnit[]"
+                            class="itemUnit form-control form-control-sm">
+                            <option value="" selected="selected">Unit</option>
+                        </select>
+                        <input type="number" name="price[]"
+                            class="tiPrice form-control form-control-sm"
+                            value="${poi[0].price}" readonly required>
+                        <input type="number" name="discount[]"
+                            class="tidiscount form-control form-control-sm " onchange="setInputValues()"
+                            placeholder="Discount">
+                        <input type="number" name="itemSubtotal[]"
+                            class="tiSubtotal form-control form-control-sm"
+                            placeholder="Subtotal" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <select name="stID[]"
+                            class="stock form-control form-control-sm">
+                            <option value="" selected="selected">Stock Item
+                            </option>
+                        </select>
+                        <input name="actualQty[]" type="number"
+                            class="qtyPerItem form-control border-right"
+                            value="${poi[0].equivalent}">
+                    </div>
+                </div>
+                <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+                    <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
+                </div>
+            </div>
+                `;
+            $('.ic-level-2').append(merchChecked);
+            setInputValues();
+        }
+    }
+    $(".itemUnit").append(`${uom.map(uom => {
+        return `<option value="${uom.uomID}">${uom.uomName}</option>`
+    }).join('')}`);
+
+
+    $('.stock').empty();
+    $(".stock").append(`${stocks.map(stock => {
+        return `<option value="${stock.stID}">${stock.stName}</option>`
+    }).join('')}`);
+
+    $(".exitBtn").on('click',function(){
+        $(this).closest(".drElements").remove();
+    });
+    $("#poBrochure").modal("hide");
+}
+
 $('#addNewBtn').on("click", function() {
     var spm = suppmerch;
     var items= `
-                <div style="overflow:auto;margin-bottom:2%" class="poElements">
+                <div style="overflow:auto;margin-bottom:2%" class="drElements">
                     <div style="float:left;width:95%;overflow:auto;">
                         <div class="find input-group mb-1">
                             <input type="text" name="itemName[]"
@@ -350,13 +513,13 @@ $('#addNewBtn').on("click", function() {
         }).join('')}`);
 
         $(".exitBtn").on('click',function(){
-            $(this).closest(".poElements").remove();
+            $(this).closest(".drElements").remove();
         });
 
 });
 function setInputValues() {
     var total = 0;
-    for(var i = 0; i <= $('.poElements').length -1 ; i++) {
+    for(var i = 0; i <= $('.drElements').length -1 ; i++) {
         var tiQty = parseInt($('.tiQty').eq(i).val());
         var qtyPerItem = parseInt($('.qtyPerItem').eq(i).val());
         var price = parseFloat($('.tiPrice').eq(i).val());
@@ -375,50 +538,6 @@ function setInputValues() {
         $('.total').text(total);
     }
 }
-
-// ----------------------- A D D I N G  T R A N S A C T I O N --------------------------
-$(document).ready(function() {
-    $("#addPurchaseOrder").on('submit', function(event) {
-        event.preventDefault();
-        var supplier = $(this).find("select[name='spID']").val();
-        var date = $(this).find("input[name='tDate']").val();
-        var remarks = $(this).find("textarea[name='tRemarks']").val();
-        var transitems = [];
-        for (var index = 0; index < $(this).find(".poElements").length; index++) {
-            var row = $(this).find(".poElements").eq(index);
-            transitems.push({
-                uomID:  row.find("select[name='itemUnit[]']").val(),
-                stID:  row.find("select[name='stID[]']").val(),
-                name: row.find("input[name='itemName[]']").val(),
-                price:  row.find("input[name='price[]']").val(),
-                discount: row.find("input[name='discount[]']").val(),
-                qty:  row.find("input[name='itemQty[]']").val(),
-                actualQty:  row.find("input[name='actualQty[]']").val()
-            });
-        }
-
-        $.ajax({
-            method: "post",
-            url: "<?= site_url("admin/purchaseorder/add")?>",
-            data: {
-                supplier: supplier,
-                date: date,
-                remarks:remarks,
-                transitems: JSON.stringify(transitems)
-            },
-            dataType: "json",
-            beforeSend: function() {
-                console.log(supplier,date,remarks,trans,transitems);
-            },
-            success: function(data) {
-            },
-            error: function(response, setting, error) {
-                console.log(error);
-                console.log(response);
-            }
-        });
-    });
-});
 
     </script>
 </body>
