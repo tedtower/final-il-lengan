@@ -1,15 +1,15 @@
 CREATE DATABASE  IF NOT EXISTS `il-lengan` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `il-lengan`;
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.16, for Win64 (x86_64)
 --
 -- Host: localhost    Database: il-lengan
 -- ------------------------------------------------------
--- Server version	5.7.23
+-- Server version	5.7.26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+ SET NAMES utf8 ;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -23,7 +23,7 @@ USE `il-lengan`;
 
 DROP TABLE IF EXISTS `accounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `accounts` (
   `aID` int(11) NOT NULL AUTO_INCREMENT,
   `aType` enum('admin','barista','chef','customer') NOT NULL,
@@ -51,7 +51,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `activitylog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `activitylog` (
   `alID` int(11) NOT NULL AUTO_INCREMENT,
   `aID` int(11) NOT NULL,
@@ -80,7 +80,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `addons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `addons` (
   `aoID` int(11) NOT NULL AUTO_INCREMENT,
   `aoName` varchar(45) NOT NULL,
@@ -107,7 +107,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `addonspoil`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `addonspoil` (
   `aoID` int(11) NOT NULL,
   `aosID` int(11) NOT NULL,
@@ -137,7 +137,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `aospoil`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `aospoil` (
   `aosID` int(11) NOT NULL AUTO_INCREMENT,
   `aosDateRecorded` datetime NOT NULL,
@@ -160,7 +160,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `categories` (
   `ctID` int(11) NOT NULL AUTO_INCREMENT,
   `supcatID` int(11) DEFAULT NULL,
@@ -189,7 +189,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `discounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `discounts` (
   `pmID` int(11) NOT NULL,
   `dcName` varchar(45) NOT NULL,
@@ -214,7 +214,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `freebies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `freebies` (
   `pmID` int(11) NOT NULL,
   `fbName` varchar(64) NOT NULL,
@@ -239,7 +239,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `menu` (
   `mID` int(11) NOT NULL AUTO_INCREMENT,
   `ctID` int(11) NOT NULL,
@@ -269,7 +269,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menuaddons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `menuaddons` (
   `mID` int(11) NOT NULL,
   `aoID` int(11) NOT NULL,
@@ -297,7 +297,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menudiscount`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `menudiscount` (
   `pmID` int(11) NOT NULL,
   `prID` int(11) NOT NULL,
@@ -324,7 +324,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menufreebie`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `menufreebie` (
   `pmID` int(11) NOT NULL,
   `prID` int(11) NOT NULL,
@@ -351,7 +351,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `menuspoil`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `menuspoil` (
   `msID` int(11) NOT NULL AUTO_INCREMENT,
   `msDateRecorded` datetime NOT NULL,
@@ -374,7 +374,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `orderaddons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `orderaddons` (
   `aoID` int(11) NOT NULL,
   `olID` int(11) NOT NULL,
@@ -403,7 +403,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `orderlists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `orderlists` (
   `olID` int(11) NOT NULL AUTO_INCREMENT,
   `prID` int(11) NOT NULL,
@@ -439,7 +439,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `orderslips`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `orderslips` (
   `osID` int(11) NOT NULL AUTO_INCREMENT,
   `tableCode` varchar(11) NOT NULL,
@@ -472,7 +472,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `preferences`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `preferences` (
   `prID` int(11) NOT NULL AUTO_INCREMENT,
   `mID` int(11) NOT NULL,
@@ -502,7 +502,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `prefstock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `prefstock` (
   `prID` int(11) NOT NULL,
   `stID` int(11) NOT NULL,
@@ -520,7 +520,7 @@ CREATE TABLE `prefstock` (
 
 LOCK TABLES `prefstock` WRITE;
 /*!40000 ALTER TABLE `prefstock` DISABLE KEYS */;
-INSERT INTO `prefstock` VALUES (2,5,2),(3,5,2);
+INSERT INTO `prefstock` VALUES (2,5,2),(2,34,2),(3,5,2),(3,34,2),(5,36,1),(6,27,1),(7,16,1),(8,16,2),(9,17,1),(10,17,2),(11,7,1),(12,7,1),(13,28,1),(14,28,1),(15,25,1),(16,14,1),(18,14,4),(19,16,1),(21,15,1),(21,27,1),(25,16,1),(26,27,1),(27,30,1),(27,36,1),(29,35,1),(30,36,1),(32,34,1),(37,34,1),(38,33,3),(50,34,6),(51,34,3),(52,34,2);
 /*!40000 ALTER TABLE `prefstock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -530,7 +530,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `promoconstraint`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `promoconstraint` (
   `pmID` int(11) NOT NULL,
   `prID` int(11) NOT NULL,
@@ -559,7 +559,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `promos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `promos` (
   `pmID` int(11) NOT NULL AUTO_INCREMENT,
   `pmName` varchar(64) NOT NULL,
@@ -587,7 +587,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `spoiledmenu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `spoiledmenu` (
   `prID` int(11) NOT NULL,
   `msID` int(11) NOT NULL,
@@ -616,7 +616,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `stockitems`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `stockitems` (
   `stID` int(11) NOT NULL AUTO_INCREMENT,
   `ctID` int(11) NOT NULL,
@@ -643,7 +643,7 @@ CREATE TABLE `stockitems` (
 
 LOCK TABLES `stockitems` WRITE;
 /*!40000 ALTER TABLE `stockitems` DISABLE KEYS */;
-INSERT INTO `stockitems` VALUES (1,21,3,'Chocolate Sauce',20,5,'1000mL','stockroom','available',20,'liquid'),(2,21,3,'Caramel Sauce',20,5,'1000mL','stockroom','available',20,'liquid'),(3,14,3,'Hazelnut  Syrup 500 ml',20,5,'500 mL','stockroom','available',20,'liquid'),(4,14,3,'Vanilla Syrup 500 ml',25,5,'500 mL','stockroom','unavailable',25,'liquid'),(5,22,10,'Chicken Wings',15,10,'per piece','kitchen','available',15,'solid'),(6,24,4,'Milk ',16,5,'per carton','stockroom','available',16,'liquid'),(7,19,6,'Coca Cola Solo 250 mL',20,5,NULL,'stockroom','available',20,'liquid'),(8,21,3,'Strawberry Milk Syrup',7,3,'500mL','kitchen','available',7,'liquid'),(10,19,8,'Matcha Powder',11,2,'800mg','kitchen','unavailable',11,'solid'),(13,21,8,'Tamarind Powder',13,3,'15mg','stockroom','available',13,'solid'),(14,17,7,'Honey-coated Lemon',10,5,'60kg','stockroom','available',10,'solid'),(15,21,3,'Strawberry Sauce',20,5,'1000mL','stockroom','available',20,'liquid'),(16,16,12,'Espresso Beans',10,3,NULL,'stockroom','available',10,'solid'),(17,16,12,'Benguet',10,3,NULL,'stockroom','available',10,'solid'),(18,16,12,'Kalinga',10,3,NULL,'stockroom','available',10,'solid'),(19,16,12,'Sagada',10,3,NULL,'stockroom','available',10,'solid'),(20,16,12,'Cordillera City (Medium) Roast',10,3,NULL,'stockroom','available',10,'solid'),(21,16,12,'Cordillera Vienna (Dark) Roast',10,3,NULL,'stockroom','available',10,'solid'),(22,17,7,'Chamomile',10,5,'60kg','stockroom','available',10,'solid'),(23,17,7,'Pakpakyaw (Butterfly) Pea',10,5,'60kg','stockroom','available',10,'solid'),(24,21,3,'Mango Canned Juice',10,5,NULL,'stockroom','available',10,'liquid'),(25,21,3,'Pineapple Canned Juice',10,5,NULL,'stockroom','available',10,'liquid'),(26,20,6,'Mineral Drinking Water',10,5,NULL,'stockroom','available',10,'liquid'),(27,28,3,'Frappe',10,5,NULL,'stockroom','available',10,'liquid'),(28,29,9,'Cakes',10,5,NULL,'stockroom','available',10,'solid'),(30,13,8,'Pesto Sauces',7,3,NULL,'kitchen','available',7,'liquid'),(31,13,8,'Carbonara Sauces',7,3,NULL,'kitchen','available',7,'liquid'),(32,13,8,'Italian Sauces',7,3,NULL,'kitchen','available',7,'liquid'),(33,22,10,'Baby Back',20,15,NULL,'kitchen','available',15,'liquid'),(34,22,10,'Chicken',10,5,NULL,'kitchen','available',10,'solid'),(35,22,10,'Burger Patty',15,5,NULL,'kitchen','available',10,'solid'),(36,23,8,'Pasta',10,3,NULL,'kitchen','available',10,'solid');
+INSERT INTO `stockitems` VALUES (1,21,3,'Chocolate Sauce',20,5,'1000mL','stockroom','available',20,'liquid'),(2,21,3,'Caramel Sauce',20,5,'1000mL','stockroom','available',20,'liquid'),(3,14,3,'Hazelnut  Syrup 500 ml',20,5,'500 mL','stockroom','available',20,'liquid'),(4,14,3,'Vanilla Syrup 500 ml',25,5,'500 mL','stockroom','unavailable',25,'liquid'),(5,22,10,'Chicken Wings',15,10,'per piece','kitchen','available',15,'solid'),(6,24,2,'Milk ',16,5,'','stockroom','available',16,'liquid'),(7,19,3,'Coca Cola Solo 250 mL',20,5,NULL,'stockroom','available',20,'liquid'),(8,21,3,'Strawberry Milk Syrup',7,3,'500mL','kitchen','available',7,'liquid'),(10,19,8,'Matcha Powder',11,2,'800mg','kitchen','unavailable',11,'solid'),(13,21,8,'Tamarind Powder',13,3,'15mg','stockroom','available',13,'solid'),(14,17,7,'Honey-coated Lemon',10,5,'60kg','stockroom','available',10,'solid'),(15,21,3,'Strawberry Sauce',20,5,'1000mL','stockroom','available',20,'liquid'),(16,16,12,'Espresso Beans',10,3,NULL,'stockroom','available',10,'solid'),(17,16,12,'Benguet',10,3,NULL,'stockroom','available',10,'solid'),(18,16,12,'Kalinga',10,3,NULL,'stockroom','available',10,'solid'),(19,16,12,'Sagada',10,3,NULL,'stockroom','available',10,'solid'),(20,16,12,'Cordillera City (Medium) Roast',10,3,NULL,'stockroom','available',10,'solid'),(21,16,12,'Cordillera Vienna (Dark) Roast',10,3,NULL,'stockroom','available',10,'solid'),(22,17,7,'Chamomile',10,5,'60kg','stockroom','available',10,'solid'),(23,17,7,'Pakpakyaw (Butterfly) Pea',10,5,'60kg','stockroom','available',10,'solid'),(24,21,3,'Mango Canned Juice',10,5,NULL,'stockroom','available',10,'liquid'),(25,21,3,'Pineapple Canned Juice',10,5,NULL,'stockroom','available',10,'liquid'),(26,20,6,'Mineral Drinking Water',10,5,NULL,'stockroom','available',10,'liquid'),(27,28,3,'Frappe',10,5,NULL,'stockroom','available',10,'liquid'),(28,29,9,'Cakes',10,5,NULL,'stockroom','available',10,'solid'),(30,13,8,'Pesto Sauces',7,3,NULL,'kitchen','available',7,'liquid'),(31,13,8,'Carbonara Sauces',7,3,NULL,'kitchen','available',7,'liquid'),(32,13,8,'Italian Sauces',7,3,NULL,'kitchen','available',7,'liquid'),(33,22,10,'Baby Back',20,15,NULL,'kitchen','available',15,'liquid'),(34,22,10,'Chicken',10,5,NULL,'kitchen','available',10,'solid'),(35,22,10,'Burger Patty',15,5,NULL,'kitchen','available',10,'solid'),(36,23,8,'Pasta',10,3,NULL,'kitchen','available',10,'solid');
 /*!40000 ALTER TABLE `stockitems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -653,7 +653,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `stocklog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `stocklog` (
   `slID` int(11) NOT NULL AUTO_INCREMENT,
   `stID` int(11) NOT NULL,
@@ -689,7 +689,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `supplier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `supplier` (
   `spID` int(11) NOT NULL AUTO_INCREMENT,
   `spName` varchar(64) NOT NULL,
@@ -716,7 +716,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `suppliermerchandise`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `suppliermerchandise` (
   `spmID` int(11) NOT NULL AUTO_INCREMENT,
   `spID` int(11) NOT NULL,
@@ -750,7 +750,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `tables`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `tables` (
   `tableCode` varchar(11) NOT NULL,
   PRIMARY KEY (`tableCode`)
@@ -773,7 +773,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `trans_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `trans_items` (
   `tID` int(11) NOT NULL,
   `tiID` int(11) NOT NULL,
@@ -803,7 +803,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `transactions` (
   `tID` int(11) NOT NULL AUTO_INCREMENT,
   `spID` int(11) DEFAULT NULL,
@@ -837,7 +837,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `transitems`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `transitems` (
   `tiID` int(11) NOT NULL AUTO_INCREMENT,
   `uomID` int(11) DEFAULT NULL,
@@ -871,7 +871,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `uom`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+ SET character_set_client = utf8mb4 ;
 CREATE TABLE `uom` (
   `uomID` int(11) NOT NULL AUTO_INCREMENT,
   `uomName` varchar(64) NOT NULL,
@@ -901,4 +901,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-06-18 14:24:02
+-- Dump completed on 2019-06-19 14:10:21

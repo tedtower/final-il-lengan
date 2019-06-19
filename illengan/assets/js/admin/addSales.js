@@ -247,6 +247,8 @@ $(document).ready(function() {
             'prID': prID,
             'stID': stID,
             'stQty': stQty,
+            'deductQty' : isNaN((parseInt($('.salesElements').eq(i).data("stqty")) * olQty)) ? (null) 
+            : (parseInt($('.salesElements').eq(i).data("stqty")) * olQty),
             'olDesc': olDesc,
             'olQty' : olQty,
             'olPrice': olPrice,
