@@ -89,11 +89,12 @@ function addSales() {
         $orderlists = json_decode($this->input->post('orderlists'), true);
         $osDateRecorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
+        $account_id = $_SESSION["user_id"];
        
         header('Content-Type: application/json');
         echo json_encode($addons, JSON_PRETTY_PRINT);
         $this->adminmodel->add_salesOrder($tableCode, $custName, $osTotal, $osDateTime,
-        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons);
+        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id);
 
     }else{
         redirect('login');

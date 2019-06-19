@@ -760,10 +760,12 @@ $(document).ready(function () {
             var stQty;
             var oldQty = parseInt(row.find("input[name='olQty']").data("qty"));
             var newQty = parseInt(row.find("input[name='olQty']").val());
+            var deducted;
 
             if (isNaN(parseInt(row.attr('data-id')))) {
-                stQty = parseInt(row.attr('data-currqty') - (row.find("input[name='olQty']").val() *
+                deducted = (row.find("input[name='olQty']").val() *
                     row.attr('data-stqty')));
+                stQty = parseInt(row.attr('data-currqty') - deducted;
             } else if (parseInt(row.attr('data-delete')) === 0) {
                 stQty = parseInt(row.attr('data-currqty')) + (parseInt(row.find("input[name='olQty']").data("qty")) *
                     parseInt(row.attr('data-stqty')));
@@ -780,6 +782,7 @@ $(document).ready(function () {
                 prID: row.find("input[name='prID']").val(),
                 stID: parseInt(row.attr('data-stockid')),
                 stQty: stQty,
+                deductQty: isNaN(parseFloat(deducted)) ? (0) :  parseFloat(deducted),
                 osID: osID,
                 olDesc: row.find("input[name='olDesc']").val(),
                 olQty: row.find("input[name='olQty']").val(),

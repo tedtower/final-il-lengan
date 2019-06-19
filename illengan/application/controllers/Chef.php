@@ -63,10 +63,11 @@ class Chef extends CI_Controller {
 	}
 
 // ------------  V I E W  S T O C K  A N D  M E N U  ------------- 
+}
 	function viewStockJS() {
-		$data=$this->Chefmodel->get_stocks();
-		header('Content-Type: application/json');
-		echo json_encode($data, JSON_PRETTY_PRINT);
+	$data=$this->baristamodel->get_stocks();
+	header('Content-Type: application/json');
+	echo json_encode($data, JSON_PRETTY_PRINT);
 	}
 
 	function viewMenuJS() {
@@ -128,63 +129,78 @@ class Chef extends CI_Controller {
 
 	
 // --------------- S T O C K  S P O I L A G E S ----------------- 
-	function viewSpoilagesStockJs(){
-		if($this->checkIfLoggedIn()){
-			$data= $this->Chefmodel->get_spoilagesstock();
-			echo json_encode($data);
-			
-		}else{
-			redirect('login');
-		}
-	}
+function viewSpoilagesStockJs(){
+	//if($this->checkIfLoggedIn()){
+		$data= $this->baristamodel->get_spoilagesstock();
+		echo json_encode($data);
+		
+	// }else{
+	//     redirect('login');
+	// }
+	//}
 
-	function viewSpoilagesStock(){
-		if($this->checkIfLoggedIn()){
-			$data['title'] = " Stock Spoilages";
-			$this->load->view('chef/head', $data);
-			$this->load->view('chef/navigation');
-			$this->load->view('chef/chefStockSpoilages');
-		}else{
-			redirect('login');
-		}
-	}
+}
+function viewSpoilagesStock(){
+// if($this->checkIfLoggedIn()){
+$data['title'] = "Spoilages - Stock";
+$this->load->view('barista/templates/head', $data);
+$this->load->view('barista/templates/navigation');
+$this->load->view('barista/baristastockspoilages');
+// }else{
+//     redirect('login');
+// }
 
-	function addspoilagesstock(){
-		if($this->checkIfLoggedIn()){
-            $date_recorded = date("Y-m-d H:i:s");
-            $slType = "spoilage";
-            $stocks = json_decode($this->input->post('stocks'), true);
-            echo json_encode($stocks, true);
-            $this->Chefmodel->add_stockspoil($date_recorded,$stocks,$slType);
-            
-        }else{
-            redirect('login');
-        }
-	}
+function editStockSpoil(){
+if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+
+	// $actualQty = $this->input->post('stQtyUpdate');
+	$tDate = date('Y-m-d', strtotime($tDate));
+	$stID = $this->input->post('stID');
+	$tID = $this->input->post('tID');
+	$date_recorded=date("Y-m-d H:i:s");
+	$account_id = $_SESSION["user_id"];
+	$tRemarks = $this->input->post(tRemarks);
+	$slType = "spoilage";
 	
-	function editStockSpoil(){
-        if($this->checkIfLoggedIn()){
-            $stID = $this->input->post('stID');
-            $ssID=$this->input->post('ssID');
-            $ssDate=$this->input->post('ssDate');
-            $ssRemarks=$this->input->post('ssRemarks');
-            $stQty = $this->input->post('stQty');
-            $ssQtyUpdate = $this->input->post('ssQtyUpdate');
-            $curSsQty = $this->input->post('curSsQty');
-            $updateQtyh = $ssQtyUpdate - $curSsQty; 
-            $updateQtyl = $curSsQty - $ssQtyUpdate;
-            $date_recorded=date("Y-m-d H:i:s");
-            $slType = "spoilage";
-            $slDateTime = date('Y-m-d', strtotime($ssDate));
+	$ssQtyUpdate = $this->input->post('ssQtyUpdate');
+	$curSsQty = $this->input->post('curSsQty');
+	$updateQtyh = $ssQtyUpdate - $curSsQty; 
+	$updateQtyl = $curSsQty - $ssQtyUpdate;
 
-            $this->Chefmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-            $this->Chefmodel->add_stockLog2($stID, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks, $updateQtyh, $updateQtyl,$curSsQty,$ssQtyUpdate);
-           
-        }else{
-            redirect('login');
-        } 
+	if ($curSsQty > $ssQtyUpdate){
+		$this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
+		$this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyl, $ssRemarks);
+		$this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
 	}
+	if ($curSsQty < $ssQtyUpdate){
+		$this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
+		$this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyh, $ssRemarks);
+		$this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
 
+	}else{
+		$this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
+		$this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks);
+		$this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
+	}
+   
+}else{
+	redirect('login');
+} 
+}
+function addspoilagesstock(){
+if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+	$lastNumget = intval($this->baristamodel->getLastNum());
+	$date_recorded = date("Y-m-d H:i:s");
+	$stocks = json_decode($this->input->post('stocks'), true);
+	$account_id = $_SESSION["user_id"];
+	
+	$lastNum = $lastNumget + 1;
+   
+	$this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum);
+}else{
+redirect('login');
+}
+}
 	// function add_consumed($menu) {
 	// 	if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
     //         $maxtNum = intval($this->chefmodel->set_tNum());
