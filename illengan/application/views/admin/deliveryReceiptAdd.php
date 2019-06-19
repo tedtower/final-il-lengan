@@ -240,6 +240,49 @@
             $(this).find("form")[0].reset();
             $(this).find(".poitemsTable > tbody").empty();
         });
+        $("#addDeliveryReceipt").on('submit', function(event) {
+            event.preventDefault();
+            var supplier = $(this).find("select[name='spID']").val();
+            var date = $(this).find("input[name='date']").val();
+            var receipt = $(this).find("input[name='receipt']").val();
+            var remarks = $(this).find("textarea[name='remarks']").val();
+            var transitems = [];
+            for (var index = 0; index < $(this).find(".drElements").length; index++) {
+                var row = $(this).find(".drElements").eq(index);
+                transitems.push({
+                    tiID : row.attr('data-id'),
+                    uomID:  row.find("select[name='itemUnit[]']").val(),
+                    stID:  row.find("select[name='stID[]']").val(),
+                    name: row.find("input[name='itemName[]']").val(),
+                    price:  row.find("input[name='price[]']").val(),
+                    discount: row.find("input[name='discount[]']").val(),
+                    qty:  row.find("input[name='itemQty[]']").val(),
+                    actualQty:  row.find("input[name='actualQty[]']").val()
+                });
+            }
+
+            $.ajax({
+                method: "post",
+                url: "<?= site_url("admin/deliveryreceipt/add")?>",
+                data: {
+                    supplier: supplier,
+                    date: date,
+                    receipt:receipt,
+                    remarks:remarks,
+                    transitems: JSON.stringify(transitems)
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    console.log(supplier,date,receipt,remarks,transitems);
+                },
+                success: function(data) {
+                },
+                error: function(response, setting, error) {
+                    console.log(error);
+                    console.log(response.responseText);
+                }
+            });
+        });
     });
     function setBrochureContent(suppstocks){
         $("#list").empty();
@@ -353,10 +396,8 @@ function getSelectedPOs() {
         if (choices[i].checked) {
             value = choices[i].value;
             poi = poitems.filter(poi => poi.itemID === value);
-            console.log("poiiiii");
-            console.log(poi);
             merchChecked = `
-            <div style="overflow:auto;margin-bottom:2%" class="drElements" >
+            <div style="overflow:auto;margin-bottom:2%" class="drElements" data-id="${poi[0].itemID}" >
                 <div style="float:left;width:95%;overflow:auto;">
                     <div class="find input-group mb-1">
                         <input type="text" name="itemName[]"
@@ -497,52 +538,6 @@ function setInputValues() {
         $('.total').text(total);
     }
 }
-
-// ----------------------- A D D I N G  T R A N S A C T I O N --------------------------
-$(document).ready(function() {
-    $("#addDeliveryReceipt").on('submit', function(event) {
-        event.preventDefault();
-        var supplier = $(this).find("select[name='spID']").val();
-        var date = $(this).find("input[name='date']").val();
-        var receipt = $(this).find("input[name='receipt']").val();
-        var remarks = $(this).find("textarea[name='remarks']").val();
-        var transitems = [];
-        for (var index = 0; index < $(this).find(".drElements").length; index++) {
-            var row = $(this).find(".drElements").eq(index);
-            transitems.push({
-                uomID:  row.find("select[name='itemUnit[]']").val(),
-                stID:  row.find("select[name='stID[]']").val(),
-                name: row.find("input[name='itemName[]']").val(),
-                price:  row.find("input[name='price[]']").val(),
-                discount: row.find("input[name='discount[]']").val(),
-                qty:  row.find("input[name='itemQty[]']").val(),
-                actualQty:  row.find("input[name='actualQty[]']").val()
-            });
-        }
-
-        $.ajax({
-            method: "post",
-            url: "<?= site_url("admin/deliveryreceipt/add")?>",
-            data: {
-                supplier: supplier,
-                date: date,
-                receipt:receipt,
-                remarks:remarks,
-                transitems: JSON.stringify(transitems)
-            },
-            dataType: "json",
-            beforeSend: function() {
-                console.log(supplier,date,receipt,remarks,transitems);
-            },
-            success: function(data) {
-            },
-            error: function(response, setting, error) {
-                console.log(error);
-                console.log(response);
-            }
-        });
-    });
-});
 
     </script>
 </body>

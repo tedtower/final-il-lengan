@@ -28,12 +28,12 @@
       </ul>
       <ul class="navbar-nav mr-auto delius">
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/inventory')?>"><i class="fas fa-boxes"></i></i> Inventory</a>
+            <a class="nav-link" href="<?php echo base_url('barista/inventory')?>"><i class="fas fa-boxes"></i></i> Consumption</a>
           </li>
       </ul>
       <ul class="navbar-nav ml-auto delius">
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fa fa-boxes"></i>Stock Spoilages</a>
+            <a class="nav-link" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fas fa-receipt"></i>Stock Spoilages</a>
           </li>
       </ul>
       <ul class="navbar-nav ml-auto delius">

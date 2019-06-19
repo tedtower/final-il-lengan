@@ -1249,6 +1249,10 @@ function add_aospoil($date_recorded,$addons,$account_id){
         return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemarks));
     }
     function add_restockLog($tID, $log){
+        echo json_encode(array(
+            "tID" => $tID,
+            "log" => $log
+        ));
         $query = "INSERT INTO stocklog(
             stID,
             tID,
@@ -1261,8 +1265,8 @@ function add_aospoil($date_recorded,$addons,$account_id){
             dateRecorded,
             slRemarks
         )
-        VALUES(?, ?, 'restock', ?, ?, ?, NULL, ?, ?, ?);";
-        $this->db->query($query,array($log['stock'], $tID, $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
         , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
     }
     function add_beginningLog($log){
@@ -1295,16 +1299,46 @@ function add_aospoil($date_recorded,$addons,$account_id){
             return $this->db->query($query, array($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks));
     }   
 
+    function add_consumption($stID, $dQty, $msDate, $msRemarks, $account_id) {
+        $maxtNum = intval($this->set_tNum());
+        $tNum = $maxtNum + 1;
+        $dateRecorded = date("Y-m-d H:i:s");
+        $query = "INSERT INTO transactions (tID, tNum, tDate, dateRecorded, tType, tRemarks, isArchived) 
+        values (NULL, ?,?,?,?,?,?)";
+        if($this->db->query($query, array($tNum, $msDate, $dateRecorded , "consumption", $msRemarks, 0))) {
+             $this->add_constransitems($this->db->insert_id(), $stID, $dQty, $msDate, $msRemarks, $dateRecorded,$account_id);
+        }
+    }
+    
+    function add_constransitems($tID, $stID, $dQty, $msDate, $msRemarks, $dateRecorded, $account_id) {
+        $query = "INSERT INTO transitems (tiID, stID) VALUES (NULL,?)";
+        if($this->db->query($query, array($stID))) {
+            $this->add_constrans_items($tID, $this->db->insert_id(), $stID, $dQty, $dateRecorded, $msDate, 
+            $msRemarks, $account_id);
+        }
+    }
+
+    function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $tRemarks, $account_id) {
+        $query = "INSERT INTO trans_items (tID, tiID, actualQty) VALUES (?,?,?)";
+        if($this->db->query($query, array($tID, $tiID, $dQty))) {
+            $this->add_stocklog($stID, $tID, "consumption", $tDate, $dateRecorded, $dQty, $tRemarks);
+            $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem consumption.", "add", $tRemarks);
+        }
+
+       
+        } 
+
+
     // ------ Sales Functions ------
-    function add_salesOrder($tableCode, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons) {
+    function add_salesOrder($tableCode, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons,  $account_id) {
         $query = "insert into orderslips (osID, tableCode, custName, osTotal, payStatus, 
         osDateTime, osPayDateTime, osDateRecorded, osDiscount) values (NULL,?,?,?,?,?,?,?,?);";
         if($this->db->query($query,array($tableCode, $custName, $osTotal, 'paid', $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount))) {
-            $this->add_salesList($this->db->insert_id(), $orderlists, $addons);
+            $this->add_salesList($this->db->insert_id(), $orderlists, $addons, $osDateTime, $account_id);
             }
         }
 
-    function add_salesList($osID, $orderlists, $addons) {
+    function add_salesList($osID, $orderlists, $addons, $osDateTime, $account_id) {
         $query = "insert into orderlists (olID, prID, osID, olDesc, olQty, 
         olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (NULL,?,?,?,?,?,?,?,?,?);";
         if(count($orderlists) > 0){
@@ -1318,6 +1352,9 @@ function add_aospoil($date_recorded,$addons,$account_id){
                 }
                 if($orderlists[$in]['stID'] !== null) {
                     $this->update_stock($orderlists[$in]['stID'], $orderlists[$in]['stQty']);
+                    $this->add_consumption($orderlists[$in]['stID'], $orderlists[$in]['deductQty'], $osDateTime,
+                    " ", $account_id);
+                    
                 }
               }
         }
@@ -1511,7 +1548,7 @@ function add_aospoil($date_recorded,$addons,$account_id){
             WHERE
                 tiID = ?;";
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
-        , $item['payment'], $item['return']), $item['tiID']);
+        , $item['payment'], $item['return'], $item['tiID']));
     }
 
     function add_receiptTransactionItemsQty($tID, $item){
