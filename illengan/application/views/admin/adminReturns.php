@@ -72,7 +72,7 @@
                                                                     Delivery Receipt</span>
                                                             </div>
                                                             <input type="text" name="receiptNo" id="receiptNo"
-                                                                class="form-control form-control-sm">
+                                                                class="form-control form-control-sm" value="0" readonly="readonly">
                                                         </div>
                                                     </div>
 
@@ -322,12 +322,14 @@ var suppmerch = [];
                 </thead><tbody></tbody></table>`);
 
         $("#list").find('table > tbody').append(`${suppstocks.map(st => {
-            return ` <tr><td><input type="checkbox" id="stID${st.stID}" name="stockitems" onchange="disableReceipts(this)" 
+            return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="stockitems" onchange="disableReceipts(this)" 
             class="${st.receiptNo} stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
                     <td>${st.receiptNo}</td>
                     <td>${st.tDate}</td>
                     <td>${st.spmName}</td></tr>`
         }).join('')}`);
+
+        disableSelected();
     }
 
     function disableReceipts(checkbox) {
@@ -335,16 +337,42 @@ var suppmerch = [];
         var checkboxes = $("input[name='stockitems']");
 
         if($(checkbox).prop('checked')) {
+            $(checkbox).addClass('checked');
             for(var i = 0; i <= checkboxes.length - 1; i++) {
             if(!($(checkboxes).eq(i).hasClass(receiptNo))) {
                 $(checkboxes).eq(i).attr('disabled', "disabled");
             }
         }
         } else {
-            $(checkboxes).removeAttr('disabled');
+           $(checkboxes).removeAttr('disabled');
+           $(checkbox).removeClass('checked');  
         }
-        
+
+        disableSelected();
     }
+
+    function disableSelected() {
+    var receiptNo = $("input[name='receiptNo']").eq(0).val();
+    var checkboxes = $("input[name='stockitems']");
+    console.log(receiptNo);
+    if ($('.returnElements') != 0 || $('.returnElements') != null) {
+        var addedItems = $('.returnElements').find('#spmID');
+        for (var i = 0; i <= addedItems.length - 1; i++) {
+            var id = addedItems[i].value;
+            $('#spmID' + id).attr("disabled", "disabled");
+            $('#spmID' + id).attr("checked", "checked");
+            $('#spmID' + id).removeAttr("class");
+
+        }
+    }
+    if(parseInt(receiptNo) !== 0) {
+        for(var i = 0; i <= checkboxes.length - 1; i++) {
+            if(!($(checkboxes).eq(i).hasClass(receiptNo))) {
+                $(checkboxes).eq(i).attr('disabled', "disabled");
+            }
+    }
+    }
+}
 
     function showTable() {
         returns.forEach(function (item) {
@@ -467,6 +495,8 @@ var suppmerch = [];
                     merchChecked = `
                     <tr class="returnElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}"
                         data-currqty="${st[0].stQty}">
+                        <input type="hidden" name="tiID" id="tiID" value="${st[0].tiID}">                        
+                        <input type="hidden" id="spmID" value="${st[0].spmID}">
                         <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
                                 value="${st[0].spmName}" readonly="readonly"></td>
                         <td><input type="number" id="tiQty" onchange="setInputValues()" name="tiQty"
@@ -612,6 +642,7 @@ var suppmerch = [];
             var spID = $(this).find("select[name='spID']").val();
             var spName = $(this).find(".spID option[value='" + spID + "']").text();
             var receiptNo = $(this).find("input[name='receiptNo']").val();
+            var tiID = $(this).find("input[name='tiID']").val();
             var tDate = $(this).find("input[name='tDate']").val();
             var tTotal = $(this).find("span[id='total']").text();
             var tRemarks = $(this).find("input[name='tRemarks']").val();
@@ -621,6 +652,7 @@ var suppmerch = [];
                 var row = $(this).find(".returnElements").eq(index);
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
                 trans.push({
+                    tiID: parseInt(row.find("input[name='tiID']").val()),
                     uomID: row.find("input[name='uomID']").data("id"),
                     stID: parseInt(row.attr('data-stockid')),
                     tiName: row.find("input[name='stName']").val(),
@@ -635,6 +667,7 @@ var suppmerch = [];
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
 
                 transitems.push({
+                    tiID: parseInt(row.find("input[name='tiID']").val()),
                     stID: parseInt(row.attr('data-stockid')),
                     tiQty: row.find("input[name='tiQty']").val(),
                     qtyPerItem: row.find("input[name='qtyPerItem']").val(),
