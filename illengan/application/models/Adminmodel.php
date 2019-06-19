@@ -1249,6 +1249,10 @@ function add_aospoil($date_recorded,$addons,$account_id){
         return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemarks));
     }
     function add_restockLog($tID, $log){
+        echo json_encode(array(
+            "tID" => $tID,
+            "log" => $log
+        ));
         $query = "INSERT INTO stocklog(
             stID,
             tID,
@@ -1261,8 +1265,8 @@ function add_aospoil($date_recorded,$addons,$account_id){
             dateRecorded,
             slRemarks
         )
-        VALUES(?, ?, 'restock', ?, ?, ?, NULL, ?, ?, ?);";
-        $this->db->query($query,array($log['stock'], $tID, $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
         , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
     }
     function add_beginningLog($log){
@@ -1544,7 +1548,7 @@ function add_aospoil($date_recorded,$addons,$account_id){
             WHERE
                 tiID = ?;";
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
-        , $item['payment'], $item['return']), $item['tiID']);
+        , $item['payment'], $item['return'], $item['tiID']));
     }
 
     function add_receiptTransactionItemsQty($tID, $item){
