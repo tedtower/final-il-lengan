@@ -141,6 +141,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'pending') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
             return $this->db->query($query)->result_array();
         }
+        function get_servedorderslips(){
+            $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
+            return $this->db->query($query)->result_array();
+        }
         function get_olist(){
             $query = "Select * from orderlists inner join preferences on 
             orderlists.prID = preferences.prID inner join menu on preferences.mID = menu.mID; ";
