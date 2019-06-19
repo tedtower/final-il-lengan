@@ -1,9 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-<<<<<<< HEAD
-=======
-
->>>>>>> b2409213142c6921d440d22a2cb0be7ffb6dc5af
 $route['default_controller'] = 'login/viewlogin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -65,6 +61,7 @@ $route['admin/menu/datatables'] = "adminview/datatables_menu";
 //Admin Add Routes ----------------------------------------------
 $route['admin/transactions/add'] = "adminadd/addtransaction";
 $route['admin/purchaseorder/add'] = "adminadd/addPurchaseOrder";
+$route['admin/deliveryreceipt/add'] = "adminadd/addDeliveryReceipt";
 $route['admin/inventory/addEdit'] = "adminadd/addstockitem";
 $route['admin/menu/add'] = "adminadd/addMenu";
 $route['admin/measurement/add'] = "adminadd/addUOM";
