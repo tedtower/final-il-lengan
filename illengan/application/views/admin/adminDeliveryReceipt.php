@@ -45,6 +45,9 @@
                                             </td>
                                         </tr>
                                     <?php
+                                        foreach($drItems as $drItem){
+                                            if()
+                                        }
                                     }?>
                                     </tbody>
                                 </table>

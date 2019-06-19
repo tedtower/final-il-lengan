@@ -40,6 +40,7 @@ function admin_js(){
 }
 function barista_js(){
    return base_url().'assets/js/barista/';
+}
 function chef_js(){
    return base_url().'assets/js/chef/';
 }
