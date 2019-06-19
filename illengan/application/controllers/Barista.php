@@ -39,7 +39,7 @@ class Barista extends CI_Controller{
     function editTableNumber(){
         $osID = $this->input->post('osID');
         $tableCode =$this->input->post('tableCode');
-        $this->baristamodel->edit_tablenumber($tableCode,$osID);
+        $this->baristamodel->edit_tablenumber($osID, $tableCode);
     }
     
     //BARISTA BILLINGS FUNCTIONS
@@ -193,9 +193,18 @@ class Barista extends CI_Controller{
             $data['orderslips'] = $this->baristamodel->get_orderslips();
             $this->load->view('barista/orderslip', $data);
         }
+        function getServed(){
+            $data = array(
+                'slips' => $this->baristamodel->get_servedorderslips(),
+                'lists' => $this->baristamodel->get_olist(),
+                'addons' => $this->baristamodel->get_addons()
+            );
+            header('Content-Type: application/json');
+                echo json_encode($data, JSON_PRETTY_PRINT);
+        }
         function getOrderslip(){
             $data = array(
-                'orderslips' => $this->baristamodel->get_orderslip(),
+                'orderslips' => $this->baristamodel->get_orderslips(),
                 'orderlists' => $this->baristamodel->get_olist(),
                 'addons' => $this->baristamodel->get_addons(),
 		 'tables' => $this->baristamodel->get_availableTables()
