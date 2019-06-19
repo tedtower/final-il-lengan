@@ -101,7 +101,9 @@ function viewORFormAdd(){
         $head['title'] = "Inventory - Add OR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/officialReceiptAdd');
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['stocks'] = $this->adminmodel->get_stockItemNames();
+        $this->load->view('admin/officialReceiptAdd',$data);
     }else{
         redirect('login');
     }
@@ -764,6 +766,38 @@ function getStockItem(){
                 "pos" => $this->adminmodel->get_posForBrochure(),
                 "poItems" => $this->adminmodel->get_poItemsForBrochure()
             ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getTransitemsFormValues(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                'stock' => $this->adminmodel->get_stockitems(),
+                'suppmerch' => $this->adminmodel->get_supplierstocks(),
+                "uom" => $this->adminmodel->get_uomForStoring()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getSuppMerchForBrochure(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "merchandise" => $this->adminmodel->get_SPMs($id),
+                    "uom" => $this->adminmodel->get_uomForStoring()
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
         }else{
             echo json_encode(array(
                 "sessErr" => true

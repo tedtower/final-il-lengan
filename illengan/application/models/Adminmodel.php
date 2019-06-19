@@ -601,6 +601,11 @@ function get_transitems(){
         ";
         return $this->db->query($query)->result_array();
     }
+    function get_suppliermerchBySupplier($id){
+        $query = "SELECT stID, CONCAT( stName, IF( stSize IS NULL, '', CONCAT(' ', stSize) ) ) AS stName, suppliermerchandise.uomID, uomAbbreviation,uomName, spmID, spmName, spmPrice, spmActualQty, spID, spName FROM ( stockitems RIGHT JOIN( suppliermerchandise LEFT JOIN supplier USING(spID) ) USING(stID) ) LEFT JOIN uom on (suppliermerchandise.uomID = uom.uomID)
+        where spID = ?";
+        return $this->db->query($query, array($id))->result_array();
+    }
     function get_stockSubcategories(){
         $query = "SELECT 
             ctID, ctName, ctType, ctStatus, COUNT(stID) AS stockCount
@@ -1705,6 +1710,59 @@ function add_aospoil($date_recorded,$addons,$account_id){
             LEFT JOIN transactions USING(tID)
             WHERE
                 tType = 'purchase order' AND drStatus = 'pending'";
+        return $this->db->query($query)->result_array();
+    }
+    function get_drsForBrochure(){
+        $query = "SELECT
+                tID as transactionID,
+                spID suppID,
+                spName suppName,
+                supplierName altName,
+                tNum as transNum,
+                receiptNo as receipt,
+                tDate as date,
+                tTotal as total,
+                tRemarks as remarks
+            FROM
+                transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE
+                tID IN(
+                SELECT
+                    tID AS transactionID
+                FROM
+                    (
+                        transitems
+                    LEFT JOIN trans_items USING(tiID)
+                    )
+                LEFT JOIN transactions USING(tID)
+                WHERE
+                    tType = 'delivery receipt' AND drStatus = 'delivered'
+                GROUP BY
+                    tID
+            )";
+        return $this->db->query($query)->result_array();
+    }
+    function get_drItemsForBrochure(){
+        $query = "SELECT
+                tID AS transactionID,
+                tiID AS itemID,
+                tiName AS NAME,
+                tiPrice AS price,
+                tiDiscount AS discount,
+                uomID AS uom,
+                stID AS stock,
+                tiQty AS qty,
+                qtyPerItem AS equivalent,
+                tiSubtotal AS subtotal
+            FROM
+                (
+                    transitems
+                LEFT JOIN trans_items USING(tiID)
+                )
+            LEFT JOIN transactions USING(tID)
+            WHERE
+                tType = 'delivery receipt' AND drStatus = 'delivered'";
         return $this->db->query($query)->result_array();
     }
     function edit_receiptTransactionTotal($tID, $total){
