@@ -98,25 +98,29 @@
             }    
         }
     }
-    function add_menuspoil($date_recorded,$menu){
+    function add_menuspoil($date_recorded,$account_id,$menu){
         $query = "insert into menuspoil (msID,msDateRecorded) values (NULL,?)";
         if($this->db->query($query,array($date_recorded))){ 
-            $this->add_spoiledmenu($this->db->insert_id(),$menu);
+            $this->add_spoiledmenu($this->db->insert_id(),$account_id,$menu);
             return true;
         }
     }
-    function add_spoiledmenu($msID,$menus){
+    function add_spoiledmenu($msID,$account_id,$menus){
         $query = "insert into spoiledmenu (msID,prID,msQty,msDate,msRemarks) values (?,?,?,?,?)";
         if(count($menus) > 0){
             for($in = 0; $in < count($menus) ; $in++){
-                $this->db->query($query, array($msID, $menus[$in]['prID'], $menus[$in]['msQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks']));
-                if($menus[$in]['stID'] !== 0) {
-                    $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?";
-                    $this->db->query($query, array($menus[$in]['newQty'], $menus[$in]['stID']));
+            $this->db->query($query, array($msID, $menus[$in]['prID'], $menus[$in]['msQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks']));
+            if($menus[$in]['stID'] !== null) {
+                $this->update_stockqty($menus[$in]['newQty'], $menus[$in]['stID']);
+                $this->add_consumption($menus[$in]['stID'], $menus[$in]['deductQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks'], $account_id);
                 }
             }
             
         }
+    }
+    function update_stockqty($newQty, $stID) {
+        $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?";
+        $this->db->query($query, array($newQty, $stID));
     }
 
     function add_stockspoil($date_recorded,$stocks,$slType){
@@ -213,5 +217,71 @@
             return $this->db->query($query, array($stID, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks));
         }
     }
+
+    function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks){
+        $query = "INSERT INTO `stocklog`(
+                `slID`,
+                `stID`,
+                `tID`,
+                `slType`,
+                `slDateTime`,
+                `dateRecorded`,
+                `slQty`,
+                `slRemarks`
+            )
+            VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
+        return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
+    }
+
+    // -------------- A D D I N G  T R A N S A C T I O N S  A N G  L O G S ----------------
+    function set_tNum() {
+        $this->db->select('MAX(tNum) AS lastnum');
+        $this->db->from('transactions');
+        $this->db->where('tType', 'return');
+
+        return $this->db->get()->row()->lastnum;
+    }
+    
+    function add_consumption($stID, $dQty, $msDate, $msRemarks, $account_id) {
+        $maxtNum = intval($this->set_tNum());
+        $tNum = $maxtNum + 1;
+        $dateRecorded = date("Y-m-d H:i:s");
+        $query = "INSERT INTO transactions (tID, tNum, tDate, dateRecorded, tType, tRemarks, isArchived) 
+        values (NULL, ?,?,?,?,?,?)";
+        if($this->db->query($query, array($tNum, $msDate, $dateRecorded , "consumption", $msRemarks, 0))) {
+             $this->add_transitems($this->db->insert_id(), $stID, $dQty, $msDate, $msRemarks, $dateRecorded,$account_id);
+        }
+    }
+    
+    function add_transitems($tID, $stID, $dQty, $msDate, $msRemarks, $dateRecorded, $account_id) {
+        $query = "INSERT INTO transitems (tiID, stID) VALUES (NULL,?)";
+        if($this->db->query($query, array($stID))) {
+            $this->add_trans_items($tID, $this->db->insert_id(), $stID, $dQty, $dateRecorded, $msDate, 
+            $msRemarks, $account_id);
+        }
+    }
+
+    function add_trans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $tRemarks, $account_id) {
+        $query = "INSERT INTO trans_items (tID, tiID, actualQty) VALUES (?,?,?)";
+        if($this->db->query($query, array($tID, $tiID, $dQty))) {
+            $this->add_stocklog($stID, $tID, "consumption", $tDate, $dateRecorded, $dQty, $tRemarks);
+            $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem consumption.", "add", $tRemarks);
+        }
+
+       
+        } 
+
+        function add_actlog($aID, $alDate, $alDesc, $defaultType, $additinalRemarks){
+            $query = "INSERT INTO `activitylog`(
+                `alID`,
+                `aID`,
+                `alDate`, 
+                `alDesc`, 
+                `alType`, 
+                `additionalRemarks`
+                ) 
+                VALUES (NULL, ?, ?, ?, ?, ?)";
+                return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additinalRemarks));
+            }
     }
 ?>

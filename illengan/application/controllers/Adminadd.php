@@ -373,12 +373,13 @@ function addspoilagesstock(){
             $tType = 'return';
             $tTotal = $this->input->post('tTotal'); 
             $tRemarks = $this->input->post('tRemarks');
-            $isArchived = 0;
+            $isArchived = intval(0);
             $trans = json_decode($this->input->post('trans'), true);
             $ti = json_decode($this->input->post('ti'), true);
+            $accountID = $_SESSION["user_id"];
 
             $this->adminmodel->add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
-            $isArchived, $trans, $ti);
+            $isArchived, $trans, $ti, $accountID);
         }else{
             redirect("login");
         }

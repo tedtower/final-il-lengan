@@ -117,10 +117,10 @@ class Chef extends CI_Controller {
 		if($this->checkIfLoggedIn()){
             $date_recorded = date("Y-m-d H:i:s");
 			$menus = json_decode($this->input->post('menus'), true);
-			
+			$account_id = $_SESSION["user_id"];
+
             echo json_encode($menus, true);
-            $this->Chefmodel->add_menuspoil($date_recorded,$menus);
-           
+			$this->Chefmodel->add_menuspoil($date_recorded,$account_id, $menus);
         }else{
             redirect('login');
         }
@@ -185,7 +185,25 @@ class Chef extends CI_Controller {
         } 
 	}
 
+	// function add_consumed($menu) {
+	// 	if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+    //         $maxtNum = intval($this->chefmodel->set_tNum());
+    //         $tNum = $maxtNum + 1;
+    //         $dateRecorded = date("Y-m-d H:i:s");
+    //         $tType = 'consumption'; 
+    //         $isArchived = intval(0);
+    //         $menuItems = $menu;
+    //         $accountID = $_SESSION["user_id"];
 
+	// 		echo json_encode($menu, true);
+	// 		echo $tNum +' '+$tDate;
+    //         $this->adminmodel->add_consumption($tNum, $dateRecorded, $tType, $isArchived, $menuItems, $accountID);
+    //     }else{
+    //         redirect("login");
+    //     }
+    // }
+
+	
 	
 	
 

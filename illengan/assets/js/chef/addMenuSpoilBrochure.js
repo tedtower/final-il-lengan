@@ -21,7 +21,7 @@ function getSelectedPref() {
                     <input type="hidden" id="prID` + i + `" name="prID" class="form-control form-control-sm" data-prID="` + data[i].prID + `" value="` + data[i].prID + `">
                             <td><input type="text" id="mName` + i + `" name="mName"
                                     class="form-control form-control-sm" value="` + data[i].prName + `"  required disabled></td>
-                            <td><input type="number" min="1" id="msQty` + i + `" name="msQty"
+                            <td><input type="number" min="1" value="1" id="msQty` + i + `" name="msQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="msRemarks` + i + `" name="msRemarks"
                                     class="form-control form-control-sm"  value="" required></td>
@@ -47,6 +47,8 @@ $("#addMenuSpoilage form").on('submit', function(event) {
     var msDate = document.getElementById('spoilDate').value;
     var menuItems = [];
     var menus = [];
+    var trans = [];
+    var items = [];
     var prID, msQty, msRemarks, newQty;
     for (var i = 0; i <= elements.length - 1; i++) {
         stID = $('.menuelem').eq(i).data('stid');
@@ -58,13 +60,15 @@ $("#addMenuSpoilage form").on('submit', function(event) {
         newQty = stQty - parseInt(msQty * menuQty);
         
         menuItems = {
-            'stID': isNaN(parseInt(stID)) ? (0) : stID,
-            'newQty': isNaN(parseInt(newQty)) ? (0) : newQty,
+            'stID': isNaN(parseInt(stID)) ? (null) : stID,
+            'newQty': isNaN(parseInt(newQty)) ? (null) : newQty,
             'prID': prID,
+            'deductQty': parseInt(msQty * menuQty),
             'msQty': msQty,
             'msDate': msDate,
             'msRemarks': msRemarks
         };
+
         menus.push(menuItems);
     }
 
@@ -74,10 +78,9 @@ $("#addMenuSpoilage form").on('submit', function(event) {
         data: {
             menus: JSON.stringify(menus)
         },
-        dataType: 'json',
         complete: function() {
             $('#addmenuspoilage').modal('hide');
-            location.reload();
+            // location.reload();
         },
         error: function(response, setting, error) {
             console.log(response.responseText);
