@@ -19,7 +19,7 @@ function getSelectedAddons() {
                     addonChecked = `<tr class="addonelem" data-id="` + data[i].aoID + `" >
                             <input type="hidden" id="aoID` + i + `" name="aoID" class="form-control form-control-sm" data-aoID="` + data[i].aoID + `" value="` + data[i].aoID + `">
                             <td><input type="text" id="aoName` + i + `" name="aoName"
-                                    class="form-control form-control-sm" value="` + data[i].aoName + `" required></td>
+                                    class="form-control form-control-sm" value="` + data[i].aoName + `" required readonly></td>
                             <td><input type="number" min="1" id="aosQty` + i + `" name="aosQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="aosRemarks` + i + `" name="aosRemarks"

@@ -141,6 +141,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'pending') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
             return $this->db->query($query)->result_array();
         }
+        function get_servedorderslips(){
+            $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
+            return $this->db->query($query)->result_array();
+        }
         function get_olist(){
             $query = "Select * from orderlists inner join preferences on 
             orderlists.prID = preferences.prID inner join menu on preferences.mID = menu.mID; ";
@@ -177,7 +181,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $result=$this->db->delete('orderlists');
             return $result;
         }
-        //Stock Spoilage----------------------------------
+        //Stock Spoilage---------------------------------------------------------------------------------------------------
         function get_spoilagesstock(){
             $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID)";
             return  $this->db->query($query)->result_array();
@@ -241,10 +245,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
              if($this->db->query($query,array($uomID, $stID, $stName))){
                 $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
-                for($in = 0; $in < count($stocks) ; $in++){
+                for($in = 0; $in < count($stocks)-1 ; $in++){
                 $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
-                $this->add_actlog($account_id, $dateRecorded, "Admin added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
-                }
+                $this->add_actlog($account_id, $dateRecorded, "Barista added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
+            }
              }
         }
         function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
@@ -274,7 +278,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
             return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
         }
-        function add_actlog($aID, $alDate, $alDesc, $defaultType, $additinalRemarks){
+        function add_actlog($aID, $alDate, $alDesc, $defaultType, $additionalRemarks){
             $query = "INSERT INTO `activitylog`(
                 `alID`,
                 `aID`,
@@ -284,7 +288,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 `additionalRemarks`
                 ) 
                 VALUES (NULL, ?, ?, ?, ?, ?)";
-                return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additinalRemarks));
+                return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
         }   
     }
 ?>

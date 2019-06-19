@@ -61,6 +61,7 @@ $route['admin/menu/datatables'] = "adminview/datatables_menu";
 //Admin Add Routes ----------------------------------------------
 $route['admin/transactions/add'] = "adminadd/addtransaction";
 $route['admin/purchaseorder/add'] = "adminadd/addPurchaseOrder";
+$route['admin/deliveryreceipt/add'] = "adminadd/addDeliveryReceipt";
 $route['admin/inventory/addEdit'] = "adminadd/addstockitem";
 $route['admin/menu/add'] = "adminadd/addMenu";
 $route['admin/measurement/add'] = "adminadd/addUOM";

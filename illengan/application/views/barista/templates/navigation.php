@@ -11,6 +11,11 @@
             <a class="nav-link" href="<?php echo base_url('barista/orderslip')?>"><i class="fal fa-tasks"></i> Order Slips</a>
           </li>
       </ul>
+    <ul class="navbar-nav mr-auto delius">
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('barista/servedOrders')?>"><i class="fal fa-tasks"></i> Served Slips</a>
+          </li>
+      </ul>
       <ul class="navbar-nav mr-auto delius">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('barista/billings')?>"><i class="fas fa-money-bill-wave"></i> Billings</a>

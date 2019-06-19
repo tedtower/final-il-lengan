@@ -14,7 +14,11 @@
 						<div class="card-content">
 
 							<!--Add Stock Spoilage BUTTON-->
-							<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0">Add Stock Spoilage</button><br>
+							<div class="col-md-4 col-lg-2">
+							<button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br>
+							<!--eND Add Stock Spoilage BUTTON-->
+							</div>
+  </div>
 							<!--eND Add Stock Spoilage BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
@@ -52,7 +56,7 @@
 															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 																Spoilage Date</span>
 														</div>
-														<input type="date" name="tDate" id="tDate" class="form-control form-control-sm" required>
+														<input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
 													</div>
 												</div>
 												<!--Add Stock Item-->
@@ -173,7 +177,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="tDate" id="tDate" class="form-control form-control-sm" required>
+                                                        <input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("tDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">

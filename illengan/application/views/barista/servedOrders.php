@@ -1,53 +1,150 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?>
-
 <!DOCTYPE html>
-<html>
+<htmL>
+
 <head>
-	<meta charset="UTF-8">
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
-    <meta name="viewport" content="width=device-width">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Il-Lengan | Barista Orders</title>
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
-           <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-           <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>  
-           <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>            
-           <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" /> --> 
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url().'assets/css/barista/jquery.dataTables.css'?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url().'assets/css/barista/bootstrap.css'?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url().'assets/css/barista/dataTables.bootstrap4.css'?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url().'assets/css/barista/style.css'?>">
-  </head>
-<body>
-<?php include_once('headernav.php') ?>
-<div class="tab-content" id="servedTab">
-  <br>
-  <div class="container">
-            <table  class="pendOrders dtr-inline collapsed table display" id="servedordersTable" >
-                <thead>
-                    <tr>
-                        <!--<th>Slip No.</th> -->
-                        <th>Order Item No.</th>
-                        <th>Customer Name</th>
-                        <th>Table</th>
-                        <th>Order</th>
-                        <th>Order Qty</th>
-                        <th>Item Status</th>
-                        <!--<th style="text-align: right;">Actions</th>-->
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-    </div>
-        
+    <?php include_once('templates/head.php') ?>
+    <link rel="stylesheet" href="<?php echo base_url() . 'assets/css/barista/cards.css' ?>" type="text/css">
+</head>
 
-
-<!-- MODAL EDIT 
-<form>
-            <div class="modal fade" id="Modal_Edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<body style="background:#c7ccd1;">
+    <?php include_once('templates/navigation.php') ?>
+    <!--End Top Nav-->
+    <div class="container-fluid">
+        <section class="lists-container">
+            <!-- Lists container -->
+    
+    </section>
+</div>
+    <!-- End of lists container -->
+    <!--End Cards-->
+                <!--START "Remove Slip" MODAL-->
+            
+<?php include_once('templates/scripts.php')?>
+<script>
+      var slips = [];
+      var lists = [];
+      var addons = [];
+      $(function() {
+        $.ajax({
+            url: '<?= base_url("barista/getServed") ?>',
+            dataType: 'json',
+            success: function(data) {
+                $.each(data.slips, function(index, item) {
+                    slips.push({
+                        "slips": item
+                    });
+                    slips[index].lists = data.lists.filter(ol => ol.osID == item.osID);
+                });
+                lists = data.lists;
+                addons = data.addons;
+                setPenOrdersData();
+                console.log('Success');
+                console.log(lists, addons);
+            },
+            error: function(response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+        });
+      });
+    var olID;
+      function setPenOrdersData() {
+              slips.forEach(function(item) {
+                    var header = `
+                    <!--Long Order Card-->
+            <div class="list" id="${item.slips.osID}">
+                <div class="card m-0 p-0" style="max-height:100%">
+                    <!--Long Card Header-->
+                    <div class="card-header p-3">
+                        <div style="overflow:auto;font-size:14px">
+                            <div style="float:left;text-align:left;width:60%">
+                                <div><b>Slip No: </b> ${item.slips.osID}</div>
+                                <div><b>Customer: </b>${item.slips.custName}</div>
+                            </div>
+                            <div style="float:right;text-align:left;width:40%">
+                                <div><b> Table No: </b>${item.slips.tableCode}</div>
+                                <div><b>Status: </b>${item.slips.payStatus}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!--Long Card Body-->
+                    <div class="card-body p-2" style="overflow:auto">
+                        <table class="table" id="pendingordersTable" style="width: auto; height: auto;border:0">
+                            <thead style="background:white">
+                                <tr class="border-bottom">
+                                    <th>Qty</th>
+                                    <th width="50%">Order</th>
+                                    <th>Subtotal</th>
+                                    <th width="20%">Status</th>
+                                    <th style="width:2%"></th>
+                                </tr>
+                            </thead>
+                    ${item.lists.map(ol => {
+                        //olID = ol.olID;
+                                    return `
+                                    <tbody style="font-size:13px">
+                                <tr data-id="${ol.olID}">
+                                    <td>${ol.olQty}</td>
+                                    <td>${ol.mName}</td>
+                                    <td><span class="fs-24">₱</span>${ol.olPrice}</td>
+                                    <td>
+                                        <input type="button" style="width:100%;padding:6%;background:blue;color:white;border:0;border-radius:5px"
+                                       id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>
+                                    </td>
+                                    <td>
+                                        <img class="cancelBtn" data-status="${ol.olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Remarks:</td>
+                                    <td colspan="4">${ol.olRemarks}</td>
+                                </tr>
+                                <tr>
+                                <td>Addons:</td>
+                                <td class="aDoQty${ol.olID}"></td>
+                                <td colspan="2" class="aDoName${ol.olID}"></td>
+                                <td class="aDoPrice${ol.olID}"></td>
+                                </tr>
+                                `
+                                }).join('')} 
+                                </tbody>
+                        </table>
+                    </div>
+                    <!--Footer-->
+                    <div class="card-footer text-muted">
+                        <div style="overflow:auto;">
+                            <div style="text-align:left;float:left;width:73%; font-size:15px;"><b>Total:</b><span style="border-bottom:1px solid gray; padding:3px 15px">&#8369;${item.slips.osTotal}</span></div>
+                            <div style="float:right;width:25%;float:left;">
+                                <button class="deleteOS btn btn-warning btn-sm" style="font-size:13px;margin:0" data-toggle="modal" data-target="#deleteModal">Remove Slip</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+            var modal = `<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Remove Slip</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center py-2">
+                            <i class="fas fa-times fa-4x animated rotateIn text-danger"></i>
+                            <input hidden id="remID">
+                            <p class="delius">Are you sure you want to remove this orderslip?</p>
+                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                <button type="button" id="remSlip" class="btn btn-danger btn-sm">Remove</button>
+                            </div>
+                    </div>
+                </div>
+            </div>`;
+            var tableModal = `<div class="modal fade" id="editTable" tabindex="-1" role="dialog" aria-labelledby="editTableModal" aria-hidden="true">
               <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -56,216 +153,154 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
+                  <form id="formEdit" accept-charset="utf-8" > 
                   <div class="modal-body">
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label">Order Id</label>
-                            <div class="col-md-10">
-                              <input type="text" name="order_id_edit" id="order_id_edit" class="form-control" placeholder="Order Id" readonly>
-                            </div>
+                        <h6 id="editTableCode"></h6>
+                        <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                            Change Table</span>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label">New Table Code</label>
-                            <div class="col-md-10">
-                              <input type="text" name="table_code_edit" id="table_code_edit" class="form-control" placeholder="New Table Code">
-                            </div>
-                        </div>
+                          <select name="tableCode" id="tableCode" class="form-control form-control-sm" required>
+                          </select>                    
+                        <input name="osID" id="osID" hidden="hidden">
                   </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" type="submit" id="btn_update" class="btn btn-primary">Update</button>
+                  <div class="modal-footer" id="updateTable" >
+                  <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                  
                   </div>
                 </div>
+                </form>
               </div>
             </div>
-            </form>
-        END MODAL EDIT-->
+            </div>`;
+            $('.lists-container').append(header);
+            $('.lists-container').append(modal);
+            $('.lists-container').append(tableModal);
+          
+            }); 
+              $("input#item_status").on('click', function () {
+                var id = $(this).attr('data-id');
+                var stats = $(this).val();
+                if( stats == 'served'){
+                stats = 'pending';
+                this.style.backgroundColor = "gray";
+                this.value= "pending";
+                stats = this.value;
+                console.log(stats, id);
+                updateStatus(stats, id);
+                }else if (stats == 'pending'){
+                stats='served';
+                this.style.backgroundColor = "green";
+                this.value= "served";
+                stats = this.value;
+                console.log(stats, id);
+                updateStatus(stats, id);
+                }
+            });
 
-        <!--MODAL DELETE
-        <form>
-            <div class="modal fade" id="Modal_Remove" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Cancel Order</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                       <strong>Are you sure to remove this record?</strong>
-                  </div>
-                  <div class="modal-footer">
-                    <input type="hidden" name="order_id_remove" id="order_id_remove" class="form-control">
-                    <button type="button" type="submit" id="btn_cancel" class="btn btn-primary">Yes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                  </div>
+            var btn;
+            $("button.deleteOS").on("click", function() {
+                 btn = $(this);
+            });
+            $("button#remSlip").on("click", function(){
+            $(btn).closest("div.list").remove();
+            });
+
+            $("img.cancelBtn").on("click", function() {
+                var cancelID = $(this).attr('data-id');
+                var chckStats = $(this).attr('data-status');
+                if(chckStats == 'served'){
+                    alert('Can not cancel!Already Served');
+                }else{
+                    cancelOrder(cancelID);
+                }
+            });
+
+            addAddons();
+        }
+       
+        function cancelOrder(cancelID){
+            $('#cancelModal').remove();
+            console.log(cancelID);
+             var name = orderlists.filter(item => item.olID === cancelID);
+             console.log(name[0].mName);
+             var cancel = `<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Cancel Order</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center py-2">
+                            <i class="fas fa-times fa-4x animated rotateIn text-danger"></i>
+                            <input hidden id="remID">
+                            <p class="delius">Are you sure you want to cancel <strong>${name[0].mName}</strong>?</p>
+                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                <button type="button" id="cancel" data-id="${name[0].olID}"class="btn btn-danger btn-sm">Delete</button>
+                            </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            </form>
-        END MODAL DELETE-->
+            </div>`;
+            $('.lists-container').append(cancel);
+            $('button#cancel').on('click', function(){
+                var getId = $(this).attr('data-id');
+                $.ajax({
+                    url: "<?= site_url('barista/deleteOrderItem') ?>",
+                    method: "post",
+                    data : { 
+                        'id' : getId
+                    },
+                    success: function(data) {
+                        location.reload();
+                },
+                error: function(response, setting, errorThrown) {
+                    console.log(response.responseText);
+                    console.log(errorThrown);
+                }
+                });
+            });
+            }
 
-        
-
-<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/jquery-3.2.1.js'?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/bootstrap.js'?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/jquery.dataTables.js'?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/dataTables.bootstrap4.js'?>"></script>
-
-<script>
-var serOrders = [];
-$(function() {
-		viewservedOrdersJs();
-});
-
-//POPULATE TABLE
-var table = $('#servedordersTable');
-	function format(d) {
-		return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-			'<tr>' +
-			'<td>Remarks</td>' +
-			'</tr>' +
-			'<tr>' +
-			'<td>' + d.ssRemarks + '</td>' +
-			'</tr>' +
-			'</table>';
-
-	}
-	function viewservedOrdersJs() {
-        $.ajax({
-            url: "<?= site_url('barista/servedOrdersJS') ?>",
-            method: "post",
-            dataType: "json",
-            success: function(data) {
-                serOrders = data;
-                setserOrdersData(serOrders);
+        function updateStatus(stats, id){
+            console.log(stats, id);
+            $.ajax({
+                url: "<?= site_url('barista/updateStatus') ?>",
+                method: "post",
+                data : { 
+                    'status' : stats,
+                    'id' : id
+                },
+                success: function(data) {
+                    console.log(data);
+                    location.reload();
             },
             error: function(response, setting, errorThrown) {
                 console.log(response.responseText);
                 console.log(errorThrown);
             }
-        });
-	}
-	function setserOrdersData() {
-        if ($("#servedordersTable> tbody").children().length > 0) {
-            $("#servedordersTable> tbody").empty();
-        }
-        serOrders.forEach(table => {
-            $("#servedordersTable> tbody").append(`
-            <tr data-olID="${table.olID}" >
-                <td>${table.olID}</td>
-                <td>${table.custName}</td>
-                <td>${table.tableCode}</td>
-                <td>${table.olDesc}</td>
-                <td>${table.olQty}</td>
-                <td>${table.olStatus}</td>
-                <td>
-                        <!--Action Buttons-->
-                        <div class="onoffswitch">
-                            <!--Delete button-->
-                            <button class="item_delete btn btn-danger btn-sm" data-toggle="modal" 
-                            data-target="#Modal_Remove">Cancel</button>                      
-                        </div>
-                    </td>
-                </tr>`);
-            $(".item_delete").last().on('click', function () {
-                $("#Modal_Remove").find("input[name='olID']").val($(this).closest("tr").attr(
-                          "data-olID"));
             });
-        });
-	}
-	//END OF POPULATING TABLE
+    }
 
-//start of new function
-/*$('#show_data').on('click','.item_edit',function(){
-            var order_id = $(this).data('order_id');
-            var table_code        = $(this).data('table_code');
-            
-            $('#Modal_Edit').modal('show');
-            $('[name="order_id_edit"]').val(order_id);
-            $('[name="table_code_edit"]').val(table_code);
-        });
-
-        //update record to database
-         $('#btn_update').on('click',function(){
-            var order_id = $('#order_id_edit').val();
-            var table_code = $('#table_code_edit').val();
-            $.ajax({
-                type : "POST",
-                url  : "http://illengan.com/barista/editTableNumber",
-                dataType : "JSON",
-                data : {order_id:order_id , table_code:table_code},
-                success: function(data){
-                    $('[name="order_id_edit"]').val("");
-                    $('[name="table_code_edit"]').val("");
-                    $('#Modal_Edit').modal('hide');
-                    alert("Table Code was successfully updated!");
-                    location.reload();
-                    //view_product();
-                }
-            });
-            return false;
-        });
-
-        //get data for delete record
-        $('#show_data').on('click','.item_delete',function(){
-             var order_id = $(this).data('order_id');
-            
-             $('#Modal_Remove').modal('show');
-             $('[name="order_id_remove"]').val(order_id);
-         });
-
-         //delete record to database
-          $('#btn_cancel').on('click',function(){
-             var order_id = $('#order_id_remove').val();
-             $.ajax({
-                 type : "POST",
-                 url  : "<//?php echo site_url('barista/cancel')?>",
-                 dataType : "JSON",
-                 data : {order_id:order_id},
-                 success: function(data){
-                     $('[name="order_id_remove"]').val("");
-                     alert("Record removed successfully!");
-                     $('#Modal_Remove').modal('hide');
-                    
-                     location.reload();
-                 }
-            });
-             return false;
-         }); */
-
-// //change status function
-// $('.status').on('click', function() {
-//         var orderItemId = $(this).data("order_item_id");
-//         var itemStatus = $(this).data("item_status");
-//         var item_status;
-//         if(itemStatus === "pending") {
-//             item_status = "ongoing";
-//         } else if(itemStatus === "ongoing") {
-//             item_status = "done";
-//         } else if(itemStatus === "done") {
-//             item_status = "served";
-//         }else if(itemStatus === "served"){
-//             item_status = "pending";
-//         }
+    function addAddons() {
+       // addons.forEach(ao => {
+           for(var i=0; i < addons.length; i++){
+            if($(".thisAddons"+addons[i].olID) != ''){
+                for(var i=0; i < addons.length; i++){
+                    $(".aDoQty"+addons[i].olID).append(`${addons[i].aoQty}<br>`);
+                    $(".aDoName"+addons[i].olID).append(`${addons[i].aoName}<br>`);
+                    $(".aDoPrice"+addons[i].olID).append(`${addons[i].aoTotal}<br>`);
+                
+           }     
+            }
+  //  });
+    }
+}
     
-//         // AJAX CODE FOR POSTING NEW STATUS
-//         $.ajax({
-//         type: 'POST',
-//         url: 'http://www.illengan.com/barista/change_status',
-//         data: {
-//             order_item_id: orderItemId,
-//             item_status: item_status
-//         },
-//         success: function() {
-//             table.DataTable().ajax.reload(null, false);
-//         }
-//             });
-//   });
-
-
-</script>
-
+    </script>
 </body>
-</html>
-
+</htmL>
