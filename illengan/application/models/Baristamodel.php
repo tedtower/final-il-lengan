@@ -141,6 +141,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'pending') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
             return $this->db->query($query)->result_array();
         }
+        function get_servedorderslips(){
+            $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
+            return $this->db->query($query)->result_array();
+        }
         function get_olist(){
             $query = "Select * from orderlists inner join preferences on 
             orderlists.prID = preferences.prID inner join menu on preferences.mID = menu.mID; ";
@@ -177,5 +181,114 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $result=$this->db->delete('orderlists');
             return $result;
         }
+        //Stock Spoilage---------------------------------------------------------------------------------------------------
+        function get_spoilagesstock(){
+            $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID)";
+            return  $this->db->query($query)->result_array();
+        }
+        function get_stocks(){
+            $query = "SELECT
+            stockitems.stID,
+            CONCAT(
+                stName,
+                IF(
+                    stSize IS NULL,
+                    '',
+                    CONCAT(' ', stSize)
+                )
+            ) AS stName,
+            stMin,
+            spmActualQty,
+            stQty,
+            uomID,
+            uomAbbreviation,
+            uomStore,
+            stBqty,
+            UPPER(stStatus) AS stStatus,
+            stType,
+            UPPER(stLocation) AS stLocation,
+            ctName,
+            ctID
+        FROM
+            (
+                stockitems
+            LEFT JOIN uom USING(uomID)
+            LEFT JOIN suppliermerchandise USING(uomID)
+            )
+        LEFT JOIN categories USING(ctID)
+        GROUP BY
+            stID";
+            return $this->db->query($query)->result_array();
+        }
+        function getLastNum(){
+            $query = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'spoilage'";
+            return $result = $this->db->query($query)->result();
+            
+        }
+        function add_stockspoil($date_recorded,$stocks,$account_id,$lastNum){
+            if(count($stocks) > 0){
+                for($in = 0; $in < count($stocks) ; $in++){
+                    $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
+                    $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$account_id,$stocks);
+                }
+            }
+        }
+        function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$account_id,$stocks){
+            $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
+           
+            if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
+                $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks);
+                return true;
+             }
+        }
+        function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks){
+            $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
+             if($this->db->query($query,array($uomID, $stID, $stName))){
+                $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
+                for($in = 0; $in < count($stocks)-1 ; $in++){
+                $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
+                $this->add_actlog($account_id, $dateRecorded, "Barista added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
+            }
+             }
+        }
+        function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
+            $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
+            return  $this->db->query($query,array($tID, $tiID, $actualQty));
+        }
+        function destockvarItems($stID,$curQty,$tNum){
+            $query = "UPDATE stockitems 
+            SET 
+                stQty = ? - ?
+            WHERE
+                stID = ?;";
+            return $this->db->query($query,array($curQty,$tNum,$stID));
+           
+        }
+        function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks){
+            $query = "INSERT INTO `stocklog`(
+                    `slID`,
+                    `stID`,
+                    `tID`,
+                    `slType`,
+                    `slDateTime`,
+                    `dateRecorded`,
+                    `slQty`,
+                    `slRemarks`
+                )
+                VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
+            return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
+        }
+        function add_actlog($aID, $alDate, $alDesc, $defaultType, $additionalRemarks){
+            $query = "INSERT INTO `activitylog`(
+                `alID`,
+                `aID`,
+                `alDate`, 
+                `alDesc`, 
+                `alType`, 
+                `additionalRemarks`
+                ) 
+                VALUES (NULL, ?, ?, ?, ?, ?)";
+                return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
+        }   
     }
 ?>

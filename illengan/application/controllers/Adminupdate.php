@@ -70,19 +70,20 @@ class Adminupdate extends CI_Controller{
     
     function editStockSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        
+            // $actualQty = $this->input->post('stQtyUpdate');
+            $tDate = date('Y-m-d', strtotime($tDate));
             $stID = $this->input->post('stID');
-            $ssID=$this->input->post('ssID');
-            $ssDate=$this->input->post('ssDate');
-            $ssRemarks=$this->input->post('ssRemarks');
-            $stQty = $this->input->post('stQty');
+            $tID = $this->input->post('tID');
+            $date_recorded=date("Y-m-d H:i:s");
+            $account_id = $_SESSION["user_id"];
+            $tRemarks = $this->input->post(tRemarks);
+            $slType = "spoilage";
+            
             $ssQtyUpdate = $this->input->post('ssQtyUpdate');
             $curSsQty = $this->input->post('curSsQty');
             $updateQtyh = $ssQtyUpdate - $curSsQty; 
             $updateQtyl = $curSsQty - $ssQtyUpdate;
-            $date_recorded=date("Y-m-d H:i:s");
-            $slType = "spoilage";
-            $slDateTime = date('Y-m-d', strtotime($ssDate));
-            $account_id = $_SESSION["user_id"];
 
             if ($curSsQty > $ssQtyUpdate){
                 $this->adminmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);

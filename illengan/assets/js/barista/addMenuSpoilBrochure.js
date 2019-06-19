@@ -19,7 +19,7 @@ function getSelectedPref() {
                     menuChecked = `<tr class="menuelem" data-id="` + data[i].prID + `" >
                             <input type="hidden" id="prID` + i + `" name="prID" class="form-control form-control-sm" data-prID="` + data[i].prID + `" value="` + data[i].prID + `">
                             <td><input type="text" id="mName` + i + `" name="mName"
-                                    class="form-control form-control-sm" value="` + data[i].prName + `"  required readonly></td>
+                                    class="form-control form-control-sm" value="` + data[i].prName + `"  required></td>
                             <td><input type="number" min="1" id="msQty` + i + `" name="msQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="msRemarks` + i + `" name="msRemarks"

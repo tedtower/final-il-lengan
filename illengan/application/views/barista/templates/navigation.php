@@ -11,6 +11,11 @@
             <a class="nav-link" href="<?php echo base_url('barista/orderslip')?>"><i class="fal fa-tasks"></i> Order Slips</a>
           </li>
       </ul>
+    <ul class="navbar-nav mr-auto delius">
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('barista/servedOrders')?>"><i class="fal fa-tasks"></i> Served Slips</a>
+          </li>
+      </ul>
       <ul class="navbar-nav mr-auto delius">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('barista/billings')?>"><i class="fas fa-money-bill-wave"></i> Billings</a>
@@ -24,6 +29,11 @@
       <ul class="navbar-nav mr-auto delius">
           <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('barista/inventory')?>"><i class="fas fa-boxes"></i></i> Inventory</a>
+          </li>
+      </ul>
+      <ul class="navbar-nav ml-auto delius">
+          <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fa fa-boxes"></i>Stock Spoilages</a>
           </li>
       </ul>
       <ul class="navbar-nav ml-auto delius">

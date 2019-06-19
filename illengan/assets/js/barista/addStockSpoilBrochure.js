@@ -8,7 +8,7 @@ function getSelectedStocks() {
 
             $.ajax({
                 type: 'POST',
-                url: 'http://www.illengan.com/admin/stock/spoilages/viewStockJS',
+                url: 'http://www.illengan.com/barista/stock/spoilages/viewStockJS',
                 data: {
                     stID : value
                 },
@@ -23,13 +23,13 @@ function getSelectedStocks() {
                             <input type="hidden" id="spmActualQty` + i + `" name="spmActualQty" class="form-control form-control-sm" data-spmActualQty="` + data[i].spmActualQty + `" value="` + data[i].spmActualQty + `">
                             <input type="hidden" id="uomStore` + i + `" name="uomStore" class="form-control form-control-sm" data-uomStore="` + data[i].uomStore + `" value="` + data[i].uomStore + `">
                             <td><input type="text" id="stName` + i + `" name="stName"
-                                    class="form-control form-control-sm"  value="` + data[i].stName + `"  required readonly></td>
+                                    class="form-control form-control-sm"  value="` + data[i].stName + `"  required></td>
                             <td><input type="number" min="1" id="actualQty` + i + `" name="actualQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="tRemarks` + i + `" name="tRemarks"
                                     class="form-control form-control-sm"  value="" required></td>
                             <td><img class="exitBtn1"
-                                    src="/assets/media/admin/error.png"
+                                    src="/assets/media/barista/error.png"
                                     style="width:20px;height:20px"></td>
                             </tr>`;
                             $(this).closest(".modal").find(".exitBtn1").last().on('click',function(){
@@ -76,7 +76,7 @@ function addStockItems() {
     
     $.ajax({
         type: 'POST',
-        url: 'http://www.illengan.com/admin/stock/spoilages/add',
+        url: 'http://www.illengan.com/barista/stock/spoilages/add',
         data: {
             stocks: JSON.stringify(stocks)
         },

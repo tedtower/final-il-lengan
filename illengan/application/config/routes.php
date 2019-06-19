@@ -1,6 +1,5 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
 $route['default_controller'] = 'login/viewlogin';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
@@ -62,6 +61,7 @@ $route['admin/menu/datatables'] = "adminview/datatables_menu";
 //Admin Add Routes ----------------------------------------------
 $route['admin/transactions/add'] = "adminadd/addtransaction";
 $route['admin/purchaseorder/add'] = "adminadd/addPurchaseOrder";
+$route['admin/deliveryreceipt/add'] = "adminadd/addDeliveryReceipt";
 $route['admin/inventory/addEdit'] = "adminadd/addstockitem";
 $route['admin/menu/add'] = "adminadd/addMenu";
 $route['admin/measurement/add'] = "adminadd/addUOM";
@@ -157,7 +157,8 @@ $route['admin/inventory/getStockItems'] = "adminview/getStockItems";
 $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
-
+$route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
+$route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 $route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
@@ -189,6 +190,11 @@ $route['barista/inventoryJS'] = "barista/inventoryJS";
 $route['barista/restock'] = "barista/restockitem";
 $route['barista/destock'] = "barista/destockitem";
 $route['barista/updateStatus'] = "barista/updateStatus";
+$route['barista/stock/spoilages'] = "barista/viewSpoilagesStock";
+$route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
+$route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
+$route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
+$route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 
 //BARISTA JS ROUTES

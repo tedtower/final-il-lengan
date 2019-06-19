@@ -1,4 +1,10 @@
-<body style="background:white">
+<!DOCTYPE html>
+<html>
+    <head>
+        <?php include_once('templates/head.php') ?>
+	</head>
+	<body style="background:white">
+	<?php include_once('templates/navigation.php') ?>
 <div class="content">
 	<div class="container-fluid">
 		<br>
@@ -6,7 +12,7 @@
 			<!-- Real Time Date & Time -->
 			<?php echo date("M j, Y -l"); ?>
 		</p>
-		<div div class="content" style="margin-left:250px;">
+		<!-- <div div class="content" style="margin-left:100px;"> -->
 			<div class="container-fluid">
 				<div class="content">
 					<div class="container-fluid">
@@ -14,12 +20,12 @@
 						<div class="card-content">
 
 							<!--Add Stock Spoilage BUTTON-->
-							<div class="col-md-4 col-lg-2">
+							<div class="row">
+    <div class="col-md-4 col-lg-2">
 							<button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br>
 							<!--eND Add Stock Spoilage BUTTON-->
 							</div>
   </div>
-							<!--eND Add Stock Spoilage BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
@@ -46,7 +52,7 @@
 												<span aria-hidden="true">&times;</span>
 											</button>
 										</div>
-										<form id="formAdd" action="<?= site_url('admin/stock/spoilages/add')?>" accept-charset="utf-8">
+										<form id="formAdd" action="<?= site_url('barista/stock/spoilages/add')?>" accept-charset="utf-8">
 											<div class="modal-body">
 												<div class="form-row">
 													<!--Container of Stock Spoilage Date-->
@@ -209,12 +215,12 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		<!-- </div> -->
 	</div>
 </div>
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
-<script src="<?= admin_js().'addStockSpoilBrochure.js'?>"></script>
+<script src="<?= barista_js().'addStockSpoilBrochure.js'?>"></script>
 <script>
 	var spoilages = [];
 	var stockchoice = [];
@@ -222,7 +228,7 @@
 		viewSpoilagesJs();
 //-----------------------Populate Brochure----------------------------------------
 		$.ajax({
-				url: '<?= site_url('admin/stock/spoilages/viewStockJS') ?>',
+				url: '<?= site_url('barista/stock/spoilages/viewStockJS') ?>',
 				dataType: 'json',
 				success: function (data) {
 					var poLastIndex = 0;
@@ -251,7 +257,7 @@
 	
 	function viewSpoilagesJs() {
         $.ajax({
-            url: "<?= site_url('admin/spoilagesstockjson') ?>",
+            url: "<?= site_url('barista/spoilagesstockjson') ?>",
             method: "post",
             dataType: "json",
             success: function(data) {
@@ -271,7 +277,7 @@
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
 			<tr class="spoilagesTabletr" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-dateRecorded="${table.actualQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
+				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/barista/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
 				<td>${table.tID}</td>
 				<td>${table.tiName}</td>
 				<td>${table.actualQty}</td>
@@ -356,7 +362,7 @@
         var tRemarks = $(this).find("input[name='tRemarks']").val();
 		console.log()
         $.ajax({
-            url: "<?= site_url("admin/stock/spoilage/edit")?>",
+            url: "<?= site_url("barista/stock/spoilage/edit")?>",
             method: "post",
             data: {
 				stID: stID,
@@ -390,7 +396,7 @@
 		event.preventDefault();
 		var delRemarks =$(this).find("input[name='delRemarks']").val();
         $.ajax({
-                url: '<?= site_url('admin/stock/spoilage/delete') ?>',
+                url: '<?= site_url('barista/stock/spoilage/delete') ?>',
                 method: 'POST',
                 data: {
 					tiID: tiID,

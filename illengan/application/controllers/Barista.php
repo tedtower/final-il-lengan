@@ -39,7 +39,7 @@ class Barista extends CI_Controller{
     function editTableNumber(){
         $osID = $this->input->post('osID');
         $tableCode =$this->input->post('tableCode');
-        $this->baristamodel->edit_tablenumber($tableCode,$osID);
+        $this->baristamodel->edit_tablenumber($osID, $tableCode);
     }
     
     //BARISTA BILLINGS FUNCTIONS
@@ -193,9 +193,18 @@ class Barista extends CI_Controller{
             $data['orderslips'] = $this->baristamodel->get_orderslips();
             $this->load->view('barista/orderslip', $data);
         }
+        function getServed(){
+            $data = array(
+                'slips' => $this->baristamodel->get_servedorderslips(),
+                'lists' => $this->baristamodel->get_olist(),
+                'addons' => $this->baristamodel->get_addons()
+            );
+            header('Content-Type: application/json');
+                echo json_encode($data, JSON_PRETTY_PRINT);
+        }
         function getOrderslip(){
             $data = array(
-                'orderslips' => $this->baristamodel->get_orderslip(),
+                'orderslips' => $this->baristamodel->get_orderslips(),
                 'orderlists' => $this->baristamodel->get_olist(),
                 'addons' => $this->baristamodel->get_addons(),
 		 'tables' => $this->baristamodel->get_availableTables()
@@ -219,6 +228,83 @@ class Barista extends CI_Controller{
                 $this->baristamodel->destock($stocks,$date_recorded,$account_id);
                 
             }
+    //STOCK SPOILAGES
+    function viewSpoilagesStockJs(){
+                //if($this->checkIfLoggedIn()){
+                    $data= $this->baristamodel->get_spoilagesstock();
+                    echo json_encode($data);
+                    
+                // }else{
+                //     redirect('login');
+                // }
+                //}
     
+    }
+    function viewSpoilagesStock(){
+        // if($this->checkIfLoggedIn()){
+            $data['title'] = "Spoilages - Stock";
+            $this->load->view('barista/templates/head', $data);
+            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/baristastockspoilages');
+        // }else{
+        //     redirect('login');
+        // }
+        }
+    function viewStockJS() {
+            $data=$this->baristamodel->get_stocks();
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_PRETTY_PRINT);
+        }
+    function editStockSpoil(){
+            if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            
+                // $actualQty = $this->input->post('stQtyUpdate');
+                $tDate = date('Y-m-d', strtotime($tDate));
+                $stID = $this->input->post('stID');
+                $tID = $this->input->post('tID');
+                $date_recorded=date("Y-m-d H:i:s");
+                $account_id = $_SESSION["user_id"];
+                $tRemarks = $this->input->post(tRemarks);
+                $slType = "spoilage";
+                
+                $ssQtyUpdate = $this->input->post('ssQtyUpdate');
+                $curSsQty = $this->input->post('curSsQty');
+                $updateQtyh = $ssQtyUpdate - $curSsQty; 
+                $updateQtyl = $curSsQty - $ssQtyUpdate;
+    
+                if ($curSsQty > $ssQtyUpdate){
+                    $this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
+                    $this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyl, $ssRemarks);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
+                }
+                if ($curSsQty < $ssQtyUpdate){
+                    $this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
+                    $this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyh, $ssRemarks);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
+    
+                }else{
+                    $this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
+                    $this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
+                }
+               
+            }else{
+                redirect('login');
+            } 
+        }
+    function addspoilagesstock(){
+            if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+                $lastNumget = intval($this->baristamodel->getLastNum());
+                $date_recorded = date("Y-m-d H:i:s");
+                $stocks = json_decode($this->input->post('stocks'), true);
+                $account_id = $_SESSION["user_id"];
+                
+                $lastNum = $lastNumget + 1;
+               
+                $this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum);
+            }else{
+            redirect('login');
+            }
+        }
     }
 ?>
