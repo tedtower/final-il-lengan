@@ -275,17 +275,17 @@ class Barista extends CI_Controller{
                 if ($curSsQty > $ssQtyUpdate){
                     $this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
                     $this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyl, $ssRemarks);
-                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Admin updated a stockitem spoilage.", "update", $ssRemarks);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
                 }
                 if ($curSsQty < $ssQtyUpdate){
                     $this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
                     $this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyh, $ssRemarks);
-                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Admin updated a stockitem spoilage.", "update", $ssRemarks);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
     
                 }else{
                     $this->baristamodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
                     $this->baristamodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks);
-                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Admin updated a stockitem spoilage.", "update", $ssRemarks);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated a stockitem spoilage.", "update", $ssRemarks);
                 }
                
             }else{
@@ -298,8 +298,9 @@ class Barista extends CI_Controller{
                 $date_recorded = date("Y-m-d H:i:s");
                 $stocks = json_decode($this->input->post('stocks'), true);
                 $account_id = $_SESSION["user_id"];
-        
+                
                 $lastNum = $lastNumget + 1;
+               
                 $this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum);
             }else{
             redirect('login');
