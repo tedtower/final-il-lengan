@@ -52,7 +52,7 @@
 												<span aria-hidden="true">&times;</span>
 											</button>
 										</div>
-										<form id="formAdd" action="<?= site_url('barista/stock/spoilages/add')?>" accept-charset="utf-8">
+										<form id="formAdd" action="<?= site_url('chef/spoilages/stock/add')?>" accept-charset="utf-8">
 											<div class="modal-body">
 												<div class="form-row">
 													<!--Container of Stock Spoilage Date-->

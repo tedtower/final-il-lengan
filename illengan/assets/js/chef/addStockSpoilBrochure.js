@@ -71,7 +71,6 @@ function addStockItems() {
             'spmActualQty':spmActualQty,
             'uomStore':uomStore
         };
-        stock
         stocks.push(stockItems);
     }
     $.ajax({
@@ -80,10 +79,9 @@ function addStockItems() {
         data: {
             stocks: JSON.stringify(stocks)
         },
-        dataType: 'json',
         complete: function() {
             $("#formAdd").modal("hide");
-            //location.reload();
+            location.reload();
             },
         error: function(response, setting, error) {
             console.log(response.responseText);
