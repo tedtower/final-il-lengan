@@ -435,6 +435,7 @@ function addspoilagesstock(){
 
     function addDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $total = 0;
             $drItems = json_decode($this->input->post(''),true);
             $dr = array(
                 "supplier" => $this->input->post('supplier'),
@@ -475,11 +476,13 @@ function addspoilagesstock(){
                     );
                     if($dr['tiID'] == NULL){
                         $dr['tiID'] = $this->adminmodel->add_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
                         $this->adminmodel->add_restockLog($drID, $dr);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }else{
                         $this->adminmodel->edit_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
                         $this->adminmodel->add_restockLog($drID, $dr);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
@@ -490,6 +493,7 @@ function addspoilagesstock(){
                         $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
                     }
                 }
+                $this->adminmodel->edit_receiptTransactionTotal($drID, $total);
             }
         }else{
             echo json_encode(array(

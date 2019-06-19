@@ -21,7 +21,7 @@
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
-                                        <th><b class="pull-left">Transtaction #</b></th>
+                                        <th><b class="pull-left">Transaction #</b></th>
                                         <th><b class="pull-left">Delivery Receipt #</b></th>
                                         <th><b class="pull-left">Supplier</b></th>
                                         <th><b class="pull-left">Date</b></th>

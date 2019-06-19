@@ -19,7 +19,7 @@
                             <div style="overflow:auto;">
                             <span style="float:left;width:40%;"><b>Stock Item:</b> <?= $stock['stName'] . " " . $stock['stSize']?></span>
                                 <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $currentInv['maxDate']?></span>
-                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $currentInv['slQty'] . " " . $stock['uomAbbreviation']?></span>
+                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $currentInv['actualQty'] . " " . $stock['uomAbbreviation']?></span>
                             </div>
                             
                             <div style="overflow:auto;">
@@ -120,7 +120,6 @@
         </div>
     </div>
 </div>
-  Core JS Files  
 <script src="<?= framework_url().'mdb/js/jquery-3.3.1.min.js';?>"></script>
 <script src="<?= framework_url().'bootstrap-native/bootstrap.bundle.min.js'?>"></script>
 <!--  Charts Plugin -->

@@ -34,7 +34,7 @@
                                     <?php foreach($ors as $or){
                                     ?>
                                         <tr data-id="<?= $or['id']?>">
-                                            <td><?= $or['num']?></td>
+                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a><?= $or['num']?></td>
                                             <td><?= $or['receipt']?></td>
                                             <td><?= $or['supplier']?></td>
                                             <td><?= $or['date']?></td>
@@ -43,6 +43,47 @@
                                             <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
                                                 id="editBtn">Edit</a>
                                             <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
+                                            </td>
+                                        </tr>
+                                        <tr class="accordion" style="display:none">
+                                            <td colspan="6">
+                                                <div class="container" style="display:none">
+                                                <div>Date Recorded:<?= $or['daterecorded'] == null ? "N/A" : $or['daterecorded']?></div>
+                                                <div>Remarks:<?= $or['remarks'] == null ? "N/A" : $or['remarks']?></div>
+
+                                                <table class="table table-bordered">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Qty</th>
+                                                            <th>Equivalent</th>
+                                                            <th>Actual Qty</th>
+                                                            <th>Price</th>
+                                                            <th>Discount</th>
+                                                            <th>Subtotal</th>
+                                                            <th>Payment Status</th>
+                                                            <th>Delivery Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <?php foreach($orItems as $orItem){
+                                                        if($orItem['transaction'] == $or['id']){?>
+                                                        <tr>
+                                                            <td><?= $orItem['name']?></td>
+                                                            <td><?= $orItem['qty']?></td>
+                                                            <td><?= $orItem['equivalent']?></td>
+                                                            <td><?= $orItem['actualqty']?></td>
+                                                            <td><?= $orItem['price']?></td>
+                                                            <td><?= $orItem['discount'] == null ||  $orItem['discount'] == 0 ? "N/A" : $orItem['discount']?></td>
+                                                            <td><?= $orItem['subtotal']?></td>
+                                                            <td><?= $orItem['paymentstatus']?></td>
+                                                            <td><?= $orItem['deliverystatus']?></td>
+                                                        </tr>
+                                                        <?php }
+                                                        }?>
+                                                    </tbody>
+                                                </table>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php
@@ -101,6 +142,17 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
+    $(function(){
+        $(".accordionBtn").on('click', function () {
+            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+                $(this).closest("tr").next(".accordion").css("display", "table-row");
+                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+            } else {
+                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                $(this).closest("tr").next(".accordion").hide("slow");
+            }
+        });
+    });
     // var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals')?>';
     // var crudUrl = '<?= site_url('admin/transactions/add')?>';
     // var getTransUrl = '<?= site_url('admin/transactions/getTransaction')?>';

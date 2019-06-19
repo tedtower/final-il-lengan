@@ -145,6 +145,11 @@
                 stocks = data.stock;
                 supplier = data.supplier;
                 suppmerch = data.suppmerch;
+                $(".addMBtn").on('click', function(){
+                    var spID = parseInt($(this).closest('.modal').find('.spID').val());
+                    setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
+                    console.log('eye');
+                });
             },
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
@@ -152,11 +157,7 @@
             }
         });
 
-        $(".addMBtn").on('click', function(){
-            var spID = parseInt($(this).closest('.modal').find('.spID').val());
-            setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
-            console.log('eye');
-        });
+        
 
         $("#addBtn").on('click', function(){
             setSupplier(supplier);
