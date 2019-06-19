@@ -24,7 +24,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID">
+                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
                                         <option value="" selected>Choose</option>
                                         <?php if(isset($supplier)){
                                             foreach($supplier as $sup){?>
@@ -40,7 +40,7 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="tDate">
+                                        name="tDate" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -311,14 +311,15 @@ $(function(){
                     style="width:20px;height:20px;float:right;">
             </div>
         </div>`;
-    $("#addItemBtn").on("click",function(){
-        $("#orForm").find(".ic-level-2").append(newItemTemplate);
-        $(".exitBtn").last().on("click",function(){
-            $(this).closest(".ic-level-1").remove();
+        $("#addItemBtn").on("click",function(){
+            $("#orForm").find(".ic-level-2").append(newItemTemplate);
+            $(".exitBtn").last().on("click",function(){
+                $(this).closest(".ic-level-1").remove();
         });
         $("#orForm").find(".ic-level-1 input[name='stID[]']").last().on('focus',function(){
             $("#stockBrochure").modal("show");
-            $("#stockBrochure form").on("submit",function(){
+            $("#stockBrochure form").on("submit",function(event){
+                event.preventDefault();
                 $(this).find(".ic-level-2 input[name='stocks']").each(function(index){
                     $("#orForm .ic-level-2 .ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id",$(this).val());
                     $("#orForm .ic-level-2 .ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).attr("data-name"));
@@ -347,7 +348,7 @@ $(function(){
                 dataType: "JSON",
                 success: function(data){
                     setMerchandiseBrochure(supplier, data);
-                    $("#merchandiseBrochure").on("submit",function(event){
+                    $("#merchandiseBrochure form").on("submit",function(event){
                         event.preventDefault();
                         merchBrochureOnSubmit(data.uom, data.merchandise, $(this).find("input[name='merch']:checked"));
                     });
@@ -364,6 +365,11 @@ $(function(){
     });
     $("#addDRBtn").on("click",function(){
 
+    });
+    $("#merchandiseBrochure").on("hidden.bs.modal",function(){
+        $(this).find("form")[0].reset();
+        $(this).find("form").off("submit");
+        $(this).find("ic-level-2").empty();
     });
     $("#stockBrochure").on("hidden.bs.modal",function(){
         $(this).find("form")[0].reset();

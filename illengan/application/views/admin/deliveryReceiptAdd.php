@@ -13,7 +13,7 @@
                         <h6 style="font-size: 16px;margin-left:15px">Add Delivery Receipt</h6>
                     </div>
                     <!--Card--> 
-                    <form id="addDeliveryReceipt" accept-charset="utf-8" class="form">
+                    <form id="drForm" accept-charset="utf-8" class="form">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
@@ -24,7 +24,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID">
+                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
                                         <option value="" selected>Choose</option>
                                     <?php if(isset($supplier)){
                                         foreach($supplier as $sup){?>
@@ -50,7 +50,7 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="date">
+                                        name="date" required>
                                 </div>
                             </div>
                             <!--Remarks-->
@@ -197,28 +197,78 @@
     var suppmerch = [];
     var pos = [];
     var poitems = [];
-    $(function () {
+    $(function() {
+        var stocks = [];
+        var uom = [];
         $.ajax({
             url: '/admin/jsonDR',
             dataType: 'json',
             success: function (data) {
-                var poLastIndex = 0;
                 stocks = data.stock;
-                supplier = data.supplier;
-                suppmerch = data.suppmerch;
                 uom = data.uom;
                 pos = data.pos;
                 poitems = data.poItems;
-                console.log('POS');
-                console.log(pos);
-                console.log('positems');
-                console.log(poitems);
-                
             },
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
                 console.log(response.responseText);
             }
+        });
+        $('#addNewBtn').on("click", function() {
+            $('#drForm .ic-level-2').append(`<div style="overflow:auto;margin-bottom:2%" class="drElements">
+                <div style="float:left;width:95%;overflow:auto;">
+                    <div class="find input-group mb-1">
+                        <input type="text" name="itemName[]"
+                            class="form-control form-control-sm"
+                            value="" style="width:24%">
+                        <input type="number" name="itemQty[]"
+                            class="tiQty form-control form-control-sm"
+                            placeholder="Quantity" onchange="setInputValues()" required>
+                        <select name="itemUnit[]"
+                            class="itemUnit form-control form-control-sm">
+                            <option value="" selected="selected">Unit</option>
+                        </select>
+                        <input type="number" name="price[]"
+                            class="tiPrice form-control form-control-sm"
+                            value="" placeholder="Price" onchange="setInputValues()" required>
+                        <input type="number" name="discount[]"
+                            class="tidiscount form-control form-control-sm" onchange="setInputValues()" placeholder="Discount" >
+                        <input type="number" name="itemSubtotal[]"
+                            class="tiSubtotal form-control form-control-sm"
+                            placeholder="Subtotal" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <input name="stID2[]" type="text"
+                        class="form-control border-right-0"
+                        placeholder="Stock" style="width:190px">
+                        <select name="stID[]"
+                            class="stock form-control form-control-sm">
+                            <option value="" selected="selected">Stock Item
+                            </option>
+                        </select>
+                        <input name="actualQty[]" type="number"
+                            class="qtyPerItem form-control border-right"
+                            value="">
+                    </div>
+                </div>
+                <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+                    <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
+                </div>
+            </div>`);
+            $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").append();
+            $(".itemUnit").append(uom.map(uom => {
+                return `<option value="${uom.uomID}">${uom.uomName}</option>`
+            }).join(''));
+
+            $('.stock').empty();
+            $(".stock").append(`${stocks.map(stock => {
+                return `<option value="${stock.stID}">${stock.stName}</option>`
+            }).join('')}`);
+
+            $(".exitBtn").on('click',function(){
+                $(this).closest(".drElements").remove();
+            });
         });
 
         $(".addMBtn").on('click', function(){
@@ -240,7 +290,7 @@
             $(this).find("form")[0].reset();
             $(this).find(".poitemsTable > tbody").empty();
         });
-        $("#addDeliveryReceipt").on('submit', function(event) {
+        $("#drForm").on('submit', function(event) {
             event.preventDefault();
             var supplier = $(this).find("select[name='spID']").val();
             var date = $(this).find("input[name='date']").val();
@@ -276,6 +326,11 @@
                     console.log(supplier,date,receipt,remarks,transitems);
                 },
                 success: function(data) {
+                    if(data.success){
+                        location.replace("<?= site_url('admin/deliveryreceipt')?>");
+                    }else{
+                        alert("Insert Unsuccessful!");
+                    }
                 },
                 error: function(response, setting, error) {
                     console.log(error);
@@ -457,66 +512,7 @@ function getSelectedPOs() {
     $("#poBrochure").modal("hide");
 }
 
-$('#addNewBtn').on("click", function() {
-    var spm = suppmerch;
-    var items= `
-                <div style="overflow:auto;margin-bottom:2%" class="drElements">
-                    <div style="float:left;width:95%;overflow:auto;">
-                        <div class="find input-group mb-1">
-                            <input type="text" name="itemName[]"
-                                class="form-control form-control-sm"
-                                value="" style="width:24%">
-                            <input type="number" name="itemQty[]"
-                                class="tiQty form-control form-control-sm"
-                                placeholder="Quantity" onchange="setInputValues()" required>
-                            <select name="itemUnit[]"
-                                class="itemUnit form-control form-control-sm">
-                                <option value="" selected="selected">Unit</option>
-                            </select>
-                            <input type="number" name="price[]"
-                                class="tiPrice form-control form-control-sm"
-                                value="" placeholder="Price" onchange="setInputValues()" required>
-                            <input type="number" name="discount[]"
-                                class="tidiscount form-control form-control-sm" onchange="setInputValues()" placeholder="Discount" >
-                            <input type="number" name="itemSubtotal[]"
-                                class="tiSubtotal form-control form-control-sm"
-                                placeholder="Subtotal" readonly>
-                        </div>
 
-                        <div class="input-group">
-                            <select name="stID[]"
-                                class="stock form-control form-control-sm">
-                                <option value="" selected="selected">Stock Item
-                                </option>
-                            </select>
-                            <input name="actualQty[]" type="number"
-                                class="qtyPerItem form-control border-right"
-                                value="">
-                        </div>
-                    </div>
-                    <div class="mt-4"style="float:left:width:3%;overflow:auto;">
-                        <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
-                    </div>
-                </div>
-                 `;
-        $('.transitems').append(items);
-        setInputValues();
-
-        $('.item').empty();
-        $(".itemUnit").append(`${uom.map(uom => {
-            return `<option value="${uom.uomID}">${uom.uomName}</option>`
-        }).join('')}`);
-
-        $('.stock').empty();
-        $(".stock").append(`${stocks.map(stock => {
-            return `<option value="${stock.stID}">${stock.stName}</option>`
-        }).join('')}`);
-
-        $(".exitBtn").on('click',function(){
-            $(this).closest(".drElements").remove();
-        });
-
-});
 function setInputValues() {
     var total = 0;
     for(var i = 0; i <= $('.drElements').length -1 ; i++) {
