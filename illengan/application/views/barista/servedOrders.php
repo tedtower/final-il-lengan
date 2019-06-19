@@ -62,8 +62,7 @@
                                 <div><b>Customer: </b>${item.slips.custName}</div>
                             </div>
                             <div style="float:right;text-align:left;width:40%">
-                                <div><b> Table No: </b>${item.slips.tableCode}<img class="editBtn" data-id="${item.slips.osID}" data-tableCode="${item.slips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px; float:right; cursor:pointer;" 
-                                data-toggle="modal" data-target="#editTable"></div>
+                                <div><b> Table No: </b>${item.slips.tableCode}</div>
                                 <div><b>Status: </b>${item.slips.payStatus}</div>
                             </div>
                         </div>
@@ -217,11 +216,6 @@
                     cancelOrder(cancelID);
                 }
             });
-            $("img.editBtn").on("click", function() {
-                var tableCode = $(this).attr('data-tableCode');
-                var  slipId = $(this).attr('data-id');
-                setTableData(tableCode, slipId);
-            });
 
             addAddons();
         }
@@ -306,36 +300,7 @@
   //  });
     }
 }
-    function setTableData(tableCode, slipID){
-        console.log( slipID);
-                $("#tableCode").empty();
-                    for(var t=0; t < tables.length; t++){
-                    $("#tableCode").append(`<option name= "tableCode" id ="tableCode" data-tcode="${tables[t].tableCode}">${tables[t].tableCode}</option>`);
-                    }
-                    $("#updateTable").append(`<button type="button" class="btn btn-success btn-sm" id="updateDB" data-osID="${slipID}">Update</button>`);
     
-    $("button#updateDB").on('click', function(event) {
-            var osID = $('#updateDB').attr("data-osID");
-            var tableCode = $("option#tableCode").attr("data-tcode");
-            console.log(osID, tableCode);
-            $.ajax({
-                url: "<?= site_url("barista/editTableNumber")?>",
-                method: "post",
-                data: {
-                    'osID': osID,
-                    'tableCode': tableCode
-                },
-                success: function(data) {
-                    alert('Table Updated');
-                    location.reload();
-                },
-                error: function(error) {
-                    console.log(error);
-                }
-                
-            });
-    });
-    }
     </script>
 </body>
 </htmL>
