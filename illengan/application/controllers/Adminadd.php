@@ -170,7 +170,8 @@ function addspoilagesstock(){
         $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
         $this->form_validation->set_rules('aType','Account Type','trim|required');
 
-            $password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
+            //$password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
+            $password = $this->input->post("password");
             $username = $this->input->post("aUsername");
             $aType = $this->input->post("aType");
             $date_recorded = date("Y-m-d H:i:s");
@@ -434,6 +435,7 @@ function addspoilagesstock(){
 
     function addDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $total = 0;
             $drItems = json_decode($this->input->post(''),true);
             $dr = array(
                 "supplier" => $this->input->post('supplier'),
@@ -474,11 +476,13 @@ function addspoilagesstock(){
                     );
                     if($dr['tiID'] == NULL){
                         $dr['tiID'] = $this->adminmodel->add_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
                         $this->adminmodel->add_restockLog($drID, $dr);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }else{
                         $this->adminmodel->edit_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
                         $this->adminmodel->add_restockLog($drID, $dr);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
@@ -489,6 +493,7 @@ function addspoilagesstock(){
                         $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
                     }
                 }
+                $this->adminmodel->edit_receiptTransactionTotal($drID, $total);
             }
         }else{
             echo json_encode(array(

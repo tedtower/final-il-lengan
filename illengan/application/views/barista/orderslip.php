@@ -60,13 +60,13 @@
                     <!--Long Card Header-->
                     <div class="card-header p-3">
                         <div style="overflow:auto;font-size:14px">
-                            <div style="float:left;text-align:left;width:73%">
+                            <div style="float:left;text-align:left;width:60%">
                                 <div><b>Slip No: </b> ${item.orderslips.osID}</div>
                                 <div><b>Customer: </b>${item.orderslips.custName}</div>
                             </div>
-                            <div style="float:right;text-align:left;width:27%">
+                            <div style="float:right;text-align:left;width:40%">
                                 <div><b> Table No: </b>${item.orderslips.tableCode}<img class="editBtn" data-id="${item.orderslips.osID}" data-tableCode="${item.orderslips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px; float:right; cursor:pointer;" 
-                                data-toggle="modal" data-target="#editTable"></div></div>
+                                data-toggle="modal" data-target="#editTable"></div>
                                 <div><b>Status: </b>${item.orderslips.payStatus}</div>
                             </div>
                         </div>
@@ -149,7 +149,7 @@
                 </div>
             </div>`;
             var tableModal = `<div class="modal fade" id="editTable" tabindex="-1" role="dialog" aria-labelledby="editTableModal" aria-hidden="true">
-              <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Table Code</h5>
