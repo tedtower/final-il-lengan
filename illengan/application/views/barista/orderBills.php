@@ -420,6 +420,8 @@ function getSelectedSlips() {
     for (var i = 0; i <= choices.length - 1; i++) {
         if (choices[i].checked) {
             value = choices[i].value;
+            
+
             $.ajax({
                 type: 'POST',
                 url: 'http://www.illengan.com/barista/slipJS',

@@ -67,6 +67,13 @@ class Barista extends CI_Controller{
 
         echo json_encode($data);
     }
+
+    function slipJS(){
+        $osID = $this->input->post('osID');
+        $data = $this->baristamodel->get_orderitems($osID);
+
+        echo json_encode($data);
+    }
     function getBillDetails(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'Barista'){
             $osID = $this->input->post("osID"); 
