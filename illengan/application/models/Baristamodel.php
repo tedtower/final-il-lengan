@@ -276,7 +276,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 for($in = 0; $in < count($stocks) ; $in++){
                     $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
                     $this->add_spoiltransaction(NULL, "spoilage", $date_recorded, $lastNum,$account_id,$stocks);
-                    $this->add_spoiltransaction(NULL,$lastNum,$stocks[$in]['tDate'],$dateRecorded,"spoilage",$stocks[$in]['tRemarks'])
+                    $this->add_spoiltransaction(NULL,$lastNum,$stocks[$in]['tDate'],$dateRecorded,"spoilage",$stocks[$in]['tRemarks']);
                 }
             }
         }
