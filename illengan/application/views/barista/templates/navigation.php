@@ -7,37 +7,33 @@
   
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/orderslip')?>"><i class="fal fa-tasks"></i> Order Slips</a>
+          <li class="nav-item mr-2">
+            <a class="nav-link" href="<?php echo base_url('barista/orderslip')?>"><i class="fal fa-list"></i> Order Slips</a>
           </li>
-      </ul>
-    <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
+          <li class="nav-item mr-2">
             <a class="nav-link" href="<?php echo base_url('barista/servedOrders')?>"><i class="fal fa-tasks"></i> Served Slips</a>
           </li>
-      </ul>
-      <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
+          <li class="nav-item mr-2">
             <a class="nav-link" href="<?php echo base_url('barista/billings')?>"><i class="fas fa-money-bill-wave"></i> Billings</a>
           </li>
-      </ul>
-      <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/transactions')?>"><i class="fas fa-receipt"></i> Transactions</a>
+          <li class="nav-item dropdown mr-2">
+              <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-boxes"></i> Inventory</a>
+              <div class="dropdown-menu dropdown-default elegant-color c-focus" aria-labelledby="menu-dd">
+                  <a class="dropdown-item" href=""><i class="far fa-truck-loading"></i> Delivery Receipt</a>
+                  <a class="dropdown-item" href=""><i class="far fa-receipt"></i> Official Receipt</a>
+                  <a class="dropdown-item" href=""><i class="far fa-calendar-minus"></i> Consumption</a>
+              </div>
           </li>
-      </ul>
-      <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/inventory')?>"><i class="fas fa-boxes"></i></i> Consumption</a>
+          <li class="nav-item dropdown mr-2">
+              <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-trash"></i> Spoilage</a>
+              <div class="dropdown-menu dropdown-default elegant-color c-focus">
+                  <a class="dropdown-item" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
+                  <a class="dropdown-item" href=""><i class="fal fa-box-open"></i> Stock Spoilage</a>
+              </div>
           </li>
-      </ul>
-      <ul class="navbar-nav ml-auto delius">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fas fa-receipt"></i>Stock Spoilages</a>
-          </li>
-      </ul>
-      <ul class="navbar-nav ml-auto delius">
-          <li class="nav-item">
+        </ul>
+       <ul class="navbar-nav delius">
+          <li class="nav-item" >
             <a class="nav-link" href="<?php echo base_url('login/logout')?>"><i class="fal fa-sign-out-alt"></i> Sign Out</a>
           </li>
       </ul>

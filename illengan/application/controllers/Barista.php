@@ -52,6 +52,7 @@ class Barista extends CI_Controller{
     }
 
     function getOrderBills(){
+        $this->load->view('barista/templates/head');
         $this->load->view('barista/templates/navigation');
         $this->load->view('barista/orderBills');
     }
@@ -64,16 +65,9 @@ class Barista extends CI_Controller{
     function getOrderItems(){
         $osID = $this->input->post('osID');
         $data = $this->baristamodel->get_orderitems($osID);
-
         echo json_encode($data);
     }
 
-    function slipJS(){
-        $osID = $this->input->post('osID');
-        $data = $this->baristamodel->get_orderitems($osID);
-
-        echo json_encode($data);
-    }
     function getBillDetails(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'Barista'){
             $osID = $this->input->post("osID"); 
@@ -84,9 +78,9 @@ class Barista extends CI_Controller{
                 $this->output->set_output(json_encode($orderdetails));
             }else{
             redirect('login');
-
-            }
+        }
     }
+
     function getDate(){
         $this->load->helper('date');
         date_default_timezone_set('Asia/Manila'); 
@@ -139,9 +133,11 @@ class Barista extends CI_Controller{
 
         //BARISTA INVENTORY FUNCTIONS
         function viewinventory(){
+            $this->load->view('barista/templates/head');
             $this->load->view('barista/templates/navigation');
             $this->load->view('barista/baristaConsumptions'); 
         }
+
         function inventoryJS(){
             echo json_encode($this->baristamodel->get_inventory_consumption());
         }
@@ -153,6 +149,7 @@ class Barista extends CI_Controller{
         //barista functions for orderslips-cards
 
         function sample(){
+            $this->load->view('barista/templates/head'); 
             $this->load->view('barista/templates/navigation'); 
                 $data["slip"] = $this->baristamodel->slipData();
                 $this->load->view("barista/orderCards", $data);

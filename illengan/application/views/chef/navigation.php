@@ -18,7 +18,7 @@
           </li>
           <li class="nav-item">
             <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-trash"></i> Spoilages</a>
-            <div  id="myDropdown" class="dropdown-content">
+            <div id="myDropdown" class="dropdown-content">
               <a href="<?php echo base_url().'chef/spoilages/menu'?>"><i class="fal fa-book"></i>  Menu Spoilages</a>
               <a href="<?php echo base_url().'chef/spoilages/stock'?>"><i class="fal fa-fish"></i>  Stock Spoilages</a>
             </div>
