@@ -133,7 +133,7 @@ class Barista extends CI_Controller{
         //BARISTA INVENTORY FUNCTIONS
         function viewinventory(){
             $this->load->view('barista/templates/navigation');
-            $this->load->view('barista/baristaInventory'); 
+            $this->load->view('barista/baristaConsumptions'); 
         }
         function inventoryJS(){
             echo json_encode($this->baristamodel->get_inventory());
