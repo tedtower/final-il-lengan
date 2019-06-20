@@ -89,11 +89,12 @@ function addSales() {
         $orderlists = json_decode($this->input->post('orderlists'), true);
         $osDateRecorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
+        $account_id = $_SESSION["user_id"];
        
         header('Content-Type: application/json');
         echo json_encode($addons, JSON_PRETTY_PRINT);
         $this->adminmodel->add_salesOrder($tableCode, $custName, $osTotal, $osDateTime,
-        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons);
+        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id);
 
     }else{
         redirect('login');
@@ -506,8 +507,7 @@ function addspoilagesstock(){
                             "dateRecorded" => $dateTime,
                             "remarks" => "delivery"
                         );
-                        echo json_encode($log);
-                        echo json_encode($this->adminmodel->add_restockLog($drID, $log));
+                        $this->adminmodel->add_restockLog($drID, $log);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }
                     // if($this->adminmodel->checkIfExistingItemsQty($drID, $dr['tiID'] > 0)){
@@ -518,6 +518,9 @@ function addspoilagesstock(){
                 }
                 $this->adminmodel->edit_receiptTransactionTotal($drID, $total);
             }
+            echo json_encode(array(
+                "success" => true
+            ));
         }else{
             echo json_encode(array(
                 "sessErr" => true

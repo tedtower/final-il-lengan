@@ -153,9 +153,27 @@ class Customermodel extends CI_Model {
             return 0;
         }
         function add_orderlist($item){
-		    $query = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
-            if($this->db->query($query, array(NULL,$item['osID'], $item['prID'], $item['olDesc'],$item['qty'], $item['subtotal'], 'pending', $item['remarks'], $item['price'], ''))){
-                return $this->db->insert_id();
+		$query = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
+            	if($this->db->query($query, array(NULL,$item['osID'], $item['prID'], $item['olDesc'],$item['qty'], $item['subtotal'], 'pending', $item['remarks'], $item['price'], ''))){
+                 $olID = $this->db->insert_id();
+		 $addOns = $item['addons'];
+                if(!empty($addOns)){
+                $bool3= false;
+                foreach($addOns as $key => $value){
+                   if($key == 'addonIds'){
+                    $addonIds = $value;
+                    }else if($key == 'addonQtys'){
+                        $addonQtys = $value;
+                    }else if($key == 'addonSubtotals'){
+                        $addonSubtotals = $value;
+                    }
+                }
+                for($i = 0, $q=0, $s=0; $i < count($addonIds), $q <  count($addonQtys),$s <  count($addonSubtotals)
+                     ; $i++, $q++, $s++){
+                $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
+                $bool3 = $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
+               }
+            }
             }
             return 0;
         }

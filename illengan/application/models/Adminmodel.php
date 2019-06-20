@@ -1299,16 +1299,46 @@ function add_aospoil($date_recorded,$addons,$account_id){
             return $this->db->query($query, array($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks));
     }   
 
+    function add_consumption($stID, $dQty, $msDate, $msRemarks, $account_id) {
+        $maxtNum = intval($this->set_tNum());
+        $tNum = $maxtNum + 1;
+        $dateRecorded = date("Y-m-d H:i:s");
+        $query = "INSERT INTO transactions (tID, tNum, tDate, dateRecorded, tType, tRemarks, isArchived) 
+        values (NULL, ?,?,?,?,?,?)";
+        if($this->db->query($query, array($tNum, $msDate, $dateRecorded , "consumption", $msRemarks, 0))) {
+             $this->add_constransitems($this->db->insert_id(), $stID, $dQty, $msDate, $msRemarks, $dateRecorded,$account_id);
+        }
+    }
+    
+    function add_constransitems($tID, $stID, $dQty, $msDate, $msRemarks, $dateRecorded, $account_id) {
+        $query = "INSERT INTO transitems (tiID, stID) VALUES (NULL,?)";
+        if($this->db->query($query, array($stID))) {
+            $this->add_constrans_items($tID, $this->db->insert_id(), $stID, $dQty, $dateRecorded, $msDate, 
+            $msRemarks, $account_id);
+        }
+    }
+
+    function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $tRemarks, $account_id) {
+        $query = "INSERT INTO trans_items (tID, tiID, actualQty) VALUES (?,?,?)";
+        if($this->db->query($query, array($tID, $tiID, $dQty))) {
+            $this->add_stocklog($stID, $tID, "consumption", $tDate, $dateRecorded, $dQty, $tRemarks);
+            $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem consumption.", "add", $tRemarks);
+        }
+
+       
+        } 
+
+
     // ------ Sales Functions ------
-    function add_salesOrder($tableCode, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons) {
+    function add_salesOrder($tableCode, $custName, $osTotal, $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons,  $account_id) {
         $query = "insert into orderslips (osID, tableCode, custName, osTotal, payStatus, 
         osDateTime, osPayDateTime, osDateRecorded, osDiscount) values (NULL,?,?,?,?,?,?,?,?);";
         if($this->db->query($query,array($tableCode, $custName, $osTotal, 'paid', $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount))) {
-            $this->add_salesList($this->db->insert_id(), $orderlists, $addons);
+            $this->add_salesList($this->db->insert_id(), $orderlists, $addons, $osDateTime, $account_id);
             }
         }
 
-    function add_salesList($osID, $orderlists, $addons) {
+    function add_salesList($osID, $orderlists, $addons, $osDateTime, $account_id) {
         $query = "insert into orderlists (olID, prID, osID, olDesc, olQty, 
         olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (NULL,?,?,?,?,?,?,?,?,?);";
         if(count($orderlists) > 0){
@@ -1322,6 +1352,9 @@ function add_aospoil($date_recorded,$addons,$account_id){
                 }
                 if($orderlists[$in]['stID'] !== null) {
                     $this->update_stock($orderlists[$in]['stID'], $orderlists[$in]['stQty']);
+                    $this->add_consumption($orderlists[$in]['stID'], $orderlists[$in]['deductQty'], $osDateTime,
+                    " ", $account_id);
+                    
                 }
               }
         }
@@ -1731,6 +1764,59 @@ function add_aospoil($date_recorded,$addons,$account_id){
             WHERE
                 tType = 'purchase order' AND drStatus = 'pending'";
         return $this->db->query($query)->result_array();
+    }
+    function get_posBySupplier($id){
+        $query = "SELECT
+                tID as transactionID,
+                spID suppID,
+                spName suppName,
+                supplierName altName,
+                tNum as transNum,
+                receiptNo as receipt,
+                tDate as date,
+                tTotal as total,
+                tRemarks as remarks
+            FROM
+                transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE
+                tID IN(
+                SELECT
+                    tID AS transactionID
+                FROM
+                    (
+                        transitems
+                    LEFT JOIN trans_items USING(tiID)
+                    )
+                LEFT JOIN transactions USING(tID)
+                WHERE
+                    tType = 'purchase order' AND drStatus = 'pending' AND spID = ?
+                GROUP BY
+                    tID
+            )";
+        return $this->db->query($query, array($id))->result_array();
+    }
+    function get_poItemsBySupplier($id){
+        $query = "SELECT
+                tID AS transactionID,
+                tiID AS itemID,
+                tiName AS NAME,
+                tiPrice AS price,
+                tiDiscount AS discount,
+                uomID AS uom,
+                stID AS stock,
+                tiQty AS qty,
+                qtyPerItem AS equivalent,
+                tiSubtotal AS subtotal
+            FROM
+                (
+                    transitems
+                LEFT JOIN trans_items USING(tiID)
+                )
+            LEFT JOIN transactions USING(tID)
+            WHERE
+                tType = 'purchase order' AND drStatus = 'pending' AND spID = ?";
+        return $this->db->query($query, array($id))->result_array();
     }
     function get_drsForBrochure(){
         $query = "SELECT

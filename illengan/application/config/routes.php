@@ -158,6 +158,7 @@ $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
 $route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
+$route['admin/getPosFromSupplier'] = "adminview/getPOItemsBySupplier";
 $route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
@@ -196,6 +197,7 @@ $route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
 $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
+$route['barista/getConsumption'] = "barista/getConsumptionItems";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
@@ -205,6 +207,8 @@ $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['chef'] = "chef/index";
 $route['chef/orders'] = "chef/get_orderlist";
 $route['chef/inventory'] = "chef/viewInventory";
+$route['chef/getConsumption'] = "chef/getConsumptionItems";
+$route['chef/consumption'] = "chef/viewConsumption";
 $route['chef/change_status'] = "chef/change_status";
 $route['chef/inventoryJS'] = "chef/inventoryJS";
 $route['chef/viewStockJS'] ="chef/viewStockJS";
