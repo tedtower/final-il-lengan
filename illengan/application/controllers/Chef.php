@@ -127,14 +127,14 @@ class Chef extends CI_Controller {
 function destockitem(){
                 
 	if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
-		$lastNumget = intval($this->Chefmodel->getLastNum());
+		$lastNumget = intval($this->Chefmodel->set_tNum());
 		$stocks = json_decode($this->input->post('stocks'), true);
 		echo json_encode($stocks, true);
 		$date_recorded = date("Y-m-d H:i:s");
 		$account_id = $_SESSION["user_id"];
 		$lastNum = $lastNumget + 1;
 	   
-		$this->Chefmodel->add_consumption($date_recorded,$stocks,$account_id,$lastNum);
+		$this->Chefmodel->add_consumptions($date_recorded,$stocks,$account_id,$lastNum);
 	}else{
 	redirect('login');
 	}
@@ -214,27 +214,20 @@ function addspoilagesstock(){
 	redirect('login');
 	}
 }
-	// function add_consumed($menu) {
-	// 	if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
-    //         $maxtNum = intval($this->chefmodel->set_tNum());
-    //         $tNum = $maxtNum + 1;
-    //         $dateRecorded = date("Y-m-d H:i:s");
-    //         $tType = 'consumption'; 
-    //         $isArchived = intval(0);
-    //         $menuItems = $menu;
-    //         $accountID = $_SESSION["user_id"];
+	//------------- C O N S U M P T I O N ----------
+	function viewConsumption() {
+		$data['title'] = " Consumption";
+		$this->load->view('chef/head', $data);	
+		$this->load->view('chef/navigation');
+		$this->load->view('chef/scripts');
+        $this->load->view('chef/chefConsumption');
 
-	// 		echo json_encode($menu, true);
-	// 		echo $tNum +' '+$tDate;
-    //         $this->adminmodel->add_consumption($tNum, $dateRecorded, $tType, $isArchived, $menuItems, $accountID);
-    //     }else{
-    //         redirect("login");
-    //     }
-    // }
+	}
 
-	
-	
-	
+	function getConsumptionItems() {
+		$data=$this->Chefmodel->getconsumptionItems();
+        echo json_encode($data);
+	}
 
 	
    

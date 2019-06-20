@@ -24,7 +24,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID">
+                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
                                         <option value="" selected>Choose</option>
                                         <?php if(isset($supplier)){
                                             foreach($supplier as $sup){?>
@@ -40,7 +40,7 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="tDate">
+                                        name="tDate" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -73,7 +73,7 @@
                             style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getSupplierMerchandise')?>">Merchandise Item</a>
                         <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                             data-target="#poBrochure"
-                            style="color:blue;font-weight:600;">PO Item</a>
+                            style="color:blue;font-weight:600;" data-url="<?= site_url('admin/getPosFromSupplier')?>">PO Item</a>
                         <a id="addDRBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                             data-target="#deliveryBrochure"
                             style="color:blue;font-weight:600;">DR Item</a>
@@ -110,6 +110,8 @@
                                     </div>
                                     <form>
                                         <div class="modal-body">
+                                            <div class="brochureErrMsg">
+                                            </div>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text "
@@ -121,7 +123,7 @@
                                                 </select>
                                             </div>
                                             <br>
-                                            <div class="ic-level-4">
+                                            <div class="ic-level-2">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -148,6 +150,8 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
+                                        <div class="brochureErrMsg" hidden>
+                                        </div>
                                         <div class="ic-level-2" style="margin:1% 3%" >
                                             <!--checkboxes-->
                                         </div>
@@ -213,7 +217,7 @@
                                 </div>
                                 <form>
                                     <div class="modal-body">
-                                        <div id="ic-level-2">
+                                        <div class="ic-level-2">
                                             <?php
                                                 if(empty($stocks)){
                                                     echo json_encode($stocks);
@@ -260,8 +264,18 @@
 <script src="assets/js/admin/demo.js"></script>
 <script>
 $(function(){
-    var newItemTemplate = `
-        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1"">
+    var uom;
+    $.ajax({
+        method: "GET",
+        url: "/getUOMs",
+        dataType: "JSON",
+        success: function(data){
+            uom = data;
+        }
+    });
+    $("#addItemBtn").on("click",function(){
+        $("#orForm").find(".ic-level-2").append(`
+        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1">
             <div style="float:left;width:95%;overflow:auto;">
                 <div class="input-group mb-1">
                     <input type="text" name="itemName[]"
@@ -310,33 +324,13 @@ $(function(){
                     src="/assets/media/admin/error.png"
                     style="width:20px;height:20px;float:right;">
             </div>
-        </div>`;
-    $("#addItemBtn").on("click",function(){
-        $("#orForm").find(".ic-level-2").append(newItemTemplate);
-        $(".exitBtn").last().on("click",function(){
-            $(this).closest(".ic-level-1").remove();
-        });
-        $("#orForm").find(".ic-level-1 input[name='stID[]']").last().on('focus',function(){
-            $("#stockBrochure").modal("show");
-            $("#stockBrochure form").on("submit",function(){
-                $(this).find(".ic-level-2 input[name='stocks']").each(function(index){
-                    $("#orForm .ic-level-2 .ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id",$(this).val());
-                    $("#orForm .ic-level-2 .ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).attr("data-name"));
-                });
-                $("#stockBrochure").modal("hide");
-            });
-        });
-        $("#orForm").find(".ic-level-1").last().find("*").on("focus",function(){
-            if(!$(this).closest(".ic-level-1").attr("data-focus")){
-                $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
-                $(this).closest(".ic-level-1").attr("data-focus",true);
-            }
-        });
-
+        </div>`);
+        setIL1FormEvents();
+        set
     });
     $("#addMBtn").on("click",function(){
         var url = $(this).attr("data-url");
-        var supplier = $("#orForm").find("select[name='spID']").val();
+        var supplier = $("#orForm select[name='spID']").val();
         if(!isNaN(parseInt(supplier))){
             $.ajax({
                 method: "POST",
@@ -347,7 +341,7 @@ $(function(){
                 dataType: "JSON",
                 success: function(data){
                     setMerchandiseBrochure(supplier, data);
-                    $("#merchandiseBrochure").on("submit",function(event){
+                    $("#merchandiseBrochure form").on("submit",function(event){
                         event.preventDefault();
                         merchBrochureOnSubmit(data.uom, data.merchandise, $(this).find("input[name='merch']:checked"));
                     });
@@ -357,36 +351,97 @@ $(function(){
                     console.log(response.responseText);
                 }
             });
+        }else{
+            console.log();
+            $("#merchandiseBrochure .brochureErrMsg").text("No supplier selected.");
+            $("#merchandiseBrochure .brochureErrMsg").attr("display","block");
         }
     });
     $("#addPOBtn").on("click",function(){
-
+        var supplier = $("#orForm select[name='spID']").val();
+        var url = $(this).attr("data-url");
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: {
+                id: supplier
+            },
+            dataType: "JSON",
+            success: function(data){
+                setPOBrochure(data);
+            },
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+        });
     });
     $("#addDRBtn").on("click",function(){
+        var supplier = $("#orForm select[name='spID']").val();
+        $.ajax({
 
+        });
+    });
+    $("#merchandiseBrochure").on("hidden.bs.modal",function(){
+        $(this).find("form")[0].reset();
+        $(this).find("form").off("submit");
+        $(this).find(".ic-level-2").empty();
+        // $(this).find(".brochureErrMsg").empty();
+        $(this).find(".brochureErrMsg").hide();
     });
     $("#stockBrochure").on("hidden.bs.modal",function(){
         $(this).find("form")[0].reset();
         $(this).find("form").off("submit");
     });
+    $("#poBrochure").on("hidden.bs.modal",function(){
+        $(this).find("form")[0].reset();
+        $(this).find(".ic-level-2").empty();
+        $(this).find("form").off("submit");
+    });
 });
-
+function setIL1FormEvents(){
+    $("#orForm .ic-level-1:last-child .exitBtn").on("click",function(){
+        $(this).closest(".ic-level-1").remove();
+    });
+    $("#orForm .ic-level-1:last-child input[name='stID[]']").on('focus',function(){
+        $("#stockBrochure").modal("show");
+        $("#stockBrochure form").on("submit",function(event){
+            event.preventDefault();
+            var st = $(this).find(".ic-level-2 input[name='stocks']:checked");
+            $("#orForm .ic-level-1[data-focus='true'] input[name='stID[]']").attr("data-id",st.val());
+            $("#orForm .ic-level-1[data-focus='true'] input[name='stID[]']").val(st.attr("data-name"));
+            $("#stockBrochure").modal("hide");
+        });
+    });
+    $("#orForm .ic-level-1:last-child *").on("focus",function(){
+        if(!$(this).closest(".ic-level-1").attr("data-focus")){
+            $("#orForm").find(".ic-level-1").removeAttr("data-focus");
+            $(this).closest(".ic-level-1").attr("data-focus",true);
+        }
+    });
+}
 function setMerchandiseBrochure(supplier, merch){
-    $("#merchandiseBrochure").find(".ic-level-2").append(merch.merchandise.map(item =>{
+    $("#merchandiseBrochure .ic-level-2").append(merch.merchandise.map(item =>{
         return `
         <label style="width:96%"><input name="merch" type="checkbox" class="mr-2"
             value="${item.spmID}">${item.spmName}</label>`;
-    }));
+    }).join(''));
 }
 
-function setSubformValues(){
+function setPOBrochure(pos){
+    $("#poBrochure .brochureSelect").append(data.pos.map(po=>{
+        return `<option value="${po.transactionID}">PO#${po.transNum}\t${po.date}</option>`;
+    }).join(''));
+}
 
+function setSubformValues(uom){
+    $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").append(``);
 }
 
 function merchBrochureOnSubmit(uom, merchandise, selectedMerch){
     var y;
     var merchItemTemplate = `
-        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1"">
+        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1">
             <div style="float:left;width:95%;overflow:auto;">
                 <div class="input-group mb-1">
                     <input type="text" name="itemName[]"
@@ -438,19 +493,19 @@ function merchBrochureOnSubmit(uom, merchandise, selectedMerch){
         </div>`;
     selectedMerch.each(function(index) {
         y = merchandise.filter(x => x.spmID == $(this).val());
-        $("#orForm").find(".ic-level-2").append(merchItemTemplate);
-        $("#orForm .ic-level-2").find("input[name='itemName[]']").last().val(y[0].spmName);
-        $("#orForm .ic-level-2").find("select[name='itemUnit[]']").last().append(uom.map(unit =>{
+        $("#orForm .ic-level-2").append(merchItemTemplate);
+        $("#orForm .ic-level-1:last-child input[name='itemName[]']").val(y[0].spmName);
+        $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").append(uom.map(unit =>{
             return `<option value="${unit.uomID}">${unit.uomAbbreviation}</option>`;
         }).join(''));
-        $("#orForm .ic-level-2").find("select[name='itemUnit[]']").last().find(`option[value=${y[0].uomID}]`).attr("selected","selected");
-        $("#orForm .ic-level-2").find("input[name='itemPrice[]']").last().val(y[0].spmPrice);
-        $("#orForm .ic-level-2").find("input[name='stID[]']").last().val(y[0].stName);
-        $("#orForm .ic-level-2").find("input[name='stID[]']").last().attr("data-id",y[0].stID);
-        $("#orForm .ic-level-2").find("input[name='actualQty[]']").last().val(y[0].spmActualQty);
-        $("#orForm").find(".ic-level-1").last().find("*").on("focus",function(){
+        $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${y[0].uomID}]`).attr("selected","selected");
+        $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").val(y[0].spmPrice);
+        $("#orForm .ic-level-1:last-child input[name='stID[]']").val(y[0].stName);
+        $("#orForm .ic-level-1:last-child input[name='stID[]']").attr("data-id",y[0].stID);
+        $("#orForm .ic-level-1:last-child input[name='actualQty[]']").val(y[0].spmActualQty);
+        $("#orForm .ic-level-1:last-child *").on("focus",function(){
             if(!$(this).closest(".ic-level-1").attr("data-focus")){
-                $("#addEditTransaction").find(".ic-level-1").removeAttr("data-focus");
+                $("#orForm .ic-level-1").removeAttr("data-focus");
                 $(this).closest(".ic-level-1").attr("data-focus",true);
             }
         });

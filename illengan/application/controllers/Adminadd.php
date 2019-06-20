@@ -507,8 +507,7 @@ function addspoilagesstock(){
                             "dateRecorded" => $dateTime,
                             "remarks" => "delivery"
                         );
-                        echo json_encode($log);
-                        echo json_encode($this->adminmodel->add_restockLog($drID, $log));
+                        $this->adminmodel->add_restockLog($drID, $log);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }
                     // if($this->adminmodel->checkIfExistingItemsQty($drID, $dr['tiID'] > 0)){
@@ -519,6 +518,9 @@ function addspoilagesstock(){
                 }
                 $this->adminmodel->edit_receiptTransactionTotal($drID, $total);
             }
+            echo json_encode(array(
+                "success" => true
+            ));
         }else{
             echo json_encode(array(
                 "sessErr" => true
