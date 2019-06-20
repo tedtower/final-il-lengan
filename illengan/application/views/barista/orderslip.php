@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <htmL>
-
 <head>
     <?php include_once('templates/head.php') ?>
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/css/barista/cards.css' ?>" type="text/css">
@@ -8,19 +7,18 @@
 
 <body style="background:#c7ccd1;">
     <?php include_once('templates/navigation.php') ?>
-    <button class="btn btn-success btn-sm" onClick="window.location.href = '<?php echo base_url();?>customer/checkin';return false;">
-    <img class="addBtn" src="/assets/media/barista/add image.png" style="width:20px;height:20px; float:left;"> Add Order</button>
+    <div>
+        <button class="btn btn-success" style="padding-right:100px;font-size:15px;" onClick="window.location.href='<?php echo base_url();?>customer/checkin';return false;"><i class="far fa-plus"></i> Add Order</button>
+    </div>
     <!--End Top Nav-->
     <div class="container-fluid">
-        <section class="lists-container">
-            <!-- Lists container -->
+    <section class="lists-container">
     
     </section>
 </div>
     <!-- End of lists container -->
     <!--End Cards-->
-                <!--START "Remove Slip" MODAL-->
-            
+    <!--START "Remove Slip" MODAL-->
 <?php include_once('templates/scripts.php')?>
 <script>
       var orderslips = [];

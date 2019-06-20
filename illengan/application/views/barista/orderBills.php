@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <?php include_once('templates/head.php') ?>
-</head>
-
 <body style="background:white">
-  <?php include_once('templates/navigation.php') ?>
   <!--End Top Nav-->
   <div class="content">
     <div class="container-fluid">

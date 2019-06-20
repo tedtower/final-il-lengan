@@ -21,11 +21,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <div class="container">
     <div class="row" style="overflow-x: auto;">
     </div>
-    <br>
-    
-
-           <!--MODAL TO CANCEL/(DELETE) AN ORDER -->
-
+    <br>  
+    <!--MODAL TO CANCEL/(DELETE) AN ORDER -->
            <div class="modal fade" id="deleteOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
