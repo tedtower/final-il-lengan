@@ -200,7 +200,7 @@ class Barista extends CI_Controller{
         function getServed(){
             $data = array(
                 'slips' => $this->baristamodel->get_servedorderslips(),
-                'lists' => $this->baristamodel->get_olist(),
+                'lists' => $this->baristamodel->get_servedOlist(),
                 'addons' => $this->baristamodel->get_addons()
             );
             header('Content-Type: application/json');
@@ -209,7 +209,7 @@ class Barista extends CI_Controller{
         function getOrderslip(){
             $data = array(
                 'orderslips' => $this->baristamodel->get_orderslips(),
-                'orderlists' => $this->baristamodel->get_olist(),
+                'orderlists' => $this->baristamodel->get_pendingOlist(),
                 'addons' => $this->baristamodel->get_addons(),
 		 'tables' => $this->baristamodel->get_availableTables()
             );
