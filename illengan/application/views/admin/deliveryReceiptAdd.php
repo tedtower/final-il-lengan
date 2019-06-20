@@ -215,7 +215,7 @@
             }
         });
         $('#addNewBtn').on("click", function() {
-            $('#drForm .ic-level-2').append(`<div style="overflow:auto;margin-bottom:2%" class="drElements">
+            $('#drForm .ic-level-2').append(`<div style="overflow:auto;margin-bottom:2%" class="ic-level-1">
                 <div style="float:left;width:95%;overflow:auto;">
                     <div class="find input-group mb-1">
                         <input type="text" name="itemName[]"
@@ -256,18 +256,16 @@
                     <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
                 </div>
             </div>`);
-            $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").append();
-            $(".itemUnit").append(uom.map(uom => {
+            $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").append(uom.map(uom => {
                 return `<option value="${uom.uomID}">${uom.uomName}</option>`
             }).join(''));
-
-            $('.stock').empty();
-            $(".stock").append(`${stocks.map(stock => {
-                return `<option value="${stock.stID}">${stock.stName}</option>`
-            }).join('')}`);
-
-            $(".exitBtn").on('click',function(){
-                $(this).closest(".drElements").remove();
+            $("#drForm .ic-level-1:last-child select[name='stID2[]']").on("focus",stockBrochureOnSubmit(stocks));
+            // $('.stock').empty();
+            // $(".stock").append(`${stocks.map(stock => {
+            //     return `<option value="${stock.stID}">${stock.stName}</option>`
+            // }).join('')}`);
+            $("#drForm .ic-level-1:last-child .exitBtn").on('click',function(){
+                $(this).closest(".ic-level-1").remove();
             });
         });
 
@@ -297,8 +295,8 @@
             var receipt = $(this).find("input[name='receipt']").val();
             var remarks = $(this).find("textarea[name='remarks']").val();
             var transitems = [];
-            for (var index = 0; index < $(this).find(".drElements").length; index++) {
-                var row = $(this).find(".drElements").eq(index);
+            for (var index = 0; index < $(this).find(".ic-level-1").length; index++) {
+                var row = $(this).find(".ic-level-1").eq(index);
                 transitems.push({
                     tiID : row.attr('data-id'),
                     uomID:  row.find("select[name='itemUnit[]']").val(),
@@ -363,6 +361,14 @@
         }).join('')}`);
         
     }
+    function stockBrochureOnSubmit(stocks){
+        console.log(stocks)
+        $("#stockBrochure form").on("submit", function(event){
+            event.preventDefault();
+            console.log($(this).find("input[name='stock']:checked").val());
+            $("#drForm .ic-level-2 .ic-level-1[data-focus='true'] input[name='stID2[]']").val()
+        });
+    }
     
 var subPrice = 0;
 var merchChecked;
@@ -378,7 +384,7 @@ function getSelectedStocks() {
                 spm = suppmerch.filter(sp => sp.stID === value);
                 console.log(suppmerch);
                 merchChecked = `
-                <div style="overflow:auto;margin-bottom:2%" class="drElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
+                <div style="overflow:auto;margin-bottom:2%" class="ic-level-1" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-currqty="${st[0].stQty}">
                     <div style="float:left;width:95%;overflow:auto;">
                         <div class="find input-group mb-1">
                             <input type="text" name="itemName[]"
@@ -437,7 +443,7 @@ function getSelectedStocks() {
         }).join('')}`);
 
         $(".exitBtn").on('click',function(){
-            $(this).closest(".drElements").remove();
+            $(this).closest(".ic-level-1").remove();
         });
     });
     $("#merchandiseBrochure").modal("hide");
@@ -452,7 +458,7 @@ function getSelectedPOs() {
             value = choices[i].value;
             poi = poitems.filter(poi => poi.itemID === value);
             merchChecked = `
-            <div style="overflow:auto;margin-bottom:2%" class="drElements" data-id="${poi[0].itemID}" >
+            <div style="overflow:auto;margin-bottom:2%" class="ic-level-1" data-id="${poi[0].itemID}" >
                 <div style="float:left;width:95%;overflow:auto;">
                     <div class="find input-group mb-1">
                         <input type="text" name="itemName[]"
@@ -507,7 +513,7 @@ function getSelectedPOs() {
     }).join('')}`);
 
     $(".exitBtn").on('click',function(){
-        $(this).closest(".drElements").remove();
+        $(this).closest(".ic-level-1").remove();
     });
     $("#poBrochure").modal("hide");
 }
@@ -515,7 +521,7 @@ function getSelectedPOs() {
 
 function setInputValues() {
     var total = 0;
-    for(var i = 0; i <= $('.drElements').length -1 ; i++) {
+    for(var i = 0; i <= $('.ic-level-1').length -1 ; i++) {
         var tiQty = parseInt($('.tiQty').eq(i).val());
         var qtyPerItem = parseInt($('.qtyPerItem').eq(i).val());
         var price = parseFloat($('.tiPrice').eq(i).val());
