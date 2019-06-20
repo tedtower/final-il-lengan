@@ -149,7 +149,7 @@
                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:143px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                             Purchase Order</span>
                                         </div>
-                                        <select class="tID custom-select" name="po">
+                                        <select class="brochureSelect custom-select" name="po">
                                             <option value="" selected>Choose</option>
                                             <?php if(isset($pos)){
                                                 foreach($pos as $po){?>
@@ -274,8 +274,8 @@
             setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
         });
 
-        $(".tID").on('change', function(){
-            var poID = parseInt($('.tID').val());
+        $(".brochureSelect").on('change', function(){
+            var poID = parseInt($('.brochureSelect').val());
             setPOBrochureContent(poitems.filter(poitem => poitem.transactionID == poID));
             
         });
