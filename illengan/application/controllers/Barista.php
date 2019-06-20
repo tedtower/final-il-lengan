@@ -136,7 +136,7 @@ class Barista extends CI_Controller{
             $this->load->view('barista/baristaConsumptions'); 
         }
         function inventoryJS(){
-            echo json_encode($this->baristamodel->get_inventory());
+            echo json_encode($this->baristamodel->get_inventory_consumption());
         }
         function getConsumptionItems(){
             $data=$this->baristamodel->getconsumptionItems();

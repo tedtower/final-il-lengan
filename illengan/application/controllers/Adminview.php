@@ -772,6 +772,27 @@ function getStockItem(){
             ));
         }
     }
+    function getPOItemsBySupplier(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "inputErr" => false,
+                    'uom' => $this->adminmodel->get_uomForStoring(),
+                    "pos" => $this->adminmodel->get_posBySupplier($id),
+                    "poItems" => $this->adminmodel->get_poItemsBySupplier($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
     function getTransitemsFormValues(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
