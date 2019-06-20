@@ -98,6 +98,7 @@ class Barista extends CI_Controller{
 
     function getOrderBills(){
         if($this->checkIfLoggedIn()){
+        $this->load->view('barista/templates/head');
         $this->load->view('barista/templates/navigation');
         $this->load->view('barista/orderBills');
     }else{
@@ -122,6 +123,7 @@ class Barista extends CI_Controller{
         redirect('login');
         }
     }
+
     function getBillDetails(){
        if($this->checkIfLoggedIn()){
             $osID = $this->input->post("osID"); 
@@ -132,9 +134,9 @@ class Barista extends CI_Controller{
                 $this->output->set_output(json_encode($orderdetails));
             }else{
             redirect('login');
-
-            }
+        }
     }
+
     function getDate(){
         if($this->checkIfLoggedIn()){
         $this->load->helper('date');
@@ -203,12 +205,14 @@ class Barista extends CI_Controller{
         //BARISTA INVENTORY FUNCTIONS
         function viewinventory(){
             if($this->checkIfLoggedIn()){
+            $this->load->view('barista/templates/head');
             $this->load->view('barista/templates/navigation');
             $this->load->view('barista/baristaConsumptions'); 
         }else{
             redirect('login');
             }
         }
+
         function inventoryJS(){
             if($this->checkIfLoggedIn()){
             echo json_encode($this->baristamodel->get_inventory_consumption());
@@ -229,6 +233,7 @@ class Barista extends CI_Controller{
 
         function sample(){
             if($this->checkIfLoggedIn()){
+            $this->load->view('barista/templates/head'); 
             $this->load->view('barista/templates/navigation'); 
                 $data["slip"] = $this->baristamodel->slipData();
                 $this->load->view("barista/orderCards", $data);

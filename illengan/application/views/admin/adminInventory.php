@@ -186,13 +186,12 @@
                                     <div class="modal-body">
                                         <table class="table table-borderless">
                                             <thead style="border-bottom:2px solid #cecece">
-                                                <tr class="text-center">
+                                                <tr>
                                                     <th></th>
                                                     <th><b>Stock Name</b></th>
                                                     <th><b>Category</b></th>
                                                     <th><b>Current</b></th>
                                                     <th><b>Unit</b></th>
-                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody class="ic-level-2">
@@ -660,14 +659,12 @@ function setBrochureForBeginning(){
         success: function(data){
             stocks = data.stocks;
             $("#BeginningBrochure").find(".ic-level-2").append(stocks.map(stock =>{
-                return `<tr class="ic-level-1">
-                            <td><input type="checkbox" name="stID" value="${stock.stID}" class="form-control"></td>
+                return `<tr class="ic-level-1" style="border-bottom:1px solid #d9d9d9">
+                            <td><input type="checkbox" name="stID" value="${stock.stID}"></td>
                             <td>${stock.stName}</td>
                             <td>${stock.ctName}</td>
                             <td>${stock.stQty}</td>
-                            <td>${stock.uomAbbreviation}</td>
-                            <td><img class="exitBtn" src="/assets/media/admin/error.png"
-            style="width:20px;height:20px"></td>
+                            <td>${stock.uomAbbreviation}
                         </tr>`;
             }).join(''));
             $("#BeginningBrochure").on("hidden.bs.modal",function(){
