@@ -123,7 +123,7 @@
 		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/jquery.dataTables.js'?>"></script>
 		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/dataTables.bootstrap4.js'?>">
 		</script>
-		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/baristaInventoryBrochure.js'?>">
+		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/baristaConsumptionBrochure.js'?>">
 		</script>
 		<script>
 			var inventoryitems = [];
