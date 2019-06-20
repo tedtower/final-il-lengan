@@ -23,7 +23,7 @@ function getSelectedStocks() {
                             <input type="hidden" id="spmActualQty` + i + `" name="spmActualQty" class="form-control form-control-sm" data-spmActualQty="` + data[i].spmActualQty + `" value="` + data[i].spmActualQty + `">
                             <input type="hidden" id="uomStore` + i + `" name="uomStore" class="form-control form-control-sm" data-uomStore="` + data[i].uomStore + `" value="` + data[i].uomStore + `">
                             <td><input type="text" id="stName` + i + `" name="stName"
-                                    class="form-control form-control-sm"  value="` + data[i].stName + `"  required></td>
+                                    class="form-control form-control-sm"  value="` + data[i].stName + `"  required readonly></td>
                             <td><input type="number" min="1" id="actualQty` + i + `" name="actualQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="tRemarks` + i + `" name="tRemarks"
@@ -81,10 +81,10 @@ function addStockItems() {
             stocks: JSON.stringify(stocks)
         },
         dataType: 'json',
-        // complete: function() {
-        //     $("#formAdd").modal("hide");
-        //     location.reload();
-        //     },
+        complete: function() {
+            $("#formAdd").modal("hide");
+            location.reload();
+            },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);
