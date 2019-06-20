@@ -90,7 +90,7 @@
                                     <tbody style="font-size:13px">
                                 <tr data-id="${ol.olID}">
                                     <td>${ol.olQty}</td>
-                                    <td>${ol.mName}</td>
+                                    <td>${ol.olDesc}</td>
                                     <td><span class="fs-24">₱</span>${ol.olPrice}</td>
                                     <td>
                                         <input type="button" style="width:100%;padding:6%;background:blue;color:white;border:0;border-radius:5px"

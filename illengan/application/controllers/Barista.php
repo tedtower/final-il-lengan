@@ -133,10 +133,10 @@ class Barista extends CI_Controller{
         //BARISTA INVENTORY FUNCTIONS
         function viewinventory(){
             $this->load->view('barista/templates/navigation');
-            $this->load->view('barista/baristaInventory'); 
+            $this->load->view('barista/baristaConsumptions'); 
         }
         function inventoryJS(){
-            echo json_encode($this->baristamodel->get_inventory());
+            echo json_encode($this->baristamodel->get_inventory_consumption());
         }
         function getConsumptionItems(){
             $data=$this->baristamodel->getconsumptionItems();
@@ -200,7 +200,7 @@ class Barista extends CI_Controller{
         function getServed(){
             $data = array(
                 'slips' => $this->baristamodel->get_servedorderslips(),
-                'lists' => $this->baristamodel->get_olist(),
+                'lists' => $this->baristamodel->get_servedOlist(),
                 'addons' => $this->baristamodel->get_addons()
             );
             header('Content-Type: application/json');
@@ -209,7 +209,7 @@ class Barista extends CI_Controller{
         function getOrderslip(){
             $data = array(
                 'orderslips' => $this->baristamodel->get_orderslips(),
-                'orderlists' => $this->baristamodel->get_olist(),
+                'orderlists' => $this->baristamodel->get_pendingOlist(),
                 'addons' => $this->baristamodel->get_addons(),
 		 'tables' => $this->baristamodel->get_availableTables()
             );
