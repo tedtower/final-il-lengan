@@ -178,7 +178,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $result;
         }
         //---------------------------------CONSUMPTION------------------------------------
-        function get_inventory(){
+        function get_inventory_consumption(){
             $query = "SELECT * FROM `transactions` LEFT JOIN trans_items USING (tID) left JOIN transitems using (tiID) WHERE tType = 'consumption'";
             return $this->db->query($query)->result_array();
         }

@@ -59,7 +59,7 @@
 											style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 											Consumption Date</span>
 									</div>
-									<input type="date" name="consumption_date" id="consumption_date" class="form-control form-control-sm" required>
+									<input type="datetime-local" name="consumption_date" id="consumption_date" class="form-control form-control-sm" required>
 									<span class="text-danger"><?php echo form_error("consumption_date"); ?></span>
 								</div>
 								</div>
