@@ -198,6 +198,7 @@ $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
+$route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

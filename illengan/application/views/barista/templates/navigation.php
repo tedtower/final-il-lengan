@@ -38,6 +38,11 @@
       </ul>
       <ul class="navbar-nav ml-auto delius">
           <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url('barista/menu/spoilages')?>"><i class="fas fa-receipt"></i>Menu Spoilages</a>
+          </li>
+      </ul>
+      <ul class="navbar-nav ml-auto delius">
+          <li class="nav-item">
             <a class="nav-link" href="<?php echo base_url('login/logout')?>"><i class="fal fa-sign-out-alt"></i> Sign Out</a>
           </li>
       </ul>
