@@ -14,6 +14,9 @@
             <a class="nav-link" href="<?php echo base_url().'chef/inventory'?>"><i class="fal fa-boxes"></i> Inventory</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="<?php echo base_url().'chef/consumption'?>"><i class="fal fa-boxes"></i> Consumption</a>
+          </li>
+          <li class="nav-item">
             <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-trash"></i> Spoilages</a>
             <div  id="myDropdown" class="dropdown-content">
               <a href="<?php echo base_url().'chef/spoilages/menu'?>"><i class="fal fa-book"></i>  Menu Spoilages</a>
