@@ -198,10 +198,10 @@ class Customer extends CI_Controller {
 						"subtotal" => $list['subtotal'],
 						"remarks" => $list['remarks'],
 						"price" => $priceaName['price'],
-						"olDesc" => $priceaName['name']
+						"olDesc" => $priceaName['name'],
+						"addons" => $list['addons']
 					);
 					$olID = $this->customermodel->add_orderlist($list);
-					$this->customermodel->add_addon($olID, $orderlist);
 					$prefStocks = $this->customermodel->get_prefStocks($list['prID']);
 					if(isset($prefStocks[0])){
 						$prefStock = $prefStocks[0];
