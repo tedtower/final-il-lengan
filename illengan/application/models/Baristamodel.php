@@ -195,6 +195,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $result;
         }
         //---------------------------------CONSUMPTION------------------------------------
+        function getLastNum2(){
+            $query = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'consumption'";
+            return $result = $this->db->query($query)->result();
+            
+        }
         function get_inventory_consumption(){
             $query = "SELECT * FROM `transactions` LEFT JOIN trans_items USING (tID) left JOIN transitems using (tiID) WHERE tType = 'consumption'";
             return $this->db->query($query)->result_array();

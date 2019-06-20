@@ -354,7 +354,7 @@ class Barista extends CI_Controller{
     function destockitem(){
                 
                 if($this->checkIfLoggedIn()){
-                    $lastNumget = intval($this->baristamodel->getLastNum());
+                    $lastNumget = intval($this->baristamodel->getLastNum2());
                     $stocks = json_decode($this->input->post('stocks'), true);
                     echo json_encode($stocks, true);
                     $date_recorded = date("Y-m-d H:i:s");
