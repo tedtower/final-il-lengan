@@ -62,6 +62,7 @@ $route['admin/menu/datatables'] = "adminview/datatables_menu";
 $route['admin/transactions/add'] = "adminadd/addtransaction";
 $route['admin/purchaseorder/add'] = "adminadd/addPurchaseOrder";
 $route['admin/deliveryreceipt/add'] = "adminadd/addDeliveryReceipt";
+$route['admin/officialreceipt/add'] = "adminadd/addOfficialReceipt";
 $route['admin/inventory/addEdit'] = "adminadd/addstockitem";
 $route['admin/menu/add'] = "adminadd/addMenu";
 $route['admin/measurement/add'] = "adminadd/addUOM";
@@ -159,10 +160,12 @@ $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
 $route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
 $route['admin/getPosFromSupplier'] = "adminview/getPOItemsBySupplier";
+$route['admin/getDrsFromSupplier'] = "adminview/getDRItemsBySupplier";
 $route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 $route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
+$route['admin/getUOMs'] = "adminview/getUOMs";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES
@@ -204,6 +207,7 @@ $route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
 $route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
 $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 
+$route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

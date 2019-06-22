@@ -303,8 +303,8 @@
             $(".orderitemsTable> tbody").append(`${item.map(items =>{
               return `<tr>
                             <td></td>
-                            <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
                             <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
+                            <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
                             <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value=${items.olSubtotal} required readonly></td>
                             <td></td>
                             </tr>`
@@ -406,6 +406,8 @@ function getSelectedSlips() {
     for (var i = 0; i <= choices.length - 1; i++) {
         if (choices[i].checked) {
             value = choices[i].value;
+            
+
             $.ajax({
                 type: 'POST',
                 url: 'http://www.illengan.com/barista/slipJS',
