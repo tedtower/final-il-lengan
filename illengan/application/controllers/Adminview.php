@@ -19,11 +19,13 @@ class Adminview extends CI_Controller{
 function viewDashboard(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Dashboard";
-        $this->load->view('admin/templates/head', $data);
+        $data['sales'] = $this->adminmodel->getOSMonthByYear(date('Y'));
+        $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
+        $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
+        $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
-        $this->load->view('admin/adminDashboard');            
-        $this->load->view('admin/templates/scripts');
-        $this->load->view('admin/templates/footer');
+        $this->load->view('admin/adminDashboard');
+        $this->load->view('admin/templates/scripts');         
     }else{
         redirect('login');
     }

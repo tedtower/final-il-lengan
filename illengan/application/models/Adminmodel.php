@@ -11,6 +11,19 @@ class Adminmodel extends CI_Model{
 
 //GET FUNCTIONS-------------------------------------------------------------------
 
+function getOSMonthByYear($year){
+    $query = "SELECT SUM(olQty) salesCount, DATE_FORMAT(osDateTime,'%M') osLongMonth, DATE_FORMAT(osDateTime,'%m') osMonth FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
+    return $this->db->query($query,array($year))->result_array();
+}
+function getUnavailableKitchen(){
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'kitchen' AND stQty <= stMin";
+    return $this->db->query($query)->result_array();
+}
+function getUnavailableStockRoom(){
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
+    return $this->db->query($query)->result_array();
+}
+
 function get_transactions(){
     $query = "SELECT
                 tID AS id,
