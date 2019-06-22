@@ -793,6 +793,38 @@ function getStockItem(){
             ));
         }
     }
+    function getDRItemsBySupplier(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "inputErr" => false,
+                    'uom' => $this->adminmodel->get_uomForStoring(),
+                    "drs" => $this->adminmodel->get_drsBySupplier($id),
+                    "drItems" => $this->adminmodel->get_drItemsBySupplier($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getUOMs(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                'uom' => $this->adminmodel->get_uomForStoring()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
     function getTransitemsFormValues(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
