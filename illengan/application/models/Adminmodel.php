@@ -1516,8 +1516,8 @@ function add_aospoil($date_recorded,$addons,$account_id){
         }
     }
 
-    function update_transitem($trans, $ti) {
-
+    function update_paymentStatus($tiID, $status){
+        $this->db->query("UPDATE transitems SET payStatus = ? WHERE tiID = ?;",array($status, $tiID));
     }
     
     // Get Transactions (PO, DR, OR)
