@@ -149,7 +149,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formEdit" accept-charset="utf-8" action="<?= site_url('chef/spoilages/menu/edit')?>"> 
+                                            <form id="editSpoil" accept-charset="utf-8"> 
 												<div class="modal-body">
                                                     <!--Quantity-->
                                                     <div class="input-group mb-3">
@@ -166,7 +166,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="datetime" name="msDate" id="msDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("msDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
