@@ -198,6 +198,12 @@ $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
+//---------------------------------------------------------------
+$route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
+$route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
+$route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
+$route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
+
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

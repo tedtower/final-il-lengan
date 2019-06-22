@@ -1,10 +1,5 @@
 <body style="background: white">
 <div class="content">
-    <div class="container-fluid">
-    <br>
-        <div class="content" style="margin-left:250px;">
-            <div class="container-fluid">
-                <div class="card-content">
                     <!--Export button and Real Time Date & Time --> 
                     <div style="overflow:auto;">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
@@ -24,7 +19,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
+                                    <select class="spID form-control  border-left-0" name="spID" required>
                                         <option value="" selected>Choose</option>
                                     <?php if(isset($supplier)){
                                         foreach($supplier as $sup){?>
@@ -39,7 +34,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Receipt</span>
                                     </div>
-                                    <input type="text" class="form-control  border-left-0"
+                                    <input type="text" class="form-control border-left-0"
                                         name="receipt">
                                 </div>
                                 <!--Date-->
@@ -61,17 +56,17 @@
                                         Remarks</span>
                                 </div>
                                 <textarea type="text" name="remarks"
-                                    class="form-control form-control-sm  border-left-0"
+                                    class="form-control   border-left-0"
                                     rows="1"></textarea>
                             </div>
-                            <a id="addNewBtn" class="btn btn-primary btn-sm"
-                                style="margin:0;color:blue;font-weight:600;">New Item</a>
-                            <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                            <a id="addNewBtn" class="btn btn-sm"
+                                style="margin:0;color:white;font-weight:600;background:#C2C3D3">New Item</a>
+                            <a id="addPOBtn" class="btn btn-sm" data-toggle="modal"
                                 data-target="#poBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;">PO Item</a>
+                                style="margin:0;color:white;font-weight:600;background:#C2C3D3">PO Item</a>
                             <a id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#merchandiseBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;">Add Merchandise</a>
+                                style="margin:0;color:white;font-weight:600;background:#C2C3D3;padding-right:120px">Add Merchandise</a>
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
@@ -185,10 +180,6 @@
                     </div>
                     <!--End of Merchandise Brochure Modal"-->
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 <?php include_once('templates/scripts.php') ?>
 <script>
     var stocks = [];
@@ -219,22 +210,22 @@
                 <div style="float:left;width:95%;overflow:auto;">
                     <div class="find input-group mb-1">
                         <input type="text" name="itemName[]"
-                            class="form-control form-control-sm"
+                            class="form-control "
                             value="" style="width:24%">
                         <input type="number" name="itemQty[]"
-                            class="tiQty form-control form-control-sm"
+                            class="tiQty form-control "
                             placeholder="Quantity" onchange="setInputValues()" required>
                         <select name="itemUnit[]"
-                            class="itemUnit form-control form-control-sm">
+                            class="itemUnit form-control ">
                             <option value="" selected="selected">Unit</option>
                         </select>
                         <input type="number" name="price[]"
-                            class="tiPrice form-control form-control-sm"
+                            class="tiPrice form-control "
                             value="" placeholder="Price" onchange="setInputValues()" required>
                         <input type="number" name="discount[]"
-                            class="tidiscount form-control form-control-sm" onchange="setInputValues()" placeholder="Discount" >
+                            class="tidiscount form-control " onchange="setInputValues()" placeholder="Discount" >
                         <input type="number" name="itemSubtotal[]"
-                            class="tiSubtotal form-control form-control-sm"
+                            class="tiSubtotal form-control "
                             placeholder="Subtotal" readonly>
                     </div>
 
@@ -243,7 +234,7 @@
                         class="form-control border-right-0"
                         placeholder="Stock" style="width:190px">
                         <select name="stID[]"
-                            class="stock form-control form-control-sm">
+                            class="stock form-control ">
                             <option value="" selected="selected">Stock Item
                             </option>
                         </select>
@@ -387,29 +378,29 @@ function getSelectedStocks() {
                     <div style="float:left;width:95%;overflow:auto;">
                         <div class="find input-group mb-1">
                             <input type="text" name="itemName[]"
-                                class="form-control form-control-sm"
+                                class="form-control "
                                 value="${st[0].stName} ${st[0].stSize}" style="width:24%" readonly>
                             <input type="number" name="itemQty[]"
-                                class="tiQty form-control form-control-sm"
+                                class="tiQty form-control "
                                 placeholder="Quantity" value="1" min="1" onchange="setInputValues()" required>
                             <select name="itemUnit[]"
-                                class="itemUnit form-control form-control-sm" readonly>
+                                class="itemUnit form-control " readonly>
                                 <option value="" selected="selected">Unit</option>
                             </select>
                             <input type="number" name="price[]"
-                                class="tiPrice form-control form-control-sm"
+                                class="tiPrice form-control "
                                 value="${spm[0].spmPrice}" readonly required>
                             <input type="number" name="discount[]"
-                                class="tidiscount form-control form-control-sm " onchange="setInputValues()"
+                                class="tidiscount form-control  " onchange="setInputValues()"
                                 placeholder="Discount">
                             <input type="number" name="itemSubtotal[]"
-                                class="tiSubtotal form-control form-control-sm"
+                                class="tiSubtotal form-control "
                                 placeholder="Subtotal" readonly>
                         </div>
 
                         <div class="input-group">
                             <select name="stID[]"
-                                class="stock form-control form-control-sm">
+                                class="stock form-control ">
                                 <option value="" selected="selected">Stock Item
                                 </option>
                             </select>
@@ -461,29 +452,29 @@ function getSelectedPOs() {
                 <div style="float:left;width:95%;overflow:auto;">
                     <div class="find input-group mb-1">
                         <input type="text" name="itemName[]"
-                            class="form-control form-control-sm"
+                            class="form-control "
                             value="${poi[0].NAME}" style="width:24%" readonly>
                         <input type="number" name="itemQty[]"
-                            class="tiQty form-control form-control-sm"
+                            class="tiQty form-control "
                             placeholder="Quantity" value="${poi[0].qty}" onchange="setInputValues()" required>
                         <select name="itemUnit[]"
-                            class="itemUnit form-control form-control-sm">
+                            class="itemUnit form-control ">
                             <option value="" selected="selected">Unit</option>
                         </select>
                         <input type="number" name="price[]"
-                            class="tiPrice form-control form-control-sm"
+                            class="tiPrice form-control "
                             value="${poi[0].price}" readonly required>
                         <input type="number" name="discount[]"
-                            class="tidiscount form-control form-control-sm " onchange="setInputValues()"
+                            class="tidiscount form-control  " onchange="setInputValues()"
                             placeholder="Discount">
                         <input type="number" name="itemSubtotal[]"
-                            class="tiSubtotal form-control form-control-sm"
+                            class="tiSubtotal form-control "
                             placeholder="Subtotal" readonly>
                     </div>
 
                     <div class="input-group">
                         <select name="stID[]"
-                            class="stock form-control form-control-sm">
+                            class="stock form-control ">
                             <option value="" selected="selected">Stock Item
                             </option>
                         </select>
