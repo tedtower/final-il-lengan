@@ -330,10 +330,10 @@
             osArr: osIDarr
           },
           dataType: "json",
-          // complete: function() {
-          //     $("#Modal_Pay").modal("hide");
-          //     location.reload();
-          // },
+          complete: function() {
+              $("#Modal_Pay").modal("hide");
+              location.reload();
+          },
           error: function (error) {
             console.log(error);
           }
@@ -354,10 +354,10 @@
                       osID: osID,
                   },
                   dataType: "json",
-                  // complete: function() {
-                  //     $("#Modal_Pay2").modal("hide");
-                  //     location.reload();
-                  // },
+                  complete: function() {
+                      $("#Modal_Pay2").modal("hide");
+                      location.reload();
+                  },
                   error: function(error) {
                       console.log(error);
                   }

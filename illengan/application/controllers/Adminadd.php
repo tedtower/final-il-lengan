@@ -129,9 +129,9 @@ function addspoilagesaddons(){
         $date_recorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
         $account_id = $_SESSION["user_id"];
-
+        $user= $_SESSION["user_name"];
         echo json_encode($addons, true);
-        $this->adminmodel->add_aospoil($date_recorded,$addons,$account_id);
+        $this->adminmodel->add_aospoil($date_recorded,$addons,$account_id,$user);
        
     }else{
         redirect('login');
@@ -157,9 +157,9 @@ function addspoilagesstock(){
         $date_recorded = date("Y-m-d H:i:s");
         $stocks = json_decode($this->input->post('stocks'), true);
         $account_id = $_SESSION["user_id"];
-
+        $user= $_SESSION["user_name"];
         $lastNum = $lastNumget + 1;
-        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNumget);
+        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
     }else{
     redirect('login');
     }
@@ -177,13 +177,14 @@ function addspoilagesstock(){
             $aType = $this->input->post("aType");
             $date_recorded = date("Y-m-d H:i:s");
             $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
             $data = array(
                 'aPassword'=>$password,
                 'aUsername'=>$username,
                 'aType'=>$aType
             );
             $this->adminmodel->add_accounts($data);
-            $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin added account $username .", "add", NULL);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added account $username .", "add", NULL);
 
             redirect('admin/accounts');
     }

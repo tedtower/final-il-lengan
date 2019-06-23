@@ -70,35 +70,39 @@ class Adminupdate extends CI_Controller{
     
     function editStockSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        
-            // $actualQty = $this->input->post('stQtyUpdate');
-            $tDate = date('Y-m-d', strtotime($tDate));
-            $stID = $this->input->post('stID');
-            $tID = $this->input->post('tID');
-            $date_recorded=date("Y-m-d H:i:s");
-            $account_id = $_SESSION["user_id"];
-            $tRemarks = $this->input->post(tRemarks);
-            $slType = "spoilage";
-            
-            $ssQtyUpdate = $this->input->post('ssQtyUpdate');
-            $curSsQty = $this->input->post('curSsQty');
-            $updateQtyh = $ssQtyUpdate - $curSsQty; 
-            $updateQtyl = $curSsQty - $ssQtyUpdate;
 
-            if ($curSsQty > $ssQtyUpdate){
-                $this->adminmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-                $this->adminmodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyl, $ssRemarks);
-                $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a stockitem spoilage.", "update", $ssRemarks);
-            }
-            if ($curSsQty < $ssQtyUpdate){
-                $this->adminmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-                $this->adminmodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyh, $ssRemarks);
-                $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a stockitem spoilage.", "update", $ssRemarks);
+            $stID = $this->input->post('stID');
+            $tiID = $this->input->post('tiID');
+            $tID = $this->input->post('tID');
+			$stQty = $this->input->post('stQty');
+			$actualQtyUpdate= $this->input->post('actualQtyUpdate');
+            $tDate = $this->input->post('tDate');
+            $tRemarks = $this->input->post('tRemarks');
+            $slType = "spoilage";
+            $actualQty = $this->input->post('actualQty');
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
+            $account_id= $_SESSION["user_id"];
+
+            if($actualQty > $actualQtyUpdate){
+                $updateQtyl = ($actualQty - $actualQtyUpdate) + $stQty;
+                $this->adminmodel->edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID, $stID, $updateQtyl);
+                $this->adminmodel->update_stock($stID, $updateQtyl);
+                $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $tRemarks);
+                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tRemarks);
+                                
+            }else if($actualQty < $actualQtyUpdate){
+                    $updateQtyh = $stQty - ($actualQtyUpdate - $actualQty); 
+                    $this->adminmodel->edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID, $stID, $updateQtyh);
+                    $this->adminmodel->update_stock($stID, $updateQtyh);
+                    $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $tRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tRemarks);
 
             }else{
-                $this->adminmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-                $this->adminmodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks);
-                $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a stockitem spoilage.", "update", $ssRemarks);
+                    $this->adminmodel->edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID, $stID, $stQty);
+                    $this->adminmodel->update_stock($stID, $stQty);
+                    $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $tRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tRemarks);
             }
            
         }else{
@@ -141,7 +145,7 @@ class Adminupdate extends CI_Controller{
         $this->load->library('form_validation');
        
             $aID = $this->input->post('aID');
-            $username = $this->input->post('username');
+            $username = $this->input->post('aUsername');
             $new_password = password_hash($this->input->post("new_password"),PASSWORD_DEFAULT);
             $date_recorded = date("Y-m-d H:i:s");
             $account_id = $_SESSION["user_id"];
