@@ -550,6 +550,95 @@ class Barista extends CI_Controller{
         }
     }
 
+    function addDeliveryReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            $total = 0;
+            $dateTime = date("Y-m-d H:i:s");
+            $dateOfTrans = $this->input->post('date');
+            $drItems = json_decode($this->input->post('transitems'),true);
+            $dr = array(
+                "supplier" => $this->input->post('supplier'),
+                "supplierName" => NULL,
+                "receipt" => $this->input->post('receipt'),
+                "date" => $dateOfTrans,
+                "dateRecorded" => $dateTime,
+                "type" => "delivery receipt",
+                "total" => $this->input->post('total'),
+                "remarks" => $this->input->post('remarks')
+            );
+            $drID = $this->baristamodel->add_receiptTransaction($dr);
+            if(count($drItems) > 0){
+                foreach($drItems as $drItem){
+                    $tiID = isset($drItem['tiID']) ? $drItem['tiID'] : NULL;
+                    $qty = $drItem['qty'];
+                    $status = "complete";
+                    $item = $this->baristamodel->get_poItem($tiID);
+                    if(!isset($item[0])){
+                        $tiID = NULL;
+                    }else if($item[0]['tiQty'] > $drItem['qty']){
+                        $status = "partial";
+                    }
+                    $dr = array(
+                        "uom" => $drItem['uomID'],
+                        "stock" => $drItem['stID'],
+                        "name" => $drItem['name'],
+                        "price" => $drItem['price'],
+                        "discount" => $drItem['discount'],
+                        "delivery" => $status,
+                        "payment" => NULL,
+                        "return" => NULL,
+                        "tiQty" => $drItem['qty'],
+                        "perUnit" => $drItem['actualQty'],
+                        "actual" => $drItem['qty'] * $drItem['actualQty'],
+                        "subtotal" => ($drItem['price'] - $drItem['discount']) * $drItem['qty'],
+                        "tiID" => $tiID
+                    );
+                    if($dr['tiID'] == NULL){
+                        $dr['tiID'] = $this->baristamodel->add_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
+                        $this->baristamodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $log = array(
+                            "stock" => $dr['stock'],
+                            "qty" => $dr['actual'],
+                            "remain" => $this->baristamodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $dateOfTrans,
+                            "dateRecorded" => $dateTime,
+                            "remarks" => "delivery"
+                        );
+                        $this->baristamodel->add_restockLog($drID, $log);
+                        $this->baristamodel->update_stockQty($dr['stock'], $dr['actual']);
+                    }else{
+                        $this->baristamodel->edit_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
+                        $this->baristamodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $log = array(
+                            "stock" => $dr['stock'],
+                            "qty" => $dr['actual'],
+                            "remain" => $this->baristamodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $dateOfTrans,
+                            "dateRecorded" => $dateTime,
+                            "remarks" => "delivery"
+                        );
+                        $this->baristamodel->add_restockLog($drID, $log);
+                        $this->baristamodel->update_stockQty($dr['stock'], $dr['actual']);
+                    }
+                }
+                $this->baristamodel->edit_receiptTransactionTotal($drID, $total);
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
 
 }
 ?>

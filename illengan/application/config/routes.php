@@ -205,13 +205,16 @@ $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
 $route['barista/getSupplierMerchandise'] = "barista/getSuppMerchForBrochure";
 $route['barista/getPosFromSupplier'] = "barista/getPOItemsBySupplier";
-//---------------------------------------------------------------
+//-----------------------------------------------------------------------------
 $route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
 $route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
 $route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
 $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
-
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
+//-----------------------------------------------------------------------------
+$route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
+
+
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
