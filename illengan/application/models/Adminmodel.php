@@ -1612,17 +1612,18 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
         , $item['payment'], $item['return'], $item['tiID']));
     }
-    function add_orReceiptItemsForPO($item){
+    function edit_poReceiptItemOR($item){
         $query = "UPDATE
                 transitems
             SET
                 tiPrice = ?,
                 tiDiscount = ?,
                 drStatus = ?,
-                payStatus = ?,
-                rStatus = ?
+                payStatus = ?
             WHERE
                 tiID = ?;";
+        return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
+        , $item['payment'], $item['tiID']));
     }
 
     function add_receiptTransactionItemsQty($tID, $item){
