@@ -366,7 +366,7 @@ class Barista extends CI_Controller{
                 redirect('login');
                 }
                 
-            }
+    }
     //STOCK SPOILAGES------------------------------------------------
     function viewSpoilagesStockJs(){
         if($this->checkIfLoggedIn()){
@@ -442,12 +442,20 @@ class Barista extends CI_Controller{
                 $user= $_SESSION["user_name"];
                 $lastNum = $lastNumget + 1;
                 print_r($lastNum);
+                print_r($lastNumget);
                 $this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
                 
             }else{
             redirect('login');
             }
         }
+        function deleteStockSpoil(){
+            $tID = $this->input->post('tID');
+            $delRemarks = $this->input->post('delRemarks');
+
+            $this->baristamodel->deleteStockspoil($tID);
+        }
+        
     function viewDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $this->load->view('barista/templates/head');
