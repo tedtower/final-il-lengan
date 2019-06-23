@@ -1264,10 +1264,6 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemarks));
     }
     function add_restockLog($tID, $log){
-        echo json_encode(array(
-            "tID" => $tID,
-            "log" => $log
-        ));
         $query = "INSERT INTO stocklog(
             stID,
             tID,
@@ -1314,17 +1310,38 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
             return $this->db->query($query, array($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks));
     }   
 
-    function add_consumption($stID, $dQty, $msDate, $msRemarks, $account_id) {
-        $maxtNum = intval($this->set_tNum());
-        $tNum = $maxtNum + 1;
-        $dateRecorded = date("Y-m-d H:i:s");
-        $query = "INSERT INTO transactions (tID, tNum, tDate, dateRecorded, tType, tRemarks, isArchived) 
-        values (NULL, ?,?,?,?,?,?)";
-        if($this->db->query($query, array($tNum, $msDate, $dateRecorded , "consumption", $msRemarks, 0))) {
-             $this->add_constransitems($this->db->insert_id(), $stID, $dQty, $msDate, $msRemarks, $dateRecorded,$account_id);
-        }
+    function add_consumption($con) {
+        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
+            VALUES(NULL, ?, ?, ?, ?, ?)";
+        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
+            WHERE tType = ?",array($transaction['type']))->result_array()[0]['lastnum'];
+        $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
+        return $this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']));
+    }
+    function edit_consumption($con){
+        $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
+        return $his->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
+    }
+
+    function add_consumedItem($st){
+        $query="INSERT INTO transitems(tiID, stID) VALUES(NULL, ?)";
+        return $this->db->query($query,array($st));
+    }
+
+    function add_consumptionQty($conID,$con){
+        $query = "INSERT INTO trans_items(tID, tiID, actualQty) VALUES(?, ?, ?)";
+        return $this->db->query($query,array($conID, $con['id'], $con['qty']));
+    }
+    function edit_consumptionQty($conID, $con){
+        $query = "UPDATE trans_items SET actualQty = ? WHERE tiID = ? AND tID = ?";
+        return $this->db->query($query,array($con['qty'], $con['id'], $conID));
     }
     
+    function get_consumedQty($conID, $itemID){
+        $query = "SELECT actualQty AS qty FROM trans_items WHERE tID = ? AND tiID = ?;";
+        return $this->db->query($query, array($conID, $itemID))->result_array();
+    }
+
     function add_constransitems($tID, $stID, $dQty, $msDate, $msRemarks, $dateRecorded, $account_id) {
         $query = "INSERT INTO transitems (tiID, stID) VALUES (NULL,?)";
         if($this->db->query($query, array($stID))) {
@@ -1333,15 +1350,34 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         }
     }
 
+    function add_consumptionLog($id, $log){
+        $query = "INSERT INTO stocklog(
+                stID,
+                tID,
+                slType,
+                slQty,
+                slRemainingQty,
+                slDateTime,
+                dateRecorded,
+                slRemarks
+            )
+            VALUES(?,?,?,?,?,?,?,?);";
+        $this->db->query($query,array($log['stock'],$id, $log['type'], $log['qty'], 
+            $log['remain'], $log['date'], $log['dateRecorded'], log['remarks']));
+    }
+
+    function deduct_stockQty($st,$qty){
+        $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?;";
+        $this->db->query($query,array($qty, $st));
+    }
+
     function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $tRemarks, $account_id) {
         $query = "INSERT INTO trans_items (tID, tiID, actualQty) VALUES (?,?,?)";
         if($this->db->query($query, array($tID, $tiID, $dQty))) {
             $this->add_stocklog($stID, $tID, "consumption", $tDate, $dateRecorded, $dQty, $tRemarks);
             $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem consumption.", "add", $tRemarks);
-        }
-
-       
-        } 
+        }  
+    } 
 
 
     // ------ Sales Functions ------

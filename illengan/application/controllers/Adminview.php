@@ -89,7 +89,9 @@ function viewDRFormEdit(){
         $head['title'] = "Inventory - Edit DR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/deliveryReceiptEdit');
+        $data['stocks'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $this->load->view('admin/deliveryReceiptEdit',$data);
     }else{
         redirect('login');
     }
@@ -112,6 +114,8 @@ function viewORFormEdit(){
         $head['title'] = "Inventory - Edit OR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['stocks'] = $this->adminmodel->get_stockItemNames();
         $this->load->view('admin/officialReceiptEdit');
     }else{
         redirect('login');
