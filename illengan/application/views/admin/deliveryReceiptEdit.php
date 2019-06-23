@@ -13,8 +13,8 @@
                         <h6 style="font-size: 16px;margin-left:15px">Edit Delivery Receipt</h6>
                     </div>
                     <!--Card--> 
-                    <form accept-charset="utf-8">
-                        <input type="text" name="tID" hidden="hidden">
+                    <form id="drForm" accept-charset="utf-8" action="<?= site_url('admin/deliveryreceipt/edit')?>">
+                        <input type="text" name="id" value="<?= $dr[0]['id']?>" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
                                 <!--Source Name-->
@@ -24,9 +24,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" readonly="readonly">
-                                        <option value="" selected>Choose</option>
-                                    </select>
+                                    <input type="text" name="supplier" class="form-control" data-id="<?= $dr[0]['sp']?>" value="<?= $dr[0]['spName']?>">
                                 </div>
                                 <!--Invoice Type-->
                                 <div class="input-group mb-3 col">
@@ -36,7 +34,7 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="tDate">
+                                        name="tDate" value="<?= $dr[0]['date']?>">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -46,7 +44,7 @@
                                             style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                             Receipt</span>
                                     </div>
-                                    <input type="text" name="receipt"
+                                    <input type="text" name="receipt" value="<?= $dr[0]['receipt']?>"
                                         class="form-control form-control-sm  border-left-0">
                                 </div>
                                 <!--Remarks-->
@@ -58,17 +56,17 @@
                                     </div>
                                     <textarea type="text" name="tRemarks"
                                         class="form-control form-control-sm  border-left-0"
-                                        rows="1"></textarea>
+                                        rows="1"><?= $dr[0]['remarks']?></textarea>
                                 </div>
                             </div>
-                            <a id="addNBtn" class="btn btn-primary btn-sm"
+                            <a id="addNewBtn" class="btn btn-primary btn-sm"
                                 style="margin:0;color:blue;font-weight:600;">New Item</a>
-                            <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
-                                data-target="#poBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;">PO Item</a>
                             <a id="addMBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#merchandiseBrochure"  data-original-title
                                 style="margin:0;color:blue;font-weight:600;">Merchandise Item</a>
+                            <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                                data-target="#poBrochure"  data-original-title
+                                style="margin:0;color:blue;font-weight:600;">PO Item</a>
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
@@ -197,12 +195,13 @@
 </div>
 <script src="<?= framework_url().'mdb/js/jquery-3.3.1.min.js';?>"></script>
 <script src="<?= framework_url().'bootstrap-native/bootstrap.bundle.min.js'?>"></script>
-<!--  Charts Plugin -->
-<script src="assets/js/admin/chartist.min.js"></script>
-<!--  Notifications Plugin    -->
-<script src="assets/js/admin/bootstrap-notify.js"></script>
-<!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
-<script src="assets/js/admin/light-bootstrap-dashboard.js?v=1.4.0"></script>
-<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
-<script src="assets/js/admin/demo.js"></script>
+<script>
+$(function(){
+    var supplier = $("#drForm input[name='supplier']").attr("data-id");
+    var id = $("#drForm input[name='id']").val();
+    $.ajax({
+        
+    });
+});
+</script>
 </body>
