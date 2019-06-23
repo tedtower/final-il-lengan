@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html>
 <body style="background:white">
 <div class="content">
 	<div class="container-fluid">
@@ -8,7 +6,7 @@
 			<!-- Real Time Date & Time -->
 			<?php echo date("M j, Y -l"); ?>
 		</p>
-		<!-- <div div class="content" style="margin-left:100px;"> -->
+		
 			<div class="container-fluid">
 				<div class="content">
 					<div class="container-fluid">
@@ -16,12 +14,12 @@
 						<div class="card-content">
 
 							<!--Add Stock Spoilage BUTTON-->
-							<div class="row">
-    <div class="col-md-4 col-lg-2">
+							<div class="col-md-4 col-lg-2">
 							<button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br>
 							<!--eND Add Stock Spoilage BUTTON-->
 							</div>
   </div>
+							<!--eND Add Stock Spoilage BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
@@ -97,7 +95,7 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Select Variance</h5>
+                                            <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -162,7 +160,7 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formEdit" accept-charset="utf-8" > 
+                                            <form id="formEdit"  action="<?= site_url('barista/stock/spoilage/edit')?>" accept-charset="utf-8" > 
 												<div class="modal-body">
                                                     <!-- Quantity-->
                                                     <div class="input-group mb-3">
@@ -170,8 +168,8 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Quantity</span>
                                                         </div>
-                                                        <input type="number" min="1" name="ssQtyUpdate" id="ssQtyUpdate" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("ssQtyUpdate"); ?></span>
+                                                        <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("actualQtyUpdate"); ?></span>
                                                     </div>
                                                     <!--Date Spoiled-->
 													<div class="input-group mb-3">
@@ -192,8 +190,9 @@
                                                     </div>
 													<input name="stID" id="stID" hidden="hidden">
 													<input name="tiID" id="tiID" hidden="hidden">
+													<input name="tID" id="tID" hidden="hidden">
 													<input name="stQty" id="stQty" hidden="hidden">
-													<input name="dateRecorded" id="dateRecorded" hidden="hidden">
+													<input name="actualQty" id="actualQty" hidden="hidden">
                                                     <!--Footer-->
                                                     <div class="modal-footer">
 													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -210,8 +209,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		<!-- </div> -->
+		</div>
 	</div>
 </div>
 <!--End Table Content-->
@@ -272,7 +270,7 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-dateRecorded="${table.actualQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
+			<tr class="spoilagesTabletr" data-actualQty ="${table.actualQty}" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-tID="${table.tID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/barista/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
 				<td>${table.tID}</td>
 				<td>${table.tiName}</td>
@@ -310,7 +308,7 @@
                 </td>
             </tr>
             `;
-
+			
 			
 			$(".updateBtn").last().on('click', function () {
 				
@@ -319,11 +317,18 @@
 				$("#editSpoil").find("input[name='tiID']").val($(this).closest("tr").attr(
 					"data-tiID")); 
 				$("#editSpoil").find("input[name='tDate']").val($(this).closest("tr").attr(
-					"data-tDate"));
-				$("#editSpoil").find("input[name='ssQtyUpdate']").val($(this).closest("tr").attr(
+					"data-tDate")); 
+				$("#editSpoil").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
 					"data-actualQty"));
+				$("#editSpoil").find("input[name='actualQty']").val($(this).closest("tr").attr(
+					"data-actualQty"));	
 				$("#editSpoil").find("input[name='tRemarks']").val($(this).closest("tr").attr(
 					"data-tRemarks"));
+				$("#editSpoil").find("input[name='stID']").val($(this).closest("tr").attr(
+					"data-stID"));
+				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
+					"data-stQty"));
+				
             });
             $(".item_delete").last().on('click', function () {
                 $("#deleteSpoilageId").text(
@@ -352,20 +357,30 @@
 		event.preventDefault();
 		var tID = $(this).find("input[name='tID']").val();
 		var tiID = $(this).find("input[name='tiID']").val(); 
-		var iniActQty = $(this).find("input[name='actualQty']").val(); 
-        var ssQtyUpdate = $(this).find("input[name='ssQtyUpdate']").val();
+        var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
         var tDate = $(this).find("input[name='tDate']").val();
         var tRemarks = $(this).find("input[name='tRemarks']").val();
-		console.log()
+		var stQty = $(this).find("input[name='stQty']").val();
+		var stID = $(this).find("input[name='stID']").val();
+		var actualQty = $(this).find("input[name='actualQty']").val();
+		console.log('tId '+ tID);
+		console.log('tiId  '+tiID);
+		console.log(' actualQtyUpdate '+actualQtyUpdate);
+		console.log(' tDate'+tDate);
+		console.log(' tRemarks'+tRemarks);
+		console.log(' actualQty'+actualQty);
+		console.log(' stQty'+stQty);
+		console.log(' stID'+stID);
         $.ajax({
             url: "<?= site_url("barista/stock/spoilage/edit")?>",
             method: "post",
             data: {
+				actualQty : actualQty,
 				stID: stID,
 				tiID: tiID,
+				tID: tID,
 				stQty: stQty,
-				stQtyUpdate: stQtyUpdate,
-				dateRecorded: dateRecorded,
+				actualQtyUpdate: actualQtyUpdate,
                 tDate: tDate,
                 tRemarks: tRemarks                                                                                                                                                                                                                               
             },
@@ -379,9 +394,8 @@
 				location.reload();
             },
             error: function(error) {
-                console.log(error);
+				console.log(error);
             }
-            
         });
     });
 });

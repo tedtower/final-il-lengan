@@ -27,8 +27,8 @@
           <li class="nav-item dropdown mr-2">
               <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-trash"></i> Spoilage</a>
               <div class="dropdown-menu dropdown-default elegant-color c-focus">
-                  <a class="dropdown-item" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
-                  <a class="dropdown-item" href=""><i class="fal fa-box-open"></i> Stock Spoilage</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/menu/spoilages')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fal fa-box-open"></i> Stock Spoilage</a>
               </div>
           </li>
         </ul>

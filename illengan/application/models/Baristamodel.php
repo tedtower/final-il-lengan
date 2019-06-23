@@ -250,7 +250,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
         //Stock Spoilage---------------------------------------------------------------------------------------------------
         function get_spoilagesstock(){
-            $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID)";
+            $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID) inner join stockitems using (stID) WHERE tType = 'spoilage'";
             return  $this->db->query($query)->result_array();
         }
         function get_stocks(){
@@ -287,44 +287,51 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             stID";
             return $this->db->query($query)->result_array();
         }
-        //-----------------------------------------STOCK TRANSACTIONS------------------------------------
+        function edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID){
+            $query = "UPDATE `transactions` SET `tDate`= ?,`dateRecorded` = ?, `tRemarks`= ? where tID = ?";
+            if($this->db->query($query,array($tDate,$date_recorded,$tRemarks,$tID))){
+                $query = "UPDATE `trans_items` SET `actualQty`= ? where tID = ? AND tiID = ?";
+                $this->db->query($query,array($actualQtyUpdate ,$tID, $tiID));
+            }else{
+                return false;
+            }
+        }
+        function update_stock($stID, $stQty) {
+            $query = "UPDATE `stockitems` SET `stQty` = ? WHERE `stID` = ?;";
+            $this->db->query($query, array($stQty, $stID));
+        }
         function getLastNum(){
             $query = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'spoilage'";
             return $result = $this->db->query($query)->result();
             
         }
-        function add_stockspoil($date_recorded,$stocks,$account_id,$lastNum){
+        function add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user){
             if(count($stocks) > 0){
                 for($in = 0; $in < count($stocks) ; $in++){
                     $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
-                    $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$account_id,$stocks);
+                    $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$account_id,$stocks,$user);
                 }
             }
         }
-        function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$account_id,$stocks){
+        function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$account_id,$stocks,$user){
             $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
            
             if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
-                $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$remarks);
+                $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks,$user);
                 return true;
              }
         }
-        function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks){
-            if($this->checkIfLoggedIn()){
+        function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks,$user){
             $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
-                if($this->db->query($query,array($uomID, $stID, $stName))){
-                    $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
-                    for($in = 0; $in < count($stocks)-1 ; $in++){
-                    $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
-                    $this->add_actlog($account_id, $dateRecorded, "Admin added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
-                    }
-                }
-            }else{
-                redirect('login');
-            } 
-	    }
-	
-        function add_spoiltrans_items($tiID, $tID, $actualQty){
+             if($this->db->query($query,array($uomID, $stID, $stName))){
+                $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
+                for($in = 0; $in < count($stocks)-1 ; $in++){
+                $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
+                $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
+            }
+             }
+        }
+        function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
             $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
             return  $this->db->query($query,array($tID, $tiID, $actualQty));
         }
@@ -337,6 +344,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query,array($curQty,$tNum,$stID));
            
         }
+        //-----------------------------------------STOCK TRANSACTIONS------------------------------------
+        // function getLastNum(){
+        //     $query = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'spoilage'";
+        //     return $result = $this->db->query($query)->result();
+            
+        // }
+        // function add_stockspoil($date_recorded,$stocks,$account_id,$lastNum){
+        //     if(count($stocks) > 0){
+        //         for($in = 0; $in < count($stocks) ; $in++){
+        //             $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
+        //             $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$account_id,$stocks);
+        //         }
+        //     }
+        // }
+        // function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$account_id,$stocks){
+        //     $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
+           
+        //     if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
+        //         $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$remarks);
+        //         return true;
+        //      }
+        // }
+        // function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks){
+        //     if($this->checkIfLoggedIn()){
+        //     $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
+        //         if($this->db->query($query,array($uomID, $stID, $stName))){
+        //             $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
+        //             for($in = 0; $in < count($stocks)-1 ; $in++){
+        //             $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
+        //             $this->add_actlog($account_id, $dateRecorded, "Admin added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
+        //             }
+        //         }
+        //     }else{
+        //         redirect('login');
+        //     } 
+	    // }
+	
+        // function add_spoiltrans_items($tiID, $tID, $actualQty){
+        //     $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
+        //     return  $this->db->query($query,array($tID, $tiID, $actualQty));
+        // }
+        
         function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks){
             $query = "INSERT INTO `stocklog`(
                     `slID`,
