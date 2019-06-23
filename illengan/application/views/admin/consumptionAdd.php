@@ -15,7 +15,7 @@
                         <div class="card-header">
                             <h6 style="font-size:15px;">Add Consumption</h6>
                         </div>
-                        <form id="drForm" action="<?= site_url("admin/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                        <form id="conForm" action="<?= site_url("admin/consumption/add")?>" accept-charset="utf-8" class="form">
                             <div class="card-body">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
@@ -23,7 +23,7 @@
                                             style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                             Date Consumed</span>
                                     </div>
-                                    <input type="date" class="form-control" name="">
+                                    <input type="date" class="form-control" name="date">
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
@@ -46,13 +46,13 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td><input type="text" class="form-control " name="stName"></td>
-                                                <td><input type="number" class="form-control" name="cQty"></td>
+                                                <td><input type="text" class="form-control " name="stock"></td>
+                                                <td><input type="number" class="form-control" name="qty"></td>
                                                 <td><textarea type="text" class="form-control" name="remarks" rows="1"></textarea></td>
                                             </tr>
                                             <tr>
-                                                <td><input type="text" class="form-control " name="stName"></td>
-                                                <td><input type="number" class="form-control" name="cQty"></td>
+                                                <td><input type="text" class="form-control " name="stock"></td>
+                                                <td><input type="number" class="form-control" name="qty"></td>
                                                 <td><textarea type="text" class="form-control" name="remarks" rows="1"></textarea></td>
                                             </tr>
                                         </tbody>
@@ -82,6 +82,17 @@
                         <div class="card-body">
                             <form id="drForm" action="<?= site_url("admin/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
                                 <!--checkboxes-->
+                                <?php if(!empty($stocks)){
+                                    foreach($stocks as $stock){
+                                ?>
+
+                                <?php
+                                    }
+                                }else{
+                                ?>
+                                    <p>No stock items recorded!</p>
+                                <?php
+                                }?>
                                 <div style="width:96%"><input type="checkbox" class="mr-2" value="">Sample data 2 adata fjjfujj dg100</div>
                                 <div style="width:96%"><input type="checkbox" class="mr-2" value="">Sample data 2</div>
                                 <div style="width:96%"><input type="checkbox" class="mr-2" value="">Sample data 2</div>
@@ -94,11 +105,12 @@
             </div>
         </div>
     </div>
-</div>
-
-
-                    
+</div> 
+<?php include_once('template/scripts.php');?>             
 <script>
+$(function(){
+    
+});
 </script>
 </body>
 </html>
