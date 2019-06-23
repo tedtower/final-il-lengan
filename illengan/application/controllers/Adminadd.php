@@ -608,9 +608,10 @@ function addspoilagesstock(){
         }
     }
 
-    function add_consumption(){
+    function addConsumption(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $items = json_decode($this->input->post('items'),true);
+            echo json_encode($items);
             if(count($items)> 0){
                 $currentDate = date("Y-m-d H:i:s");
                 $transDate = $this->input->post('date');
@@ -628,7 +629,7 @@ function addspoilagesstock(){
                         "id" => $itemID,
                         "qty" => $item['qty'],
                         "remarks" => $item['remarks'],
-                        "type" => "consumption",
+                        "type" => "consumed",
                         "date" => $transDate,
                         "dateRecorded" => $currentDate,
                         "remain" => $qty - $item['qty'],

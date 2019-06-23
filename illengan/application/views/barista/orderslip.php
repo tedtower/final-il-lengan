@@ -79,7 +79,6 @@
                                 <tr class="border-bottom">
                                     <th>Qty</th>
                                     <th width="50%">Order</th>
-                                    <th>Subtotal</th>
                                     <th width="20%">Status</th>
                                     <th style="width:2%"></th>
                                 </tr>
@@ -91,7 +90,6 @@
                                 <tr data-id="${ol.olID}">
                                     <td>${ol.olQty}</td>
                                     <td>${ol.olDesc}</td>
-                                    <td><span class="fs-24">₱</span>${ol.olPrice}</td>
                                     <td>
                                         <input type="button" style="width:100%;padding:6%;background:orange;color:white;border:0;border-radius:5px"
                                        id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>

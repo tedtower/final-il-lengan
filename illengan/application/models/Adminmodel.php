@@ -1314,18 +1314,24 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
             VALUES(NULL, ?, ?, ?, ?, ?)";
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
-            WHERE tType = ?",array($transaction['type']))->result_array()[0]['lastnum'];
+            WHERE tType = ?",array($con['type']))->result_array()[0]['lastnum'];
         $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
-        return $this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']));
+        if($this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
     }
     function edit_consumption($con){
         $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
-        return $his->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
+        return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
     }
 
     function add_consumedItem($st){
         $query="INSERT INTO transitems(tiID, stID) VALUES(NULL, ?)";
-        return $this->db->query($query,array($st));
+        if($this->db->query($query,array($st))){
+            return $this->db->insert_id();
+        }
+        return 0;
     }
 
     function add_consumptionQty($conID,$con){
@@ -1363,11 +1369,11 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
             )
             VALUES(?,?,?,?,?,?,?,?);";
         $this->db->query($query,array($log['stock'],$id, $log['type'], $log['qty'], 
-            $log['remain'], $log['date'], $log['dateRecorded'], log['remarks']));
+            $log['remain'], $log['date'], $log['dateRecorded'], $log['remarks']));
     }
 
-    function deduct_stockQty($st,$qty){
-        $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?;";
+    function deduct_stockQty($qty, $st){
+        $query = "UPDATE stockitems SET stQty = stQty - ? WHERE stID = ?;";
         $this->db->query($query,array($qty, $st));
     }
 
