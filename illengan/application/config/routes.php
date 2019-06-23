@@ -122,6 +122,7 @@ $route['admin/stock/spoilage/delete'] ="admindelete/deletestockspoilages";
 $route['admin/menu/spoilage/delete/(:num)'] ="admindelete/deletemenuspoilages/$1";
 $route['admin/addons/spoilage/delete/(:num)'] ="admindelete/deleteaddonsspoilages/$1";
 $route['admin/accounts/delete'] ="admindelete/deleteAccount";
+$route['admin/transaction/delete'] = "admindelete/deleteTransaction";
 
 //End Admin Delete Routes ---------------------------------------
 
