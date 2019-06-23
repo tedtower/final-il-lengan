@@ -684,5 +684,106 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     tType = 'purchase order' AND drStatus = 'pending' AND spID = ?";
             return $this->db->query($query, array($id))->result_array();
         }
+        function add_receiptTransaction($transaction){
+            $query = "INSERT INTO transactions(
+                    tID, spID, supplierName, tNum, receiptNo, tDate, dateRecorded, tType, tTotal, tRemarks
+                )
+                VALUES(
+                    NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
+                FROM transactions
+                WHERE tType = ?",array($transaction['type']))->result_array()[0]['lastnum'];
+            $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
+            if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $lastNum, $transaction['receipt'],
+                $transaction['date'], $transaction['dateRecorded'], $transaction['type'], $transaction['total'], $transaction['remarks']))){
+                return $this->db->insert_id();
+            }
+            return 0;
+        }
+        function get_poItem($tiID){
+            $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus
+                FROM (transitems LEFT JOIN trans_items USING(tiID))
+                LEFT JOIN transactions USING(tID)
+                WHERE tType = 'purchase order' AND drStatus = 'pending' and tiID = ?;";
+            return $this->db->query($query,array($tiID))->result_array();
+        }
+        function add_receiptTransactionItems($item){
+            $query = "INSERT INTO transitems(tiID, uomID, stID, tiName, tiPrice, tiDiscount, drStatus, paystatus, rStatus)
+                VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)";
+            if($this->db->query($query, array($item['uom'], $item['stock'], $item['name'], $item['price'], $item['discount'], $item['delivery']
+                , $item['payment'], $item['return']))){
+                return $this->db->insert_id();
+            }
+            return 0;
+        }
+        function add_receiptTransactionItemsQty($tID, $item){
+            $query = "INSERT INTO trans_items(tID, tiID, tiQty, qtyPerItem, actualQty, tiSubtotal)
+                VALUES(?, ?, ?, ?, ?, ?)";
+            return $this->db->query($query, array($tID, $item['tiID'], $item['tiQty'], $item['perUnit'], $item['actual'], $item['subtotal']));
+        }
+        function get_stockQty($stID){
+            $query = "SELECT stQty from stockitems where stID = ?";
+            return $this->db->query($query,array($stID))->result_array();
+        }
+        function add_restockLog($tID, $log){
+            $query = "INSERT INTO stocklog(
+                stID,
+                tID,
+                slType,
+                slQty,
+                slRemainingQty,
+                actualQty,
+                discrepancy,
+                slDateTime,
+                dateRecorded,
+                slRemarks
+            )
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+            , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
+        }
+        function update_stockQty($stID, $stQty){
+            $query = "UPDATE stockitems
+            SET
+                stQty = stQty + ?
+            WHERE
+                stID = ?";
+            return $this->db->query($query, array($stQty, $stID));
+        }
+        function edit_receiptTransactionItems($item){
+            $query = "UPDATE
+                    transitems
+                SET
+                    tiPrice = ?,
+                    tiDiscount = ?,
+                    drStatus = ?,
+                    payStatus = ?,
+                    rStatus = ?
+                WHERE
+                    tiID = ?;";
+            return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
+            , $item['payment'], $item['return'], $item['tiID']));
+        }
+        function add_orReceiptItemsForPO($item){
+            $query = "UPDATE
+                    transitems
+                SET
+                    tiPrice = ?,
+                    tiDiscount = ?,
+                    drStatus = ?,
+                    payStatus = ?,
+                    rStatus = ?
+                WHERE
+                    tiID = ?;";
+        }
+    function edit_receiptTransactionTotal($tID, $total){
+        $query = "UPDATE
+                transactions
+            SET
+                tTotal = ?
+            WHERE
+                tID = ?;";
+        return $this->db->query($query,array($total, $tID));
+    }
     }
 ?>

@@ -254,7 +254,6 @@ $(function(){
                         class="form-control form-control-sm"
                         placeholder="Subtotal" readonly>
                 </div>
-
                 <div class="input-group">
                     <input name="stID[]" type="text"
                         class="form-control border-right-0"
@@ -274,6 +273,7 @@ $(function(){
         setIL1FormEvents();
         setInputUOM(uom);
     });
+
     $("#addMBtn").on("click",function(){
         var url = $(this).attr("data-url");
         var supplier = $("#drForm select[name='spID']").val();
@@ -357,12 +357,12 @@ $(function(){
         event.preventDefault();
         var url = $(this).attr("action");
         var supplier = $("#drForm select[name='spID']").val();
-        var date = $("#drForm input[name='tDate']").val();
+        var date = $("#drForm input[name='date']").val();
         var receipt = $("#drForm input[name='receipt']").val();
-        var remarks = $("#drForm textarea[name='tRemarks']").val();
-        var orItems = [];
+        var remarks = $("#drForm textarea[name='remarks']").val();
+        var drItems = [];
         $("#drForm .ic-level-1").each(function(index){
-            orItems.push({
+            drItems.push({
                 tiID: $(this).attr("data-id"),
                 name: $(this).find("input[name='itemName[]']").val(),
                 qty: $(this).find("input[name='itemQty[]']").val(),
@@ -381,9 +381,12 @@ $(function(){
                 date: date,
                 receipt: receipt,
                 remarks: remarks,
-                items: JSON.stringify(orItems)
+                transitems: JSON.stringify(drItems)
             },
             dataType: "JSON",
+            beforeSend: function() {
+                console.log(supplier,date, receipt, remarks, drItems);
+            },
             success: function(data){
                 console.log(data);
             },

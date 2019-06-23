@@ -6,7 +6,7 @@
 			<!--Destock BUTTON-->
 				<div class="row">
     			<div class="col-md-4 col-lg-2">
-							<button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#destock" data-original-title style="margin:0;">Add Consumption</button><br>
+					<button class="btn btn-primary btn-sm btn-block m-0" data-toggle="modal" data-target="#destock" data-original-title style="margin:0;">Add Consumption</button><br>
 							<!--eND Add Stock Spoilage BUTTON-->
 				</div>
   				</div>
@@ -41,24 +41,21 @@
 					<!--Modal Content-->
 					<form id="addItem" method="post" accept-charset="utf-8">
 						<div class="modal-body">
-							<a class="btn btn-xs" type="button" href="javascript:void(0)" data-toggle="modal"
-								data-target="#destockbro"><b>Add Item</b></a>
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="inputGroup-sizing-sm"
+										style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+										Consumption Date</span>
+								</div>
+								<input type="datetime-local" name="consumption_date" id="consumption_date" class="form-control" required>
+								<span class="text-danger"><?php echo form_error("consumption_date"); ?></span>
+							</div>
+							<button class="btn btn-secondary btn-sm m-0" type="button" href="javascript:void(0)" data-toggle="modal"
+								data-target="#destockbro">Add Item</button>
 							<br>
 							<br>
-							<div class="input-group mb-1">
-
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<span class="input-group-text" id="inputGroup-sizing-sm"
-											style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-											Consumption Date</span>
-									</div>
-									<input type="datetime-local" name="consumption_date" id="consumption_date" class="form-control form-control-sm" required>
-									<span class="text-danger"><?php echo form_error("consumption_date"); ?></span>
-								</div>
-								</div>
 							<div class="d-flex justify-content-center">
-								<table class="destockTable table table-sm table-borderless" style="width:90%">
+								<table class="destockTable table table-sm table-borderless">
 									<thead class="thead-light">
 										<tr class="text-center">
 											<th width="65%"><b>Item Name</b></th>
@@ -72,7 +69,7 @@
 							</div>
 							<!--Modal Footer-->
 							<div class="modal-footer">
-								<button type="button" class="btn btn-default btn-sm"
+								<button type="button" class="btn btn-danger btn-sm"
 									data-dismiss="modal">Cancel</button>
 								<button type="button" class="btn btn-success btn-sm"
 									onclick="addDestockItems()">Add</button>
