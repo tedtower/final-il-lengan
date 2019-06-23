@@ -448,5 +448,57 @@ class Barista extends CI_Controller{
             redirect('login');
             }
         }
+    function viewDeliveryReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            $this->load->view('barista/templates/head');
+            $this->load->view('barista/templates/navigation');
+            $data['drs'] = $this->baristamodel->get_deliveryReceipts();
+            $data['drItems'] = $this->baristamodel->get_deliveryReceiptItems();
+            $this->load->view('barista/deliveryReceipt', $data);
+        }else{
+            redirect('login');
+        }
     }
+    
+    function viewDRFormAdd(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            $this->load->view('barista/templates/head');
+            $this->load->view('barista/templates/navigation');
+            $data['uom'] = $this->baristamodel->get_uomForStoring();
+            $data['stock'] = $this->baristamodel->get_stockitems();
+            $data['supplier'] = $this->baristamodel->get_supplier();
+            $data['suppmerch'] = $this->baristamodel->get_supplierstocks();
+            $data['pos'] = $this->baristamodel->get_posForBrochure();
+            $data['poItems'] = $this->baristamodel->get_poItemsForBrochure();
+            $this->load->view('barista/deliveryReceiptAdd', $data);
+        }else{
+            redirect('login');
+        }
+    }
+
+    function viewORFormAdd(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            $this->load->view('barista/templates/head');
+            $this->load->view('barista/templates/navigation');
+            $data['supplier'] = $this->baristamodel->get_supplier();
+            $data['stocks'] = $this->baristamodel->get_stockItemNames();
+            $this->load->view('barista/officialReceiptAdd',$data);
+        }else{
+            redirect('login');
+        }
+    }
+
+    function viewOfficialReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            $this->load->view('barista/templates/head');
+            $this->load->view('barista/templates/navigation');
+            $data['ors'] = $this->baristamodel->get_officialReceipts();
+            $data['orItems'] = $this->baristamodel->get_officialReceiptItems();
+            $this->load->view('barista/officialReceipt', $data);
+        }else{
+            redirect('login');
+        }
+    }
+
+}
 ?>

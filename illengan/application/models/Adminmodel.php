@@ -11,6 +11,19 @@ class Adminmodel extends CI_Model{
 
 //GET FUNCTIONS-------------------------------------------------------------------
 
+function getOSMonthByYear($year){
+    $query = "SELECT SUM(olQty) salesCount, DATE_FORMAT(osDateTime,'%M') osLongMonth, DATE_FORMAT(osDateTime,'%m') osMonth FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
+    return $this->db->query($query,array($year))->result_array();
+}
+function getUnavailableKitchen(){
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'kitchen' AND stQty <= stMin";
+    return $this->db->query($query)->result_array();
+}
+function getUnavailableStockRoom(){
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
+    return $this->db->query($query)->result_array();
+}
+
 function get_transactions(){
     $query = "SELECT
                 tID AS id,
@@ -1501,8 +1514,8 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         }
     }
 
-    function update_transitem($trans, $ti) {
-
+    function update_paymentStatus($tiID, $status){
+        $this->db->query("UPDATE transitems SET payStatus = ? WHERE tiID = ?;",array($status, $tiID));
     }
     
     // Get Transactions (PO, DR, OR)
@@ -1515,7 +1528,7 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                 NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum
             FROM transactions
-            WHERE tType = 'purchase order'")->result_array()[0]['lastnum'];
+            WHERE tType = ?",array($transaction['type']))->result_array()[0]['lastnum'];
         $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
         if($this->db->query($query, array($transaction['supplier'], $transaction['supplierName'], $lastNum, $transaction['receipt'],
             $transaction['date'], $transaction['dateRecorded'], $transaction['type'], $transaction['total'], $transaction['remarks']))){
@@ -1547,6 +1560,18 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                 tiID = ?;";
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
         , $item['payment'], $item['return'], $item['tiID']));
+    }
+    function add_orReceiptItemsForPO($item){
+        $query = "UPDATE
+                transitems
+            SET
+                tiPrice = ?,
+                tiDiscount = ?,
+                drStatus = ?,
+                payStatus = ?,
+                rStatus = ?
+            WHERE
+                tiID = ?;";
     }
 
     function add_receiptTransactionItemsQty($tID, $item){
@@ -1710,6 +1735,13 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
             WHERE tType = 'purchase order' AND drStatus = 'pending' and tiID = ?;";
         return $this->db->query($query,array($tiID))->result_array();
     }
+    function get_drItem($tiID){
+        $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus
+            FROM (transitems LEFT JOIN trans_items USING(tiID))
+            LEFT JOIN transactions USING(tID)
+            WHERE tType = 'delivery receipt' AND drStatus in ('complete','resolved') and tiID = ?;";
+        return $this->db->query($query,array($tiID))->result_array();
+    }
     function get_posForBrochure(){
         $query = "SELECT
                 tID as transactionID,
@@ -1801,73 +1833,88 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                 tiName AS NAME,
                 tiPrice AS price,
                 tiDiscount AS discount,
-                uomID AS uom,
+                transitems.uomID AS uom,
+                uomAbbreviation as unit,
                 stID AS stock,
+                CONCAT(stName,
+                    IF(stSize IS NULL, '', CONCAT(' ', stSize))
+                ) AS stockname,
                 tiQty AS qty,
                 qtyPerItem AS equivalent,
+                actualQty as actual,
                 tiSubtotal AS subtotal
             FROM
                 (
                     transitems
                 LEFT JOIN trans_items USING(tiID)
                 )
+            left join stockitems using (stID)
+            LEFT JOIN uom on (transitems.uomID = uom.uomID)
             LEFT JOIN transactions USING(tID)
             WHERE
                 tType = 'purchase order' AND drStatus = 'pending' AND spID = ?";
         return $this->db->query($query, array($id))->result_array();
     }
-    function get_drsForBrochure(){
+    function get_drsBySupplier($id){
         $query = "SELECT
-                tID as transactionID,
+                tID AS transactionID,
                 spID suppID,
                 spName suppName,
                 supplierName altName,
-                tNum as transNum,
-                receiptNo as receipt,
-                tDate as date,
-                tTotal as total,
-                tRemarks as remarks
+                tNum AS transNum,
+                receiptNo AS receipt,
+                tDate AS date,
+                tTotal AS total,
+                tRemarks AS remarks
             FROM
-                transactions
-            LEFT JOIN supplier USING(spID)
-            WHERE
-                tID IN(
-                SELECT
-                    tID AS transactionID
-                FROM
-                    (
-                        transitems
-                    LEFT JOIN trans_items USING(tiID)
-                    )
+                (transactions
+            LEFT JOIN supplier USING(spID)) right join (
+                SELECT tID
+                FROM ( transitems LEFT JOIN trans_items USING(tiID) )
                 LEFT JOIN transactions USING(tID)
-                WHERE
-                    tType = 'delivery receipt' AND drStatus = 'delivered'
-                GROUP BY
-                    tID
-            )";
-        return $this->db->query($query)->result_array();
+                WHERE tType = 'delivery receipt'
+                GROUP BY tID
+                HAVING count(if(drStatus ='PARTIAL', 1, NULL)) = 0)  as deliveries using (tID)
+            where spID = ?";
+        return $this->db->query($query, array($id))->result_array();
     }
-    function get_drItemsForBrochure(){
-        $query = "SELECT
-                tID AS transactionID,
-                tiID AS itemID,
-                tiName AS NAME,
-                tiPrice AS price,
-                tiDiscount AS discount,
-                uomID AS uom,
-                stID AS stock,
-                tiQty AS qty,
-                qtyPerItem AS equivalent,
-                tiSubtotal AS subtotal
+    function get_drItemsBySupplier($id){
+        $query = "SELECT 
+            tID AS transactionID,
+            tiID AS itemID,
+            tiName AS NAME,
+            tiPrice AS price,
+            tiDiscount AS discount,
+            transitems.uomID AS uom,
+            uomAbbreviation AS unit,
+            stID AS stock,
+            CONCAT(stName,
+                    IF(stSize IS NULL,
+                        '',
+                        CONCAT(' ', stSize))) AS stockname,
+            tiQty AS qty,
+            qtyPerItem AS equivalent,
+            actualQty AS actual,
+            tiSubtotal AS subtotal
+        FROM
+            ((transitems
+            LEFT JOIN trans_items USING (tiID))
+            RIGHT JOIN (SELECT 
+                tID, spID
             FROM
-                (
-                    transitems
-                LEFT JOIN trans_items USING(tiID)
-                )
-            LEFT JOIN transactions USING(tID)
+                (transitems
+            LEFT JOIN trans_items USING (tiID))
+            LEFT JOIN transactions USING (tID)
             WHERE
-                tType = 'delivery receipt' AND drStatus = 'delivered'";
-        return $this->db->query($query)->result_array();
+                tType = 'delivery receipt'
+            GROUP BY tID
+            HAVING COUNT(IF(drStatus = 'PARTIAL', 1, NULL)) = 0) AS deliveries USING (tID))
+                LEFT JOIN
+            stockitems USING (stID)
+                LEFT JOIN
+            uom ON (transitems.uomID = uom.uomID)
+        WHERE spID = 1";
+        return $this->db->query($query, array($id))->result_array();
     }
     function edit_receiptTransactionTotal($tID, $total){
         $query = "UPDATE
@@ -2141,9 +2188,9 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
     //         )
     //     ) AS prefname,
     //     stID AS stockitem,
-    //     CONCAT(stName,
-    //         IF(stSize IS NULL, '', CONCAT(' ', stSize))
-    //     ) AS stockitemname,
+        // CONCAT(stName,
+        //     IF(stSize IS NULL, '', CONCAT(' ', stSize))
+        // ) AS stockitemname,
     //     prstQty AS qty
     // FROM
     //     prefstock
