@@ -1563,6 +1563,7 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                 $this->db->query($query, array("delivered","73"));
            }
         }
+    }
         
     function update_paymentStatus($tiID, $status){
         $this->db->query("UPDATE transitems SET payStatus = ? WHERE tiID = ?;",array($status, $tiID));
