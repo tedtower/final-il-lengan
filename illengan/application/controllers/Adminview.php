@@ -126,7 +126,8 @@ function viewConsumptionFormAdd(){
         $head['title'] = "Inventory - Add Consumption";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/consumptionAdd');
+        $data['stocks'] = $this->adminmodel->get_stocks();
+        $this->load->view('admin/consumptionAdd', $data);
     }else{
         redirect('login');
     }

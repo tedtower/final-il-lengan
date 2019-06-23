@@ -764,6 +764,10 @@ function get_transitems(){
             }
             }
         } 
+        function deleteStockspoil($tID){
+            $query ="Update transactions set isArchived = ? where tID = ?";
+            return $this->db->query($query, array('1', $tID));
+        }
 
     function add_menuaddon($mID, $ao){
         $query = "INSERT into menuaddons (mID, aoID) values (?,?)";
@@ -1241,7 +1245,7 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return  $this->db->query($query)->result_array();
     }
     function get_spoilagesstock(){
-        $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID) inner join stockitems using (stID) WHERE tType = 'spoilage'";
+        $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID) inner join stockitems using (stID) WHERE tType = 'spoilage' and isArchived = '0'";
         return  $this->db->query($query)->result_array();
     }
     function get_spoilagesaddons(){
@@ -1314,18 +1318,24 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
             VALUES(NULL, ?, ?, ?, ?, ?)";
         $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
-            WHERE tType = ?",array($transaction['type']))->result_array()[0]['lastnum'];
+            WHERE tType = ?",array($con['type']))->result_array()[0]['lastnum'];
         $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
-        return $this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']));
+        if($this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
     }
     function edit_consumption($con){
         $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
-        return $his->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
+        return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
     }
 
     function add_consumedItem($st){
         $query="INSERT INTO transitems(tiID, stID) VALUES(NULL, ?)";
-        return $this->db->query($query,array($st));
+        if($this->db->query($query,array($st))){
+            return $this->db->insert_id();
+        }
+        return 0;
     }
 
     function add_consumptionQty($conID,$con){
@@ -1363,11 +1373,11 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
             )
             VALUES(?,?,?,?,?,?,?,?);";
         $this->db->query($query,array($log['stock'],$id, $log['type'], $log['qty'], 
-            $log['remain'], $log['date'], $log['dateRecorded'], log['remarks']));
+            $log['remain'], $log['date'], $log['dateRecorded'], $log['remarks']));
     }
 
-    function deduct_stockQty($st,$qty){
-        $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?;";
+    function deduct_stockQty($qty, $st){
+        $query = "UPDATE stockitems SET stQty = stQty - ? WHERE stID = ?;";
         $this->db->query($query,array($qty, $st));
     }
 
@@ -1375,8 +1385,9 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         $query = "INSERT INTO trans_items (tID, tiID, actualQty) VALUES (?,?,?)";
         if($this->db->query($query, array($tID, $tiID, $dQty))) {
             $this->add_stocklog($stID, $tID, "consumption", $tDate, $dateRecorded, $dQty, $tRemarks);
-            $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem consumption.", "add", $tRemarks);
-        }  
+            $this->add_actlog($account_id, $dateRecorded, "Manager added a stockitem consumption.", "add", $tRemarks);
+        }
+
     } 
 
 
@@ -1624,17 +1635,18 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
         , $item['payment'], $item['return'], $item['tiID']));
     }
-    function add_orReceiptItemsForPO($item){
+    function edit_poReceiptItemOR($item){
         $query = "UPDATE
                 transitems
             SET
                 tiPrice = ?,
                 tiDiscount = ?,
                 drStatus = ?,
-                payStatus = ?,
-                rStatus = ?
+                payStatus = ?
             WHERE
                 tiID = ?;";
+        return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
+        , $item['payment'], $item['tiID']));
     }
 
     function add_receiptTransactionItemsQty($tID, $item){

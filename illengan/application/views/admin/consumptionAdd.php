@@ -1,121 +1,191 @@
 <body style="background: white">
-<div class="content">
-    <div class="container-fluid">
-    <br>
-        <div class="content" style="margin-left:250px;">
-            <div class="container-fluid">
-            <!--Date and Time-->
-                <div style="overflow:auto">
-                    <p style="text-align:right; font-weight: regular; font-size: 16px;float:right"><?php echo date("M j, Y -l"); ?> </p>
-                </div>               
-            <!--Card Container--> 
-                <div style="overflow:auto">
-                <!--Card--> 
-                    <div class="card" style="float:left;width:60%">
-                        <div class="card-header">
-                            <h6 style="font-size:15px;">Add Consumption</h6>
+    <div class="content">
+        <div class="container-fluid">
+            <br>
+            <div class="content" style="margin-left:250px;">
+                <div class="container-fluid">
+                    <!--Date and Time-->
+                    <div style="overflow:auto">
+                        <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
+                            <?php echo date("M j, Y -l"); ?> </p>
+                    </div>
+                    <!--Card Container-->
+                    <div style="overflow:auto">
+                        <!--Card-->
+                        <div class="card" style="float:left;width:60%">
+                            <div class="card-header">
+                                <h6 style="font-size:15px;">Add Consumption</h6>
+                            </div>
+                            <form id="conForm" action="<?= site_url("admin/consumption/add")?>" accept-charset="utf-8"
+                                class="form">
+                                <div class="card-body">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border border-secondary"
+                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
+                                                Date Consumed</span>
+                                        </div>
+                                        <input type="date" class="form-control" name="date">
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border border-secondary"
+                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
+                                                Remarks</span>
+                                        </div>
+                                        <textarea type="text" name="remarks"
+                                            class="form-control form-control-sm  border-left-0" rows="1"></textarea>
+                                    </div>
+                                    <div class="ic-level-3">
+                                        <table class="table table-borderless">
+                                            <thead style="border-bottom:2px solid #cccccc">
+                                                <tr>
+                                                    <th>Stock Item</th>
+                                                    <th width="17%">Quantity</th>
+                                                    <th width="33%">Log Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="ic-level-2">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer">
+                                    <div>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            style="background:white;margin-left:0" data-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-success btn-sm" style="background:white"
+                                            type="submit">Insert</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="card-body">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text border border-secondary"
-                                        style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
-                                        Date Consumed</span>
+
+                        <div class="card" id="stockCard" style="float:left;width:37%;margin-left:3%">
+                            <div class="card-header" style="overflow:auto">
+                                <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Select
+                                    Stock Items</div>
+                                <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
+                                    <input type="search"
+                                        style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
+                                        name="search" placeholder="Search...">
                                 </div>
-                                <input type="date" class="form-control" name="">
                             </div>
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text border border-secondary"
-                                        style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
-                                        Remarks</span>
-                                </div>
-                                <textarea type="text" name="remarks"
-                                    class="form-control form-control-sm  border-left-0"
-                                    rows="1"></textarea>
-                            </div>
-                            <div class="ic-level-2">
+                            <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                                <!--checkboxes-->
+                                <?php if(!empty($stocks)){
+                            ?>
                                 <table class="table table-borderless">
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
+                                            <th width="2%"></th>
                                             <th>Stock Item</th>
-                                            <th width="17%">Quantity</th>
-                                            <th width="33%">Remarks</th>
+                                            <th>Category</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr> 
-                                            <td style="padding:1% !important"><input type="text" class="form-control " name="stName"></td>
-                                            <td style="padding:1% !important"><input type="number" class="form-control" name="cQty"></td>
-                                            <td style="padding:1% !important"><textarea type="text" class="form-control" name="remarks" rows="1"></textarea></td>
+                                    <tbody class="ic-level-2"><?php
+                                foreach($stocks as $stock){
+                                ?>
+                                        <tr class="ic-level-1">
+                                            <td><input type="checkbox" class="mr-2" name="stock"
+                                                   data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                            <td class="stock"><?= $stock['stName']?></td>
+                                            <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
-                                        <tr> 
-                                            <td style="padding:1% !important"><input type="text" class="form-control " name="stName"></td>
-                                            <td style="padding:1% !important"><input type="number" class="form-control" name="cQty"></td>
-                                            <td style="padding:1% !important"><textarea type="text" class="form-control" name="remarks" rows="1"></textarea></td>
-                                        </tr>
+                                        <?php 
+                                }?>
                                     </tbody>
                                 </table>
-                            </div>
-                            <br>
-                            <span>Total: &#8369;<span class="total">0</span></span>
-                        </div>
-                        <div class="card-footer">
-                            <div>
-                                <button type="button" class="btn btn-danger btn-sm" style="background:white;margin-left:0" data-dismiss="modal">Cancel</button>
-                                <button class="btn btn-success btn-sm" style="background:white" type="submit">Insert</button>
+                                <?php
+                            }else{
+                            ?>
+                                <p>No stock items recorded!</p>
+                                <?php
+                            }?>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card" style="float:left;width:37%;margin-left:3%">
-                        <div class="card-header" style="overflow:auto">
-                            <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Select Stock Items</div>
-                            <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
-                                <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" placeholder="Search...">
-                            </div>
-                        </div>
-                        <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                            <!--checkboxes-->
-                            <table class="table table-borderless">
-                                <thead style="border-bottom:2px solid #cccccc">
-                                    <tr>
-                                        <th width="2%"></th>
-                                        <th>Stock Item</th>
-                                        <th>Category</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><input type="checkbox" class="mr-2" value=""></td> 
-                                        <td>Strawberry Syrup 1000 ml</td> 
-                                        <td>Condiments</td> 
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" class="mr-2" value=""></td> 
-                                        <td>Strawberry Syrup 1000 ml</td> 
-                                        <td>Condiments</td> 
-                                    </tr>
-                                    <tr>
-                                        <td><input type="checkbox" class="mr-2" value=""></td> 
-                                        <td>Strawberry Syrup 1000 ml</td> 
-                                        <td>Condiments</td> 
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <!--End of container divs-->
                 </div>
-
-            <!--End of container divs-->    
             </div>
         </div>
     </div>
-</div>
-
-
-                    
-<script>
-</script>
+    <?php include_once('templates/scripts.php');?>
+    <script>
+    $(function() {
+        $("#stockCard .ic-level-1").on("click",function(event){
+            if(event.target.type !== "checkbox"){
+                $(this).find("input[name='stock']").trigger("click");
+            }
+        });
+        $("#stockCard input[name='stock']").on("click", function(event) {
+            var id = $(this).val();
+            var name = $(this).attr("data-name");
+            console.log(id, name, $(this).is(":checked"));
+            if($(this).is(":checked")){
+                $("#conForm .ic-level-2").append(`
+                    <tr class="ic-level-1" data-stock="${id}">
+                        <td style="padding:1% !important"><input type="text"
+                                class="form-control" data-id="${id}" value="${name}" name="stock" readonly></td>
+                        <td style="padding:1% !important"><input type="number"
+                                class="form-control" name="qty"></td>
+                        <td style="padding:1% !important"><textarea type="text"
+                                class="form-control" name="cRemarks" rows="1"></textarea>
+                        </td>
+                    </tr>`);
+            }else{
+                $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
+            }
+        });
+        $("#stockCard input[name='search']").on("keyup",function(){
+            var string = $(this).val();
+            $("#stockCard .stock").each(function(index){
+                if(!$(this).text().includes(string)){
+                    $(this).closest(".ic-level-1").hide();
+                }else{
+                    $(this).closest(".ic-level-1").show();
+                }
+            });
+        });
+        $("#conForm").on("submit", function(event){
+            event.preventDefault();
+            var url = $(this).attr("action");
+            var date = $(this).find("input[name='date']").val();
+            var remarks = $(this).find("textarea[name='remarks']").val();
+            var items = [];
+            $(this).find(".ic-level-1").each(function(index){
+                items.push({
+                    stock: $(this).find("input[name='stock']").attr('data-id'),
+                    qty: $(this).find("input[name='qty']").val(),
+                    remarks: $(this).find("textarea[name='cRemarks']").val()
+                });
+            });
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: {
+                    date: date,
+                    remarks: remarks,
+                    items: JSON.stringify(items)
+                },
+                dataType: "JSON",
+                succes: function(data){
+                    if(data.sessErr){
+                        location.replace("/login");
+                    }else{
+                        console.log(data);
+                    }
+                },
+                error: function(response, setting, error) {
+                    console.log(error);
+                    console.log(response.responseText);
+                }
+            });
+        });
+    });
+    </script>
 </body>
+
 </html>

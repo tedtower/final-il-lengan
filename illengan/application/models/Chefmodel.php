@@ -184,13 +184,44 @@
     }
 
     // --------------- E D I T I N G  S P O I L A G E S ---------------
-    function edit_menuspoilage($msID,$prID,$msQty,$msDate,$msRemarks,$date_recorded){
+     function edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded){
         $query = "Update menuspoil set msDateRecorded = ? where msID=?";
         if($this->db->query($query,array($date_recorded,$msID))){
             $query = "Update spoiledmenu set msQty = ?, msDate = ?,msRemarks = ? where msID = ? AND prID = ?";
-            return $this->db->query($query,array($msQty,$msDate,$msRemarks,$msID,$prID));
+             $this->db->query($query,array($msQty,$msDate,$msRemarks,$msID,$prID));
+             $query2 = "INSERT INTO `activitylog` (alID, aID, alDate, alDesc, alType, additionalRemarks)
+             Values (NULL, ?, ?, ?, ?, ?)";
+            $this->db->query($query2, array(3, $date_recorded, "Chef updated a menu spoiled item.", "update", $msRemarks));
+            $this->edit_stockItems($prID, $msQty, $oldQty);
         }else{
             return false;
+        }
+    }
+    function edit_stockItems($prID, $msQty, $oldQty){
+        $query3 = "Select stID from prefstock where prID = '$prID'";
+        $stID = $this->db->query($query3)->result_array();
+        foreach($stID as $s){
+            $id = $s['stID'];
+        }
+        $query4 = "Select stQty, stMin from stockitems where stID = '$id'";
+        $data = $this->db->query($query4)->result_array();
+        foreach($data as $d){
+            $stQty = $d['stQty'];
+            //$stMin = $d['stMin'];
+        }
+        if($msQty > $oldQty){
+            $diff = $msQty - $oldQty;
+            $finQty = $stQty - $diff;
+            $updateQty = "Update stockitems set stQty = ? where stID = ?";
+            return $this->db->query($updateQty, array($finQty, $id));
+        }else if($msQty < $oldQty){
+            $sum = $oldQty - $msQty;
+            $finQty = $sum + $stQty;
+            $updateQty = "Update stockitems set stQty = ? where stID = ?";
+            return $this->db->query($updateQty, array($finQty, $id));
+        }else{
+            $same = "Update stockitems set stQty = ? where stID = ?";
+            return $this->db->query($same, array($stQty, $id));
         }
     }
     // --------------- A D D I N G  T O  S T O C K L O G ---------------

@@ -120,7 +120,7 @@ $route['admin/inventory/delete/(:num)'] = "admindelete/deletestockitem/$1";
 $route['admin/measurement/delete/(:num)'] = "admindelete/deleteMeasurement/$1";
 $route['admin/transactions/delete'] = "admindelete/deletetransactions";
 $route['admin/source/delete/(:num)'] = "admindelete/deletesource/$1";
-$route['admin/stock/spoilage/delete'] ="admindelete/deletestockspoilages";
+$route['admin/stock/spoilage/delete'] ="admindelete/deleteStockSpoil";
 $route['admin/menu/spoilage/delete/(:num)'] ="admindelete/deletemenuspoilages/$1";
 $route['admin/addons/spoilage/delete/(:num)'] ="admindelete/deleteaddonsspoilages/$1";
 $route['admin/accounts/delete'] ="admindelete/deleteAccount";
@@ -200,16 +200,22 @@ $route['barista/stock/spoilages'] = "barista/viewSpoilagesStock";
 $route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
 $route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
 $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
+$route['barista/stock/spoilage/delete'] ="barista/deleteStockSpoil";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
-//---------------------------------------------------------------
+$route['barista/getSupplierMerchandise'] = "barista/getSuppMerchForBrochure";
+$route['barista/getPosFromSupplier'] = "barista/getPOItemsBySupplier";
+//-----------------------------------------------------------------------------
 $route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
 $route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
 $route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
 $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
-
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
+//-----------------------------------------------------------------------------
+$route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
+
+
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

@@ -550,7 +550,7 @@ function addspoilagesstock(){
                     "name" => $item['name'],
                     "price" => $item['price'],
                     "discount" => $item['discount'],
-                    "delivery" => "delivered",
+                    "delivery" => "complete",
                     "payment" => 'paid',
                     "return" => NULL,
                     "tiQty" => $item['qty'],
@@ -576,13 +576,27 @@ function addspoilagesstock(){
                     $this->adminmodel->add_restockLog($orID, $log);
                     $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
                 }else{
-                    // $po = $this->adminmodel->get_poItem($iID);
-                    // $dr = $this->adminmodel->get_drItem($tID);
-                    // if(count($dr) > 0){
+                    $po = $this->adminmodel->get_poItem($tiID);
+                    $dr = $this->adminmodel->get_drItem($tiID);
+                    if(count($dr) > 0){
 
-                    // }else if(count($po) > 0){
-
-                    // }else{
+                    }else if(count($po) > 0){
+                        $this->adminmodel->edit_poReceiptItemOR($or);
+                        $total += $or['subtotal'];
+                        $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
+                        $log = array(
+                            "stock" => $or['stock'],
+                            "qty" => $or['actual'],
+                            "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $transDate,
+                            "dateRecorded" => $currentDate,
+                            "remarks" => NULL
+                        );
+                        $this->adminmodel->add_restockLog($orID, $log);
+                        $this->adminmodel->update_stockQty($or['stock'], $or['actual']);
+                    }else{
                         $or['tiID'] = $this->adminmodel->add_receiptTransactionItems($or);
                         $total += $or['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($tID, $or);
@@ -598,7 +612,7 @@ function addspoilagesstock(){
                         );
                         $this->adminmodel->add_restockLog($log);
                         $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
-                    // }
+                    }
                 }
             }
         }else{
@@ -608,9 +622,10 @@ function addspoilagesstock(){
         }
     }
 
-    function add_consumption(){
+    function addConsumption(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $items = json_decode($this->input->post('items'),true);
+            echo json_encode($items);
             if(count($items)> 0){
                 $currentDate = date("Y-m-d H:i:s");
                 $transDate = $this->input->post('date');
@@ -628,7 +643,7 @@ function addspoilagesstock(){
                         "id" => $itemID,
                         "qty" => $item['qty'],
                         "remarks" => $item['remarks'],
-                        "type" => "consumption",
+                        "type" => "consumed",
                         "date" => $transDate,
                         "dateRecorded" => $currentDate,
                         "remain" => $qty - $item['qty'],

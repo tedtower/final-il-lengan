@@ -5,81 +5,78 @@
     <?php include_once('templates/head.php') ?>
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/css/barista/cards.css' ?>" type="text/css">
 </head>
-
 <body style="background:#c7ccd1;">
     <?php include_once('templates/navigation.php') ?>
-    <button class="btn btn-success btn-sm" onClick="window.location.href = '<?php echo base_url();?>customer/checkin';return false;">
-    <img class="addBtn" src="/assets/media/barista/add image.png" style="width:20px;height:20px; float:left;"> Add Order</button>
+    <div>
+        <button class="btn btn-success" style="padding-right:100px;font-size:15px;" onClick="window.location.href='<?php echo base_url(); ?>customer/checkin';return false;"><i class="far fa-plus"></i> Add Order</button>
+    </div>
     <!--End Top Nav-->
     <div class="container-fluid">
         <section class="lists-container">
-            <!-- Lists container -->
-    
-    </section>
-</div>
+
+        </section>
+    </div>
     <!-- End of lists container -->
     <!--End Cards-->
-                <!--START "Remove Slip" MODAL-->
-            
-<?php include_once('templates/scripts.php')?>
-<script>
-      var orderslips = [];
-      var orderlists = [];
-      var addons = [];
-      var tables = [];
-      $(function() {
-        $.ajax({
-            url: '<?= base_url("barista/getOrderslip") ?>',
-            dataType: 'json',
-            success: function(data) {
-                $.each(data.orderslips, function(index, item) {
-                    orderslips.push({
-                        "orderslips": item
+    <!--START "Remove Slip" MODAL-->
+    <?php include_once('templates/scripts.php') ?>
+    <script>
+        var orderslips = [];
+        var orderlists = [];
+        var addons = [];
+        var tables = [];
+        $(function() {
+            $.ajax({
+                url: '<?= base_url("barista/getOrderslip") ?>',
+                dataType: 'json',
+                success: function(data) {
+                    $.each(data.orderslips, function(index, item) {
+                        orderslips.push({
+                            "orderslips": item
+                        });
+                        orderslips[index].orderlists = data.orderlists.filter(ol => ol.osID == item.osID);
                     });
-                    orderslips[index].orderlists = data.orderlists.filter(ol => ol.osID == item.osID);
-                });
-                orderlists = data.orderlists;
-                addons = data.addons;
-                tables = data.tables;
-                setPenOrdersData();
-                console.log('Success');
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(errorThrown);
-                console.log(response.responseText);
-            }
+                    orderlists = data.orderlists;
+                    addons = data.addons;
+                    tables = data.tables;
+                    setPenOrdersData();
+                    console.log('Success');
+                },
+                error: function(response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+            });
         });
-      });
-    var olID;
-      function setPenOrdersData() {
-              orderslips.forEach(function(item) {
-                    var header = `
-                    <!--Long Order Card-->
+        var olID;
+
+        function setPenOrdersData() {
+            orderslips.forEach(function(item) {
+                var header = `
+            <!--Long Order Card-->
             <div class="list" id="${item.orderslips.osID}">
-                <div class="card m-0 p-0" style="max-height:100%">
+                <div class="table-container card m-0 p-0" style="max-height:100%">
                     <!--Long Card Header-->
-                    <div class="card-header p-3">
+                    <div class="card-header p-1 m-1">
                         <div style="overflow:auto;font-size:14px">
-                            <div style="float:left;text-align:left;width:60%">
-                                <div><b>Slip No: </b> ${item.orderslips.osID}</div>
-                                <div><b>Customer: </b>${item.orderslips.custName}</div>
-                            </div>
-                            <div style="float:right;text-align:left;width:40%">
-                                <div><b> Table No: </b>${item.orderslips.tableCode}<img class="editBtn" data-id="${item.orderslips.osID}" data-tableCode="${item.orderslips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px; float:right; cursor:pointer;" 
+                            <div class="row" style="float:left;text-align:left;width:100%">
+                                <div style="width:25%"><b>Slip No: </b> ${item.orderslips.osID}</div>
+                                <div style="width:35%"><b>Customer: </b>${item.orderslips.custName}</div>
+                                <div style="width:40%"><b> Table No: </b>${item.orderslips.tableCode}<img class="editBtn" data-id="${item.orderslips.osID}" data-tableCode="${item.orderslips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px; float:right; cursor:pointer;" 
                                 data-toggle="modal" data-target="#editTable"></div>
-                                <div><b>Status: </b>${item.orderslips.payStatus}</div>
                             </div>
                         </div>
                     </div>
                     
                     <!--Long Card Body-->
-                    <div class="card-body p-2" style="overflow:auto">
-                        <table class="table" id="pendingordersTable" style="width: auto; height: auto;border:0">
+                    <div class="card-body p-0 m-0" style="overflow:auto">
+                        <table class="table p-0 m-0" id="pendingordersTable" style="width:100%; height:15%;border:0">
                             <thead style="background:white">
-                                <tr class="border-bottom">
-                                    <th>Qty</th>
-                                    <th width="50%">Order</th>
-                                    <th width="20%">Status</th>
+                                <tr class="border-bottom; width:100%">
+                                    <th class="p-2">Qty</th>
+                                    <th class="p-2" width="70%">Order</th>
+                                    <th class="p-2" width="20%">Status</th>
+                                    <th style="width:2%"></th>
                                     <th style="width:2%"></th>
                                 </tr>
                             </thead>
@@ -87,36 +84,40 @@
                         //olID = ol.olID;
                                     return `
                                     <tbody style="font-size:13px">
-                                <tr data-id="${ol.olID}">
-                                    <td>${ol.olQty}</td>
-                                    <td>${ol.olDesc}</td>
-                                    <td>
+                                <tr data-id="${ol.olID}" style="overflow:auto">
+                                    <td class="p-2">${ol.olQty}</td>
+                                    <td class="p-2">${ol.olDesc}</td>
+                                    <td class="p-2">
                                         <input type="button" style="width:100%;padding:6%;background:orange;color:white;border:0;border-radius:5px"
                                        id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>
                                     </td>
+                                    <td></td>
                                     <td>
                                         <img class="cancelBtn" data-status="${ol.olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Remarks:</td>
-                                    <td colspan="4">${ol.olRemarks}</td>
+                                    <td class="p-2">Remarks:</td>
+                                    <td class="p-2" colspan="4">${ol.olRemarks}</td>
                                 </tr>
                                 <tr>
-                                <td>Addons:</td>
-                                <td class="aDoQty${ol.olID}"></td>
-                                <td colspan="2" class="aDoName${ol.olID}"></td>
-                                <td class="aDoPrice${ol.olID}"></td>
+                                    <td class="p-2">Addons:</td>
+                                    <td class="aDoQty${ol.olID}"></td>
+                                    <td colspan="2" class="aDoName${ol.olID}"></td>
+                                    <td class="aDoPrice${ol.olID}"></td>
                                 </tr>
                                 `
                                 }).join('')} 
                                 </tbody>
                         </table>
                     </div>
+                    <!--Footer-->
+                    <div class="card-footer p-1 m-1 text-muted">
+                    </div>
                 </div>
             </div>
             `;
-            var modal = `<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
+                var modal = `<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -137,7 +138,7 @@
                     </div>
                 </div>
             </div>`;
-            var tableModal = `<div class="modal fade" id="editTable" tabindex="-1" role="dialog" aria-labelledby="editTableModal" aria-hidden="true">
+                var tableModal = `<div class="modal fade" id="editTable" tabindex="-1" role="dialog" aria-labelledby="editTableModal" aria-hidden="true">
               <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -167,60 +168,60 @@
               </div>
             </div>
             </div>`;
-            $('.lists-container').append(header);
-            $('.lists-container').append(modal);
-            $('.lists-container').append(tableModal);
-          
-            }); 
-              $("input#item_status").on('click', function () {
+                $('.lists-container').append(header);
+                $('.lists-container').append(modal);
+                $('.lists-container').append(tableModal);
+
+            });
+            $("input#item_status").on('click', function() {
                 var id = $(this).attr('data-id');
                 var stats = $(this).val();
-                if( stats == 'served'){
-                stats = 'pending';
-                this.style.backgroundColor = "orange";
-                this.value= "pending";
-                stats = this.value;
-                console.log(stats, id);
-                updateStatus(stats, id);
-                }else if (stats == 'pending'){
-                stats='served';
-                this.style.backgroundColor = "green";
-                this.value= "served";
-                stats = this.value;
-                console.log(stats, id);
-                updateStatus(stats, id);
+                if (stats == 'served') {
+                    stats = 'pending';
+                    this.style.backgroundColor = "gray";
+                    this.value = "pending";
+                    stats = this.value;
+                    console.log(stats, id);
+                    updateStatus(stats, id);
+                } else if (stats == 'pending') {
+                    stats = 'served';
+                    this.style.backgroundColor = "green";
+                    this.value = "served";
+                    stats = this.value;
+                    console.log(stats, id);
+                    updateStatus(stats, id);
                 }
             });
             var btn;
             $("button.deleteOS").on("click", function() {
-                 btn = $(this);
+                btn = $(this);
             });
-            $("button#remSlip").on("click", function(){
-            $(btn).closest("div.list").remove();
+            $("button#remSlip").on("click", function() {
+                $(btn).closest("div.list").remove();
             });
             $("img.cancelBtn").on("click", function() {
                 var cancelID = $(this).attr('data-id');
                 var chckStats = $(this).attr('data-status');
-                if(chckStats == 'served'){
+                if (chckStats == 'served') {
                     alert('Can not cancel!Already Served');
-                }else{
+                } else {
                     cancelOrder(cancelID);
                 }
             });
             $("img.editBtn").on("click", function() {
                 var tableCode = $(this).attr('data-tableCode');
-                var  slipId = $(this).attr('data-id');
+                var slipId = $(this).attr('data-id');
                 setTableData(slipId);
             });
             addAddons();
         }
-       
-        function cancelOrder(cancelID){
+
+        function cancelOrder(cancelID) {
             $('#cancelModal').remove();
             console.log(cancelID);
-             var name = orderlists.filter(item => item.olID === cancelID);
-             console.log(name[0].mName);
-             var cancel = `<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
+            var name = orderlists.filter(item => item.olID === cancelID);
+            console.log(name[0].mName);
+            var cancel = `<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -242,90 +243,94 @@
                 </div>
             </div>`;
             $('.lists-container').append(cancel);
-            $('button#cancel').on('click', function(){
+            $('button#cancel').on('click', function() {
                 var getId = $(this).attr('data-id');
                 $.ajax({
                     url: "<?= site_url('barista/deleteOrderItem') ?>",
                     method: "post",
-                    data : { 
-                        'id' : getId
+                    data: {
+                        'id': getId
                     },
                     success: function(data) {
                         location.reload();
+                    },
+                    error: function(response, setting, errorThrown) {
+                        console.log(response.responseText);
+                        console.log(errorThrown);
+                    }
+                });
+            });
+        }
+
+        function updateStatus(stats, id) {
+            console.log(stats, id);
+            $.ajax({
+                url: "<?= site_url('barista/updateStatus') ?>",
+                method: "post",
+                data: {
+                    'status': stats,
+                    'id': id
+                },
+                success: function(data) {
+                    console.log(data);
+                    location.reload();
                 },
                 error: function(response, setting, errorThrown) {
                     console.log(response.responseText);
                     console.log(errorThrown);
                 }
-                });
             });
-            }
-        function updateStatus(stats, id){
-            console.log(stats, id);
-            $.ajax({
-                url: "<?= site_url('barista/updateStatus') ?>",
-                method: "post",
-                data : { 
-                    'status' : stats,
-                    'id' : id
-                },
-                success: function(data) {
-                    console.log(data);
-                    location.reload();
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(response.responseText);
-                console.log(errorThrown);
-            }
-            });
-    }
-    function addAddons() {
-       // addons.forEach(ao => {
-           for(var i=0; i < addons.length; i++){
-            if($(".thisAddons"+addons[i].olID) != ''){
-                for(var i=0; i < addons.length; i++){
-                    $(".aDoQty"+addons[i].olID).append(`${addons[i].aoQty}<br>`);
-                    $(".aDoName"+addons[i].olID).append(`${addons[i].aoName}<br>`);
-                    $(".aDoPrice"+addons[i].olID).append(`${addons[i].aoTotal}<br>`);
-                
-           }     
-            }
-  //  });
-    }
-}
-    function setTableData(slipID){
-        console.log(slipID);
-                $("#tableCode").empty();
-                $("#tableCode").append(`<option>--Select--</option>`);
-                $(tables).each(function(i) { //to list cities
-                $("#tableCode").append(`<option id="table" value=` + tables[i].tableCode + `>` + tables[i].tableCode + `</option>`);
-                });
-                    // for(var t=0; t < tables.length; t++){
-                    // $("#tableCode").append(`<option name= "tableCode" id ="table" value="${tables[t].tableCode}">${tables[t].tableCode}</option>`);
-                    // }   
-    
-    $("select#tableCode").on('change', function(event) {
-            var optionSelected = $("option:selected", this);
-            var tableCode = this.value;
-            console.log(slipID, tableCode);
-            $.ajax({
-                url: "<?= site_url("barista/editTableNumber")?>",
-                method: "post",
-                data: {
-                    'osID': slipID,
-                    'tableCode': tableCode
-                },
-                success: function(data) {
-                    alert('Table Updated');
-                    location.reload();
-                },
-                error: function(error) {
-                    console.log(error);
+        }
+
+        function addAddons() {
+            // addons.forEach(ao => {
+            for (var i = 0; i < addons.length; i++) {
+                if ($(".thisAddons" + addons[i].olID) != '') {
+                    for (var i = 0; i < addons.length; i++) {
+                        $(".aDoQty" + addons[i].olID).append(`${addons[i].aoQty}<br>`);
+                        $(".aDoName" + addons[i].olID).append(`${addons[i].aoName}<br>`);
+                        $(".aDoPrice" + addons[i].olID).append(`${addons[i].aoTotal}<br>`);
+
+                    }
                 }
-                
+                //  });
+            }
+        }
+
+        function setTableData(slipID) {
+            console.log(slipID);
+            $("#tableCode").empty();
+            $("#tableCode").append(`<option>--Select--</option>`);
+            $(tables).each(function(i) { //to list cities
+                $("#tableCode").append(`<option id="table" value=` + tables[i].tableCode + `>` + tables[i].tableCode + `</option>`);
             });
-    });
-    }
+            // for(var t=0; t < tables.length; t++){
+            // $("#tableCode").append(`<option name= "tableCode" id ="table" value="${tables[t].tableCode}">${tables[t].tableCode}</option>`);
+            // }   
+
+            $("select#tableCode").on('change', function(event) {
+                var optionSelected = $("option:selected", this);
+                var tableCode = this.value;
+                console.log(slipID, tableCode);
+                $.ajax({
+                    url: "<?= site_url("barista/editTableNumber") ?>",
+                    method: "post",
+                    data: {
+                        'osID': slipID,
+                        'tableCode': tableCode
+                    },
+                    success: function(data) {
+                        alert('Table Updated');
+                        location.reload();
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+
+                });
+            });
+        }
     </script>
 </body>
+
 </htmL
