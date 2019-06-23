@@ -17,8 +17,7 @@ class Barista extends CI_Controller{
         return false;
 	}
 	
-	function index()
-	{
+	function index(){
 		if($this->checkIfLoggedIn()){
 			$data['title'] = " ";
 			$this->load->view('barista/head', $data);	
