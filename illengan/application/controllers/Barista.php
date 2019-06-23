@@ -452,8 +452,14 @@ class Barista extends CI_Controller{
         function deleteStockSpoil(){
             $tID = $this->input->post('tID');
             $delRemarks = $this->input->post('delRemarks');
+            $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
+            $date_recorded = date("Y-m-d H:i:s");
 
             $this->baristamodel->deleteStockspoil($tID);
+                                // add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks'])
+            // $this->baristamodel->add_stocklog($stID, $tID, "spoilage", $slDateTime, $dateRecorded, $actualQty, $slRemarks);
+            $this->baristamodel->add_actlog($account_id,$date_recorded,"$user deleted a stockitem consumption.","archived", $delRemarks);
         }
         
     function viewDeliveryReceipt(){

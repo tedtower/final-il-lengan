@@ -1344,8 +1344,7 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
             $this->add_actlog($account_id, $dateRecorded, "Manager added a stockitem consumption.", "add", $tRemarks);
         }
 
-       
-        } 
+    } 
 
 
     // ------ Sales Functions ------

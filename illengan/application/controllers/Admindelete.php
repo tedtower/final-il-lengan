@@ -71,7 +71,7 @@ class Admindelete extends CI_Controller{
         $this->adminmodel->deleteStockspoil($tID);
                             // add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks'])
         // $this->adminmodel->add_stocklog($stID, $tID, "spoilage", $slDateTime, $dateRecorded, $actualQty, $slRemarks);
-        $this->adminmodel->add_actlog($account_id,$date_recorded,"$user deleted a stockitem consumption.","archive", $delRemarks);
+        $this->adminmodel->add_actlog($account_id,$date_recorded,"$user deleted a stockitem consumption.","archived", $delRemarks);
     }
     function deletemenuspoilages($sid){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){

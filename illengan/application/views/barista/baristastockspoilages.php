@@ -421,7 +421,7 @@
             });
         });
 	//End Function Delete
-
+});
 </script> 
 </body>
 
