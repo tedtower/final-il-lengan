@@ -19,11 +19,13 @@ class Adminview extends CI_Controller{
 function viewDashboard(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Dashboard";
-        $this->load->view('admin/templates/head', $data);
+        $data['sales'] = $this->adminmodel->getOSMonthByYear(date('Y'));
+        $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
+        $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
+        $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
-        $this->load->view('admin/adminDashboard');            
-        $this->load->view('admin/templates/scripts');
-        $this->load->view('admin/templates/footer');
+        $this->load->view('admin/adminDashboard');
+        $this->load->view('admin/templates/scripts');         
     }else{
         redirect('login');
     }
@@ -74,12 +76,8 @@ function viewDRFormAdd(){
         $head['title'] = "Inventory - Add DR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $data['uom'] = $this->adminmodel->get_uomForStoring();
-        $data['stock'] = $this->adminmodel->get_stockitems();
+        $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
-        $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
-        $data['pos'] = $this->adminmodel->get_posForBrochure();
-        $data['poItems'] = $this->adminmodel->get_poItemsForBrochure();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
@@ -91,7 +89,9 @@ function viewDRFormEdit(){
         $head['title'] = "Inventory - Edit DR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/deliveryReceiptEdit');
+        $data['stocks'] = $this->adminmodel->get_stockitems();
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $this->load->view('admin/deliveryReceiptEdit',$data);
     }else{
         redirect('login');
     }
@@ -114,7 +114,19 @@ function viewORFormEdit(){
         $head['title'] = "Inventory - Edit OR";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
+        $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['stocks'] = $this->adminmodel->get_stockItemNames();
         $this->load->view('admin/officialReceiptEdit');
+    }else{
+        redirect('login');
+    }
+}
+function viewConsumptionFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add Consumption";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/consumptionAdd');
     }else{
         redirect('login');
     }
@@ -713,7 +725,7 @@ function getStockItem(){
     }
     function viewConsumptions(){
         if($this->checkIfLoggedIn()){
-            $data['title'] = "Returns";
+            $data['title'] = "Consumption";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
             $this->load->view('admin/adminConsumption');
@@ -787,6 +799,38 @@ function getStockItem(){
                     "inputErr" => true
                 ));
             }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getDRItemsBySupplier(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "inputErr" => false,
+                    'uom' => $this->adminmodel->get_uomForStoring(),
+                    "drs" => $this->adminmodel->get_drsBySupplier($id),
+                    "drItems" => $this->adminmodel->get_drItemsBySupplier($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getUOMs(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                'uom' => $this->adminmodel->get_uomForStoring()
+            ));
         }else{
             echo json_encode(array(
                 "sessErr" => true

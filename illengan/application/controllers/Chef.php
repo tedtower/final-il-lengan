@@ -6,7 +6,8 @@ class Chef extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->database();
-        $this->load->model('Chefmodel');  
+        $this->load->model('Chefmodel');
+	date_default_timezone_set('Asia/Manila'); 
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d H:i:s")
 	}

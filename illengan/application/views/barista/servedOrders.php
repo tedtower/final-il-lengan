@@ -20,6 +20,16 @@
                 <!--START "Remove Slip" MODAL-->
             
 <?php include_once('templates/scripts.php')?>
+<style>
+    .table-container {
+    display: flex;
+    flex-direction:row;
+    }
+
+    .table-column {
+    flex: 1 1 0px;
+    }
+</style>
 <script>
       var slips = [];
       var lists = [];
@@ -55,28 +65,26 @@
             <div class="list" id="${item.slips.osID}">
                 <div class="card m-0 p-0" style="max-height:100%">
                     <!--Long Card Header-->
-                    <div class="card-header p-3">
+                    <div class="card-header p-1 m-1">
                         <div style="overflow:auto;font-size:14px">
-                            <div style="float:left;text-align:left;width:60%">
-                                <div><b>Slip No: </b> ${item.slips.osID}</div>
-                                <div><b>Customer: </b>${item.slips.custName}</div>
+                            <div class="row" style="float:left;text-align:left;width:100%">
+                                <div class="table-column"><b>Slip No: </b> ${item.slips.osID}</div>
+                                <div class="table-column"><b>Customer: </b>${item.slips.custName}</div>
+                                <div class="table-column"><b> Table No: </b>${item.slips.tableCode}</div>
                             </div>
-                            <div style="float:right;text-align:left;width:40%">
-                                <div><b> Table No: </b>${item.slips.tableCode}</div>
-                                <div><b>Status: </b>${item.slips.payStatus}</div>
-                            </div>
+
                         </div>
                     </div>
                     
                     <!--Long Card Body-->
-                    <div class="card-body p-2" style="overflow:auto">
-                        <table class="table" id="pendingordersTable" style="width: auto; height: auto;border:0">
+                    <div class="card-body p-0 m-0" style="overflow:auto">
+                        <table class="table p-0 m-0" id="pendingordersTable" style="width: auto; height: auto;border:0">
                             <thead style="background:white">
                                 <tr class="border-bottom">
-                                    <th>Qty</th>
-                                    <th width="50%">Order</th>
-                                    <th>Subtotal</th>
-                                    <th width="20%">Status</th>
+                                    <th class="p-2">Qty</th>
+                                    <th class="p-2" width="50%">Order</th>
+                                    <th class="p-2">Subtotal</th>
+                                    <th class="p-2" width="20%">Status</th>
                                     <th style="width:2%"></th>
                                 </tr>
                             </thead>
@@ -85,24 +93,24 @@
                                     return `
                                     <tbody style="font-size:13px">
                                 <tr data-id="${ol.olID}">
-                                    <td>${ol.olQty}</td>
-                                    <td>${ol.olDesc}</td>
-                                    <td><span class="fs-24">₱</span>${ol.olPrice}</td>
-                                    <td>
-                                        <input type="button" style="width:100%;padding:6%;background:blue;color:white;border:0;border-radius:5px"
+                                    <td class="p-2">${ol.olQty}</td>
+                                    <td class="p-2">${ol.olDesc}</td>
+                                    <td class="p-2"><span class="fs-24">₱</span>${ol.olPrice}</td>
+                                    <td class="p-2">
+                                        <input type="button" style="width:100%;padding:6%;background:green;color:white;border:0;border-radius:5px"
                                        id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>
                                     </td>
-                                    <td>
+                                    <td class="p-2">
                                         <img class="cancelBtn" data-status="${ol.olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Remarks:</td>
-                                    <td colspan="4">${ol.olRemarks}</td>
+                                    <td class="p-2">Remarks:</td>
+                                    <td class="p-2" colspan="4">${ol.olRemarks}</td>
                                 </tr>
                                 <tr>
                                 <td>Addons:</td>
-                                <td class="aDoQty${ol.olID}"></td>
+                                <td class="aDoQty${ol.olID} p-2"></td>
                                 <td colspan="2" class="aDoName${ol.olID}"></td>
                                 <td class="aDoPrice${ol.olID}"></td>
                                 </tr>
@@ -110,15 +118,6 @@
                                 }).join('')} 
                                 </tbody>
                         </table>
-                    </div>
-                    <!--Footer-->
-                    <div class="card-footer text-muted">
-                        <div style="overflow:auto;">
-                            <div style="text-align:left;float:left;width:73%; font-size:15px;"><b>Total:</b><span style="border-bottom:1px solid gray; padding:3px 15px">&#8369;${item.slips.osTotal}</span></div>
-                            <div style="float:right;width:25%;float:left;">
-                                <button class="deleteOS btn btn-warning btn-sm" style="font-size:13px;margin:0" data-toggle="modal" data-target="#deleteModal">Remove Slip</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -184,7 +183,7 @@
                 var stats = $(this).val();
                 if( stats == 'served'){
                 stats = 'pending';
-                this.style.backgroundColor = "gray";
+                this.style.backgroundColor = "orange";
                 this.value= "pending";
                 stats = this.value;
                 console.log(stats, id);

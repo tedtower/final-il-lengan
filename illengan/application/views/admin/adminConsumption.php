@@ -14,22 +14,32 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <button class="btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#addEditTransaction" data-original-title style="margin:0"
-                                    id="addBtn">Add Consumption</button>
+                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/consumption/formadd')?>" data-original-title style="margin:0"
+                                    id="addBtn">Add Consumption</a>
                                 <br>
                                 <br>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
-                                        <th><b class="pull-left">Receipt No.</b></th>
-                                        <th><b class="pull-left">Supplier</b></th>
-                                        <th><b class="pull-left">Type</b></th>
-                                        <th><b class="pull-left">Date</b></th>
-                                        <th><b class="pull-left">Total</b></th>
+                                        <th><b class="pull-left">Transaction #</b></th>
+                                        <th><b class="pull-left">Stock Name</b></th>
+                                        <th><b class="pull-left">Qty Consumed</b></th>
+                                        <th><b class="pull-left">Date Consumed</b></th>
+                                        <th><b class="pull-left">Date Recorded</b></th>
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/consumption/formedit')?>" data-original-title style="margin:0"
+                                                id="editBtn">Edit</a>
+                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteConsumption">Archive</button>
+                                            </td>
+                                        </tr>
                                        
                                     </tbody>
                                 </table>

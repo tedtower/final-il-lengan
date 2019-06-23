@@ -79,7 +79,6 @@
                                 <tr class="border-bottom">
                                     <th>Qty</th>
                                     <th width="50%">Order</th>
-                                    <th>Subtotal</th>
                                     <th width="20%">Status</th>
                                     <th style="width:2%"></th>
                                 </tr>
@@ -91,9 +90,8 @@
                                 <tr data-id="${ol.olID}">
                                     <td>${ol.olQty}</td>
                                     <td>${ol.olDesc}</td>
-                                    <td><span class="fs-24">₱</span>${ol.olPrice}</td>
                                     <td>
-                                        <input type="button" style="width:100%;padding:6%;background:blue;color:white;border:0;border-radius:5px"
+                                        <input type="button" style="width:100%;padding:6%;background:orange;color:white;border:0;border-radius:5px"
                                        id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>
                                     </td>
                                     <td>
@@ -114,15 +112,6 @@
                                 }).join('')} 
                                 </tbody>
                         </table>
-                    </div>
-                    <!--Footer-->
-                    <div class="card-footer text-muted">
-                        <div style="overflow:auto;">
-                            <div style="text-align:left;float:left;width:73%; font-size:15px;"><b>Total:</b><span style="border-bottom:1px solid gray; padding:3px 15px">&#8369;${item.orderslips.osTotal}</span></div>
-                            <div style="float:right;width:25%;float:left;">
-                                <button class="deleteOS btn btn-warning btn-sm" style="font-size:13px;margin:0" data-toggle="modal" data-target="#deleteModal">Remove Slip</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -188,7 +177,7 @@
                 var stats = $(this).val();
                 if( stats == 'served'){
                 stats = 'pending';
-                this.style.backgroundColor = "gray";
+                this.style.backgroundColor = "orange";
                 this.value= "pending";
                 stats = this.value;
                 console.log(stats, id);

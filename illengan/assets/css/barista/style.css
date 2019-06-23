@@ -13,7 +13,7 @@ tbody{
     background: white;
 }
 table{
-    border:1px solid whitesmoke;
+    border:1px solid whitesmoke;\
 }
 .nav-logo{
     width: 38px;
@@ -21,9 +21,12 @@ table{
     border:1px solid #ececec;
     border-radius:38px;
 }
-.c-focus a{
+
+/* .c-focus a{
     color: #ececec !important;
 }
+
 .c-focus:hover a{
     color: #363636 !important;
-}
+} */
+

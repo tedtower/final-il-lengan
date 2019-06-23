@@ -1,11 +1,5 @@
 <html>
-
-<head>
-	<?php include_once('templates/head.php') ?>
-</head>
-
 <body>
-	<?php include_once('templates/navigation.php') ?>
 	<!--End Top Nav-->
 	<div class="container">
 		
