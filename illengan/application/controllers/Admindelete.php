@@ -61,25 +61,17 @@ class Admindelete extends CI_Controller{
             redirect('login');
         }
     }
-    function deletestockspoilages(){
-        
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $this->form_validation->set_rules('accountId', 'Account Id', 'trim|required');
-            if($this->form_validation->run()){
-                $ssID = trim($this->input->post("ssID"));
-                $delRemarks = $this->input->post("delRemarks");
-                $dateRecorded =  date("Y-m-d H:i:s");
-                $type = "delete";
-                $this->adminmodel->delete_account($ssID,$delRemarks,$dateRecorded,$type);
-               
-            }else{
-                echo $accountID;
-               redirect('admin/stock/spoilages');
-            } 
+    function deleteStockSpoil(){
+        $tID = $this->input->post('tID');
+        $delRemarks = $this->input->post('delRemarks');
+        $account_id = $_SESSION["user_id"];
+        $user= $_SESSION["user_name"];
+        $date_recorded = date("Y-m-d H:i:s");
 
-        }else{
-            redirect('login');
-        }  
+        $this->adminmodel->deleteStockspoil($tID);
+                            // add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks'])
+        // $this->adminmodel->add_stocklog($stID, $tID, "spoilage", $slDateTime, $dateRecorded, $actualQty, $slRemarks);
+        $this->adminmodel->add_actlog($account_id,$date_recorded,"$user deleted a stockitem consumption.","archived", $delRemarks);
     }
     function deletemenuspoilages($sid){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){

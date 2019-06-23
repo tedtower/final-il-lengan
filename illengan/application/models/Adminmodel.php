@@ -764,6 +764,10 @@ function get_transitems(){
             }
             }
         } 
+        function deleteStockspoil($tID){
+            $query ="Update transactions set isArchived = ? where tID = ?";
+            return $this->db->query($query, array('1', $tID));
+        }
 
     function add_menuaddon($mID, $ao){
         $query = "INSERT into menuaddons (mID, aoID) values (?,?)";
@@ -1241,7 +1245,7 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return  $this->db->query($query)->result_array();
     }
     function get_spoilagesstock(){
-        $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID) inner join stockitems using (stID) WHERE tType = 'spoilage'";
+        $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID) inner join stockitems using (stID) WHERE tType = 'spoilage' and isArchived = '0'";
         return  $this->db->query($query)->result_array();
     }
     function get_spoilagesaddons(){
@@ -1381,8 +1385,9 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         $query = "INSERT INTO trans_items (tID, tiID, actualQty) VALUES (?,?,?)";
         if($this->db->query($query, array($tID, $tiID, $dQty))) {
             $this->add_stocklog($stID, $tID, "consumption", $tDate, $dateRecorded, $dQty, $tRemarks);
-            $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem consumption.", "add", $tRemarks);
-        }  
+            $this->add_actlog($account_id, $dateRecorded, "Manager added a stockitem consumption.", "add", $tRemarks);
+        }
+
     } 
 
 
@@ -1612,17 +1617,18 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
         , $item['payment'], $item['return'], $item['tiID']));
     }
-    function add_orReceiptItemsForPO($item){
+    function edit_poReceiptItemOR($item){
         $query = "UPDATE
                 transitems
             SET
                 tiPrice = ?,
                 tiDiscount = ?,
                 drStatus = ?,
-                payStatus = ?,
-                rStatus = ?
+                payStatus = ?
             WHERE
                 tiID = ?;";
+        return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
+        , $item['payment'], $item['tiID']));
     }
 
     function add_receiptTransactionItemsQty($tID, $item){

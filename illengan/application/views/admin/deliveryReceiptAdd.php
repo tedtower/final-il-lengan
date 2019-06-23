@@ -472,7 +472,7 @@ function setPOBrochure(pos){
             $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
             $("#drForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
             $("#drForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
-            $("#drForm .ic-level-1:last-child input[name='stID[]']").attr(item[0].stock);
+            $("#drForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
             $("#drForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
             $("#drForm .ic-level-1:last-child *").on("focus",function(){
                 if(!$(this).closest(".ic-level-1").attr("data-focus")){
