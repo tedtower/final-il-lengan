@@ -72,7 +72,8 @@
                                                                     Delivery Receipt</span>
                                                             </div>
                                                             <input type="text" name="receiptNo" id="receiptNo"
-                                                                class="form-control form-control-sm" value="0" readonly="readonly">
+                                                                class="form-control form-control-sm" value="0"
+                                                                readonly="readonly">
                                                         </div>
                                                     </div>
 
@@ -87,15 +88,16 @@
                                                             <input type="date" name="tDate" id="tDate"
                                                                 class="form-control form-control-sm" required>
                                                         </div>
-
+                                                    </div>
+                                                    <div class="form-row">
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm"
                                                                     style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Remarks</span>
                                                             </div>
-                                                            <input type="text" name="tRemarks" id="tRemarks"
-                                                                class="form-control form-control-sm">
+                                                            <textarea name="tRemarks" id="tRemarks"
+                                                                class="form-control form-control-sm"> </textarea>
                                                         </div>
                                                     </div>
 
@@ -191,15 +193,16 @@
                                                             <input type="date" name="tDate" id="tDate"
                                                                 class="form-control form-control-sm" required>
                                                         </div>
-
+                                                    </div>
+                                                    <div class="form-row">
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm"
                                                                     style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Remarks</span>
                                                             </div>
-                                                            <input type="text" name="tRemarks" id="tRemarks"
-                                                                class="form-control form-control-sm">
+                                                            <textarea name="tRemarks" id="tRemarks"
+                                                                class="form-control form-control-sm"> </textarea>
                                                         </div>
                                                     </div>
 
@@ -208,7 +211,8 @@
                                                         data-toggle="modal" data-target="#stockItemsModal"
                                                         data-original-title style="margin:0" id="">Add Items</a>
 
-                                                    <a id="resolveBtn" class="resolveBtn btn btn-default btn-sm">Resolve Items</a>
+                                                    <a id="resolveBtn" class="resolveBtn btn btn-default btn-sm">Resolve
+                                                        Items</a>
                                                     <br><br>
                                                     <!--Table containing the different input fields in adding PO items -->
                                                     <table class="returnsTable table table-sm table-borderless">
@@ -276,7 +280,7 @@
                                 </div>
                                 <!--End of Stock Items Modal"-->
 
-                                
+
                                 <!--Start of Stock Items Modal"-->
                                 <div class="modal fade bd-example-modal-lg" id="stockItemsModal" tabindex="-1"
                                     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
@@ -310,34 +314,68 @@
                                     </div>
                                 </div>
                                 <!--End of Stock Items Modal"-->
-                                    <!--Start of Delete Modal-->
-                    <div class="modal fade" id="deleteReturns" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Delete Return</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form id="formDelete" action="<?= site_url('admin/transaction/delete')?>">
-                                    <div class="modal-body">
-                                        <h6 id="deleteReturnItem"></h6>
-                                        <p>Are you sure you want to delete this return?</p>
-                                        <input type="number" name="tID" value="" hidden="hidden">
-                                        <div>
-                                            Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
+                                <!--Start of Delete Modal-->
+                                <div class="modal fade" id="deleteReturns" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete Return</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="formDelete" action="<?= site_url('admin/transaction/delete')?>">
+                                                <div class="modal-body">
+                                                    <h6 id="deleteReturnItem"></h6>
+                                                    <p>Are you sure you want to delete this return?</p>
+                                                    <input type="number" name="tID" value="" hidden="hidden">
+                                                    <div>
+                                                        Remarks:<input type="text" name="deleteRemarks"
+                                                            id="deleteRemarks" class="form-control form-control-sm">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </div>
+                                <!--End of Delete Modal-->
+
+                                <!--Start of Resolve Modal-->
+                                <div class="modal fade" id="resolveModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Resolve a Return</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                                <div class="modal-body">
+                                                    <h6 id="deleteReturnItem"></h6>
+                                                    <p>Do you want to resolve a return?</p>
+                                                    <input type="number" name="tID" value="" hidden="hidden">
+                                                    <div>
+                                                        Remarks:<textarea name="tRemarks"
+                                                            id="tRemarks" class="form-control form-control-sm"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="button" onclick="setRemarks()" class="btn btn-warning btn-sm">Resolve</button>
+                                                </div>
+                                        </div>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!--End of Delete Modal-->
+                                </div>
       
 </body>
 <?php include_once('templates/scripts.php') ?>
@@ -493,6 +531,24 @@ var suppmerch = [];
                 `}
             </div>
             `;
+            var remarksDiv = `
+            <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
+                ${item.returns.tRemarks === "" || item.returns.tRemarks === null ? " " : 
+                `<caption><b>Orders</b></caption>
+                <br>
+                <table id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
+                    <thead class="thead-light">
+                        <tr>
+                        <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr><td>${item.returns.tRemarks}</td></tr>
+                    </tbody>
+                </table>
+                `}
+            </div>
+            `;
             var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
@@ -512,6 +568,7 @@ var suppmerch = [];
             $("#transTable > tbody").append(tableRow);
             $("#transTable > tbody").append(accordion);
             $(".returnsContent").last().append(returnsDiv);
+            $(".returnsContent").last().append(remarksDiv);
 
         });
 
@@ -560,10 +617,10 @@ var suppmerch = [];
     var subPrice = 0;
     function getSelectedStocks() {
         $(document).ready(function () {
-            console.log("HAHAHAH");
             var value = 0;
             var choices = document.getElementsByClassName('stockitems');
             var merchChecked, st;
+
             for (var i = 0; i <= choices.length - 1; i++) {
                 console.log(choices[i].checked);
                 if (choices[i].checked) {
@@ -628,7 +685,7 @@ var suppmerch = [];
                                     <span class="input-group-text" id="inputGroup-sizing-sm"
                                         style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Status</span>
-                                </div><select class="rStatus form-control" style="font-size: 14px;" name="rStatus">
+                                </div><select class="rStatus form-control" onchange="resolveReturn(this)" style="font-size: 14px;" name="rStatus">
                                     <option value="pending">pending</option>
                                     <option value="parital">parital</option>
                                     <option value="delivered">delivered</option>
@@ -743,7 +800,7 @@ var suppmerch = [];
             var tiID = $(this).find("input[name='tiID']").val();
             var tDate = $(this).find("input[name='tDate']").val();
             var tTotal = $(this).find("span[id='total']").text();
-            var tRemarks = $(this).find("input[name='tRemarks']").val();
+            var tRemarks = $(this).find("textarea[name='tRemarks']").val();
 
             var trans = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
@@ -814,7 +871,7 @@ var suppmerch = [];
         modal.find("select[name='spID']").find(`option[value=${returns.returns.spID}]`).attr("selected", "selected");
         modal.find("input[name='receiptNo']").val(returns.returns.receiptNo);
         modal.find("input[name='tDate']").val(returns.returns.tDate);
-        modal.find("input[name='tRemarks']").val(returns.returns.tRemarks);
+        modal.find("textarea[name='tRemarks']").val(returns.returns.tRemarks);
         modal.find("input[name='trID']").val(returns.returns.tID);
 
         returns.returnitems.forEach(rt => {
@@ -873,7 +930,7 @@ var suppmerch = [];
                                     style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                     Status</span>
                             </div><select class="rStatus form-control" style="font-size: 14px;"
-                                name="rStatus">
+                                name="rStatus" onchange="resolveReturn(this)">
                                 <option value="pending">pending</option>
                                 <option value="parital">parital</option>
                                 <option value="delivered">delivered</option>
@@ -933,7 +990,6 @@ var suppmerch = [];
             $('#stockItemsModal').find(".getSelected").attr("onclick", "getSelectedReceipts()");
         }
     });
-       
     }
     function getSelectedReceipts() {
         $(document).ready(function() {
@@ -1044,13 +1100,14 @@ var suppmerch = [];
             var receiptNo = $(this).find("input[name='receiptNo']").val();
             var tDate = $(this).find("input[name='tDate']").val();
             var tTotal = $(this).find("span[id='total1']").text();
-            var tRemarks = $(this).find("input[name='tRemarks']").val();
+            var tRemarks = $(this).find("textarea[name='tRemarks']").val();
 
             var trans = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
                 var row = $(this).find(".returnElements").eq(index);
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
                 trans.push({
+                    tID: tID,
                     tiID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
                     uomID: row.find("input[name='uomID']").data("id"),
                     stID: parseInt(row.attr('data-stockid')),
@@ -1067,6 +1124,7 @@ var suppmerch = [];
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
 
                 transitems.push({
+                    tID: tID,
                     tiID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
                     stID: parseInt(row.attr('data-stockid')),
                     tiQty: row.find("input[name='tiQty']").val(),
@@ -1088,6 +1146,7 @@ var suppmerch = [];
                 url: "<?= site_url("admin/returns/edit")?>",
                 method: "post",
                 data: {
+                    tID: tID,
                     spID: spID,
                     spName: spName,
                     receiptNo: receiptNo,
@@ -1098,6 +1157,7 @@ var suppmerch = [];
                     ti: JSON.stringify(transitems)
                 },
                 beforeSend: function() {
+                    console.log('tID '+tID);
                     console.log('spID ' + spID);
                     console.log('spName ' + spName);
                     console.log('tDate ' + tDate);
@@ -1117,6 +1177,25 @@ var suppmerch = [];
         });
     });
     // ----------------------- E N D  O F  E D I T I N G  R E T U R N S --------------------------
+
+var menuItem;
+function resolveReturn(item) {
+    if($(item).val() === "resolved") {
+        $("#resolveModal").modal('show');
+    }
+    menuItem = $(item).closest("tr").prev("tr").find("input[name='stName']").val();
+}
+
+function setRemarks() {
+    var tRemarks = $('#resolveModal').find("textarea[name='tRemarks']").val();
+    tRemarks = menuItem + ' return was resolved with '+ tRemarks;
+    var retRemarks = $('#editReturns').find("textarea[name='tRemarks']").val();
+    var stockitem = $('#editReturns').find("textarea[name='tRemarks']").val();
+
+    retRemarks = retRemarks +', '+ tRemarks;
+    $("#editReturns").find("textarea[name='tRemarks']").val(retRemarks);
+    $("#resolveModal").modal("hide");
+}
 
 </script>
 </html>
