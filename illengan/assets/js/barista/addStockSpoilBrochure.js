@@ -45,9 +45,7 @@ function getSelectedStocks() {
 var elements;
 function addStockItems() {
     elements = document.getElementsByClassName('stockelem');
-    console.log(elements);
     var tDate = document.getElementById('tDate').value;
-    console.log(tDate);
     var stockItems = [];
     var stocks = [];
     var stID,actualQty, tRemarks, curQty,uomID,spmActualQty,uomStore;
@@ -61,7 +59,16 @@ function addStockItems() {
         spmActualQty = document.getElementsByName('spmActualQty')[i].value;
         uomStore =document.getElementsByName('uomStore')[i].value;
         
-        
+        console.log('uomID '+ uomID);
+        console.log(' stID'+stID);
+        console.log('stName  '+stName);
+        console.log(' curQty'+curQty);
+        console.log(' actualQty'+actualQty);
+        console.log(' tRemarks'+tRemarks);
+		console.log(' spmActualQty '+spmActualQty);
+        console.log(' uomStore'+uomStore);
+        console.log(tDate);
+		
         stockItems = {
             'uomID': uomID,
             'stID': stID,
