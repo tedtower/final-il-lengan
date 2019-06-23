@@ -597,5 +597,92 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             LEFT JOIN uom USING(uomID);";
             return $this->db->query($query)->result_array();
         }
+        function get_SPMs($spID){
+            $query = "SELECT
+                stID,
+                CONCAT(
+                    stName,
+                    IF(stSize IS NULL, '', CONCAT(' ', stSize))
+                ) AS stName,
+                suppliermerchandise.uomID,
+                uomAbbreviation,
+                spmID,
+                spmName,
+                spmPrice,
+                spmActualQty,
+                spID,
+                spName
+            FROM
+                (
+                    stockitems
+                RIGHT JOIN(
+                        suppliermerchandise
+                    LEFT JOIN supplier USING(spID)
+                    ) USING(stID)
+                )
+            LEFT JOIN uom on (suppliermerchandise.uomID = uom.uomID) 
+            WHERE spID = ?";
+            return $this->db->query($query, array($spID))->result_array();
+        }
+        function get_posBySupplier($id){
+            $query = "SELECT
+                    tID as transactionID,
+                    spID suppID,
+                    spName suppName,
+                    supplierName altName,
+                    tNum as transNum,
+                    receiptNo as receipt,
+                    tDate as date,
+                    tTotal as total,
+                    tRemarks as remarks
+                FROM
+                    transactions
+                LEFT JOIN supplier USING(spID)
+                WHERE
+                    tID IN(
+                    SELECT
+                        tID AS transactionID
+                    FROM
+                        (
+                            transitems
+                        LEFT JOIN trans_items USING(tiID)
+                        )
+                    LEFT JOIN transactions USING(tID)
+                    WHERE
+                        tType = 'purchase order' AND drStatus = 'pending' AND spID = ?
+                    GROUP BY
+                        tID
+                )";
+            return $this->db->query($query, array($id))->result_array();
+        }
+        function get_poItemsBySupplier($id){
+            $query = "SELECT
+                    tID AS transactionID,
+                    tiID AS itemID,
+                    tiName AS NAME,
+                    tiPrice AS price,
+                    tiDiscount AS discount,
+                    transitems.uomID AS uom,
+                    uomAbbreviation as unit,
+                    stID AS stock,
+                    CONCAT(stName,
+                        IF(stSize IS NULL, '', CONCAT(' ', stSize))
+                    ) AS stockname,
+                    tiQty AS qty,
+                    qtyPerItem AS equivalent,
+                    actualQty as actual,
+                    tiSubtotal AS subtotal
+                FROM
+                    (
+                        transitems
+                    LEFT JOIN trans_items USING(tiID)
+                    )
+                left join stockitems using (stID)
+                LEFT JOIN uom on (transitems.uomID = uom.uomID)
+                LEFT JOIN transactions USING(tID)
+                WHERE
+                    tType = 'purchase order' AND drStatus = 'pending' AND spID = ?";
+            return $this->db->query($query, array($id))->result_array();
+        }
     }
 ?>
