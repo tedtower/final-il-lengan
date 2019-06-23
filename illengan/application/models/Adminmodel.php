@@ -1552,24 +1552,42 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                     if($trans[$in]['tiID'] == null) {
                         $this->add_transitems($returns, $ti);
                     } else if($trans[$in]['del'] === 0) {
-                        $this->delete_transitem($returns, $ti);
+                        $this->delete_transitem($trans[$in]['tiID']);
                     } else {
-                        $this->update_transitem($returns, $ti);
+                        $this->update_transitem($returns, $ti, $tID);
                     }
                 }
             }
         }
     }
 
-    function update_transitem($trans, $ti) {
+    function update_transitem($trans, $ti, $tID) {
         $query = "UPDATE transitems SET rStatus = ? WHERE tiID = ?";
         if(count($trans) > 0) {
             for($in = 0; $in < count($trans) ; $in++){
-                $this->db->query($query, array("delivered","73"));
+               if( $this->db->query($query, array($trans[$in]['rStatus'],$trans[$in]['tiID'])))
+               {
+                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID);
+               }
+           }
+        }
+    }
+
+    function update_trans_items($ti, $tiID, $tID) {
+        $query = "UPDATE trans_items SET tiQty = ?, actualQty = ?, tiSubtotal = ? WHERE tiID = ? AND tID = ?";
+        if(count($ti) > 0) {
+            for($in = 0; $in < count($ti) ; $in++){
+            if($ti[$in]['tiID'] === $tiID) {
+                $this->db->query($query, array($ti[$in]['tiQty'], $ti[$in]['actualQty'], $ti[$in]['tiSubtotal'],
+                $ti[$in]['tiID'], $tID));
+            }
            }
         }
     }
         
+    function delete_transitem() {
+
+    }
     function update_paymentStatus($tiID, $status){
         $this->db->query("UPDATE transitems SET payStatus = ? WHERE tiID = ?;",array($status, $tiID));
     }

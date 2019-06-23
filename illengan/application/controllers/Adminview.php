@@ -710,6 +710,7 @@ function getStockItem(){
             redirect('login');
         }
     }
+    
     function jsonReturns() {
         if($this->checkIfLoggedIn()){
             $data = array(

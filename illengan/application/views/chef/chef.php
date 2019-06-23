@@ -18,13 +18,13 @@
                 <!--Table-->
                     
                 <table id="orders" class="table table-bordered" cellspacing="0" width="100%">
-                        <thead class="thead-light">
+                        <thead class="thead-dark">
                             <tr>
-                            <th width="10%">No.</th>
-                                <th>Order</th>
-                                <th>Qty</th>
-                                <th>Table</th>
-                                <th>Customer</th>
+                            <th width="10%"><b>No.</b></th>
+                                <th><b>Order</b></th>
+                                <th><b>Qty</b></th>
+                                <th><b>Table</b></th>
+                                <th><b>Customer</b></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,7 +91,7 @@ var orders = [];
             `;
             var addonsDiv = `
             <div class="addons" > <!-- Preferences table container-->
-                ${parseInt(item.addons.length) === 0 && item.orders.olRemarks === null ? "No addons and remarks" : 
+                ${parseInt(item.addons.length) === 0 ? "No addons" : 
                 `<caption><b>Addons:</b></caption>
                 <br>
                 <table id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
@@ -117,11 +117,11 @@ var orders = [];
             </div>
             `;
             var accordion = `
-            <tr class="accordion" style="display:none">
+            <tr class="accordion" style="display:table-row">
             <td colspan="5"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                    <div style="overflow:hidden;"> <!-- container ng accordion -->
                         
-                        <div style="width:100%;overflow:auto;margin-left:9%;"> <!-- description, preferences, and addons container -->
+                        <div style="width:100%;overflow:auto;margin-left:1%;"> <!-- description, preferences, and addons container -->
                         <div class="AOaccordion" style="overflow:auto;"> <!-- Preferences and addons container-->
                                 
                             </div>
@@ -132,12 +132,12 @@ var orders = [];
             `;
 
             var remarks = `
-            <div class="remarks"> <!-- Preferences table container-->
+            <div class="remarks" style="border-left: 2px solid #dee2e6; padding-left: 20px;"> <!-- Preferences table container-->
                 ${item.orders.olRemarks === null || item.orders.olRemarks === "" ? " " : 
-                `<caption><b>Remarks:</b></caption>
+                `<caption><b>Remarks</b></caption>
                 <br>
                 <div>
-                    <div style="margin-left:5%">${item.orders.olRemarks}</div>
+                    <div>${item.orders.olRemarks}</div>
                 </div>
                 `}
             </div>
