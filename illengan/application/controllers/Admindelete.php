@@ -143,5 +143,10 @@ class Admindelete extends CI_Controller{
         $this->adminmodel->delete_menu($id);
         $this->viewMenu();
     }
+
+    function deleteTransaction(){
+        $id = $this->input->post('tID');
+        $this->adminmodel->delete_transaction($id);
+    }
 }
 ?>

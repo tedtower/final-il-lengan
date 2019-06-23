@@ -9,123 +9,129 @@
         <br>
         <br>
         <?php if(isset($drs[0])){
-        ?>
-        <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-            <thead class="thead-dark delius">
-                <tr>
-                  <th class="pull-left">TRANSACTION #</th>
-                  <th class="pull-left">RECEIPT #</th>
-                  <th class="pull-left">SUPPLIER</th>
-                  <th class="pull-left">DATE</th>
-                  <th class="pull-left">TOTAL</th>
-                  <th class="pull-left">ACTIONS</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach($drs as $dr){
-            ?>
-                <tr data-id="<?= $dr['id']?>">
-                    <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a><?= $dr['num']?></td>
-                    <td><?= $dr['receipt']?></td>
-                    <td><?= $dr['supplier']?></td>
-                    <td><?= $dr['date']?></td>
-                    <td><?= $dr['total']?></td>
-                    <td>
-                    <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
-                        id="editBtn">Edit</a>
-                    <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
-                    </td>
-                </tr>
-                <tr class="accordion" style="display:none">
-                    <td colspan="6">
-                        <div class="container" style="display:none">
-                        <div>Date Recorded:<?= $dr['daterecorded'] == null ? "N/A" : $dr['daterecorded']?></div>
-                        <div>Remarks:<?= $dr['remarks'] == null ? "N/A" : $dr['remarks']?></div>
+                                ?>
+                                <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
+                                    width="100%">
+                                    <thead class="thead-dark">
+                                        <th><b class="pull-left">Transaction #</b></th>
+                                        <th><b class="pull-left">Receipt #</b></th>
+                                        <th><b class="pull-left">Supplier</b></th>
+                                        <th><b class="pull-left">Date</b></th>
+                                        <th><b class="pull-left">Total</b></th>
+                                        <th><b class="pull-left">Actions</b></th>
+                                    </thead>
+                                    <tbody>
+                                    <?php foreach($drs as $dr){
+                                    ?>
+                                        <tr data-id="<?= $dr['id']?>">
+                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a><?= $dr['num']?></td>
+                                            <td><?= $dr['receipt']?></td>
+                                            <td><?= $dr['supplier']?></td>
+                                            <td><?= $dr['date']?></td>
+                                            <td><?= $dr['total']?></td>
+                                            <td>
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
+                                                id="editBtn">Edit</a>
+                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
+                                            </td>
+                                        </tr>
+                                        <tr class="accordion" style="display:none">
+                                            <td colspan="6">
+                                                <div class="container" style="display:none">
+                                                <div>Date Recorded:<?= $dr['daterecorded'] == null ? "N/A" : $dr['daterecorded']?></div>
+                                                <div>Remarks:<?= $dr['remarks'] == null ? "N/A" : $dr['remarks']?></div>
 
-                        <table class="table table-bordered">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Qty</th>
-                                    <th>Equivalent</th>
-                                    <th>Actual Qty</th>
-                                    <th>Price</th>
-                                    <th>Discount</th>
-                                    <th>Subtotal</th>
-                                    <th>Payment Status</th>
-                                    <th>Delivery Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <?php foreach($drItems as $drItem){
-                                if($drItem['transaction'] == $dr['id']){?>
-                                <tr>
-                                    <td><?= $drItem['name']?></td>
-                                    <td><?= $drItem['qty']?></td>
-                                    <td><?= $drItem['equivalent']?></td>
-                                    <td><?= $drItem['actualqty']?></td>
-                                    <td><?= $drItem['price']?></td>
-                                    <td><?= $drItem['discount'] == null ||  $drItem['discount'] == 0 ? "N/A" : $drItem['discount']?></td>
-                                    <td><?= $drItem['subtotal']?></td>
-                                    <td><?= $drItem['paymentstatus']?></td>
-                                    <td><?= $drItem['deliverystatus']?></td>
-                                </tr>
-                                <?php }
+                                                <table class="table table-bordered">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Qty</th>
+                                                            <th>Equivalent</th>
+                                                            <th>Actual Qty</th>
+                                                            <th>Price</th>
+                                                            <th>Discount</th>
+                                                            <th>Subtotal</th>
+                                                            <th>Payment Status</th>
+                                                            <th>Delivery Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <?php foreach($drItems as $drItem){
+                                                        if($drItem['transaction'] == $dr['id']){?>
+                                                        <tr>
+                                                            <td><?= $drItem['name']?></td>
+                                                            <td><?= $drItem['qty']?></td>
+                                                            <td><?= $drItem['equivalent']?></td>
+                                                            <td><?= $drItem['actualqty']?></td>
+                                                            <td><?= $drItem['price']?></td>
+                                                            <td><?= $drItem['discount'] == null ||  $drItem['discount'] == 0 ? "N/A" : $drItem['discount']?></td>
+                                                            <td><?= $drItem['subtotal']?></td>
+                                                            <td><?= $drItem['paymentstatus']?></td>
+                                                            <td><?= $drItem['deliverystatus']?></td>
+                                                        </tr>
+                                                        <?php }
+                                                        }?>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }?>
+                                    </tbody>
+                                </table>
+                                <?php
+                                }else{
+                                ?>
+                                <p>No deliveries recorded!</p>
+                                <?php
                                 }?>
-                            </tbody>
-                        </table>
-                        </div>
-                    </td>
-                </tr>
-            <?php
-            }?>
-            </tbody>
-        </table>
-        <?php
-        }else{
-        ?>
-        <p>No deliveries recorded!</p>
-        <?php
-        }?>
-        <!--End Table Content-->
+                                <!--End Table Content-->
+                                
         
-        <!--Start of Modal "Delete Stock Item"-->
-        <div class="modal fade" id="delete" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Delete/Archive
-                            Transaction
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="confirmDelete">
-                        <div class="modal-body">
-                            <h6 id="deleteTableCode"></h6>
-                            <p>Are you sure you want to delete/archive this item?</p>
-                            <input type="text" name="" hidden="hidden">
-                            <div>
-                                Remarks:<input type="text" name="deleteRemarks"
-                                    id="deleteRemarks" class="form-control form-control-sm">
+       <!--Start of Modal "Delete Stock Item"-->
+       <div class="modal fade" id="delete" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete/Archive
+                                                    Transaction
+                                                </h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="confirmDelete">
+                                                <div class="modal-body">
+                                                    <h6 id="deleteTableCode"></h6>
+                                                    <p>Are you sure you want to delete/archive this item?</p>
+                                                    <input type="text" name="" hidden="hidden">
+                                                    <div>
+                                                        Remarks:<input type="text" name="deleteRemarks"
+                                                            id="deleteRemarks" class="form-control form-control-sm">
+                                                    </div>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--End of Modal "Delete Stock Item"-->
                             </div>
                         </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm"
-                                data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
-        <!--End of Modal "Delete Stock Item"-->
-    
-</div>
+    </div>
+    </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
     var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals')?>';
@@ -135,7 +141,6 @@
     var getPOsUrl = '<?= site_url('admin/transactions/getPOs')?>';
     var getDRsUrl = '<?= site_url('admin/transactions/getDRs')?>';
     var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs')?>';
-
     $(function() {
         $(".accordionBtn").on('click', function () {
             if ($(this).closest("tr").next(".accordion").css("display") == 'none') {

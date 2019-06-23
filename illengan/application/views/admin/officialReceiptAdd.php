@@ -570,6 +570,7 @@ function setPOBrochure(pos){
         event.preventDefault();
         $(this).find("input[name='poitems']:checked").each(function(index){
             var item = pos.poItems.filter(item => item.itemID == $(this).val());
+            console.log(item);
             $("#addItemBtn").trigger("click");
             $("#orForm .ic-level-1:last-child").attr("data-id",item[0].itemID);
             $("#orForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
@@ -585,7 +586,7 @@ function setPOBrochure(pos){
             $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
             $("#orForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
             $("#orForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
-            $("#orForm .ic-level-1:last-child input[name='stID[]']").attr(item[0].stock);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
             $("#orForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
             $("#orForm .ic-level-1:last-child *").on("focus",function(){
                 if(!$(this).closest(".ic-level-1").attr("data-focus")){
@@ -632,7 +633,7 @@ function setDRBrochure(drs){
             $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
             $("#orForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
             $("#orForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
-            $("#orForm .ic-level-1:last-child input[name='stID[]']").attr(item[0].stock);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
             $("#orForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
             $("#orForm .ic-level-1:last-child *").on("focus",function(){
                 if(!$(this).closest(".ic-level-1").attr("data-focus")){

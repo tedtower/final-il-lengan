@@ -814,6 +814,7 @@ $(document).ready(function () {
                 osPayDateTime: osPayDateTime,
                 osDateTime: osDateTime,
                 custName: custName,
+                osDiscount: parseInt(osDiscount),
                 osTotal: parseInt(osTotal),
                 payStatus: 'paid',
                 tableCodes: (tableCodes).trim(),
