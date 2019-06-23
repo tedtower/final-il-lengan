@@ -464,7 +464,7 @@ class Barista extends CI_Controller{
             $this->load->view('barista/templates/head');
             $this->load->view('barista/templates/navigation');
             $data['uom'] = $this->baristamodel->get_uomForStoring();
-            $data['stock'] = $this->baristamodel->get_stockitems();
+            $data['stocks'] = $this->baristamodel->get_stockitems();
             $data['supplier'] = $this->baristamodel->get_supplier();
             $data['suppmerch'] = $this->baristamodel->get_supplierstocks();
             $data['pos'] = $this->baristamodel->get_posForBrochure();
@@ -498,6 +498,58 @@ class Barista extends CI_Controller{
             redirect('login');
         }
     }
+    function getSuppMerchForBrochure(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "merchandise" => $this->baristamodel->get_SPMs($id),
+                    "uom" => $this->baristamodel->get_uomForStoring()
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getUOMs(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                'uom' => $this->baristamodel->get_uomForStoring()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getPOItemsBySupplier(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "inputErr" => false,
+                    'uom' => $this->baristamodel->get_uomForStoring(),
+                    "pos" => $this->baristamodel->get_posBySupplier($id),
+                    "poItems" => $this->baristamodel->get_poItemsBySupplier($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
 
 }
 ?>

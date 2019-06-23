@@ -203,6 +203,8 @@ $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
+$route['barista/getSupplierMerchandise'] = "barista/getSuppMerchForBrochure";
+$route['barista/getPosFromSupplier'] = "barista/getPOItemsBySupplier";
 //---------------------------------------------------------------
 $route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
 $route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";

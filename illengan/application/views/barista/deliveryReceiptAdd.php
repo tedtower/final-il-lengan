@@ -5,20 +5,24 @@
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?>
                         </p>
-                        <h6 style="font-size: 16px;margin-left:15px">Add Delivery Receipt</h6>
                     </div>
-                    <form id="drForm" action="<?= site_url("admin/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                    <div class="card">
+                    <div class="card-header">
+                    <h6 style="font-size: 16px;margin:0">Add Delivery Receipt</h6>
+                    </div>
+                    <form id="drForm" action="<?= site_url("barista/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                    <div class="card-body">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
                                 <!--Source Name-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                        <span class="input-group-text"
+                                            style="width:100px;background:whitesmoke;color:black;font-size:15px;font-weight:600;">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
+                                    <select class="spID form-control"  name="spID" required>
                                         <option value="" selected>Choose</option>
                                     <?php if(isset($supplier)){
                                         foreach($supplier as $sup){?>
@@ -29,60 +33,62 @@
                                 <!--Date-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                        <span class="input-group-text"
+                                            style="width:100px;background:whitesmoke;color:black;font-size:15px;font-weight:600">
                                             Receipt</span>
                                     </div>
-                                    <input type="text" class="form-control  border-left-0"
+                                    <input type="text" class="form-control"
                                         name="receipt">
                                 </div>
                                 <!--Date-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                        <span class="input-group-text"
+                                            style="width:142px;background:whitesmoke;color:black;font-size:15px;font-weight:600">
                                             Transaction Date</span>
                                     </div>
-                                    <input type="date" class="form-control  border-left-0"
+                                    <input type="date" class="form-control"
                                         name="date" required>
                                 </div>
                             </div>
                             <!--Remarks-->
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text border border-secondary"
-                                        style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                    <span class="input-group-text"
+                                        style="width:100px;background:whitesmoke;color:black;font-size:15px;font-weight:600">
                                         Remarks</span>
                                 </div>
                                 <textarea type="text" name="remarks"
-                                    class="form-control form-control-sm  border-left-0"
+                                    class="form-control"
                                     rows="1"></textarea>
                             </div>
-                            <a id="addNewBtn" class="btn btn-primary btn-sm"
-                                style="margin:0;color:blue;font-weight:600;">New Item</a>
-                            <a id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
+                            <button id="addNewBtn" class="btn btn-primary btn-sm"
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button">New Item</button>
+                            <button id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#merchandiseBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getSupplierMerchandise')?>">Add Merchandise</a>
-                            <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;width:auto" type="button" data-url="<?= site_url('barista/getSupplierMerchandise')?>">Add Merchandise</button>
+                            <button id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#poBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getPosFromSupplier')?>">PO Item</a>
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button" data-url="<?= site_url('barista/getPosFromSupplier')?>">PO Item</button>
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
                             <div class="ic-level-2"></div>
 
                             <br>
-                            <span>Total: &#8369;<span class="total">0</span></span>
+                            <span style="font-size:16px">Total: &#8369;<span class="total">0</span></span>
                             <!--Total of the trans items-->
-
-                            <div class="modal-footer">
+                        </div>
+                        <div class="modal-footer" >
                                 <button type="button" class="btn btn-danger btn-sm"
                                     data-dismiss="modal">Cancel</button>
                                 <button class="btn btn-success btn-sm"
                                     type="submit">Insert</button>
-                            </div>
                         </div>
+                    </div>
                     </form>
+                    </div>
+
 
 
                     <!--Start of merchandiseBrochure Modal"-->
@@ -136,7 +142,7 @@
                                                     style="width:130px;background:#737373;color:white;font-size:14px;font-weight:600">
                                                     Purchase Order</span>
                                             </div>
-                                            <select class="form-control form-control-sm" name="po">
+                                            <select class="form-control " name="po">
                                                 <option value="" selected>Choose</option>
                                             </select>
                                             <table class="table">
@@ -189,8 +195,8 @@
                                                 }else{
                                                     foreach($stocks as $stock){
                                             ?>
-                                            <div class="d-flex d-inline-block ic-level-1">
-                                                <div><input name="stocks" type="radio" class="mr-3" value="<?= $stock['stID']?>" data-name="<?= $stock['stName']?>"/></div>
+                                            <div class="d-flex d-inline-block ic-level-1" style="font-size:16px;overflow:auto">
+                                                <div><input name="stocks" type="radio" style="margin-top:6px" class="mr-3" value="<?= $stock['stID']?>" data-name="<?= $stock['stName']?>"/></div>
                                                 <div><?= $stock['stName']?> (<?= $stock['uomAbbreviation']?>)</div>
                                             </div>
                                             <?php
@@ -199,7 +205,7 @@
                                             ?>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer m-0">
                                         <button type="button" class="btn btn-danger btn-sm"
                                             data-dismiss="modal">Cancel</button>
                                         <button class="btn btn-success btn-sm" type="submit">Ok</button>
@@ -210,13 +216,13 @@
                     </div>
                 </div>
       
-<?php include_once('templates/scripts.php') ?>
+                <?php include_once('templates/scripts.php') ?>
 <script>
 $(function(){
     var uom;
     $.ajax({
         method: "GET",
-        url: "/admin/getUOMs",
+        url: "/barista/getUOMs",
         dataType: "JSON",
         success: function(data){
             uom = data.uom;
