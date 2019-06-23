@@ -155,7 +155,13 @@
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                Quantity</span>
+                                                                Current Quantity</span>
+                                                        </div>
+                                                        <input type="text" name="msoldQty" id="msoldQty" class="form-control form-control-sm" readonly>
+														<span class="text-danger"><?php echo form_error("msQty"); ?></span>
+														<div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                New Quantity</span>
                                                         </div>
                                                         <input type="number" min="1" name="msQty" id="msQty" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("msQty"); ?></span>
@@ -297,7 +303,8 @@
                 $("#editSpoil").find("input[name='msID']").val($(this).closest("tr").attr(
                     "data-msID"));
 				$("#editSpoil").find("input[name='msQty']").val($(this).closest("tr").attr(
-					"data-msQty"));
+                    "data-msQty"));
+				$("#editSpoil").find("input[name='msoldQty']").val(table.msQty);
 				$("#editSpoil").find("input[name='msDate']").val($(this).closest("tr").attr(
 					"data-msDate"));
 				$("#editSpoil").find("input[name='msRemarks']").val($(this).closest("tr").attr(
@@ -327,14 +334,15 @@
 	//END OF POPULATING TABLE
 	//-------------------------Function for Edit-------------------------------
 	$(document).ready(function() {
-    $("#editSpoil form").on('submit', function(event) {
+    $("#editSpoil form#editSpoil").on('submit', function(event) {
 		event.preventDefault();
 		var msID = $(this).find("input[name='msID']").val();
         var prID = $(this).find("input[name='prID']").val();
         var msQty = $(this).find("input[name='msQty']").val();
+		var oldQty = $(this).find("input[name='msoldQty']").val();
         var msDate = $(this).find("input[name='msDate']").val();
         var msRemarks = $(this).find("input[name='msRemarks']").val();
-       
+       console.log(msID, prID, msQty, msDate, msRemarks, oldQty);
         $.ajax({
             url: "<?= site_url("chef/spoilages/menu/edit")?>",
             method: "post",
@@ -342,6 +350,7 @@
 				msID: msID,
                 prID : prID,
                 msQty: msQty,
+				oldQty: oldQty,
                 msDate: msDate,
                 msRemarks: msRemarks
             },
