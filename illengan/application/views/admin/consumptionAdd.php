@@ -42,7 +42,7 @@
                                                 <tr>
                                                     <th>Stock Item</th>
                                                     <th width="17%">Quantity</th>
-                                                    <th width="33%">Remarks</th>
+                                                    <th width="33%">Log Remarks</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="ic-level-2">
@@ -128,7 +128,7 @@
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control" data-id="${id}" value="${name}" name="stock"></td>
+                                class="form-control" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
                                 class="form-control" name="qty"></td>
                         <td style="padding:1% !important"><textarea type="text"
