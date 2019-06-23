@@ -19,16 +19,16 @@
           <li class="nav-item dropdown mr-2">
               <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-boxes"></i> Inventory</a>
               <div class="dropdown-menu dropdown-default elegant-color c-focus" aria-labelledby="menu-dd">
-                  <a class="dropdown-item" href=""><i class="far fa-truck-loading"></i> Delivery Receipt</a>
-                  <a class="dropdown-item" href=""><i class="far fa-receipt"></i> Official Receipt</a>
-                  <a class="dropdown-item" href=""><i class="far fa-calendar-minus"></i> Consumption</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/inventory/deliveryreceipt')?>"><i class="far fa-truck-loading"></i> Delivery Receipt</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/inventory/officialreceipt')?>"><i class="far fa-receipt"></i> Official Receipt</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/viewinventory')?>"><i class="far fa-calendar-minus"></i> Consumption</a>
               </div>
           </li>
           <li class="nav-item dropdown mr-2">
               <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-trash"></i> Spoilage</a>
               <div class="dropdown-menu dropdown-default elegant-color c-focus">
-                  <a class="dropdown-item" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
-                  <a class="dropdown-item" href=""><i class="fal fa-box-open"></i> Stock Spoilage</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/menu/spoilages')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
+                  <a class="dropdown-item" href="<?php echo base_url('barista/stock/spoilages')?>"><i class="fal fa-box-open"></i> Stock Spoilage</a>
               </div>
           </li>
         </ul>

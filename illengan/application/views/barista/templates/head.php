@@ -12,9 +12,7 @@
     <!--Main-->
     <link rel="stylesheet" href="<?php echo base_url().'assets/css/barista/bootstrap.css' ?>" type="text/css">
     <link rel="stylesheet" href="<?php echo base_url().'assets/css/barista/style.css' ?>" type="text/css">
-    <link rel="stylesheet" href="<?php echo base_url().'assets/css/barista/jquery.mobile-1.4.5.min.css' ?>" type="text/css">
-    <link rel="stylesheet" href="<?php echo base_url().'assets/css/barista/jquery.dataTables.min.css' ?>" type="text/css">
-    <link rel="stylesheet" href="<?php echo base_url().'assets/css/barista/style.css' ?>" type="text/css">
     <link rel="stylesheet" href="<?= font_url().'fontawesome/font-awesome.css'?>" type="text/css">
+    
     
 </head>

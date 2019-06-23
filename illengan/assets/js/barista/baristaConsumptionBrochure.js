@@ -66,10 +66,10 @@ function addDestockItems() {
             stocks: JSON.stringify(stocks)
         },
         dataType: 'json',
-        // complete: function() {
-        //     $("#destockitem").modal("hide");
-        //     location.reload();
-        //     },
+        complete: function() {
+            $("#destockitem").modal("hide");
+            location.reload();
+            },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);

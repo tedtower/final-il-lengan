@@ -3,27 +3,23 @@
 <body style="background:white">
   <!--End Top Nav-->
   <div class="content">
-    <div class="container-fluid">
-      <br>
       <p style="text-align:right; font-weight: regular; font-size: 16px">
         <!-- Real Time Date & Time -->
         <?php echo date("M j, Y - l"); ?>
       </p>
-      <div class="content" style="margin-left:auto;">
-        <div class="conteiner-fluid">
-          <!--Start Table-->
-          <div class="card-content">
-          <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips()" style="margin:5px; width: 130px;">Pay Multiple Slips</button>
+          <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips()" style="margin:0; width: 130px;">Pay Multiple Slips</button>
+          <br>
+          <br>
             <table id="ordersTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
               <thead class="thead-dark">
                 <tr>
-                  <th></th>
+                  <th width="2%"></th>
                   <th class="pull-left">SLIP NO.</th>
                   <th class="pull-left">CUSTOMER</th>
                   <th class="pull-left">TABLE CODE</th>
                   <th class="pull-left">TOTAL PAYABLE</th>
                   <th class="pull-left">ORDER DATE</th>
-                  <th class="pull-left">STATUS
+                  <th class="pull-left">STATUS</th>
                   <th class="pull-left">ACTIONS</th>
                 </tr>
               </thead>
@@ -31,11 +27,7 @@
               <tbody>
               </tbody>
             </table>
-          </div>
           <!--End Table-->
-        </div>
-      </div>
-    </div>
   </div>
 
   <!--Start MODAL for BILL COMPUTATION-->
@@ -338,10 +330,10 @@
             osArr: osIDarr
           },
           dataType: "json",
-          // complete: function() {
-          //     $("#Modal_Pay").modal("hide");
-          //     location.reload();
-          // },
+          complete: function() {
+              $("#Modal_Pay").modal("hide");
+              location.reload();
+          },
           error: function (error) {
             console.log(error);
           }
@@ -362,10 +354,10 @@
                       osID: osID,
                   },
                   dataType: "json",
-                  // complete: function() {
-                  //     $("#Modal_Pay2").modal("hide");
-                  //     location.reload();
-                  // },
+                  complete: function() {
+                      $("#Modal_Pay2").modal("hide");
+                      location.reload();
+                  },
                   error: function(error) {
                       console.log(error);
                   }

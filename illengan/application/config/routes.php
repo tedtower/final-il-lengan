@@ -51,6 +51,7 @@ $route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
 $route['admin/deliveryreceipt/formedit'] = "adminview/viewDRFormEdit";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
+$route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
 
 //End Viewing Routes
 
@@ -201,6 +202,12 @@ $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
+//---------------------------------------------------------------
+$route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
+$route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
+$route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
+$route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
+
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 
 //BARISTA JS ROUTES
