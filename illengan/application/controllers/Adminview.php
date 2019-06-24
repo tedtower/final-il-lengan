@@ -53,7 +53,7 @@ function viewInventory($error = null){
 function viewPOFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add PO";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['uom'] = $this->adminmodel->get_uomForStoring();
         $data['stock'] = $this->adminmodel->get_stockitems();
@@ -68,7 +68,7 @@ function viewPOFormAdd(){
 function viewPOFormEdit(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit PO";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $this->load->view('admin/purchaseOrderEdit');
     }else{
@@ -91,8 +91,8 @@ function viewDRFormAdd(){
 function viewDRFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         if(is_numeric($id)){
-            $head['title'] = "Inventory - Edit DR";
-            $this->load->view('admin/templates/head', $head);
+            $head['title'] = "Inventory - Edit Delivery";
+            $this->load->view('admin/templates/head2', $head);
             $this->load->view('admin/templates/sideNav');
             $data['dr'] = $this->adminmodel->get_receiptTransaction($id);
             $data['stocks'] = $this->adminmodel->get_stocks();
@@ -127,35 +127,35 @@ function getCardValuesForDR(){
         ));
     }
 }
-function viewORFormAdd(){
-    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Add OR";
-        $this->load->view('admin/templates/head', $head);
-        $this->load->view('admin/templates/sideNav');
-        $data['supplier'] = $this->adminmodel->get_supplier();
-        $data['stocks'] = $this->adminmodel->get_stockItemNames();
-        $this->load->view('admin/officialReceiptAdd',$data);
-    }else{
-        redirect('login');
-    }
-}
+// function viewORFormAdd(){
+//     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+//         $head['title'] = "Inventory - Add OR";
+//         $this->load->view('admin/templates/head', $head);
+//         $this->load->view('admin/templates/sideNav');
+//         $data['supplier'] = $this->adminmodel->get_supplier();
+//         $data['stocks'] = $this->adminmodel->get_stockItemNames();
+//         $this->load->view('admin/officialReceiptAdd',$data);
+//     }else{
+//         redirect('login');
+//     }
+// }
 
-function viewORFormEdit(){
-    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Edit OR";
-        $this->load->view('admin/templates/head', $head);
-        $this->load->view('admin/templates/sideNav');
-        $data['supplier'] = $this->adminmodel->get_supplier();
-        $data['stocks'] = $this->adminmodel->get_stockItemNames();
-        $this->load->view('admin/officialReceiptEdit');
-    }else{
-        redirect('login');
-    }
-}
+// function viewORFormEdit(){
+//     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+//         $head['title'] = "Inventory - Edit OR";
+//         $this->load->view('admin/templates/head', $head);
+//         $this->load->view('admin/templates/sideNav');
+//         $data['supplier'] = $this->adminmodel->get_supplier();
+//         $data['stocks'] = $this->adminmodel->get_stockItemNames();
+//         $this->load->view('admin/officialReceiptEdit');
+//     }else{
+//         redirect('login');
+//     }
+// }
 function viewConsumptionFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Consumption";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stocks();
         $this->load->view('admin/consumptionAdd', $data);
