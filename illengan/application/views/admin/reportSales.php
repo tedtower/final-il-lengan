@@ -63,13 +63,19 @@
                     <?php }
                     } ?>
                 </tbody>
-                <?php  
+
+            </table>
+            <?php  
                         foreach($total as $total){
                 ?>
-                <span>Total: &#8369;<span class="total"><?php echo $total['sales']?></span></span>
+                <div style="border-bottom:2px solid gray;width:24%;float:right;overflow:auto">
+                    <div style="padding-bottom:5px">
+                        <div style="float:left;">Total:</div> 
+                        <div style="float:left;">&#8369; <?php echo $total['sales']?></div>
+                    </div>
+                </div>
                 <?php }
                      ?>
-            </table>
             <button  class="btn btn-info btn-sm noprint" id="print" onclick="printContent('printReport');" style="width:90px;margin:10px 0;background:#0ba1c6;color:white;font-size:15px" >Print</button>
         </div>
     </div>

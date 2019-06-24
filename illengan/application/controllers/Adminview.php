@@ -77,8 +77,8 @@ function viewPOFormEdit(){
 }
 function viewDRFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Add DR";
-        $this->load->view('admin/templates/head', $head);
+        $head['title'] = "Inventory - Add Delivery";
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
