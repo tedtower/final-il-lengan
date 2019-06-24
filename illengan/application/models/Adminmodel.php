@@ -785,7 +785,7 @@ function get_transitems(){
                 $this->db->query($query, array($tID, $ti[$in]['tiID'], $ti[$in]['tiQty'], $ti[$in]['qtyPerItem'],
                 $ti[$in]['actualQty'], $ti[$in]['tiSubtotal']));
 
-                $this->update_stockitemqty($stID, $ti[$in]['actualQty']);
+                $this->update_stockitemqty($stID, $ti[$in]['updateQty']);
                 $this->add_stocklog($stID, $tID, "return", $tDate, $dateRecorded, $ti[$in]['actualQty'], $tRemarks);
                 $this->add_actlog($accountID, $dateRecorded, "Admin added a stockitem return.", "add", $tRemarks);
             }
@@ -801,16 +801,17 @@ function get_transitems(){
         $this->db->query($query, array($mID, $ao['aoID']));
     }
 
-    function update_stockitemqty($stID, $deductQty) {
+    function update_stockitemqty($stID, $updateQty) {
         $this->db->select('stQty');
         $this->db->from('stockitems');
         $this->db->where('stID', $stID);
         $stQty = $this->db->get()->row()->stQty;
 
-        $query = "UPDATE stockitems SET stQty = (? - ?) WHERE stID = ?";
-        $this->db->query($query, array(intval($stQty), intval($deductQty), $stID));
+        $query = "UPDATE stockitems SET stQty = (? + ?) WHERE stID = ?";
+        $this->db->query($query, array(intval($stQty), intval($updateQty), $stID));
+   
         echo $stQty;
-        echo $deductQty;
+        echo $updateQty;
     }
 
     function add_menucategory($ctName){
@@ -1605,19 +1606,21 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             for($in = 0; $in < count($trans) ; $in++){
                if( $this->db->query($query, array($trans[$in]['rStatus'],$trans[$in]['tiID'])))
                {
-                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID);
+                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID, $trans[$in]['stID']);
                }
            }
         }
     }
 
-    function update_trans_items($ti, $tiID, $tID) {
+    function update_trans_items($ti, $tiID, $tID, $stID) {
         $query = "UPDATE trans_items SET tiQty = ?, actualQty = ?, tiSubtotal = ? WHERE tiID = ? AND tID = ?";
         if(count($ti) > 0) {
             for($in = 0; $in < count($ti) ; $in++){
             if($ti[$in]['tiID'] === $tiID) {
                 $this->db->query($query, array($ti[$in]['tiQty'], $ti[$in]['actualQty'], $ti[$in]['tiSubtotal'],
                 $ti[$in]['tiID'], $tID));
+                
+                $this->update_stockitemqty($stID, $ti[$in]['updateQty']);
             }
            }
         }

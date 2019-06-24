@@ -426,7 +426,7 @@ var suppmerch = [];
 
         $("#list").find('table > tbody').append(`${suppstocks.map(st => {
             return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="stockitems" onchange="disableReceipts(this)" 
-            class="${st.receiptNo} stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
+            class="${st.receiptNo} receipts stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
                     <td>${st.receiptNo}</td>
                     <td>${st.tDate}</td>
                     <td>${st.spmName}</td></tr>`
@@ -436,10 +436,9 @@ var suppmerch = [];
     }
 
     function disableReceipts(checkbox) {
-        console.log(receiptNo);
         var receiptNo = $(checkbox).data('receipt');
         var checkboxes = $("input[name='stockitems']");
-
+        console.log(receiptNo);
         if($(checkbox).prop('checked')) {
             $(checkbox).addClass('checked');
             for(var i = 0; i <= checkboxes.length - 1; i++) {
@@ -827,6 +826,7 @@ var suppmerch = [];
                     tiQty: row.find("input[name='tiQty']").val(),
                     qtyPerItem: row.find("input[name='qtyPerItem']").val(),
                     actualQty: subrow.find("input[name='actualQty']").val(),
+                    updateQty: -(parseInt(subrow.find("input[name='actualQty']").val())),
                     tiSubtotal: subrow.find("input[name='tiSubtotal']").val()
                 });
             }
@@ -873,13 +873,13 @@ var suppmerch = [];
         modal.find("input[name='tDate']").val(returns.returns.tDate);
         modal.find("textarea[name='tRemarks']").val(returns.returns.tRemarks);
         modal.find("input[name='trID']").val(returns.returns.tID);
-
+        
         returns.returnitems.forEach(rt => {
             modal.find(".returnsTable > tbody").append(`
         <tr class="returnElements" data-stockid="${rt.stID}" data-id="${rt.tiID}">
                     <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
                             value="${rt.tiName}" readonly="readonly"></td>
-                    <td><input type="number" id="tiQty" onchange="setInputValues()" name="tiQty"
+                    <td><input type="number" id="tiQty" onchange="setInputValues()" data-tiQty="${rt.tiQty}" name="tiQty"
                             class="tiQty form-control form-control-sm" value="${rt.tiQty}" required min="1"></td>
                     <td><input type="text" id="uomID" data-id="${rt.uomID}" name="uomID" class="uomID form-control form-control-sm"
                             value="${rt.uomName}" readonly="readonly"></td>
@@ -897,7 +897,7 @@ var suppmerch = [];
                                     style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                     Actual Qty</span>
                             </div>
-                            <input type="number" name="actualQty" class="actualQty form-control form-control-sm"
+                            <input type="number" name="actualQty" data-qty="${rt.actualQty}" class="actualQty form-control form-control-sm"
                                 value="${rt.actualQty}" readonly="readonly">
                         </div>
                     </td>
@@ -1054,8 +1054,16 @@ var suppmerch = [];
                             </div>
                         </td>
                         <td>
-                                <p style="text-align:center;"> --- </p>
-
+                        <div class="input-group ">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                        Subtotal</span>
+                                </div>
+                                <input type="text" name="suppName" class="suppName form-control form-control-sm"
+                                    value="0" readonly="readonly">
+                            </div>
+                        </td>
                         </td>
 
                     </tr>
@@ -1070,25 +1078,6 @@ var suppmerch = [];
         });
     }
 
-    function setBrochureContent(suppstocks) {
-        $("#list").empty();
-        $("#list").append(`<table class="table"><thead>
-                    <th></th>
-                    <th>Receipt No.</th>
-                    <th>Date</th>
-                    <th>Stock</th>
-                </thead><tbody></tbody></table>`);
-
-        $("#list").find('table > tbody').append(`${suppstocks.map(st => {
-            return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="receipts" onchange="disableReceipts(this)" 
-            class="receipts stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
-                    <td>${st.receiptNo}</td>
-                    <td>${st.tDate}</td>
-                    <td>${st.spmName}</td></tr>`
-        }).join('')}`);
-
-        disableSelected();
-    }
 
     // --------------------- E D I T I N G  R E T U R N S ---------------------------------
     $(document).ready(function () {
@@ -1122,6 +1111,8 @@ var suppmerch = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
                 var row = $(this).find(".returnElements").eq(index);
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+                var realQty = parseInt(subrow.find("input[name='actualQty']").data("qty"));
+                var newQty = parseInt(subrow.find("input[name='actualQty']").val());
 
                 transitems.push({
                     tID: tID,
@@ -1131,6 +1122,7 @@ var suppmerch = [];
                     qtyPerItem: row.find("input[name='qtyPerItem']").val(),
                     actualQty: subrow.find("input[name='actualQty']").val(),
                     tiSubtotal: subrow.find("input[name='tiSubtotal']").val(),
+                    updateQty: parseInt(realQty - newQty),
                     del: isNaN(parseInt(subrow.attr('data-delete'))) ? (null) : parseInt(subrow.attr('data-delete'))
                 });
             }

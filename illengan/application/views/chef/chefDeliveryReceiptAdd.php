@@ -1,4 +1,5 @@
 <body style="background: white">
+<div class="container" style="padding-top: 50px">
 <div class="content">
                     <!--Export button and Real Time Date & Time --> 
                     <div style="overflow:auto;">
@@ -10,7 +11,7 @@
                     <div class="card-header">
                     <h6 style="font-size: 16px;margin:0">Add Delivery Receipt</h6>
                     </div>
-                    <form id="drForm" action="<?= site_url("barista/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                    <form id="drForm" action="<?= site_url("chef/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
                     <div class="card-body">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
@@ -66,10 +67,10 @@
                                 style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button">New Item</button>
                             <button id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#merchandiseBrochure"  data-original-title
-                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;width:auto" type="button" data-url="<?= site_url('barista/getSupplierMerchandise')?>">Add Merchandise</button>
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;width:auto" type="button" data-url="<?= site_url('chef/getSupplierMerchandise')?>">Add Merchandise</button>
                             <button id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#poBrochure"  data-original-title
-                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button" data-url="<?= site_url('barista/getPosFromSupplier')?>">PO Item</button>
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button" data-url="<?= site_url('chef/getPosFromSupplier')?>">PO Item</button>
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
@@ -215,14 +216,15 @@
                         </div>
                     </div>
                 </div>
+                                            </div>
       
-                <?php include_once('templates/scripts.php') ?>
+                <?php include_once('scripts.php') ?>
 <script>
 $(function(){
     var uom;
     $.ajax({
         method: "GET",
-        url: "/barista/getUOMs",
+        url: "/chef/getUOMs",
         dataType: "JSON",
         success: function(data){
             uom = data.uom;

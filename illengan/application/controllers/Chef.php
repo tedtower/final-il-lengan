@@ -234,7 +234,8 @@ function addspoilagesstock(){
 	//------------ D E L I V E R Y  R E C E I P T --------------
 	function viewDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
-            $this->load->view('chef/head');
+			$data['title'] = " Delivery Receipt";
+			$this->load->view('chef/head');
             $this->load->view('chef/navigation');
             $data['drs'] = $this->Chefmodel->get_deliveryReceipts();
             $data['drItems'] = $this->Chefmodel->get_deliveryReceiptItems();
@@ -257,6 +258,147 @@ function addspoilagesstock(){
             $this->load->view('chef/chefDeliveryReceiptAdd', $data);
         }else{
             redirect('login');
+        }
+	}
+	
+	function addDeliveryReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+            $total = 0;
+            $dateTime = date("Y-m-d H:i:s");
+            $dateOfTrans = $this->input->post('date');
+            $drItems = json_decode($this->input->post('transitems'),true);
+            $dr = array(
+                "supplier" => $this->input->post('supplier'),
+                "supplierName" => NULL,
+                "receipt" => $this->input->post('receipt'),
+                "date" => $dateOfTrans,
+                "dateRecorded" => $dateTime,
+                "type" => "delivery receipt",
+                "total" => $this->input->post('total'),
+                "remarks" => $this->input->post('remarks')
+            );
+            $drID = $this->Chefmodel->add_receiptTransaction($dr);
+            if(count($drItems) > 0){
+                foreach($drItems as $drItem){
+                    $tiID = isset($drItem['tiID']) ? $drItem['tiID'] : NULL;
+                    $qty = $drItem['qty'];
+                    $status = "complete";
+                    $item = $this->Chefmodel->get_poItem($tiID);
+                    if(!isset($item[0])){
+                        $tiID = NULL;
+                    }else if($item[0]['tiQty'] > $drItem['qty']){
+                        $status = "partial";
+                    }
+                    $dr = array(
+                        "uom" => $drItem['uomID'],
+                        "stock" => $drItem['stID'],
+                        "name" => $drItem['name'],
+                        "price" => $drItem['price'],
+                        "discount" => $drItem['discount'],
+                        "delivery" => $status,
+                        "payment" => NULL,
+                        "return" => NULL,
+                        "tiQty" => $drItem['qty'],
+                        "perUnit" => $drItem['actualQty'],
+                        "actual" => $drItem['qty'] * $drItem['actualQty'],
+                        "subtotal" => ($drItem['price'] - $drItem['discount']) * $drItem['qty'],
+                        "tiID" => $tiID
+                    );
+                    if($dr['tiID'] == NULL){
+                        $dr['tiID'] = $this->Chefmodel->add_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
+                        $this->Chefmodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $log = array(
+                            "stock" => $dr['stock'],
+                            "qty" => $dr['actual'],
+                            "remain" => $this->Chefmodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $dateOfTrans,
+                            "dateRecorded" => $dateTime,
+                            "remarks" => "delivery"
+                        );
+                        $this->Chefmodel->add_restockLog($drID, $log);
+                        $this->Chefmodel->update_stockQty($dr['stock'], $dr['actual']);
+                    }else{
+                        $this->Chefmodel->edit_receiptTransactionItems($dr);
+                        $total += $dr['subtotal'];
+                        $this->Chefmodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $log = array(
+                            "stock" => $dr['stock'],
+                            "qty" => $dr['actual'],
+                            "remain" => $this->Chefmodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $dateOfTrans,
+                            "dateRecorded" => $dateTime,
+                            "remarks" => "delivery"
+                        );
+                        $this->Chefmodel->add_restockLog($drID, $log);
+                        $this->Chefmodel->update_stockQty($dr['stock'], $dr['actual']);
+                    }
+                }
+                $this->Chefmodel->edit_receiptTransactionTotal($drID, $total);
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+	}
+	
+	function getSuppMerchForBrochure(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "merchandise" => $this->Chefmodel->get_SPMs($id),
+                    "uom" => $this->Chefmodel->get_uomForStoring()
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getUOMs(){
+        if($this->checkIfLoggedIn()){
+            echo json_encode(array(
+                'uom' => $this->Chefmodel->get_uomForStoring()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function getPOItemsBySupplier(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "inputErr" => false,
+                    'uom' => $this->Chefmodel->get_uomForStoring(),
+                    "pos" => $this->Chefmodel->get_posBySupplier($id),
+                    "poItems" => $this->Chefmodel->get_poItemsBySupplier($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
         }
     }
 
