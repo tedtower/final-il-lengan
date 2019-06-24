@@ -22,10 +22,12 @@ function viewDashboard(){
         $data['sales'] = $this->adminmodel->getOSMonthByYear(date('Y'));
         $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
         $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
+        $data['topmenu'] = $this->adminmodel->getTopTenMenu();
         $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
         $this->load->view('admin/adminDashboard');
-        $this->load->view('admin/templates/scripts');         
+        $this->load->view('admin/templates/scripts');
+        $this->load->view('admin/templates/charts');
     }else{
         redirect('login');
     }
@@ -737,6 +739,7 @@ function getStockItem(){
             redirect('login');
         }
     }
+    
     function jsonReturns() {
         if($this->checkIfLoggedIn()){
             $data = array(

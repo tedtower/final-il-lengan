@@ -12,16 +12,20 @@ class Adminmodel extends CI_Model{
 //GET FUNCTIONS-------------------------------------------------------------------
 
 function getOSMonthByYear($year){
-    $query = "SELECT SUM(olQty) salesCount, DATE_FORMAT(osDateTime,'%M') osLongMonth, DATE_FORMAT(osDateTime,'%m') osMonth FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
+    $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
 }
 function getUnavailableKitchen(){
-    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'kitchen' AND stQty <= stMin";
-    return $this->db->query($query)->result_array();
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty, stMin FROM stockitems WHERE stLocation = 'kitchen' AND stQty <= stMin";
+    return $this->db->query($query)->result();
 }
 function getUnavailableStockRoom(){
-    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
-    return $this->db->query($query)->result_array();
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty, stMin FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
+    return $this->db->query($query)->result();
+}
+function getTopTenMenu(){
+    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
+    return $this->db->query($query)->result();
 }
 
 function get_transactions(){
@@ -1579,24 +1583,42 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                     if($trans[$in]['tiID'] == null) {
                         $this->add_transitems($returns, $ti);
                     } else if($trans[$in]['del'] === 0) {
-                        $this->delete_transitem($returns, $ti);
+                        $this->delete_transitem($trans[$in]['tiID']);
                     } else {
-                        $this->update_transitem($returns, $ti);
+                        $this->update_transitem($returns, $ti, $tID);
                     }
                 }
             }
         }
     }
 
-    function update_transitem($trans, $ti) {
+    function update_transitem($trans, $ti, $tID) {
         $query = "UPDATE transitems SET rStatus = ? WHERE tiID = ?";
         if(count($trans) > 0) {
             for($in = 0; $in < count($trans) ; $in++){
-                $this->db->query($query, array("delivered","73"));
+               if( $this->db->query($query, array($trans[$in]['rStatus'],$trans[$in]['tiID'])))
+               {
+                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID);
+               }
+           }
+        }
+    }
+
+    function update_trans_items($ti, $tiID, $tID) {
+        $query = "UPDATE trans_items SET tiQty = ?, actualQty = ?, tiSubtotal = ? WHERE tiID = ? AND tID = ?";
+        if(count($ti) > 0) {
+            for($in = 0; $in < count($ti) ; $in++){
+            if($ti[$in]['tiID'] === $tiID) {
+                $this->db->query($query, array($ti[$in]['tiQty'], $ti[$in]['actualQty'], $ti[$in]['tiSubtotal'],
+                $ti[$in]['tiID'], $tID));
+            }
            }
         }
     }
         
+    function delete_transitem() {
+
+    }
     function update_paymentStatus($tiID, $status){
         $this->db->query("UPDATE transitems SET payStatus = ? WHERE tiID = ?;",array($status, $tiID));
     }

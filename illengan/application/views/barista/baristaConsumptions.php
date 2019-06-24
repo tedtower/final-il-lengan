@@ -106,6 +106,58 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="editSpoil" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit Spoilage</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="formEdit"  action="<?= site_url('barista/stock/spoilage/edit')?>" accept-charset="utf-8" > 
+												<div class="modal-body">
+                                                    <!-- Quantity-->
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Quantity</span>
+                                                        </div>
+                                                        <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("actualQtyUpdate"); ?></span>
+                                                    </div>
+                                                    <!--Date Spoiled-->
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Date Spoiled</span>
+                                                        </div>
+                                                        <input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("tDate"); ?></span>
+                                                    </div>
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Remarks</span>
+                                                        </div>
+                                                        <input type="text" name="tRemarks" id="tRemarks" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
+                                                    </div>
+													<input name="stID" id="stID" hidden="hidden">
+													<input name="tiID" id="tiID" hidden="hidden">
+													<input name="tID" id="tID" hidden="hidden">
+													<input name="stQty" id="stQty" hidden="hidden">
+													<input name="actualQty" id="actualQty" hidden="hidden">
+                                                    <!--Footer-->
+                                                    <div class="modal-footer">
+													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                            		<button class="btn btn-success btn-sm" type="submit">Update</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
 		<!--End of Brochure Modal DESTOCK"-->
 
 
