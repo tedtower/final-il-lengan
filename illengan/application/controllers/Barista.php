@@ -61,12 +61,8 @@ class Barista extends CI_Controller{
     }
     
     function viewOrderslipJS(){
-        if($this->checkIfLoggedIn()){
-        $data =$this->baristamodel->get_orderslip();
+        $data =$this->baristamodel->get_orderslips();
         echo json_encode($data);
-    }else{
-        redirect('login');
-        }
     }
     function getTables(){
         if($this->checkIfLoggedIn()){
@@ -269,8 +265,7 @@ class Barista extends CI_Controller{
         function updatePayment(){
             if($this->checkIfLoggedIn()){
             $status = "paid";
-            $osID = json_decode($this->input->post('osArr'), true);
-            echo json_encode($osID, true);
+            $osID = json_decode($this->input->post('osIDarr'), true);
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
             $this->baristamodel->update_payment($status,$osID,$payDate, $date_recorded);

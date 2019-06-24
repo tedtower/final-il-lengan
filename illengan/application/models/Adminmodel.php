@@ -24,8 +24,8 @@ function getUnavailableStockRoom(){
     return $this->db->query($query)->result();
 }
 function getTopTenMenu(){
-    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
-    return $this->db->query($query)->result();
+    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY mName ORDER BY salesCount DESC LIMIT 10";
+    return $this->db->query($query,array(date('Y')))->result();
 }
 
 function getTotalSales(){
@@ -1291,7 +1291,6 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(aosDate, '%b %d, %Y') AS aosDate, DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC";
         return  $this->db->query($query)->result_array();
     }
-    
     function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemarks){
         $query = "INSERT INTO `stocklog`(
                 `slID`,
