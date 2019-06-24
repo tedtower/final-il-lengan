@@ -881,10 +881,10 @@ function get_transitems(){
         $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
          if($this->db->query($query,array($uomID, $stID, $stName))){
             $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
-            for($in = 0; $in < count($stocks)-1 ; $in++){
-            $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
-            $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
-        }
+            
+            $this->add_stocklog($stID, $tID, "spoilage",$date, $dateRecorded, $actualQty, $remarks);
+            $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $remarks);
+        
          }
     }
     function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
