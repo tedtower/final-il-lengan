@@ -20,11 +20,11 @@ function viewDashboard(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Dashboard";
         $data['sales'] = $this->adminmodel->getOSMonthByYear(date('Y'));
+        $data['todaySales'] = $this->adminmodel->getTodaySales();
         $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
         $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
         $data['topmenu'] = $this->adminmodel->getTopTenMenu();
-        $data['tSales'] = $this->adminmodel->getTotalSales();
-        $data['tRevenue'] = $this->adminmodel->getTotalRevenue();
+        $data['todayConsumption'] = $this->adminmodel->getTodayConsumption();
         $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
         $this->load->view('admin/adminDashboard');
@@ -77,8 +77,8 @@ function viewPOFormEdit(){
 }
 function viewDRFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Add DR";
-        $this->load->view('admin/templates/head', $head);
+        $head['title'] = "Inventory - Add Delivery";
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();

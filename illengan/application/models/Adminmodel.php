@@ -11,6 +11,7 @@ class Adminmodel extends CI_Model{
 
 //GET FUNCTIONS-------------------------------------------------------------------
 
+//DASHBOARD GETTERS
 function getOSMonthByYear($year){
     $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
@@ -27,19 +28,17 @@ function getTopTenMenu(){
     $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY mName ORDER BY salesCount DESC LIMIT 10";
     return $this->db->query($query,array(date('Y')))->result();
 }
-
+function getTodaySales(){
+    $query = "SELECT DATE_FORMAT(osDateTime,'%d') osDay, SUM(olQty) salesCount, SUM(osTotal) sales FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%d-%m-%Y') = ? GROUP BY osDay ORDER BY osDay";
+    return $this->db->query($query,array(date('d-m-Y')))->result();
+}
 function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
 }
-
-function getTotalRevenue(){
-    $query = "SELECT SUM(osTotal) total FROM orderslips WHERE payStatus = 'paid'";
-    return $this->db->query($query)->result();
-}
-function get_totalSales($sDate, $eDate){
-    $query = "SELECT SUM(osTotal) sales FROM orderslips WHERE payStatus = 'paid' and osPayDateTime BETWEEN ? and ? ";
-    return $this->db->query($query,array($sDate, $eDate))->result_array();
+function getTodayConsumption(){
+    $query = "SELECT COUNT(tiQty) total FROM trans_items NATURAL JOIN transactions WHERE tType = 'consumption' AND isArchived = '0' AND tDate = ?";
+    return $this->db->query($query,array(date('Y-m-d')))->result();
 }
 
 function get_transactions(){
