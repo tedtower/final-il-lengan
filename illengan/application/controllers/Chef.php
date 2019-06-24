@@ -6,7 +6,8 @@ class Chef extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 		$this->load->database();
-        $this->load->model('Chefmodel');  
+        $this->load->model('Chefmodel');
+	date_default_timezone_set('Asia/Manila'); 
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d H:i:s")
 	}
@@ -99,11 +100,12 @@ class Chef extends CI_Controller {
             $msID = $this->input->post('msID');
             $prID = $this->input->post('prID');
             $msQty = $this->input->post('msQty');
+	    $oldQty = $this->input->post('oldQty');
             $msDate = $this->input->post('msDate');
             $msRemarks = $this->input->post('msRemarks');
             $date_recorded = date("Y-m-d H:i:s");
 
-            $this->chefmodel->edit_menuspoilage($msID,$prID,$msQty,$msDate,$msRemarks,$date_recorded);
+            $this->Chefmodel->edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded);
         }else{
             redirect('login');
         } 

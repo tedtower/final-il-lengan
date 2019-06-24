@@ -37,7 +37,7 @@
                         <span style="float:left;"><b>Storage:</b> <?= $stock['stLocation']?></span>
                         <span style="float:left;margin-left:2%"><b>Category:</b> <?= $stock['ctName']?></span>
                         <span style="float:left;margin-left:2%"><b>Status:</b> <?= $stock['stStatus']?></span>
-                        <span style="float:left;margin-left:2%"><b>Beginning Qty:</b> <?= $currentInv['slQty'] . " " . $stock['uomAbbreviation']?></span>
+                        <span style="float:left;margin-left:2%"><b>Beginning Qty:</b> <?= $currentInv['actualQty'] . " " . $stock['uomAbbreviation']?></span>
                     </div>
                 </div>
                 </div>

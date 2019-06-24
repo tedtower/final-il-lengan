@@ -51,6 +51,7 @@ $route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
 $route['admin/deliveryreceipt/formedit'] = "adminview/viewDRFormEdit";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
+$route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
 
 //End Viewing Routes
 
@@ -62,6 +63,7 @@ $route['admin/menu/datatables'] = "adminview/datatables_menu";
 $route['admin/transactions/add'] = "adminadd/addtransaction";
 $route['admin/purchaseorder/add'] = "adminadd/addPurchaseOrder";
 $route['admin/deliveryreceipt/add'] = "adminadd/addDeliveryReceipt";
+$route['admin/officialreceipt/add'] = "adminadd/addOfficialReceipt";
 $route['admin/inventory/addEdit'] = "adminadd/addstockitem";
 $route['admin/menu/add'] = "adminadd/addMenu";
 $route['admin/measurement/add'] = "adminadd/addUOM";
@@ -118,10 +120,11 @@ $route['admin/inventory/delete/(:num)'] = "admindelete/deletestockitem/$1";
 $route['admin/measurement/delete/(:num)'] = "admindelete/deleteMeasurement/$1";
 $route['admin/transactions/delete'] = "admindelete/deletetransactions";
 $route['admin/source/delete/(:num)'] = "admindelete/deletesource/$1";
-$route['admin/stock/spoilage/delete'] ="admindelete/deletestockspoilages";
+$route['admin/stock/spoilage/delete'] ="admindelete/deleteStockSpoil";
 $route['admin/menu/spoilage/delete/(:num)'] ="admindelete/deletemenuspoilages/$1";
 $route['admin/addons/spoilage/delete/(:num)'] ="admindelete/deleteaddonsspoilages/$1";
 $route['admin/accounts/delete'] ="admindelete/deleteAccount";
+$route['admin/transaction/delete'] = "admindelete/deleteTransaction";
 
 //End Admin Delete Routes ---------------------------------------
 
@@ -159,10 +162,12 @@ $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
 $route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
 $route['admin/getPosFromSupplier'] = "adminview/getPOItemsBySupplier";
+$route['admin/getDrsFromSupplier'] = "adminview/getDRItemsBySupplier";
 $route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";
 $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 $route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
+$route['admin/getUOMs'] = "adminview/getUOMs";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES
@@ -195,10 +200,22 @@ $route['barista/stock/spoilages'] = "barista/viewSpoilagesStock";
 $route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
 $route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
 $route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
+$route['barista/stock/spoilage/delete'] ="barista/deleteStockSpoil";
 $route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
+$route['barista/getSupplierMerchandise'] = "barista/getSuppMerchForBrochure";
+$route['barista/getPosFromSupplier'] = "barista/getPOItemsBySupplier";
+//-----------------------------------------------------------------------------
+$route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
+$route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
+$route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
+$route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
+//-----------------------------------------------------------------------------
+$route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
+
+
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

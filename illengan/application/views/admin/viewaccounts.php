@@ -151,15 +151,6 @@
                                             </div>
                                             <form id="formChangePass" class="item_edit" accept-charset="utf-8">
                                                 <div class="modal-body">
-                                                    <!--Old Password-->
-                                                    <!-- <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                Old Password</span>
-                                                        </div>
-                                                        <input type="text" name="old_password" id="old_password" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("old_password"); ?></span>
-                                                    </div> -->
                                                     <!--New Password-->
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -169,15 +160,7 @@
                                                         <input type="text" name="new_password" id="new_password" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("new_password"); ?></span>
                                                     </div>
-                                                    <!-- Confirm Password
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                Confirm Password</span>
-                                                        </div>
-                                                        <input type="text" name="new_confirm_password" id="new_confirm_password" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("new_confirm_password"); ?></span>
-                                                    </div> -->
+                                                    <input name="aUsername" hidden="hidden">
                                                     <input name="accountId" hidden="hidden">
                                                     <!--Footer-->
                                                     <div class="modal-footer">
@@ -295,7 +278,7 @@
         }
         accounts.forEach(table => {
             $("#accountsTable> tbody").append(`
-            <tr data-id="${table.aID}" data-username="${table.aUsername}">
+            <tr data-id="${table.aID}" data-aUsername="${table.aUsername}">
                 <td>${table.aID}</td>
                 <td>${table.aType}</td>
                 <td>${table.aUsername}</td>
@@ -319,11 +302,14 @@
                 $("#editAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
                     "data-id"));
                 $("#editAccount").find("input[name='new_aUsername']").val($(this).closest("tr").attr(
-                    "data-username"));
+                    "data-aUsername"));
             });
             $(".updatePassBtn").last().on('click', function() {
                 $("#editPassword").find("input[name='accountId']").val($(this).closest("tr").attr(
                     "data-id"));
+                $("#editPassword").find("input[name='aUsername']").val($(this).closest("tr").attr(
+                    "data-aUsername"));
+
             });
             $(".item_delete").last().on('click', function() {
                 $("#deleteAccountId").text(
@@ -339,12 +325,15 @@
 		event.preventDefault();
 		var aID = $(this).find("input[name='accountId']").val();
         var new_password = $(this).find("input[name='new_password']").val();
+        var aUsername = $(this).find("input[name='aUsername']").val();
+        console.log(aUsername);
         $.ajax({
             url: "<?= site_url("admin/accounts/changepassword")?>",
             method: "post",
             data: {
 				aID: aID,
                 new_password : new_password,
+                aUsername: aUsername
             },
             dataType: "json",
             success: function(data) {

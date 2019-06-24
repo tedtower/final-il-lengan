@@ -10,7 +10,7 @@ function getDestockStocks() {
 
             $.ajax({
                 type: 'POST',
-                url: 'http://www.illengan.com/barista/getConsumption',
+                url: 'http://www.illengan.com/barista/getConsumptionItems',
                 data: {
                     stID : value
                 },

@@ -23,7 +23,7 @@ function getSelectedStocks() {
                             <input type="hidden" id="spmActualQty` + i + `" name="spmActualQty" class="form-control form-control-sm" data-spmActualQty="` + data[i].spmActualQty + `" value="` + data[i].spmActualQty + `">
                             <input type="hidden" id="uomStore` + i + `" name="uomStore" class="form-control form-control-sm" data-uomStore="` + data[i].uomStore + `" value="` + data[i].uomStore + `">
                             <td><input type="text" id="stName` + i + `" name="stName"
-                                    class="form-control form-control-sm"  value="` + data[i].stName + `"  required readonly></td>
+                                    class="form-control form-control-sm"  value="` + data[i].stName + `"  required readonly="readonly"></td>
                             <td><input type="number" min="1" id="actualQty` + i + `" name="actualQty"
                                     class="form-control form-control-sm" value="" required></td>
                             <td><input type="text" id="tRemarks` + i + `" name="tRemarks"
@@ -45,7 +45,6 @@ function getSelectedStocks() {
 var elements;
 function addStockItems() {
     elements = document.getElementsByClassName('stockelem');
-    console.log(elements);
     var tDate = document.getElementById('tDate').value;
     var stockItems = [];
     var stocks = [];
@@ -60,6 +59,7 @@ function addStockItems() {
         spmActualQty = document.getElementsByName('spmActualQty')[i].value;
         uomStore =document.getElementsByName('uomStore')[i].value;
         
+		
         stockItems = {
             'uomID': uomID,
             'stID': stID,
@@ -80,7 +80,9 @@ function addStockItems() {
         data: {
             stocks: JSON.stringify(stocks)
         },
-        dataType: 'json',
+        success: function(data){
+            console.log(data);
+        },
         complete: function() {
             $("#formAdd").modal("hide");
             location.reload();

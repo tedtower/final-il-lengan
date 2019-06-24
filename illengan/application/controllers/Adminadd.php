@@ -129,9 +129,9 @@ function addspoilagesaddons(){
         $date_recorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
         $account_id = $_SESSION["user_id"];
-
+        $user= $_SESSION["user_name"];
         echo json_encode($addons, true);
-        $this->adminmodel->add_aospoil($date_recorded,$addons,$account_id);
+        $this->adminmodel->add_aospoil($date_recorded,$addons,$account_id,$user);
        
     }else{
         redirect('login');
@@ -157,9 +157,9 @@ function addspoilagesstock(){
         $date_recorded = date("Y-m-d H:i:s");
         $stocks = json_decode($this->input->post('stocks'), true);
         $account_id = $_SESSION["user_id"];
-
+        $user= $_SESSION["user_name"];
         $lastNum = $lastNumget + 1;
-        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNumget);
+        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
     }else{
     redirect('login');
     }
@@ -177,13 +177,14 @@ function addspoilagesstock(){
             $aType = $this->input->post("aType");
             $date_recorded = date("Y-m-d H:i:s");
             $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
             $data = array(
                 'aPassword'=>$password,
                 'aUsername'=>$username,
                 'aType'=>$aType
             );
             $this->adminmodel->add_accounts($data);
-            $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin added account $username .", "add", NULL);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added account $username .", "add", NULL);
 
             redirect('admin/accounts');
     }
@@ -481,7 +482,8 @@ function addspoilagesstock(){
                     if($dr['tiID'] == NULL){
                         $dr['tiID'] = $this->adminmodel->add_receiptTransactionItems($dr);
                         $total += $dr['subtotal'];
-                        $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);$log = array(
+                        $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
+                        $log = array(
                             "stock" => $dr['stock'],
                             "qty" => $dr['actual'],
                             "remain" => $this->adminmodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
@@ -510,13 +512,187 @@ function addspoilagesstock(){
                         $this->adminmodel->add_restockLog($drID, $log);
                         $this->adminmodel->update_stockQty($dr['stock'], $dr['actual']);
                     }
-                    // if($this->adminmodel->checkIfExistingItemsQty($drID, $dr['tiID'] > 0)){
-    
-                    // }else{
-                    //     $this->adminmodel->add_receiptTransactionItemsQty($drID, $dr);
-                    // }
                 }
                 $this->adminmodel->edit_receiptTransactionTotal($drID, $total);
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function addOfficialReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $total = 0;
+            $currentDate = date("Y-m-d H:i:s");
+            $transDate = $this->input->post("date");
+            $items = json_decode($this->input->post("items"),true);
+            $or = array(
+                "supplier" => $this->input->post('supplier'),
+                "supplierName" => NULL,
+                "receipt" => $this->input->post('receipt'),
+                "date" => $transDate,
+                "dateRecorded" => $currentDate,
+                "type" => "official receipt",
+                "total" => NULL,
+                "remarks" => $this->input->post('remarks')
+            );
+            $orID = $this->adminmodel->add_receiptTransaction($or);
+            foreach ($items as $item) {
+                $tiID = isset($item['tiID']) ? $item['tiID'] : NULL;
+                $or = array(
+                    "uom" => $item['uomID'],
+                    "stock" => $item['stID'],
+                    "name" => $item['name'],
+                    "price" => $item['price'],
+                    "discount" => $item['discount'],
+                    "delivery" => "complete",
+                    "payment" => 'paid',
+                    "return" => NULL,
+                    "tiQty" => $item['qty'],
+                    "perUnit" => $item['actualQty'],
+                    "actual" => $item['qty'] * $item['actualQty'],
+                    "subtotal" => ($item['price'] * $item['qty']) - $item['discount'],
+                    "tiID" => $tiID
+                );
+                if($or['tiID'] == NULL){
+                    $or['tiID'] = $this->adminmodel->add_receiptTransactionItems($or);
+                    $total += $or['subtotal'];
+                    $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
+                    $log = array(
+                        "stock" => $or['stock'],
+                        "qty" => $or['actual'],
+                        "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
+                        "actual" => NULL,
+                        "discrepancy" => NULL,
+                        "dateTime" => $transDate,
+                        "dateRecorded" => $currentDate,
+                        "remarks" => NULL
+                    );
+                    $this->adminmodel->add_restockLog($orID, $log);
+                    $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
+                }else{
+                    $po = $this->adminmodel->get_poItem($tiID);
+                    $dr = $this->adminmodel->get_drItem($tiID);
+                    if(count($dr) > 0){
+
+                    }else if(count($po) > 0){
+                        $this->adminmodel->edit_poReceiptItemOR($or);
+                        $total += $or['subtotal'];
+                        $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
+                        $log = array(
+                            "stock" => $or['stock'],
+                            "qty" => $or['actual'],
+                            "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $transDate,
+                            "dateRecorded" => $currentDate,
+                            "remarks" => NULL
+                        );
+                        $this->adminmodel->add_restockLog($orID, $log);
+                        $this->adminmodel->update_stockQty($or['stock'], $or['actual']);
+                    }else{
+                        $or['tiID'] = $this->adminmodel->add_receiptTransactionItems($or);
+                        $total += $or['subtotal'];
+                        $this->adminmodel->add_receiptTransactionItemsQty($tID, $or);
+                        $log = array(
+                            "stock" => $or['stock'],
+                            "qty" => $or['actual'],
+                            "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
+                            "actual" => NULL,
+                            "discrepancy" => NULL,
+                            "dateTime" => $transDate,
+                            "dateRecorded" => $currentDate,
+                            "remarks" => NULL
+                        );
+                        $this->adminmodel->add_restockLog($log);
+                        $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
+                    }
+                }
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function addConsumption(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $items = json_decode($this->input->post('items'),true);
+            echo json_encode($items);
+            if(count($items)> 0){
+                $currentDate = date("Y-m-d H:i:s");
+                $transDate = $this->input->post('date');
+                $con = array(
+                    "date" => $transDate,
+                    "dateRecorded" => $currentDate,
+                    "type" => "consumption",
+                    "remarks" => $this->input->post('remarks')
+                );
+                $conID = $this->adminmodel->add_consumption($con);
+                foreach($items as $item){
+                    $qty = $this->adminmodel->get_stockQty($item['stock'])[0]['stQty'];
+                    $itemID = $this->adminmodel->add_consumedItem($item['stock']);
+                    $conItem = array(
+                        "id" => $itemID,
+                        "qty" => $item['qty'],
+                        "remarks" => $item['remarks'],
+                        "type" => "consumed",
+                        "date" => $transDate,
+                        "dateRecorded" => $currentDate,
+                        "remain" => $qty - $item['qty'],
+                        "stock" => $item['stock']
+                    );
+                    $this->adminmodel->add_consumptionQty($conID, $conItem);
+                    $this->adminmodel->add_consumptionLog($conID, $conItem);
+                    $this->adminmodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
+                }
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function editConsumption(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $items = json_decode($this->input->post('items'),true);
+            if(count($items)> 0){
+                $currentDate = date("Y-m-d H:i:s");
+                $transDate = $this->input->post('date');
+                $con = array(
+                    "date" => $transDate,
+                    "dateRecorded" => $currentDate,
+                    "remarks" => $this->input->post('remarks')
+                );
+                $conID = $this->adminmodel->edit_consumption($con);
+                foreach($items as $item){
+                    $qty = $this->adminmodel->get_stockQty($item['stock'])[0]['stQty'];
+                    $itemID = $this->adminmodel->add_consumedItem($item['stock']);
+                    $conItem = array(
+                        "id" => $itemID,
+                        "qty" => $item['qty'],
+                        "remarks" => $item['remarks'],
+                        "type" => "consumption",
+                        "date" => $transDate,
+                        "dateRecorded" => $currentDate,
+                        "remain" => $qty - $item['qty'],
+                        "stock" => $item['stock']
+                    );
+                    $this->adminmodel->add_consumptionQty($conID, $conItem);
+                    $this->adminmodel->add_consumptionLog($conID, $conItem);
+                    $this->adminmodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
+                }
             }
             echo json_encode(array(
                 "success" => true

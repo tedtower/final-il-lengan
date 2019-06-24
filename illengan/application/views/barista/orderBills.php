@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+  <?php include_once('templates/head.php') ?>
+</head>
+
 <body style="background:white">
+  <?php include_once('templates/navigation.php') ?>
   <!--End Top Nav-->
   <div class="content">
     <div class="container-fluid">
@@ -13,7 +19,7 @@
         <div class="conteiner-fluid">
           <!--Start Table-->
           <div class="card-content">
-          <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips()" style="margin:5px; width: 130px;">Pay Multiple Slips</button>
+          <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips()" style="margin:5px">Pay Multiple Slips</button>
             <table id="ordersTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
               <thead class="thead-dark">
                 <tr>
@@ -311,8 +317,8 @@
             $(".orderitemsTable> tbody").append(`${item.map(items =>{
               return `<tr>
                             <td></td>
-                            <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
                             <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
+                            <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
                             <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value=${items.olSubtotal} required readonly></td>
                             <td></td>
                             </tr>`
@@ -414,11 +420,9 @@ function getSelectedSlips() {
     for (var i = 0; i <= choices.length - 1; i++) {
         if (choices[i].checked) {
             value = choices[i].value;
-            
-
             $.ajax({
                 type: 'POST',
-                url: 'http://www.illengan.com/barista/slipJS',
+                url: 'http://www.illengan.com/barista/viewOrderslipJS',
                 data: {
                     osID : value
                 },
@@ -451,9 +455,10 @@ function getSelectedSlips() {
 
 function setTotal() {
  var total = 0;
- for(var i = 0; i <= $('.stockelem').length - 1;i++) {
-   var subtotal = 0;
-   subtotal = parseFloat($('.olSubtotal').eq(i).val());
+ for(var i = 0; i <= $('.stockelem').length - 1; i++) {
+  //  var subtotal = 0;
+  //  subtotal = parseFloat($('.olSubtotal').eq(i).val());
+  $("#Modal_Pay2").find("input[name='amount_payable2']").val();
    total = total + subtotal;
  }
  
