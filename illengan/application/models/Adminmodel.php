@@ -12,16 +12,28 @@ class Adminmodel extends CI_Model{
 //GET FUNCTIONS-------------------------------------------------------------------
 
 function getOSMonthByYear($year){
-    $query = "SELECT SUM(olQty) salesCount, DATE_FORMAT(osDateTime,'%M') osLongMonth, DATE_FORMAT(osDateTime,'%m') osMonth FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
+    $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
 }
 function getUnavailableKitchen(){
-    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'kitchen' AND stQty <= stMin";
-    return $this->db->query($query)->result_array();
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty, stMin FROM stockitems WHERE stLocation = 'kitchen' AND stQty <= stMin";
+    return $this->db->query($query)->result();
 }
 function getUnavailableStockRoom(){
-    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
-    return $this->db->query($query)->result_array();
+    $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty, stMin FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
+    return $this->db->query($query)->result();
+}
+function getTopTenMenu(){
+    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
+    return $this->db->query($query)->result();
+}
+function getTotalSales(){
+    $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
+    return $this->db->query($query)->result();
+}
+function getTotalRevenue(){
+    $query = "SELECT SUM(osTotal) total FROM orderslips WHERE payStatus = 'paid'";
+    return $this->db->query($query)->result();
 }
 
 function get_transactions(){
@@ -72,6 +84,33 @@ function get_transitems(){
                 tType = 'purchase order'";
     return $this->db->query($query)->result_array();
 }
+    function get_receiptTransaction($id){
+        $query = "SELECT
+                tID AS id,
+                spID AS sp,
+                spName,
+                tNum AS num,
+                receiptNo AS receipt,
+                tDate AS date,
+                tTotal AS total,
+                tRemarks AS remarks
+            FROM transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE tID = ?";
+        return $this->db->query($query, array($id))->result_array();
+    }
+    function get_receiptTransactionItems($id){
+        $query = "SELECT
+                tiID AS id,
+                uomID AS uom,
+                stID AS stock,
+                tiPrice AS price,
+                tiQty AS qty,
+                qtyPerItem AS perItem
+            FROM transitems LEFT JOIN trans_items USING(tiID)
+            WHERE tID = ?";
+        return $this->db->query($query,array($id))->result_array();
+    }
 
     function get_inventoryReport($stID, $sDate, $eDate){
         $query = "SELECT
@@ -1634,7 +1673,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
         , $item['payment'], $item['return'], $item['tiID']));
     }
-    function edit_poReceiptItemOR($item){
+    function edit_receiptItemPayStatus($item){
         $query = "UPDATE
                 transitems
             SET
