@@ -3,7 +3,6 @@
     var arrSales    = [0];
     var arrMonth    = ['January'];
     var arrRevenue  = [0];
-    console.log(sales[0].revenue);
     //Splits objects arrays into 2 arrays
     for(var x=0; x < sales.length; x++){
         if(sales[x].osLongMonth != 'January'){
@@ -16,7 +15,10 @@
         }
         
     } 
-    console.log(arrRevenue);
+    var minSales    = Math.min.apply(Math,arrSales),
+        maxSales    = Math.max.apply(Math,arrSales) + 10,
+        minRevenue  = Math.min.apply(Math,arrRevenue),
+        maxRevenue  = Math.max.apply(Math,arrRevenue) + 100;
     let salesChart = document.getElementById('sales').getContext('2d');
     let revenueChart = document.getElementById('revenue').getContext('2d');
     Chart.defaults.global.defaultFontSize = 15;
@@ -41,8 +43,8 @@
             scales: {
                 yAxes: [{
                     ticks: {
-                        suggestedMin: 50,
-                        suggestedMax: 100
+                        suggestedMin: minSales,
+                        suggestedMax: maxSales
                     }
                 }]
             }
@@ -69,8 +71,8 @@
             scales: {
                 yAxes: [{
                     ticks: {
-                        suggestedMin: 50,
-                        suggestedMax: 500
+                        suggestedMin: minRevenue,
+                        suggestedMax: maxRevenue
                     }
                 }]
             }
