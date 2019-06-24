@@ -172,7 +172,7 @@
                                         <div class="find input-group mb-1">
                                             <input type="text" name="itemName[]"
                                                 class="form-control form-control-sm"
-                                                value="${merch.stName} ${merch.stSize}" style="width:24%" readonly>
+                                                value="${merch.spmName}" style="width:24%" readonly>
                                             <input type="number" name="itemQty[]"
                                                 class="tiQty form-control form-control-sm"
                                                 placeholder="Quantity" value="1" min="1" onchange="setInputValues()">

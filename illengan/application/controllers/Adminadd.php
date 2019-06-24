@@ -209,6 +209,7 @@ function addspoilagesstock(){
             redirect('login');
         }
     }
+
     function addInventoryReport(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $stID = $this->input->post('stID');
@@ -220,7 +221,20 @@ function addspoilagesstock(){
             $data['report'] = $this->adminmodel->get_inventoryReport($stID, $sDate, $eDate);
             $data['stock'] = $this->adminmodel->get_stockItem($id)[0];
             $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
-            $this->load->view('admin/reportInventory',$data);
+            $this->load->view('admin/reportInventory', $data);
+            // redirect('admin/stocklog/report');
+        }else{
+            redirect('login');
+        }
+    }
+    function addSalesReport(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $sDate = $this->input->post('sDate');
+            $eDate = $this->input->post('eDate');
+            $this->adminmodel->get_salesReport($sDate, $eDate);
+            $data['report'] = $this->adminmodel->get_salesReport($sDate, $eDate);
+            $data['addons'] = $this->adminmodel->get_orderAddon();
+            $this->load->view('admin/reportSales', $data);
             // redirect('admin/stocklog/report');
         }else{
             redirect('login');
