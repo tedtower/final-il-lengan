@@ -7,28 +7,26 @@
   
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto delius">
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url().'chef'?>"><i class="fal fa-tasks"></i> Orders</a>
+          <li class="nav-item mr-2">
+          <a class="nav-link" href="<?php echo base_url().'chef'?>"><i class="fal fa-tasks"></i> Orders</a>
           </li>
-          <li class="nav-item">
-            <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-boxes"></i> Inventory <i
-                class="fal fa-angle-down"></i></a>
-            <div id="myDropdown" class="dropdown-content">
-              <a href="<?php echo base_url().'chef/inventory/consumption'?>"><i class="fal fa-calendar-minus"></i> Consumption</a>
-              <a href="<?php echo base_url().'chef/inventory/deliveries'?>"><i class="fal fa-truck-loading"></i> Delivery Receipts</a>
-            </div>
+          <li class="nav-item dropdown mr-2">
+              <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-boxes"></i> Inventory</a>
+              <div class="dropdown-menu dropdown-default elegant-color c-focus" aria-labelledby="menu-dd">
+                  <a class="dropdown-item" href="<?php echo base_url('chef/consumption')?>"><i class="far fa-truck-loading"></i> Consumption</a>
+                  <a class="dropdown-item" href="<?php echo base_url('chef/inventory/deliveries')?>"><i class="far fa-receipt"></i> Delivery Receipts</a>
+              </div>
           </li>
-          <li class="nav-item">
-            <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-trash"></i> Spoilages <i
-                class="fal fa-angle-down"></i></a>
-            <div id="myDropdown" class="dropdown-content">
-              <a href="<?php echo base_url().'chef/spoilages/menu'?>"><i class="fal fa-book"></i> Menu Spoilages</a>
-              <a href="<?php echo base_url().'chef/spoilages/stock'?>"><i class="fal fa-fish"></i> Stock Spoilages</a>
-            </div>
+          <li class="nav-item dropdown mr-2">
+              <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-trash"></i> Spoilage</a>
+              <div class="dropdown-menu dropdown-default elegant-color c-focus">
+                  <a class="dropdown-item" href="<?php echo base_url('chef/spoilages/menu')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
+                  <a class="dropdown-item" href="<?php echo base_url('chef/spoilages/stock')?>"><i class="fal fa-box-open"></i> Stock Spoilage</a>
+              </div>
           </li>
-      </ul>
-      <ul class="navbar-nav ml-auto delius">
-          <li class="nav-item">
+        </ul>
+       <ul class="navbar-nav delius">
+          <li class="nav-item" >
             <a class="nav-link" href="<?php echo base_url('login/logout')?>"><i class="fal fa-sign-out-alt"></i> Sign Out</a>
           </li>
       </ul>
