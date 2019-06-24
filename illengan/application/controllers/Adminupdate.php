@@ -61,6 +61,7 @@ class Adminupdate extends CI_Controller{
             $trans = json_decode($this->input->post('trans'), true);
             $ti = json_decode($this->input->post('ti'), true);
 
+            echo $tRemarks;
             $this->adminmodel->edit_returns($tID, $spID, $spName, $receiptNo, $tDate, $tTotal, $tRemarks, $trans, $ti);
             }else{
                 redirect('login');

@@ -221,7 +221,7 @@ class Barista extends CI_Controller{
         }
         function getConsumptionItems(){
             if($this->checkIfLoggedIn()){
-            $data=$this->baristamodel->getconsumptionItems();
+            $data=$this->baristamodel->get_stocks();
             echo json_encode($data);
         }else{
             redirect('login');
@@ -358,9 +358,10 @@ class Barista extends CI_Controller{
                     echo json_encode($stocks, true);
                     $date_recorded = date("Y-m-d H:i:s");
                     $account_id = $_SESSION["user_id"];
+                    $user = $_SESSION["user_name"];
                     $lastNum = $lastNumget + 1;
                    
-                    $this->baristamodel->add_consumption($date_recorded,$stocks,$account_id,$lastNum);
+                    $this->baristamodel->add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user);
                 }else{
                 redirect('login');
                 }

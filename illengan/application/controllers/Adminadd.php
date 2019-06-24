@@ -592,38 +592,30 @@ function addspoilagesstock(){
                 }else{
                     $po = $this->adminmodel->get_poItem($tiID);
                     $dr = $this->adminmodel->get_drItem($tiID);
+                    $log = array(
+                        "stock" => $or['stock'],
+                        "qty" => $or['actual'],
+                        "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
+                        "actual" => NULL,
+                        "discrepancy" => NULL,
+                        "dateTime" => $transDate,
+                        "dateRecorded" => $currentDate,
+                        "remarks" => NULL
+                    );
                     if(count($dr) > 0){
-
-                    }else if(count($po) > 0){
-                        $this->adminmodel->edit_poReceiptItemOR($or);
+                        $this->adminmodel->edit_receiptItemPayStatus($or);
                         $total += $or['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
-                        $log = array(
-                            "stock" => $or['stock'],
-                            "qty" => $or['actual'],
-                            "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
-                            "actual" => NULL,
-                            "discrepancy" => NULL,
-                            "dateTime" => $transDate,
-                            "dateRecorded" => $currentDate,
-                            "remarks" => NULL
-                        );
+                    }else if(count($po) > 0){
+                        $this->adminmodel->edit_receiptItemPayStatus($or);
+                        $total += $or['subtotal'];
+                        $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
                         $this->adminmodel->add_restockLog($orID, $log);
                         $this->adminmodel->update_stockQty($or['stock'], $or['actual']);
                     }else{
                         $or['tiID'] = $this->adminmodel->add_receiptTransactionItems($or);
                         $total += $or['subtotal'];
                         $this->adminmodel->add_receiptTransactionItemsQty($tID, $or);
-                        $log = array(
-                            "stock" => $or['stock'],
-                            "qty" => $or['actual'],
-                            "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
-                            "actual" => NULL,
-                            "discrepancy" => NULL,
-                            "dateTime" => $transDate,
-                            "dateRecorded" => $currentDate,
-                            "remarks" => NULL
-                        );
                         $this->adminmodel->add_restockLog($log);
                         $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
                     }
