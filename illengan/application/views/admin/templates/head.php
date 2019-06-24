@@ -15,4 +15,5 @@
     <link rel="stylesheet" type="text/css" href="<?= font_url().'pre-icon-7/pe-icon-7-stroke.css'?>">
     <link rel="stylesheet" type="text/css" href="<?= font_url().'fontawesome/font-awesome.css'?>">
     <link rel="stylesheet" type="text/css" href="<?= admin_css().'Chart.min.css'?>" />
+    <link rel="stylesheet" type="text/css" href="<?= admin_css().'dashboard.css'?>" />
 </head>

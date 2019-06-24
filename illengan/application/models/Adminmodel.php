@@ -24,8 +24,8 @@ function getUnavailableStockRoom(){
     return $this->db->query($query)->result();
 }
 function getTopTenMenu(){
-    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
-    return $this->db->query($query)->result();
+    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY mName ORDER BY salesCount DESC LIMIT 10";
+    return $this->db->query($query,array(date('Y')))->result();
 }
 function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
