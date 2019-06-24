@@ -27,13 +27,19 @@ function getTopTenMenu(){
     $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY mName ORDER BY salesCount DESC LIMIT 10";
     return $this->db->query($query,array(date('Y')))->result();
 }
+
 function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
 }
+
 function getTotalRevenue(){
     $query = "SELECT SUM(osTotal) total FROM orderslips WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
+}
+function get_totalSales($sDate, $eDate){
+    $query = "SELECT SUM(osTotal) sales FROM orderslips WHERE payStatus = 'paid' and osPayDateTime BETWEEN ? and ? ";
+    return $this->db->query($query,array($sDate, $eDate))->result_array();
 }
 
 function get_transactions(){
@@ -128,8 +134,7 @@ function get_transitems(){
     }
 
     function get_salesReport($sDate, $eDate){
-        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID)
-                LEFT JOIN orderaddons USING(olID) WHERE osPayDateTime BETWEEN ? and ?";
+        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
         return $this->db->query($query, array($sDate, $eDate))->result_array();
     }
     
@@ -881,10 +886,10 @@ function get_transitems(){
         $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
          if($this->db->query($query,array($uomID, $stID, $stName))){
             $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
-            for($in = 0; $in < count($stocks)-1 ; $in++){
-            $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
-            $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
-        }
+            
+            $this->add_stocklog($stID, $tID, "spoilage",$date, $dateRecorded, $actualQty, $remarks);
+            $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $remarks);
+        
          }
     }
     function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
