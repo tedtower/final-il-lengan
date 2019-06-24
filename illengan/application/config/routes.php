@@ -244,3 +244,4 @@ $route['chef/spoilages/stock/edit'] = "chef/editStockSpoil";
 $route['chef/spoilages/stock/delete'] ="chef/deletestockspoilages";
 $route['chef/inventory/deliveries'] = "chef/viewDeliveryReceipt";
 $route['chef/inventory/deliveries/formadd'] = "chef/viewDRFormAdd";
+$route['chef/destock'] = "chef/destockitem";
