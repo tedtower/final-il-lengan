@@ -36,11 +36,12 @@
                         <th><b>Subtotal</b></th>
                     </tr>
                 </thead>
-                <?php  
-                    if(isset($report)){
-                        foreach($report as $report){
-                ?> 
+
                 <tbody>
+                <?php  
+                    if(isset($report[0])){
+                        foreach($report as $report){
+                ?>
                     <tr>
                         <td><?php echo $report['olDesc']?></td>
                         <td><?php echo $report['osPayDateTime']?></td>
@@ -48,11 +49,26 @@
                         <td><?php echo $report['olPrice']?></td>
                         <td><?php echo $report['olSubtotal']?></td>
                     </tr>
+                    <?php foreach($addons as $addon){
+                    if($addon['olID'] == $report['olID']){?>
+                    <tr>
+                        <td><i class="pl-5"> > <?php echo $addon['aoName']?></i></td>
+                        <td><?php echo $report['osPayDateTime']?></td>
+                        <td><?php echo $addon['aoQty']?></td>
+                        <td><?php echo $addon['aoPrice']?></td>
+                        <td><?php echo $addon['aoTotal']?></td>  
+                    </tr>
+                    <?php }
+                     }?>
+                    <?php }
+                    } ?>
                 </tbody>
+                <?php  
+                        foreach($total as $total){
+                ?>
+                <span>Total: &#8369;<span class="total"><?php echo $total['sales']?></span></span>
                 <?php }
-                    }else{
-                        echo 'error';
-                } ?>  
+                     ?>
             </table>
             <button  class="btn btn-info btn-sm noprint" id="print" onclick="printContent('printReport');" style="width:90px;margin:10px 0;background:#0ba1c6;color:white;font-size:15px" >Print</button>
         </div>
