@@ -499,7 +499,7 @@ function setTotals(){
     var total = 0;
     $("#drForm .ic-level-1[data-focus='true'] input[name='itemSubtotal[]']").val(subtotal);
     $("#drForm .ic-level-1 input[name='itemSubtotal[]']").each(function(index){
-        total+= isNaN(parseInt($(this).val())) ? 0 : parseInt($(this).val());
+        total+= isNaN(parseFloat($(this).val())) ? 0 : parseFloat($(this).val());
     });
     $("#drForm .total").text(total);
 }

@@ -48,7 +48,7 @@ $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 $route['admin/purchaseorder/formadd'] = "adminview/viewPOFormAdd";
 $route['admin/purchaseorder/formedit'] = "adminview/viewPOFormEdit";
 $route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
-$route['admin/deliveryreceipt/formedit'] = "adminview/viewDRFormEdit";
+$route['admin/deliveryreceipt/formedit/(:num)'] = "adminview/viewDRFormEdit/$1";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
@@ -168,6 +168,7 @@ $route['admin/menu/getMenuStockModalData'] = "adminview/getMenuStockModalData";
 $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 $route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
 $route['admin/getUOMs'] = "adminview/getUOMs";
+$route['admin/deliveryreceipt/getFormVals'] = "adminview/getCardValuesForDR";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES

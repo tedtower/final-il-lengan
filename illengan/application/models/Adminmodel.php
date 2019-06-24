@@ -84,6 +84,33 @@ function get_transitems(){
                 tType = 'purchase order'";
     return $this->db->query($query)->result_array();
 }
+    function get_receiptTransaction($id){
+        $query = "SELECT
+                tID AS id,
+                spID AS sp,
+                spName,
+                tNum AS num,
+                receiptNo AS receipt,
+                tDate AS date,
+                tTotal AS total,
+                tRemarks AS remarks
+            FROM transactions
+            LEFT JOIN supplier USING(spID)
+            WHERE tID = ?";
+        return $this->db->query($query, array($id))->result_array();
+    }
+    function get_receiptTransactionItems($id){
+        $query = "SELECT
+                tiID AS id,
+                uomID AS uom,
+                stID AS stock,
+                tiPrice AS price,
+                tiQty AS qty,
+                qtyPerItem AS perItem
+            FROM transitems LEFT JOIN trans_items USING(tiID)
+            WHERE tID = ?";
+        return $this->db->query($query,array($id))->result_array();
+    }
 
     function get_inventoryReport($stID, $sDate, $eDate){
         $query = "SELECT
@@ -1647,7 +1674,7 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
         return $this->db->query($query, array($item['price'], $item['discount'], $item['delivery']
         , $item['payment'], $item['return'], $item['tiID']));
     }
-    function edit_poReceiptItemOR($item){
+    function edit_receiptItemPayStatus($item){
         $query = "UPDATE
                 transitems
             SET

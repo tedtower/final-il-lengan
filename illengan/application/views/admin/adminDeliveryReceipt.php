@@ -39,7 +39,7 @@
                                             <td><?= $dr['date']?></td>
                                             <td><?= $dr['total']?></td>
                                             <td>
-                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/'.$dr['id'])?>" data-original-title style="margin:0"
                                                 id="editBtn">Edit</a>
                                             <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
                                             </td>
@@ -74,7 +74,7 @@
                                                             <td><?= $drItem['actualqty']?></td>
                                                             <td><?= $drItem['price']?></td>
                                                             <td><?= $drItem['discount'] == null ||  $drItem['discount'] == 0 ? "N/A" : $drItem['discount']?></td>
-                                                            <td><?= $drItem['subtotal']?></td>
+                                                            <td><?= ($drItem['qty']*$drItem['price'])-$drItem['discount']?></td>
                                                             <td><?= $drItem['paymentstatus']?></td>
                                                             <td><?= $drItem['deliverystatus']?></td>
                                                         </tr>

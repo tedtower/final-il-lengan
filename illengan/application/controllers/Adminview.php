@@ -88,16 +88,43 @@ function viewDRFormAdd(){
     }
 }
 
-function viewDRFormEdit(){
+function viewDRFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Edit DR";
-        $this->load->view('admin/templates/head', $head);
-        $this->load->view('admin/templates/sideNav');
-        $data['stocks'] = $this->adminmodel->get_stockitems();
-        $data['supplier'] = $this->adminmodel->get_supplier();
-        $this->load->view('admin/deliveryReceiptEdit',$data);
+        if(is_numeric($id)){
+            $head['title'] = "Inventory - Edit DR";
+            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/sideNav');
+            $data['dr'] = $this->adminmodel->get_receiptTransaction($id);
+            $data['stocks'] = $this->adminmodel->get_stocks();
+            $this->load->view('admin/deliveryReceiptEdit',$data);
+        }else{
+            redirect('admin/deliveryreceipt');
+        }
     }else{
         redirect('login');
+    }
+}
+function getCardValuesForDR(){
+    if($this->checkIfLoggedIn()){
+        $id = $this->input->post('id');
+        $supplier = $this->input->post('supplier');
+        if(is_numeric($id) && is_numeric($supplier)){
+            echo json_encode(array(
+                "merchandise" => $this->adminmodel->get_SPMs($supplier),
+                "pos" => $this->adminmodel->get_posBySupplier($supplier),
+                "poItems" => $this->adminmodel->get_poItemsBySupplier($supplier),
+                "drItems" => $this->adminmodel->get_receiptTransactionItems($id),
+                'uom' => $this->adminmodel->get_uomForStoring()
+            ));
+        }else{
+            echo json_encode(array(
+                "inputErr" => true
+            ));
+        }
+    }else{
+        echo json_encode(array(
+            "sessErr" => true
+        ));
     }
 }
 function viewORFormAdd(){
@@ -875,6 +902,26 @@ function getStockItem(){
             ));
         }
     }
+
+    function getReceiptTransactionItems($id){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "items" => $this->adminmodel->get_receiptTransactionItems($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
 
 
 //     // function viewTransactions(){
