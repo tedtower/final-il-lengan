@@ -27,7 +27,7 @@
     }
 
     .card-header-4 {
-        background: red;
+        background: darkred;
         position: relative;
         top: -30px;
         left: 5%;
@@ -36,7 +36,7 @@
     }
 
     .card-top {
-        margin-top: -10% !important;
+        margin-top: -20% !important;
     }
 
     .card-content-text {
