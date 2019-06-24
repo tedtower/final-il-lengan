@@ -8,12 +8,14 @@
         </p>
     </div>
     <div class="card" style="width: 35rem; margin-left: 275px;">
-        <div class="card-body">
+        <div class="card-body text-center">
+            <h5 class="card-title"><b>Sales for <?= date("Y") ?></b></h5>            
             <canvas id="sales"></canvas>
         </div>
     </div>
     <div class="card" style="width: 35rem; margin-left: 275px;">
-        <div class="card-body">
+        <div class="card-body text-center">
+            <h5 class="card-title"><b>Revenue for <?= date("Y") ?></b></h5>
             <canvas id="revenue"></canvas>
         </div>
     </div>
@@ -93,7 +95,13 @@
     <div class="card" style="width: 15rem; margin-left: 275px;">
         <div class="card-body text-center">
             <h5 class="card-title"><b>Total Sales for the Month</b></h5>
-            <h5><?= $tSales->total ?></h5>
+            <h5><?= $tSales[0]->total ?></h5>
+        </div>
+    </div>
+    <div class="card" style="width: 15rem; margin-left: 275px;">
+        <div class="card-body text-center">
+            <h5 class="card-title"><b>Total Sales for the Month</b></h5>
+            <h5><?= $tRevenue[0]->total ?></h5>
         </div>
     </div>
 </div>

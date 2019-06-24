@@ -15,6 +15,7 @@
         }
         
     } 
+    console.log(<?= date("Y") ?>);
     var minSales    = Math.min.apply(Math,arrSales),
         maxSales    = Math.max.apply(Math,arrSales) + 10,
         minRevenue  = Math.min.apply(Math,arrRevenue),
@@ -35,10 +36,6 @@
         options: {
             legend: {
                 display: false
-            },
-            title: {
-                display:true,
-                text:'Sales'
             },
             scales: {
                 yAxes: [{
@@ -63,10 +60,6 @@
         options: {
             legend: {
                 display:false
-            },
-            title: {
-                display:true,
-                text:'Revenue'
             },
             scales: {
                 yAxes: [{

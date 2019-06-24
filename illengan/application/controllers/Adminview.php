@@ -23,6 +23,8 @@ function viewDashboard(){
         $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
         $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
         $data['topmenu'] = $this->adminmodel->getTopTenMenu();
+        $data['tSales'] = $this->adminmodel->getTotalSales();
+        $data['tRevenue'] = $this->adminmodel->getTotalRevenue();
         $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
         $this->load->view('admin/adminDashboard');

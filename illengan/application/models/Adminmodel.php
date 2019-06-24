@@ -27,6 +27,14 @@ function getTopTenMenu(){
     $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
     return $this->db->query($query)->result();
 }
+function getTotalSales(){
+    $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
+    return $this->db->query($query)->result();
+}
+function getTotalRevenue(){
+    $query = "SELECT SUM(osTotal) total FROM orderslips WHERE payStatus = 'paid'";
+    return $this->db->query($query)->result();
+}
 
 function get_transactions(){
     $query = "SELECT
