@@ -59,15 +59,6 @@ function addStockItems() {
         spmActualQty = document.getElementsByName('spmActualQty')[i].value;
         uomStore =document.getElementsByName('uomStore')[i].value;
         
-        console.log('uomID '+ uomID);
-        console.log(' stID'+stID);
-        console.log('stName  '+stName);
-        console.log(' curQty'+curQty);
-        console.log(' actualQty'+actualQty);
-        console.log(' tRemarks'+tRemarks);
-		console.log(' spmActualQty '+spmActualQty);
-        console.log(' uomStore'+uomStore);
-        console.log(tDate);
 		
         stockItems = {
             'uomID': uomID,
@@ -89,11 +80,13 @@ function addStockItems() {
         data: {
             stocks: JSON.stringify(stocks)
         },
-        dataType: 'json',
-        // complete: function() {
-        //     $("#formAdd").modal("hide");
-        //     location.reload();
-        //     },
+        success: function(data){
+            console.log(data);
+        },
+        complete: function() {
+            $("#formAdd").modal("hide");
+            location.reload();
+            },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);

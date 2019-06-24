@@ -104,10 +104,13 @@ function getCardValuesForDR(){
     if($this->checkIfLoggedIn()){
         $id = $this->input->post('id');
         $supplier = $this->input->post('supplier');
-        if(is_numeric($id)){
+        if(is_numeric($id) && is_numeric($supplier)){
             echo json_encode(array(
-                "pos" => $this->adminmodel->get_posBySupplier($id),
-                "poItems" => $this->adminmodel->getPOItemsBySupplier($id)
+                "merchandise" => $this->adminmodel->get_SPMs($supplier),
+                "pos" => $this->adminmodel->get_posBySupplier($supplier),
+                "poItems" => $this->adminmodel->get_poItemsBySupplier($supplier),
+                "drItems" => $this->adminmodel->get_receiptTransactionItems($id),
+                'uom' => $this->adminmodel->get_uomForStoring()
             ));
         }else{
             echo json_encode(array(

@@ -130,7 +130,7 @@
 											<div class="modal-body">
 												<h6 id="deleteTableCode"></h6>
 												<p>Are you sure you want to delete the selected stock spoilages?</p>
-												<input type="text" name="tiID" hidden="hidden">
+												<input type="text" name="tID" hidden="hidden">
 												<div class="input-group mb-2">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
@@ -142,7 +142,7 @@
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-												<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+												<button type="submit" class="btn btn-danger btn-sm">Archive</button>
 											</div>
 										</form>
 									</div>
@@ -334,8 +334,12 @@
             $(".item_delete").last().on('click', function () {
                 $("#deleteSpoilageId").text(
                     `Delete spoilage code ${$(this).closest("tr").attr("data-spoilname")}`);
-				$("#deleteSpoilage").find("input[name='tiID']").val($(this).closest("tr").attr(
-                    "data-tiID"));
+				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
+					"data-tID"));
+				$("#deleteSpoilage").find("input[name='stID']").val($(this).closest("tr").attr(
+					"data-stID"));
+				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
+                    "data-tID"));
             });
 			$("#spoilagesTable > tbody").append(accordion);
 		});
@@ -399,31 +403,29 @@
             }
         });
     });
-});
+
 	//--------------------End of Function for Edit-----------------------------
 	// Function for Delete
 	
-    $("#confirmDelete").on('submit', function(event) {
+	$("#deleteSpoilage form").on('submit', function(event) {
 		event.preventDefault();
 		var delRemarks =$(this).find("input[name='delRemarks']").val();
+		var tID =$(this).find("input[name='tID']").val();
         $.ajax({
                 url: '<?= site_url('admin/stock/spoilage/delete') ?>',
                 method: 'POST',
                 data: {
-					tiID: tiID,
+					tID: tID,
 					delRemarks:delRemarks
                 },
                 dataType: 'json',
-                success: function(data) {
-                    accounts = data;
-                    setAccountData();
-                },
                 complete: function() {
                 $("#deleteSpoilage").modal("hide");
 				location.reload();
                 }
             });
         });
+	});
 
 	//End Function Delete
 
