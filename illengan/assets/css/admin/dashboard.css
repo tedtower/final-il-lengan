@@ -1,5 +1,5 @@
 .card-header-1 {
-    background: darkblue;
+    background: #1c1ce0;
     position: relative;
     top: -30px;
     left: 5%;
@@ -9,7 +9,7 @@
 }
 
 .card-header-2 {
-    background: green;
+    background: #0ac70a;
     position: relative;
     top: -30px;
     left: 5%;
@@ -19,7 +19,7 @@
 }
 
 .card-header-3 {
-    background: indigo;
+    background: #8210d3;
     position: relative;
     top: -30px;
     left: 5%;
@@ -29,7 +29,7 @@
 }
 
 .card-header-4 {
-    background: darkred;
+    background: #ca1010;
     position: relative;
     top: -30px;
     left: 5%;

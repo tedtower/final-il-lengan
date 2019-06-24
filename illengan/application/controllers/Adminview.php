@@ -20,11 +20,11 @@ function viewDashboard(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Dashboard";
         $data['sales'] = $this->adminmodel->getOSMonthByYear(date('Y'));
+        $data['todaySales'] = $this->adminmodel->getTodaySales();
         $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
         $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
         $data['topmenu'] = $this->adminmodel->getTopTenMenu();
-        $data['tSales'] = $this->adminmodel->getTotalSales();
-        $data['tRevenue'] = $this->adminmodel->getTotalRevenue();
+        $data['todayConsumption'] = $this->adminmodel->getTodayConsumption();
         $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
         $this->load->view('admin/adminDashboard');
