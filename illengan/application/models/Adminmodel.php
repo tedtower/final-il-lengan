@@ -23,6 +23,10 @@ function getUnavailableStockRoom(){
     $query = "SELECT stID, stLocation, COALESCE(CONCAT(stName,' (',stSize,')'),stName) stock, stQty, stMin FROM stockitems WHERE stLocation = 'stockroom' AND stQty <= stMin";
     return $this->db->query($query)->result();
 }
+function getTopTenMenu(){
+    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
+    return $this->db->query($query)->result();
+}
 
 function get_transactions(){
     $query = "SELECT
