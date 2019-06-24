@@ -11,18 +11,21 @@
             <a class="nav-link" href="<?php echo base_url().'chef'?>"><i class="fal fa-tasks"></i> Orders</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url().'chef/inventory'?>"><i class="fal fa-boxes"></i> Inventory</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="<?php echo base_url().'chef/consumption'?>"><i class="fal fa-boxes"></i> Consumption</a>
-          </li>
-          <li class="nav-item">
-            <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-trash"></i> Spoilages</a>
+            <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-boxes"></i> Inventory <i
+                class="fal fa-angle-down"></i></a>
             <div id="myDropdown" class="dropdown-content">
-              <a href="<?php echo base_url().'chef/spoilages/menu'?>"><i class="fal fa-book"></i>  Menu Spoilages</a>
-              <a href="<?php echo base_url().'chef/spoilages/stock'?>"><i class="fal fa-fish"></i>  Stock Spoilages</a>
+              <a href="<?php echo base_url().'chef/inventory/consumption'?>"><i class="fal fa-calendar-minus"></i> Consumption</a>
+              <a href="<?php echo base_url().'chef/inventory/deliveries'?>"><i class="fal fa-truck-loading"></i> Delivery Receipts</a>
             </div>
-</li>
+          </li>
+          <li class="nav-item">
+            <a onclick="myFunction()" href="#" class="dropbtn nav-link"><i class="fal fa-trash"></i> Spoilages <i
+                class="fal fa-angle-down"></i></a>
+            <div id="myDropdown" class="dropdown-content">
+              <a href="<?php echo base_url().'chef/spoilages/menu'?>"><i class="fal fa-book"></i> Menu Spoilages</a>
+              <a href="<?php echo base_url().'chef/spoilages/stock'?>"><i class="fal fa-fish"></i> Stock Spoilages</a>
+            </div>
+          </li>
       </ul>
       <ul class="navbar-nav ml-auto delius">
           <li class="nav-item">

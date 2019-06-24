@@ -1,23 +1,14 @@
 <!--End Side Bar-->
 <body style="background:white">
     <div class="content">
-        <div class="container-fluid">
-            <br>
-            <p style="text-align:right; font-weight: regular; font-size: 16px">
-                <!-- Real Time Date & Time -->
-                <?php echo date("M j, Y -l"); ?>
-            </p>
-            <div class="content" style="margin-left:250px;">
-                <div class="container-fluid">
-                    <div class="content">
-                        <div class="container-fluid">
-                            <!--Table-->
-                            <div class="card-content">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/deliveryreceipt/formadd')?>" data-original-title style="margin:0"
-                                    id="addBtn">Add Delivery Receipt</a>
-                                <br>
-                                <br>
-                                <?php if(isset($drs[0])){
+        <p style="text-align:right; font-weight: regular; font-size: 16px">
+            <?php echo date("M j, Y -l"); ?>
+        </p>
+        <a class="btn btn-sm" href="<?= site_url('barista/inventory/deliveryreceipt/formadd')?>" data-original-title style="margin:0;padding:6px 12% 6px 6px;background: #4da6ff;color:white"
+            id="addBtn"><i class="far fa-plus"></i> Add Delivery Receipt</a>
+        <br>
+        <br>
+        <?php if(isset($drs[0])){
                                 ?>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
@@ -39,7 +30,7 @@
                                             <td><?= $dr['date']?></td>
                                             <td><?= $dr['total']?></td>
                                             <td>
-                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/'.$dr['id'])?>" data-original-title style="margin:0"
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit')?>" data-original-title style="margin:0"
                                                 id="editBtn">Edit</a>
                                             <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
                                             </td>
@@ -74,7 +65,7 @@
                                                             <td><?= $drItem['actualqty']?></td>
                                                             <td><?= $drItem['price']?></td>
                                                             <td><?= $drItem['discount'] == null ||  $drItem['discount'] == 0 ? "N/A" : $drItem['discount']?></td>
-                                                            <td><?= ($drItem['qty']*$drItem['price'])-$drItem['discount']?></td>
+                                                            <td><?= $drItem['subtotal']?></td>
                                                             <td><?= $drItem['paymentstatus']?></td>
                                                             <td><?= $drItem['deliverystatus']?></td>
                                                         </tr>
@@ -97,8 +88,9 @@
                                 }?>
                                 <!--End Table Content-->
                                 
-                                <!--Start of Modal "Delete Stock Item"-->
-                                <div class="modal fade" id="delete" tabindex="-1" role="dialog"
+        
+       <!--Start of Modal "Delete Stock Item"-->
+       <div class="modal fade" id="delete" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
@@ -140,7 +132,7 @@
         </div>
     </div>
     </div>
-    <?php include_once('templates/scripts.php') ?>
+    <?php include_once('scripts.php') ?>
     <script>
     var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals')?>';
     var crudUrl = '<?= site_url('admin/transactions/add')?>';

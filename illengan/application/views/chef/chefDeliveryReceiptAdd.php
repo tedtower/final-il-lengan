@@ -1,30 +1,28 @@
 <body style="background: white">
 <div class="content">
-    <div class="container-fluid">
-    <br>
-        <div class="content" style="margin-left:250px;">
-            <div class="container-fluid">
-                <div class="card-content">
                     <!--Export button and Real Time Date & Time --> 
                     <div style="overflow:auto;">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?>
                         </p>
-                        <h6 style="font-size: 16px;margin-left:15px">Add Delivery Receipt</h6>
                     </div>
-                    <!--Card--> 
-                    <form id="drForm" action="<?= site_url("admin/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                    <div class="card">
+                    <div class="card-header">
+                    <h6 style="font-size: 16px;margin:0">Add Delivery Receipt</h6>
+                    </div>
+                    <form id="drForm" action="<?= site_url("barista/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                    <div class="card-body">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
                                 <!--Source Name-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                        <span class="input-group-text"
+                                            style="width:100px;background:whitesmoke;color:black;font-size:15px;font-weight:600;">
                                             Supplier</span>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
+                                    <select class="spID form-control"  name="spID" required>
                                         <option value="" selected>Choose</option>
                                     <?php if(isset($supplier)){
                                         foreach($supplier as $sup){?>
@@ -35,60 +33,62 @@
                                 <!--Date-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                        <span class="input-group-text"
+                                            style="width:100px;background:whitesmoke;color:black;font-size:15px;font-weight:600">
                                             Receipt</span>
                                     </div>
-                                    <input type="text" class="form-control  border-left-0"
+                                    <input type="text" class="form-control"
                                         name="receipt">
                                 </div>
                                 <!--Date-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                        <span class="input-group-text"
+                                            style="width:142px;background:whitesmoke;color:black;font-size:15px;font-weight:600">
                                             Transaction Date</span>
                                     </div>
-                                    <input type="date" class="form-control  border-left-0"
+                                    <input type="date" class="form-control"
                                         name="date" required>
                                 </div>
                             </div>
                             <!--Remarks-->
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text border border-secondary"
-                                        style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                    <span class="input-group-text"
+                                        style="width:100px;background:whitesmoke;color:black;font-size:15px;font-weight:600">
                                         Remarks</span>
                                 </div>
                                 <textarea type="text" name="remarks"
-                                    class="form-control form-control-sm  border-left-0"
+                                    class="form-control"
                                     rows="1"></textarea>
                             </div>
-                            <a id="addNewBtn" class="btn btn-primary btn-sm"
-                                style="margin:0;color:blue;font-weight:600;">New Item</a>
-                            <a id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
+                            <button id="addNewBtn" class="btn btn-primary btn-sm"
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button">New Item</button>
+                            <button id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#merchandiseBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getSupplierMerchandise')?>">Add Merchandise</a>
-                            <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;width:auto" type="button" data-url="<?= site_url('barista/getSupplierMerchandise')?>">Add Merchandise</button>
+                            <button id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
                                 data-target="#poBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getPosFromSupplier')?>">PO Item</a>
+                                style="margin:0;color:#005ce6;border:2px solid #0066ff;font-weight:600;background:white;" type="button" data-url="<?= site_url('barista/getPosFromSupplier')?>">PO Item</button>
                             <br><br>
 
                             <!--div containing the different input fields in adding trans items -->
                             <div class="ic-level-2"></div>
 
                             <br>
-                            <span>Total: &#8369;<span class="total">0</span></span>
+                            <span style="font-size:16px">Total: &#8369;<span class="total">0</span></span>
                             <!--Total of the trans items-->
-
-                            <div class="modal-footer">
+                        </div>
+                        <div class="modal-footer" >
                                 <button type="button" class="btn btn-danger btn-sm"
                                     data-dismiss="modal">Cancel</button>
                                 <button class="btn btn-success btn-sm"
                                     type="submit">Insert</button>
-                            </div>
                         </div>
+                    </div>
                     </form>
+                    </div>
+
 
 
                     <!--Start of merchandiseBrochure Modal"-->
@@ -142,7 +142,7 @@
                                                     style="width:130px;background:#737373;color:white;font-size:14px;font-weight:600">
                                                     Purchase Order</span>
                                             </div>
-                                            <select class="form-control form-control-sm" name="po">
+                                            <select class="form-control " name="po">
                                                 <option value="" selected>Choose</option>
                                             </select>
                                             <table class="table">
@@ -195,8 +195,8 @@
                                                 }else{
                                                     foreach($stocks as $stock){
                                             ?>
-                                            <div class="d-flex d-inline-block ic-level-1">
-                                                <div><input name="stocks" type="radio" class="mr-3" value="<?= $stock['stID']?>" data-name="<?= $stock['stName']?>"/></div>
+                                            <div class="d-flex d-inline-block ic-level-1" style="font-size:16px;overflow:auto">
+                                                <div><input name="stocks" type="radio" style="margin-top:6px" class="mr-3" value="<?= $stock['stID']?>" data-name="<?= $stock['stName']?>"/></div>
                                                 <div><?= $stock['stName']?> (<?= $stock['uomAbbreviation']?>)</div>
                                             </div>
                                             <?php
@@ -205,7 +205,7 @@
                                             ?>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer m-0">
                                         <button type="button" class="btn btn-danger btn-sm"
                                             data-dismiss="modal">Cancel</button>
                                         <button class="btn btn-success btn-sm" type="submit">Ok</button>
@@ -215,17 +215,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-<?php include_once('templates/scripts.php') ?>
+      
+                <?php include_once('templates/scripts.php') ?>
 <script>
 $(function(){
     var uom;
     $.ajax({
         method: "GET",
-        url: "/admin/getUOMs",
+        url: "/barista/getUOMs",
         dataType: "JSON",
         success: function(data){
             uom = data.uom;
@@ -257,7 +254,6 @@ $(function(){
                         class="form-control form-control-sm"
                         placeholder="Subtotal" readonly>
                 </div>
-
                 <div class="input-group">
                     <input name="stID[]" type="text"
                         class="form-control border-right-0"
@@ -277,6 +273,7 @@ $(function(){
         setIL1FormEvents();
         setInputUOM(uom);
     });
+
     $("#addMBtn").on("click",function(){
         var url = $(this).attr("data-url");
         var supplier = $("#drForm select[name='spID']").val();
@@ -360,12 +357,12 @@ $(function(){
         event.preventDefault();
         var url = $(this).attr("action");
         var supplier = $("#drForm select[name='spID']").val();
-        var date = $("#drForm input[name='tDate']").val();
+        var date = $("#drForm input[name='date']").val();
         var receipt = $("#drForm input[name='receipt']").val();
-        var remarks = $("#drForm textarea[name='tRemarks']").val();
-        var orItems = [];
+        var remarks = $("#drForm textarea[name='remarks']").val();
+        var drItems = [];
         $("#drForm .ic-level-1").each(function(index){
-            orItems.push({
+            drItems.push({
                 tiID: $(this).attr("data-id"),
                 name: $(this).find("input[name='itemName[]']").val(),
                 qty: $(this).find("input[name='itemQty[]']").val(),
@@ -384,9 +381,12 @@ $(function(){
                 date: date,
                 receipt: receipt,
                 remarks: remarks,
-                items: JSON.stringify(orItems)
+                transitems: JSON.stringify(drItems)
             },
             dataType: "JSON",
+            beforeSend: function() {
+                console.log(supplier,date, receipt, remarks, drItems);
+            },
             success: function(data){
                 console.log(data);
             },
@@ -472,7 +472,7 @@ function setPOBrochure(pos){
             $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
             $("#drForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
             $("#drForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
-            $("#drForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
+            $("#drForm .ic-level-1:last-child input[name='stID[]']").attr(item[0].stock);
             $("#drForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
             $("#drForm .ic-level-1:last-child *").on("focus",function(){
                 if(!$(this).closest(".ic-level-1").attr("data-focus")){
@@ -499,7 +499,7 @@ function setTotals(){
     var total = 0;
     $("#drForm .ic-level-1[data-focus='true'] input[name='itemSubtotal[]']").val(subtotal);
     $("#drForm .ic-level-1 input[name='itemSubtotal[]']").each(function(index){
-        total+= isNaN(parseFloat($(this).val())) ? 0 : parseFloat($(this).val());
+        total+= isNaN(parseInt($(this).val())) ? 0 : parseInt($(this).val());
     });
     $("#drForm .total").text(total);
 }
