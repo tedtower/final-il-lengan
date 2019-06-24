@@ -226,9 +226,13 @@ function addspoilagesstock(){
 
 	}
 
-	function getConsumptionItems() {
-		$data=$this->Chefmodel->getconsumptionItems();
-        echo json_encode($data);
+	function getConsumptionItems(){
+		if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+		$data=$this->Chefmodel->get_stocks();
+		echo json_encode($data);
+	}else{
+		redirect('login');
+		}
 	}
 
 	//------------ D E L I V E R Y  R E C E I P T --------------
