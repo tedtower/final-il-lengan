@@ -25,7 +25,8 @@ function viewDashboard(){
         $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
         $this->load->view('admin/adminDashboard');
-        $this->load->view('admin/templates/scripts');         
+        $this->load->view('admin/templates/scripts');
+        $this->load->view('admin/templates/charts');
     }else{
         redirect('login');
     }
