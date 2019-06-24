@@ -10,9 +10,11 @@
                 <div class="container-fluid">
                     <!--Table-->
                     <div class="card-content">
-                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSales"
-                            data-original-title style="margin:0;" id="addBtn">Add Sales</button>
-                        <br><br>
+                        <div style="overflow:auto" class="mb-3">
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSales"
+                                    data-original-title style="margin:0;" id="addBtn">Add Sales</button>
+                            <button class="btn btn-danger btn-sm m-0" data-toggle="modal" data-target="#addReport" style="background:#cc0000;color:white;font-weight:900;float:right"><i class="fas fa-file-pdf"></i> Export to PDF</button>
+                        </div>
                         <table id="salesTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                             width="100%">
                             <thead class="thead-dark">
@@ -137,6 +139,43 @@
                             </div>
                         </div>
                         <!-- End of Modal "Add Sales" -->
+
+                        <!--Start of Add Report Modal-->
+                        <div class="modal fade" id="addReport" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Add Report</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="<?php echo base_url()?>admin/sales/report/add" method="post" accept-charset="utf-8">
+                                        <div class="modal-body">
+                                            <p>Please input the date for the following:</p>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        Start Date</span>
+                                                </div>
+                                                <input type="date" name="sDate" class="form-control form-control-sm">
+                                            </div>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        End Date</span>
+                                                </div>
+                                                <input type="date" name="eDate" class="form-control form-control-sm">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-success btn-sm">Create</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
                         <!--Start of Modal "Edit Sales"-->
                         <div class="modal fade bd-example-modal-lg" id="editSales" tabindex="-1" role="dialog"

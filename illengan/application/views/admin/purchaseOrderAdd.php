@@ -63,7 +63,7 @@
                             <div class="ic-level-2"></div>
 
                             <br>
-                            <span>Total: &#8369;<span class="total">0</span></span>
+                            <span>Total: &#8369;<span class="total">0</span>
                             <!--Total of the trans items-->
 
                             <div class="modal-footer">
@@ -172,7 +172,7 @@
                                         <div class="find input-group mb-1">
                                             <input type="text" name="itemName[]"
                                                 class="form-control form-control-sm"
-                                                value="${merch.stName} ${merch.stSize}" style="width:24%" readonly>
+                                                value="${merch.spmName}" style="width:24%" readonly>
                                             <input type="number" name="itemQty[]"
                                                 class="tiQty form-control form-control-sm"
                                                 placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
