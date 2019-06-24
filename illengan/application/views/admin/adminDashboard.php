@@ -6,6 +6,7 @@
         left: 5%;
         height: 80px;
         width: 80px;
+        margin-top: 20px;
     }
 
     .card-header-2 {
@@ -15,6 +16,7 @@
         left: 5%;
         height: 80px;
         width: 80px;
+        margin-top:20px;
     }
 
     .card-header-3 {
@@ -24,6 +26,7 @@
         left: 5%;
         height: 80px;
         width: 80px;
+        margin-top:20px;
     }
 
     .card-header-4 {
@@ -33,10 +36,11 @@
         left: 5%;
         height: 80px;
         width: 80px;
+        margin-top:20px;
     }
 
     .card-top {
-        margin-top: -20% !important;
+        margin-top: -25% !important;
     }
 
     .card-content-text {
