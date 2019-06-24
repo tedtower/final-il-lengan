@@ -37,16 +37,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = "SELECT * FROM orderslips inner JOIN orderlists on orderslips.osID= orderlists.osID where olStatus = 'served';";
             return $this->db->query($query)->result_array();
         }
-        // function get_orderslip(){
+        // function get_orderslips(){
         //     $this->load->database();
         //     $query = $this->db->query('SELECT * from orderslips join orderlists using (osID) join preferences using (prID) GROUP BY tableCode');
         //     return $query->result();
         // }
 
-        function get_orderslip(){
-            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) GROUP BY osID, tableCode' );
-            return $query->result();
-    }
+    //     function get_orderslips(){
+    //         $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) GROUP BY osID, tableCode' );
+    //         return $query->result();
+    // }
         function get_orderitems($osID){
             $query = "SELECT olDesc, olSubtotal,olQty,osTotal from orderlists join orderslips USING (osID) WHERE osID = ?";
             return $this->db->query($query,array($osID))->result_array();
@@ -85,10 +85,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
 
-        function get_orderslipsi($osID){
-            $query = "select osID, tableCode, custName, osTotal, osDate, if(osPayDate is null, 'Unpaid', 'Paid') as payStatus , osPayDate from orderslips where osID = ?";
-            return $this->db->query($query, array($order_id))->result_array();
-        }
+        function get_orderslips(){
+            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) GROUP BY osID, tableCode' );
+            return $query->result();
+    }
 
         function get_orderlists($osID){
             $query = "Select olID, olDesc, olQty, olSubtotal from orderlists inner join preferences using (prID) inner join orderslips using (osID) where osID = ?";
@@ -142,10 +142,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
         //$query2 = "SELECT olID, aoName, aoPrice, olRemarks from orderlists inner join orderaddons using (olID) inner join addons using (aoID)";
-        function get_orderslips(){
-            $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'pending') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
-            return $this->db->query($query)->result_array();
-        }
+        // function get_orderslips(){
+        //     $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'pending') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
+        //     return $this->db->query($query)->result_array();
+        // }
         function get_pendingOlist(){
             $query = "Select * from  orderlists where olStatus = 'pending'";
             return $this->db->query($query)->result_array();
