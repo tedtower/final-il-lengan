@@ -232,6 +232,8 @@ function addspoilagesstock(){
             $sDate = $this->input->post('sDate');
             $eDate = $this->input->post('eDate');
             $this->adminmodel->get_salesReport($sDate, $eDate);
+            $this->adminmodel->get_totalSales($sDate, $eDate);
+            $data['total'] = $this->adminmodel->get_totalSales($sDate, $eDate);
             $data['report'] = $this->adminmodel->get_salesReport($sDate, $eDate);
             $data['addons'] = $this->adminmodel->get_orderAddon();
             $this->load->view('admin/reportSales', $data);

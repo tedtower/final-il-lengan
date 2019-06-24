@@ -63,7 +63,7 @@
                             <div class="ic-level-2"></div>
 
                             <br>
-                            <span>Total: &#8369;<span class="total">0</span></span>
+                            <span>Total: &#8369;<span class="total">0</span>
                             <!--Total of the trans items-->
 
                             <div class="modal-footer">

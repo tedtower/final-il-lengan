@@ -24,16 +24,22 @@ function getUnavailableStockRoom(){
     return $this->db->query($query)->result();
 }
 function getTopTenMenu(){
-    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' GROUP BY mName LIMIT 10";
-    return $this->db->query($query)->result();
+    $query = "SELECT mName, COUNT(prID) salesCount FROM preferences NATURAL JOIN menu NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY mName ORDER BY salesCount DESC LIMIT 10";
+    return $this->db->query($query,array(date('Y')))->result();
 }
+
 function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
 }
+
 function getTotalRevenue(){
     $query = "SELECT SUM(osTotal) total FROM orderslips WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
+}
+function get_totalSales($sDate, $eDate){
+    $query = "SELECT SUM(osTotal) sales FROM orderslips WHERE payStatus = 'paid' and osPayDateTime BETWEEN ? and ? ";
+    return $this->db->query($query,array($sDate, $eDate))->result_array();
 }
 
 function get_transactions(){
@@ -128,8 +134,7 @@ function get_transitems(){
     }
 
     function get_salesReport($sDate, $eDate){
-        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID)
-                LEFT JOIN orderaddons USING(olID) WHERE osPayDateTime BETWEEN ? and ?";
+        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
         return $this->db->query($query, array($sDate, $eDate))->result_array();
     }
     
