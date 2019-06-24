@@ -87,6 +87,13 @@ function get_transitems(){
                 LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
         return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
     }
+
+    function get_salesReport($sDate, $eDate){
+        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID)
+                LEFT JOIN orderaddons USING(olID) WHERE osPayDateTime BETWEEN ? and ?";
+        return $this->db->query($query, array($sDate, $eDate))->result_array();
+    }
+    
     function get_prefStocks(){
         $query="SELECT
                 prID,
