@@ -359,7 +359,8 @@
                 return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
         } 
 
-        function add_consumptions($date_recorded,$stocks,$account_id,$lastNum){
+        //------------------------------ C O N S U M P T I O N ------------------------------------------------------------------------------
+        function add_consumptions($date_recorded,$stocks,$account_id,$lastNum){//Consumption
             if(count($stocks) > 0){
                 for($in = 0; $in < count($stocks) ; $in++){
                     $this->destock($stocks);  
@@ -367,7 +368,7 @@
                 }
             }
         }
-
+//consumption
         function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$consQty,$account_id,$stocks){
             $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
            
@@ -380,15 +381,41 @@
             $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
              if($this->db->query($query,array($uomID, $stID, $stName))){
                 $this->add_contrans_items($this->db->insert_id(), $stID, $tID, $consQty);
-                for($in = 0; $in < count($stocks)-1 ; $in++){
-                $this->add_stocklog($stocks[$in]['stID'], $tID, "consumed",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['consQty'], NULL);
-                $this->add_actlog($account_id, $dateRecorded, "Barista added a consumption.", "add", NULL);
+                for($in = 0; $in < count($stocks) ; $in++){
+                $this->add_consstocklog($stocks[$in]['stID'], $tID, "consumed",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['consQty'], $remarks);
+                $this->add_consactlog($account_id, $dateRecorded, "Chef added a consumption.", "add", $remarks);
             }
              }
         }
         function add_contrans_items($tiID, $stID, $tID, $consQty){
             $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
-            return  $this->db->query($query,array($tID, $tiID, $consQty));
+            $this->db->query($query,array($tID, $tiID, $consQty));
+        }
+        function add_consactlog($aID, $alDate, $alDesc, $defaultType, $additionalRemarks){
+            $query = "INSERT INTO `activitylog`(
+                `alID`,
+                `aID`,
+                `alDate`, 
+                `alDesc`, 
+                `alType`, 
+                `additionalRemarks`
+                ) 
+                VALUES (NULL, ?, ?, ?, ?, ?)";
+                 $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
+        } 
+        function add_consstockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks){
+            $query = "INSERT INTO `stocklog`(
+                    `slID`,
+                    `stID`,
+                    `tID`,
+                    `slType`,
+                    `slDateTime`,
+                    `dateRecorded`,
+                    `slQty`,
+                    `slRemarks`
+                )
+                VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
+             $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
         }
 
         // ---------  D E L I V E R Y  R E C E I P T S ---------
