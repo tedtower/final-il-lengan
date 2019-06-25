@@ -39,11 +39,11 @@
                 }
             }
         }
-        function destock($stocks){
+         function destock($stocks){
             $query = "Update stockitems set stQty = ? - ? where stID = ?";
             if(count($stocks) > 0){
                 for($in = 0; $in < count($stocks) ; $in++){
-                    $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['stQty'], $stocks[$in]['stID'],  )); 
+                    $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['consQty'], $stocks[$in]['stID'],  )); 
                 }
             }
         }
@@ -184,38 +184,64 @@
     }
 
     // --------------- E D I T I N G  S P O I L A G E S ---------------
-     function edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded){
+      function edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded, $account_id){
         $query = "Update menuspoil set msDateRecorded = ? where msID=?";
         if($this->db->query($query,array($date_recorded,$msID))){
             $query = "Update spoiledmenu set msQty = ?, msDate = ?,msRemarks = ? where msID = ? AND prID = ?";
              $this->db->query($query,array($msQty,$msDate,$msRemarks,$msID,$prID));
              $query2 = "INSERT INTO `activitylog` (alID, aID, alDate, alDesc, alType, additionalRemarks)
              Values (NULL, ?, ?, ?, ?, ?)";
-            $this->db->query($query2, array(3, $date_recorded, "Chef updated a menu spoiled item.", "update", $msRemarks));
-            $this->edit_stockItems($prID, $msQty, $oldQty);
+            $this->db->query($query2, array($account_id, $date_recorded, "Chef updated a menu spoiled item.", "update", $msRemarks));
+            
+            $spoiled = "Select stID from spoiledmenu inner join prefstock on spoiledmenu.prID=prefstock.prID where msID = '$msID'";
+            $stock = $this->db->query($spoiled)->result_array();
+            foreach($stock as $stk){
+                if($stk['stID'] != null){
+                    $this->edit_stockItems($prID, $msQty, $oldQty);
+                    $this->edit_msTransactions($msID, $msDate, $msRemarks, $date_recorded);
+                }
+            }
         }else{
             return false;
         }
     }
+    function edit_msTransactions($msID, $msDate, $msRemarks, $date_recorded){
+        $query = "SELECT transactions.tID as tID, transitems.stID as stID  FROM spoiledmenu inner join prefstock on spoiledmenu.prID = prefstock.prID inner join transitems on prefstock.stID=transitems.stID
+        inner join trans_items on transitems.tiID=trans_items.tiID inner join transactions on trans_items.tID=transactions.tID where msID='$msID'";
+        $mspoiled = $this->db->query($query)->result_array();
+        foreach($mspoiled as $ms){
+            $tID = $ms['tID'];
+            $stID = $ms['stID'];
+        }
+        $query2 = "Update transactions set tDate=?, dateRecorded = ?, tRemarks=? where tID = ?";
+        $this->db->query($query2, array($msDate, $date_recorded, $msRemarks, $tID));
+        $this->edit_msStocklog($stID, $tID, $msDate, $msRemarks, $date_recorded);
+    }
+     function edit_msStocklog($stID, $tID, $msDate, $msRemarks, $date_recorded){
+        $query = "Update stocklog set slDateTime = ?, dateRecorded = ?, slRemarks =? where stID = ? and tID = ?";
+        return $this->db->query($query, array($msDate, $date_recorded, $msRemarks, $stID, $tID));
+     }
     function edit_stockItems($prID, $msQty, $oldQty){
         $query3 = "Select stID from prefstock where prID = '$prID'";
         $stID = $this->db->query($query3)->result_array();
         foreach($stID as $s){
             $id = $s['stID'];
         }
-        $query4 = "Select stQty, stMin from stockitems where stID = '$id'";
+        $query4 = "Select stQty, prstQty from stockitems inner join prefstock on stockitems.stID=prefstock.stID
+        where stockitems.stID = '$id'";
         $data = $this->db->query($query4)->result_array();
         foreach($data as $d){
             $stQty = $d['stQty'];
+            $qty = $d['prstQty'];
             //$stMin = $d['stMin'];
         }
         if($msQty > $oldQty){
-            $diff = $msQty - $oldQty;
+            $diff = ($msQty * $qty) - ($oldQty * $qty);
             $finQty = $stQty - $diff;
             $updateQty = "Update stockitems set stQty = ? where stID = ?";
             return $this->db->query($updateQty, array($finQty, $id));
         }else if($msQty < $oldQty){
-            $sum = $oldQty - $msQty;
+            $sum = ($oldQty * $qty) - ($msQty * $qty);
             $finQty = $sum + $stQty;
             $updateQty = "Update stockitems set stQty = ? where stID = ?";
             return $this->db->query($updateQty, array($finQty, $id));
@@ -363,6 +389,136 @@
         function add_contrans_items($tiID, $stID, $tID, $consQty){
             $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
             return  $this->db->query($query,array($tID, $tiID, $consQty));
+        }
+
+        // ---------  D E L I V E R Y  R E C E I P T S ---------
+        function get_deliveryReceipts(){
+            $query = "SELECT
+                    tID AS id,
+                    tNum AS num,
+                    receiptNo AS receipt,
+                    IF(
+                        spID IS NULL,
+                        supplierName,
+                        spName
+                    ) AS supplier,
+                    tType AS type,
+                    tTotal AS total,
+                    tRemarks AS remarks,
+                    tDate AS date,
+                    dateRecorded AS daterecorded
+                FROM
+                    transactions
+                LEFT JOIN supplier USING(spID)
+                WHERE
+                    isArchived = '0' and tType = 'delivery receipt'
+            ORDER BY tID desc";
+            return $this->db->query($query)->result_array();
+        }
+
+        function get_deliveryReceiptItems(){
+            $query = "SELECT
+                tID AS transaction,
+                tiID AS id,
+                tiName AS name,
+                tiQty AS qty,
+                qtyPerItem AS equivalent,
+                actualQty AS actualqty,
+                tiPrice AS price,
+                tiDiscount AS discount,
+                drStatus AS deliverystatus,
+                payStatus AS paymentstatus,
+                rStatus AS returnstatus,
+                tiSubtotal AS subtotal
+            FROM
+                (
+                    transitems
+                LEFT JOIN trans_items USING(tiID)
+                )
+            LEFT JOIN transactions USING(tID)
+            LEFT JOIN uom USING(uomID)
+            WHERE
+                tType = 'delivery receipt'";
+            return $this->db->query($query)->result_array();
+        } 
+
+        // For viewing delivery receipts
+        
+        function get_uomForStoring(){
+            $query = "SELECT
+                uomID,
+                uomName,
+                uomAbbreviation
+            FROM
+                uom
+            WHERE
+                uomStore IS NOT NULL;";
+            return $this->db->query($query)->result_array();
+        }
+        function get_stockitems() {
+            $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+            return $this->db->query($query)->result_array();
+        }
+        function get_supplier(){
+            $query = "Select * from supplier order by spName";
+            return $this->db->query($query)->result_array();
+        }
+        function get_supplierstocks(){
+            $query = "Select * from suppliermerchandise supp LEFT JOIN stockitems USING (stID) LEFT JOIN uom ON (supp.uomID = uom.uomID);";
+            return $this->db->query($query)->result_array();
+        }
+        function get_posForBrochure(){
+            $query = "SELECT
+                    tID as transactionID,
+                    spID suppID,
+                    spName suppName,
+                    supplierName altName,
+                    tNum as transNum,
+                    receiptNo as receipt,
+                    tDate as date,
+                    tTotal as total,
+                    tRemarks as remarks
+                FROM
+                    transactions
+                LEFT JOIN supplier USING(spID)
+                WHERE
+                    tID IN(
+                    SELECT
+                        tID AS transactionID
+                    FROM
+                        (
+                            transitems
+                        LEFT JOIN trans_items USING(tiID)
+                        )
+                    LEFT JOIN transactions USING(tID)
+                    WHERE
+                        tType = 'purchase order' AND drStatus = 'pending'
+                    GROUP BY
+                        tID
+                )";
+            return $this->db->query($query)->result_array();
+        }
+        function get_poItemsForBrochure(){
+            $query = "SELECT
+                    tID AS transactionID,
+                    tiID AS itemID,
+                    tiName AS NAME,
+                    tiPrice AS price,
+                    tiDiscount AS discount,
+                    uomID AS uom,
+                    stID AS stock,
+                    tiQty AS qty,
+                    qtyPerItem AS equivalent,
+                    tiSubtotal AS subtotal
+                FROM
+                    (
+                        transitems
+                    LEFT JOIN trans_items USING(tiID)
+                    )
+                LEFT JOIN transactions USING(tID)
+                WHERE
+                    tType = 'purchase order' AND drStatus = 'pending'";
+            return $this->db->query($query)->result_array();
         }
     }
 ?>

@@ -19,7 +19,7 @@
         <div class="conteiner-fluid">
           <!--Start Table-->
           <div class="card-content">
-          <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips()" style="margin:5px">Pay Multiple Slips</button>
+          <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips();" style="margin:5px">Pay Multiple Slips</button>
             <table id="ordersTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
               <thead class="thead-dark">
                 <tr>
@@ -101,7 +101,7 @@
               <input type="text" step="any" min="0" class="form-control" name="change" id="change" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change"); ?></span>
             </div>
-            
+            <input type="hidden" class="form-control" name="osID" id="osID" readonly>
             <!--Footer-->
             <div class="modal-footer">
               <button type="button" id="closeBillModal" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -248,7 +248,7 @@
       }
       orderbills.forEach(orders => {
         $("#ordersTable> tbody").append(`
-            <tr data-osID="${orders.osID}" data-payable="${orders.osTotal}" data-custName="${orders.custName}">
+            <tr class="stockelem" data-osID="${orders.osID}" data-payable="${orders.osTotal}" data-custName="${orders.custName}">
                     <td><input type="checkbox" name="payChoice[]" class="choiceStock mr-2" value="${orders.osID}"></td>
                     <td>${orders.osID}</td>
                     <td>${orders.custName}</td>
@@ -275,6 +275,16 @@
 					          "data-custName"));
             
         });
+        $(".pay").last().on('click', function () {
+
+          $("#Modal_Pay").find("input[name='amount_payable']").val($(this).closest("tr").attr(
+              "data-payable"));
+          $("#Modal_Pay").find("input[name='osID']").val($(this).closest("tr").attr(
+                  "data-osID"));
+          $("#Modal_Pay").find("input[name='custName']").val($(this).closest("tr").attr(
+                  "data-custName"));
+
+          });
         $(".item_delete").last().on('click', function () {
            
             $("#deleteSpoilage").find("input[name='prID']").val($(this).closest("tr").attr(
@@ -324,37 +334,7 @@
                             </tr>`
             }).join('')}`);
           }
-    //---------------------For Resolving Payment Multiple Payment---------------------------
-    $(document).ready(function () {
-      $("#Modal_Pay form").on('submit', function (event) {
-        event.preventDefault();
-        var osIDarr = [];
-
-        for (var i = 0; i <= $(".stockelem").length - 1; i++) {
-          osID = $(".stockelem").eq(i).data("id");
-          if (osIDarr.includes(osID)) {} else {
-            osIDarr.push(osID);
-          }
-        }
-        console.log(osIDarr);
-        $.ajax({
-          url: "<?= site_url("barista/updatePayment")?>",
-          method: "post",
-          data: {
-            osArr: osIDarr
-          },
-          dataType: "json",
-          // complete: function() {
-          //     $("#Modal_Pay").modal("hide");
-          //     location.reload();
-          // },
-          error: function (error) {
-            console.log(error);
-          }
-
-        });
-      });
-    });
+    
      //---------------------For Resolving Payment Single Payment---------------------------
      $(document).ready(function() {
           $("#Modal_Pay2 form").on('submit', function(event) {
@@ -368,10 +348,10 @@
                       osID: osID,
                   },
                   dataType: "json",
-                  // complete: function() {
-                  //     $("#Modal_Pay2").modal("hide");
-                  //     location.reload();
-                  // },
+                  complete: function() {
+                      $("#Modal_Pay2").modal("hide");
+                      location.reload();
+                  },
                   error: function(error) {
                       console.log(error);
                   }
@@ -433,7 +413,7 @@ function getSelectedSlips() {
                   var orders = data.filter(item => item.osID === value);
                   
                   for (var i = 0; i <= orders.length - 1; i++) {
-                    stockChecked = `<tr class="stockelem" data-id="` + orders[i].osID + `" >
+                    stockChecked = `<tr class="stockelem" data-osID="` + orders[i].osID + `" >
                             <td></td>
                             <td><input type="text" id="olDesc` + i + `" name="olDesc"
                                     class="form-control form-control-sm" value="` + orders[i].olDesc + `"  required></td>
@@ -445,24 +425,55 @@ function getSelectedSlips() {
                             </tr>`;
                     $('.orderitemsTable > tbody').append(stockChecked);
                   }
-                  setTotal();
+                  
                 }
-
             });
         }
+        setTotal();
     }
 }
 
 function setTotal() {
- var total = 0;
- for(var i = 0; i <= $('.stockelem').length - 1; i++) {
-  //  var subtotal = 0;
-  //  subtotal = parseFloat($('.olSubtotal').eq(i).val());
-  $("#Modal_Pay2").find("input[name='amount_payable2']").val();
-   total = total + subtotal;
- }
- 
- $("#Modal_Pay").find("input[name='amount_payable']").val(parseFloat(total));
+    $(document).ready(function() {
+      var osIDarr = [];
+      var osID = [];
+      var total = 0;
+      var length = parseInt($('#Modal_Pay').find('.olSubtotal').length);
+
+      for(var i = 0; i <= length-1;i++) {
+        var subtotal = 0;
+        subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val() * parseInt($("input[name='olQty']").eq(i).val()));
+        total = total + subtotal;
+        osID = $("input[name='olSubtotal']").eq(i).closest("tr").attr("data-osid");
+        osIDarr.push(osID);
+        }
+  
+   
+    //---------------------For Resolving Payment Multiple Payment---------------------------
+    $("#Modal_Pay").find("input[name='amount_payable']").val(parseFloat(total));
+  
+    $("#Modal_Pay form").on('submit', function (event) {
+        event.preventDefault();
+          
+          $.ajax({
+            url: "<?= site_url("barista/updatePayment")?>",
+            method: "post",
+            data: {
+              osIDarr: JSON.stringify(osIDarr)
+            },
+            complete: function() {
+                $("#Modal_Pay").modal("hide");
+                location.reload();
+            },
+            error: function (error) {
+              console.log(error);
+            }
+
+          });
+          });
+        });
+    
+    
 }
 
 

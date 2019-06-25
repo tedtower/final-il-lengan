@@ -226,11 +226,43 @@ function addspoilagesstock(){
 
 	}
 
-	function getConsumptionItems() {
-		$data=$this->Chefmodel->getconsumptionItems();
-        echo json_encode($data);
+	function getConsumptionItems(){
+		if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+		$data=$this->Chefmodel->get_stocks();
+		echo json_encode($data);
+	}else{
+		redirect('login');
+		}
 	}
 
+	//------------ D E L I V E R Y  R E C E I P T --------------
+	function viewDeliveryReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+            $this->load->view('chef/head');
+            $this->load->view('chef/navigation');
+            $data['drs'] = $this->Chefmodel->get_deliveryReceipts();
+            $data['drItems'] = $this->Chefmodel->get_deliveryReceiptItems();
+            $this->load->view('chef/chefDeliveryReceipt', $data);
+        }else{
+            redirect('login');
+        }
+    }
 	
+	function viewDRFormAdd(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+            $this->load->view('chef/head');
+            $this->load->view('chef/navigation');
+            $data['uom'] = $this->Chefmodel->get_uomForStoring();
+            $data['stocks'] = $this->Chefmodel->get_stockitems();
+            $data['supplier'] = $this->Chefmodel->get_supplier();
+            $data['suppmerch'] = $this->Chefmodel->get_supplierstocks();
+            $data['pos'] = $this->Chefmodel->get_posForBrochure();
+            $data['poItems'] = $this->Chefmodel->get_poItemsForBrochure();
+            $this->load->view('chef/chefDeliveryReceiptAdd', $data);
+        }else{
+            redirect('login');
+        }
+    }
+
    
 }

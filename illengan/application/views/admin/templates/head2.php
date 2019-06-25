@@ -9,7 +9,6 @@
     <title>Il-Lengan | <?= $title?></title>
     <link rel="icon" type="image/ico" href="<?= logo_url().'logo_sm.ico'?>">
     <link rel="stylesheet" type="text/css" href="<?= framework_url().'bootstrap-native/bootstrap.min.css'?>">
-    <link rel="stylesheet" type="text/css" href="<?= admin_css().'light-bootstrap-dashboard.css'?>">
     <link rel="stylesheet" type="text/css" href="<?= admin_css().'sidenav.css'?>">
     <link rel="stylesheet" type="text/css" href="<?= admin_css().'table.css'?>">
     <link rel="stylesheet" type="text/css" href="<?= font_url().'pre-icon-7/pe-icon-7-stroke.css'?>">
