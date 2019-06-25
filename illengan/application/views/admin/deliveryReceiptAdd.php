@@ -144,7 +144,6 @@
                                             style="float:right">Insert</button>
                                         <button type="button" class="btn btn-danger btn-sm"
                                             style="float:right">Cancel</button>
-
                                     </div>
                                 </form>
                             </div>
@@ -170,8 +169,8 @@
                                         <thead style="border-bottom:2px solid #cccccc">
                                             <tr>
                                                 <th width="2%"></th>
-                                                <th>Item Name</th>
-                                                <th>Qty</th>
+                                                <th style="font-weight:500 !important">Item Name</th>
+                                                <th style="font-weight:500 !important">Qty</th>
                                             </tr>
                                         </thead>
                                         <tbody class="ic-level-2">
@@ -208,8 +207,8 @@
                                         <thead style="border-bottom:2px solid #cccccc">
                                             <tr>
                                                 <th width="2%"></th>
-                                                <th>Item Name</th>
-                                                <th>Qty</th>
+                                                <th style="font-weight:500 !important">Item Name</th>
+                                                <th style="font-weight:500 !important">Qty</th>
                                             </tr>
                                         </thead>
                                         <tbody class="ic-level-2">
@@ -241,7 +240,7 @@
                                         <thead style="border-bottom:2px solid #cccccc">
                                             <tr>
                                                 <th width="3%"></th>
-                                                <th>Merchandise Name</th>
+                                                <th style="font-weight:500 !important">Merchandise Name</th>
                                             </tr>
                                         </thead>
                                         <tbody class="ic-level-2">
@@ -255,6 +254,10 @@
                                 </div>
                             </div>
                             <!--End of Merchandise sidenav-->
+
+
+
+
 
                         </div>
                     </div>
