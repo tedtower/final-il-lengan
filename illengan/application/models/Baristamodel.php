@@ -48,7 +48,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     //         return $query->result();
     // }
         function get_orderitems($osID){
-            $query = "SELECT olDesc, olSubtotal,olQty,osTotal from orderlists join orderslips USING (osID) WHERE osID = ?";
+            $query = "SELECT olDesc, olSubtotal,olQty,osTotal, IFNULL(aoTotal, 0) as aoTotal from orderlists join orderslips USING (osID) left join orderaddons on orderlists.olID = orderaddons.olID WHERE osID = ?";
             return $this->db->query($query,array($osID))->result_array();
         }
 
@@ -86,7 +86,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 
         function get_orderslips(){
-            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) GROUP BY osID, tableCode' );
+            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olDesc, olSubtotal, olStatus, IFNULL(aoTotal, 0) as aoTotal from orderslips inner join orderlists using (osID) left join orderaddons on orderlists.olID = orderaddons.olID GROUP BY osID, tableCode' );
             return $query->result();
     }
 
