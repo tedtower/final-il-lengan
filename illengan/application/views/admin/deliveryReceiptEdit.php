@@ -128,9 +128,9 @@
                         <!--Merchandise-->
                         <div class="card" id="rightCard" style="float:left;width:37%;margin-left:3%">
                             <div class="card-header" style="overflow:auto">
-                                <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px" class="merchandise">Select
+                                <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px" data-display="true" class="merchandise">Select
                                     Merchandise</div>
-                                <div style="display:none;font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px" class="po">Select
+                                <div style="display:none;font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px" data-display="false" class="po">Select
                                     PO Items</div>
                                 <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
                                     <input type="search"
@@ -245,6 +245,7 @@ $(function(){
             pos = data.pos;
             poItems = data.poItems;
             merchandise = data.merchandise;
+
             console.log(data);
             if(merchandise.length == 0){
                 $("#rightCard .merchandise .cardErrMsg").show();
@@ -253,11 +254,36 @@ $(function(){
                 $("#rightCard .merchandise .cardErrMsg").hide();
                 $("#rightCard .merchandise .ic-level-2").append(merchandise.map(merch=>{
                     return `<tr class="ic-level-1">
-                            <td><input type="checkbox" class="mr-2" name="" value="${merch.spmName}"></td>
+                            <td><input type="checkbox" class="mr-2" name="merchandise"
+                            data-itemName="${merch.spmName}" data-stockID="${merch.stID}" data-stockName="${merch.stName}"
+                            data-actual="${merch.spmActualQty}" data-unit="${merch.uomID}" data-price="${merch.spmPrice}"
+                            value="${merch.spmName}"></td>
                             <td class="name">${merch.spmName}</td>
                             <td class="price">${merch.spmPrice}</td>
                         </tr>`;
                 }).join(''));
+                $("#rightCard .merchandise input[name='merchandise']").on("click",function(){
+                    $("#addNewBtn").trigger("click");
+                    $("#drForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemSubtotal[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemUnit[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemName[]']").val($(this).attr("data-itemName"));
+                    $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${$(this).attr("data-unit")}]`).attr("selected","selected");
+                    $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").val($(this).attr("data-price"));
+                    $("#drForm .ic-level-1:last-child input[name='stID[]']").val($(this).attr("data-stockName"));
+                    $("#drForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", $(this).attr("data-stockID"));
+                    $("#drForm .ic-level-1:last-child input[name='actualQty[]']").val($(this).attr("data-actual"));
+                    $("#drForm .ic-level-1:last-child *").on("focus",function(){
+                        if(!$(this).closest(".ic-level-1").attr("data-focus")){
+                            $("#drForm .ic-level-1").removeAttr("data-focus");
+                            $(this).closest(".ic-level-1").attr("data-focus",true);
+                        }
+                    });
+                });
             }
             if(pos.length == 0){
                 $("#rightCard .po .cardErrMsg").show();
@@ -269,8 +295,10 @@ $(function(){
                 }).join(''));
                 $("#rightCard .po .ic-level-2").append(poItems.map(item=>{
                     return `<tr class="ic-level-1" data-transactionID="${item.transactionID}" >
-                        <td><input type="checkbox" class="mr-2" name="poItem"
-                                data-name="" value="${item.itemID}"></td>
+                        <td><input type="checkbox" class="mr-2" name="poItem" data-itemID="${item.itemID}"
+                        data-stockID="${item.stock}" data-stockName="${item.stockname}" data-actual="${item.actual}" 
+                        data-unit="${item.uom}" data-price="${item.price}" data-discount="${item.discount}"
+                        data-itemName="${item.NAME}" data-qty="${item.qty}" value="${item.itemID}"></td>
                         <td class="name">${item.NAME}</td>
                         <td class="qty">${item.qty}</td>
                     </tr>`;
@@ -288,6 +316,30 @@ $(function(){
                     });
                 });
                 $("#rightCard .po select[name='poNum']").trigger("change");
+                $("#rightCard .po input[name='poItem']").on("click",function(){
+                    $("#addNewBtn").trigger("click");
+                    $("#drForm .ic-level-1:last-child").attr("data-id",$(this).attr("data-itemID"));
+                    $("#drForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemSubtotal[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemUnit[]']").prop("readonly",true);
+                    $("#drForm .ic-level-1:last-child input[name='itemQty[]']").val($(this).attr("data-qty"));
+                    $("#drForm .ic-level-1:last-child input[name='itemName[]']").val($(this).attr("data-itemName"));
+                    $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${$(this).attr("data-unit")}]`).attr("selected","selected");
+                    $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").val($(this).attr("data-price"));
+                    $("#drForm .ic-level-1:last-child input[name='stID[]']").val($(this).attr("data-stockName"));
+                    $("#drForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", $(this).attr("data-stockID"));
+                    $("#drForm .ic-level-1:last-child input[name='actualQty[]']").val($(this).attr("data-actual"));
+                    $("#drForm .ic-level-1:last-child *").on("focus",function(){
+                        if(!$(this).closest(".ic-level-1").attr("data-focus")){
+                            $("#drForm .ic-level-1").removeAttr("data-focus");
+                            $(this).closest(".ic-level-1").attr("data-focus",true);
+                        }
+                    });
+                });
             }
         },
         error: function (response, setting, errorThrown) {
@@ -298,7 +350,9 @@ $(function(){
     $("#rightCard input[name='search']").on("keyup",function(){
         var string = $(this).val();
         $("#rightCard .ic-level-4[data-display='true'] .name").each(function(index){
-            if(!$(this).text().includes(string)){
+            if(string.trim().length == 0 && $("#rightCard .po.ic-level-4").attr("data-display") == true){
+                $("#rightCard .po select[name='poNum']").trigger('change');
+            }else if(!$(this).text().includes(string)){
                 $(this).closest(".ic-level-1").hide();
             }else{
                 $(this).closest(".ic-level-1").show();
@@ -354,6 +408,22 @@ $(function(){
         $("#rightCard .merchandise").attr("data-display",false);
         $("#rightCard .po").show();
         $("#rightCard .po").attr("data-display",true);
+    });
+    $("#drForm").on("submit",function(event){
+        event.preventDefault();
+        var date = $(this).find("input[name='tDate']").val();
+        var receipt = $(this).find("input[name='receipt']").val();
+        var remarks = $(this).find("input[name='tRemarks']").val();
+        var items = [];
+        $("#drForm .ic-level-1").each(function(index){
+            items.push({
+                id: $(this).attr("data-id"),
+                qty: $(this).find("input[name='itemQty[]']").val(),
+                price: $(this).find("input[name='itemPrice[]']").val(),
+                discount: $(this).find("input[name='discount[]']").val()
+            });
+        });
+        console.log(date, receipt, remarks, items);
     });
 });
 
