@@ -18,8 +18,8 @@
 				<tr>
 					<th>TRANSACTION #</th>
 					<th>STOCK ID</th>
+					<th>STOCK QTY</th>
 					<th>ITEM NAME</th>
-					<th>ITEM QTY</th>
 					<th>TRANSACTION DATE</th>
 					<th>DATE RECORDED</th>
 				</tr>
@@ -159,10 +159,6 @@
                                     </div>
                             </div>
 		<!--End of Brochure Modal DESTOCK"-->
-
-
-		<script type="text/javascript" src="<?php echo base_url().'assets/js/chef/jquery-3.2.1.js'?>"></script>
-		<script type="text/javascript" src="<?php echo base_url().'assets/js/chef/bootstrap.js'?>"></script>
 		<script type="text/javascript" src="<?php echo base_url().'assets/js/chef/chefConsumptionBrochure.js'?>">
 		</script>
 		<script>
