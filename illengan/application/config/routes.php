@@ -218,7 +218,7 @@ $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
 //-----------------------------------------
 $route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
-
+$route['barista/consumption/add'] = "barista/addConsumption";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

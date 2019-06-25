@@ -8,7 +8,6 @@
                 <!-- Real Time Date & Time -->
                 <?php echo date("M j, Y -l"); ?>
             </p>
-            <div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <div class="content">
                         <div class="container-fluid">
@@ -310,7 +309,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
     </div>

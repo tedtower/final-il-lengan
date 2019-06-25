@@ -652,16 +652,16 @@ class Barista extends CI_Controller{
     function viewConsumptionFormAdd(){
         if($this->checkIfLoggedIn()){
             $head['title'] = "Inventory - Add Consumption";
-            $this->load->view('admin/templates/head', $head);
-            $this->load->view('admin/templates/sideNav');
+            $this->load->view('barista/templates/head', $head);
+            $this->load->view('barista/templates/navigation');
             $data['stocks'] = $this->baristamodel->get_stocks();
-            $this->load->view('admin/consumptionAdd', $data);
+            $this->load->view('barista/consumptionAdd', $data);
         }else{
             redirect('login');
         }
     }
     function addConsumption(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $items = json_decode($this->input->post('items'),true);
             echo json_encode($items);
             if(count($items)> 0){
@@ -702,7 +702,7 @@ class Barista extends CI_Controller{
         }
     }
     function editConsumption(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $items = json_decode($this->input->post('items'),true);
             if(count($items)> 0){
                 $currentDate = date("Y-m-d H:i:s");

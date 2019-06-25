@@ -81,10 +81,10 @@ function addStockItems() {
             stocks: JSON.stringify(stocks)
         },
         dataType: 'json',
-        // complete: function() {
-        //     $("#formAdd").modal("hide");
-        //     location.reload();
-        //     },
+        complete: function() {
+            $("#formAdd").modal("hide");
+            location.reload();
+            },
         error: function(response, setting, error) {
             console.log(response.responseText);
             console.log(error);

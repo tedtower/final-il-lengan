@@ -19,7 +19,9 @@
         <div class="conteiner-fluid">
           <!--Start Table-->
           <div class="card-content">
+          <div class="col-md-4 col-lg-2">
           <button id="multiplePay" class="pay btn btn-sm btn-info" data-toggle="modal" data-target="#Modal_Pay" onclick="getSelectedSlips();" style="margin:5px">Pay Multiple Slips</button>
+          </div>  
             <table id="ordersTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
               <thead class="thead-dark">
                 <tr>
