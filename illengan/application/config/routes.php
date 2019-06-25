@@ -216,7 +216,8 @@ $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
-
+//-----------------------------------------
+$route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
 
 
 //BARISTA JS ROUTES

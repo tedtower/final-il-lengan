@@ -213,14 +213,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
 
-        function add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user){
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                    $this->destock($stocks);  
-                    $this->add_contransaction(NULL, $stocks[$in]['tDate'], "consumption", $date_recorded, NULL, $lastNum, $stocks[$in]['stID'], $stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['consQty'],$account_id,$stocks,$user);
-                }
-            }
-        }
+        // function add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user){
+        //     if(count($stocks) > 0){
+        //         for($in = 0; $in < count($stocks) ; $in++){
+        //             $this->destock($stocks);  
+        //             $this->add_contransaction(NULL, $stocks[$in]['tDate'], "consumption", $date_recorded, NULL, $lastNum, $stocks[$in]['stID'], $stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['consQty'],$account_id,$stocks,$user);
+        //         }
+        //     }
+        // }
         function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$consQty,$account_id,$stocks,$user){
             $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
            
@@ -752,6 +752,62 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             WHERE
                 tID = ?;";
         return $this->db->query($query,array($total, $tID));
+    }
+    //--------------consumption
+    function add_consumption($con) {
+        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
+            VALUES(NULL, ?, ?, ?, ?, ?)";
+        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
+            WHERE tType = ?",array($con['type']))->result_array()[0]['lastnum'];
+        $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
+        if($this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function edit_consumption($con){
+        $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
+        return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
+    }
+    function add_consumedItem($st){
+        $query="INSERT INTO transitems(tiID, stID) VALUES(NULL, ?)";
+        if($this->db->query($query,array($st))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function add_consumptionQty($conID,$con){
+        $query = "INSERT INTO trans_items(tID, tiID, actualQty) VALUES(?, ?, ?)";
+        return $this->db->query($query,array($conID, $con['id'], $con['qty']));
+    }
+    function edit_consumptionQty($conID, $con){
+        $query = "UPDATE trans_items SET actualQty = ? WHERE tiID = ? AND tID = ?";
+        return $this->db->query($query,array($con['qty'], $con['id'], $conID));
+    }
+    function get_consumedQty($conID, $itemID){
+        $query = "SELECT actualQty AS qty FROM trans_items WHERE tID = ? AND tiID = ?;";
+        return $this->db->query($query, array($conID, $itemID))->result_array();
+    }
+
+    function add_consumptionLog($id, $log){
+        $query = "INSERT INTO stocklog(
+                stID,
+                tID,
+                slType,
+                slQty,
+                slRemainingQty,
+                slDateTime,
+                dateRecorded,
+                slRemarks
+            )
+            VALUES(?,?,?,?,?,?,?,?);";
+        $this->db->query($query,array($log['stock'],$id, $log['type'], $log['qty'], 
+            $log['remain'], $log['date'], $log['dateRecorded'], $log['remarks']));
+    }
+
+    function deduct_stockQty($qty, $st){
+        $query = "UPDATE stockitems SET stQty = stQty - ? WHERE stID = ?;";
+        $this->db->query($query,array($qty, $st));
     }
     }
 ?>

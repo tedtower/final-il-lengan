@@ -648,7 +648,98 @@ class Barista extends CI_Controller{
             ));
         }
     }
-
+    //-------------------------------CONSUMPTION
+    function viewConsumptionFormAdd(){
+        if($this->checkIfLoggedIn()){
+            $head['title'] = "Inventory - Add Consumption";
+            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/sideNav');
+            $data['stocks'] = $this->baristamodel->get_stocks();
+            $this->load->view('admin/consumptionAdd', $data);
+        }else{
+            redirect('login');
+        }
+    }
+    function addConsumption(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $items = json_decode($this->input->post('items'),true);
+            echo json_encode($items);
+            if(count($items)> 0){
+                $currentDate = date("Y-m-d H:i:s");
+                $transDate = $this->input->post('date');
+                $con = array(
+                    "date" => $transDate,
+                    "dateRecorded" => $currentDate,
+                    "type" => "consumption",
+                    "remarks" => $this->input->post('remarks')
+                );
+                $conID = $this->baristamodel->add_consumption($con);
+                foreach($items as $item){
+                    $qty = $this->baristamodel->get_stockQty($item['stock'])[0]['stQty'];
+                    $itemID = $this->baristamodel->add_consumedItem($item['stock']);
+                    $conItem = array(
+                        "id" => $itemID,
+                        "qty" => $item['qty'],
+                        "remarks" => $item['remarks'],
+                        "type" => "consumed",
+                        "date" => $transDate,
+                        "dateRecorded" => $currentDate,
+                        "remain" => $qty - $item['qty'],
+                        "stock" => $item['stock']
+                    );
+                    $this->baristamodel->add_consumptionQty($conID, $conItem);
+                    $this->baristamodel->add_consumptionLog($conID, $conItem);
+                    $this->baristamodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
+                }
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+    function editConsumption(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $items = json_decode($this->input->post('items'),true);
+            if(count($items)> 0){
+                $currentDate = date("Y-m-d H:i:s");
+                $transDate = $this->input->post('date');
+                $con = array(
+                    "date" => $transDate,
+                    "dateRecorded" => $currentDate,
+                    "remarks" => $this->input->post('remarks')
+                );
+                $conID = $this->baristamodel->edit_consumption($con);
+                foreach($items as $item){
+                    $qty = $this->baristamodel->get_stockQty($item['stock'])[0]['stQty'];
+                    $itemID = $this->baristamodel->add_consumedItem($item['stock']);
+                    $conItem = array(
+                        "id" => $itemID,
+                        "qty" => $item['qty'],
+                        "remarks" => $item['remarks'],
+                        "type" => "consumption",
+                        "date" => $transDate,
+                        "dateRecorded" => $currentDate,
+                        "remain" => $qty - $item['qty'],
+                        "stock" => $item['stock']
+                    );
+                    $this->baristamodel->add_consumptionQty($conID, $conItem);
+                    $this->baristamodel->add_consumptionLog($conID, $conItem);
+                    $this->baristamodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
+                }
+            }
+            echo json_encode(array(
+                "success" => true
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 
 }
 ?>

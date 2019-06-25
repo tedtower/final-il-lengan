@@ -1302,8 +1302,8 @@ function add_aospoil($date_recorded,$addons,$account_id,$user){
                 `slRemainingQty`,
                 `slRemarks`
             )
-            VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
-        return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemarks));
+            VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?);";
+        return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks));
     }
     function add_restockLog($tID, $log){
         $query = "INSERT INTO stocklog(
