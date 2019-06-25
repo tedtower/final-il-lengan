@@ -1,5 +1,6 @@
 <script type="application/javascript">
     <?= "var sales = ".json_encode($sales).";\n" ?>
+    <?= "var todaySales = ".json_encode($todaySales).";\n" ?>
     var arrSales    = [0];
     var arrMonth    = ['January'];
     var arrRevenue  = [0];
@@ -23,7 +24,7 @@
         type: 'line',
         data: {
             datasets: [{
-                label: 'Revenue',
+                label: 'Sales',
                 data: arrRevenue,
                 backgroundColor: '#2b89d6de'
             }],

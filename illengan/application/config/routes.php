@@ -216,8 +216,9 @@ $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
-
-
+//-----------------------------------------
+$route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
+$route['barista/consumption/add'] = "barista/addConsumption";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
@@ -244,3 +245,4 @@ $route['chef/spoilages/stock/edit'] = "chef/editStockSpoil";
 $route['chef/spoilages/stock/delete'] ="chef/deletestockspoilages";
 $route['chef/inventory/deliveries'] = "chef/viewDeliveryReceipt";
 $route['chef/inventory/deliveries/formadd'] = "chef/viewDRFormAdd";
+$route['chef/destock'] = "chef/destockitem";

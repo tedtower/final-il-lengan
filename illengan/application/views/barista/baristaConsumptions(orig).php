@@ -18,8 +18,8 @@
 				<tr>
 					<th>TRANSACTION #</th>
 					<th>STOCK ID</th>
-					<th>STOCK QTY</th>
 					<th>ITEM NAME</th>
+					<th>ITEM QTY</th>
 					<th>TRANSACTION DATE</th>
 					<th>DATE RECORDED</th>
 				</tr>
@@ -47,7 +47,7 @@
 										style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 										Consumption Date</span>
 								</div>
-								<input type="datetime-local" name="consumption_date" id="consumption_date" class="form-control" required/>
+								<input type="datetime-local" name="consumption_date" id="consumption_date" class="form-control" required>
 								<span class="text-danger"><?php echo form_error("consumption_date"); ?></span>
 							</div>
 							<button class="btn btn-secondary btn-sm m-0" type="button" href="javascript:void(0)" data-toggle="modal"
@@ -159,7 +159,14 @@
                                     </div>
                             </div>
 		<!--End of Brochure Modal DESTOCK"-->
-		<script type="text/javascript" src="<?php echo base_url().'assets/js/chef/chefConsumptionBrochure.js'?>">
+
+
+		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/jquery-3.2.1.js'?>"></script>
+		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/bootstrap.js'?>"></script>
+		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/jquery.dataTables.js'?>"></script>
+		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/dataTables.bootstrap4.js'?>">
+		</script>
+		<script type="text/javascript" src="<?php echo base_url().'assets/js/barista/baristaConsumptionBrochure.js'?>">
 		</script>
 		<script>
 			var inventoryitems = [];
@@ -167,7 +174,7 @@
 				viewInventoryJs();
 				//-----------------------Populate Brochure----------------------------------------
 				$.ajax({
-					url: '<?= site_url('chef/getConsumptionItems') ?>',
+					url: '<?= site_url('barista/getConsumptionItems') ?>',
 					dataType: 'json',
 					success: function (data) {
 						var poLastIndex = 0;
@@ -198,7 +205,7 @@
 
 			function viewInventoryJs() {
 				$.ajax({
-					url: "<?= site_url('chef/inventoryJS') ?>",
+					url: "<?= site_url('barista/inventoryJS') ?>",
 					method: "post",
 					dataType: "json",
 					success: function (data) {
@@ -230,6 +237,32 @@
 				});
 			}
 			//END OF POPULATING TABLE
+
+			// 		//-----------------------Populate Dropdown----------------------------------------
+			// 			$.ajax({
+			// 				url: '<= site_url('barista/inventoryJS') ?>',
+			// 				dataType: 'json',
+			// 				success: function (data) {
+			// 					var poLastIndex = 0;
+			// 					stockitem = data;
+			// 					setStockData(stockitem);
+			// 				},
+			// 				failure: function () {
+			// 					console.log('None');
+			// 				},
+			// 				error: function (response, setting, errorThrown) {
+			// 					console.log(errorThrown);
+			// 					console.log(response.responseText);
+			// 				}
+			// 			});
+
+			// 	function setStockData(stockitem){
+			// 			$("#stockitems").empty();
+			// 			$("#stockitems").append(`${stockitem.map(stocks => {
+			// 				return `<option name= "stName" id ="stName" value="${stocks.stID}">${stocks.stName}</option>`
+			// 			}).join('')}`);
+			// 	}
+			//   //-----------------------End of Dropdown Populate--------------------------	
 		</script>
 </body>
 
