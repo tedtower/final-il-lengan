@@ -359,30 +359,41 @@
                 return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
         } 
 
-        //------------------------------ C O N S U M P T I O N ------------------------------------------------------------------------------
-        function add_consumptions($date_recorded,$stocks,$account_id,$lastNum){//Consumption
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                    $this->destock($stocks);  
-                    $this->add_contransaction(NULL, $stocks[$in]['tDate'], "consumption", $date_recorded, NULL, $lastNum, $stocks[$in]['stID'], $stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['consQty'],$account_id,$stocks);
+         //------------------------------ C O N S U M P T I O N ------------------------------------------------------------------------------
+        function add_consumptions($date, $remarks, $items, $date_recorded, $account_id){//Consumption
+            $query1 = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'consumption'";
+            $num = $this->db->query($query1)->result_array();
+            foreach($num as $n){
+                $lnum = $n['lastnum'];
+            }
+            $lastNum = $lnum + 1;
+            if(count($items) > 0){
+                for($in = 0; $in < count($items) ; $in++){
+                    $this->destock($items);  
+                    $this->add_contransaction(NULL, $date, "consumption", $date_recorded, $remarks, $lastNum, $items[$in]['stock'],$items[$in]['qty'],$account_id, $items);
                 }
             }
         }
 //consumption
-        function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$consQty,$account_id,$stocks){
+        function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID, $consQty,$account_id, $items){
             $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
-           
             if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
-                $this->add_contransitems($this->db->insert_id(), $stID, $uomID,$stName,$consQty,$date,$dateRecorded,$remarks,$account_id,$stocks);
+                $this->add_contransitems($this->db->insert_id(), $stID, $consQty,$date,$dateRecorded,$remarks,$account_id, $items);
                 return true;
              }
         }
-        function add_contransitems($tID,$stID,$uomID,$stName,$consQty,$date,$dateRecorded,$remarks,$account_id,$stocks){
+        function add_contransitems($tID,$stID,$consQty,$date,$dateRecorded,$remarks,$account_id, $items){
+            $query1= "Select uomID, stName from stockitems where stID = '$stID'";
+            $result = $this->db->query($query1)->result_array();
+            foreach($result as $r){
+                $uomID = $r['uomID'];
+                $stName = $r['stName'];
+            }
             $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
              if($this->db->query($query,array($uomID, $stID, $stName))){
                 $this->add_contrans_items($this->db->insert_id(), $stID, $tID, $consQty);
-                for($in = 0; $in < count($stocks) ; $in++){
-                $this->add_consstocklog($stocks[$in]['stID'], $tID, "consumed",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['consQty'], $remarks);
+                for($in = 0; $in < count($items) ; $in++){
+                $this->add_consstocklog($items[$in]['stock'], $tID, "consumed",$date, $dateRecorded, $items[$in]['qty'], $remarks);
                 $this->add_consactlog($account_id, $dateRecorded, "Chef added a consumption.", "add", $remarks);
             }
              }
