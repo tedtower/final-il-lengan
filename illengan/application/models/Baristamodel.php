@@ -213,14 +213,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
 
-        function add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user){
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                    $this->destock($stocks);  
-                    $this->add_contransaction(NULL, $stocks[$in]['tDate'], "consumption", $date_recorded, NULL, $lastNum, $stocks[$in]['stID'], $stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['consQty'],$account_id,$stocks,$user);
-                }
-            }
-        }
+        // function add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user){
+        //     if(count($stocks) > 0){
+        //         for($in = 0; $in < count($stocks) ; $in++){
+        //             $this->destock($stocks);  
+        //             $this->add_contransaction(NULL, $stocks[$in]['tDate'], "consumption", $date_recorded, NULL, $lastNum, $stocks[$in]['stID'], $stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['consQty'],$account_id,$stocks,$user);
+        //         }
+        //     }
+        // }
         function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$consQty,$account_id,$stocks,$user){
             $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
            
@@ -234,8 +234,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
              if($this->db->query($query,array($uomID, $stID, $stName))){
                 $this->add_contrans_items($this->db->insert_id(), $stID, $tID, $consQty);
                
-                $this->add_stocklog($stID, $tID, "consumed",$date, $dateRecorded, $consQty, $remarks);
-                $this->add_actlog($account_id, $dateRecorded, "$user added a consumption.", "add", $remarks);
+                $slRemainingQty = $curQty - $actualQty;
+                $this->add_stocklog($stID, $tID, "spoilage",$date, $dateRecorded, $actualQty, $slRemainingQty, $remarks);
+                $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $remarks);
+        
                       
              }
         }
@@ -314,24 +316,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             if(count($stocks) > 0){
                 for($in = 0; $in < count($stocks) ; $in++){
                     $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
-                    $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$account_id,$stocks,$user);
+                    $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$stocks[$in]['curQty'],$account_id,$stocks,$user);
                 }
             }
         }
-        function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$account_id,$stocks,$user){
+        function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$curQty,$account_id,$stocks,$user){
             $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
            
             if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
-                $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks,$user);
+                $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$curQty,$account_id,$stocks,$user);
                 return true;
              }
         }
-        function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks,$user){
+        function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$curQty,$account_id,$stocks,$user){
             $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
              if($this->db->query($query,array($uomID, $stID, $stName))){
                 $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
-                
-                $this->add_stocklog($stID, $tID, "spoilage",$date, $dateRecorded, $actualQty, $remarks);
+                $slRemainingQty = $curQty - $actualQty;
+                $this->add_stocklog($stID, $tID, "spoilage",$date, $dateRecorded, $actualQty, $slRemainingQty, $remarks);
                 $this->add_actlog($account_id, $dateRecorded, "$user added a stockitem spoilage.", "add", $remarks);
             
              }
@@ -354,7 +356,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query, array('1', $tID));
         }
         
-        function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks){
+        function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks){
             $query = "INSERT INTO `stocklog`(
                     `slID`,
                     `stID`,
@@ -363,10 +365,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     `slDateTime`,
                     `dateRecorded`,
                     `slQty`,
+                    `slRemainingQty`,
                     `slRemarks`
                 )
-                VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
-            return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
+                VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?);";
+            return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks));
         }
         function add_actlog($aID, $alDate, $alDesc, $defaultType, $additionalRemarks){
             $query = "INSERT INTO `activitylog`(
@@ -752,6 +755,62 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             WHERE
                 tID = ?;";
         return $this->db->query($query,array($total, $tID));
+    }
+    //--------------consumption
+    function add_consumption($con) {
+        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
+            VALUES(NULL, ?, ?, ?, ?, ?)";
+        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
+            WHERE tType = ?",array($con['type']))->result_array()[0]['lastnum'];
+        $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
+        if($this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function edit_consumption($con){
+        $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
+        return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
+    }
+    function add_consumedItem($st){
+        $query="INSERT INTO transitems(tiID, stID) VALUES(NULL, ?)";
+        if($this->db->query($query,array($st))){
+            return $this->db->insert_id();
+        }
+        return 0;
+    }
+    function add_consumptionQty($conID,$con){
+        $query = "INSERT INTO trans_items(tID, tiID, actualQty) VALUES(?, ?, ?)";
+        return $this->db->query($query,array($conID, $con['id'], $con['qty']));
+    }
+    function edit_consumptionQty($conID, $con){
+        $query = "UPDATE trans_items SET actualQty = ? WHERE tiID = ? AND tID = ?";
+        return $this->db->query($query,array($con['qty'], $con['id'], $conID));
+    }
+    function get_consumedQty($conID, $itemID){
+        $query = "SELECT actualQty AS qty FROM trans_items WHERE tID = ? AND tiID = ?;";
+        return $this->db->query($query, array($conID, $itemID))->result_array();
+    }
+
+    function add_consumptionLog($id, $log){
+        $query = "INSERT INTO stocklog(
+                stID,
+                tID,
+                slType,
+                slQty,
+                slRemainingQty,
+                slDateTime,
+                dateRecorded,
+                slRemarks
+            )
+            VALUES(?,?,?,?,?,?,?,?);";
+        $this->db->query($query,array($log['stock'],$id, $log['type'], $log['qty'], 
+            $log['remain'], $log['date'], $log['dateRecorded'], $log['remarks']));
+    }
+
+    function deduct_stockQty($qty, $st){
+        $query = "UPDATE stockitems SET stQty = stQty - ? WHERE stID = ?;";
+        $this->db->query($query,array($qty, $st));
     }
     }
 ?>

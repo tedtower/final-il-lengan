@@ -225,6 +225,27 @@ function addspoilagesstock(){
         $this->load->view('chef/chefConsumption');
 
 	}
+	function viewConsumptionFormAdd(){
+        if($this->checkIfLoggedIn()){
+            $head['title'] = "Inventory - Add Consumption";
+            $this->load->view('chef/head', $head);
+            $this->load->view('chef/navigation');
+            $data['stocks'] = $this->Chefmodel->get_stocks();
+            $this->load->view('chef/consumptionAdd', $data);
+        }else{
+            redirect('login');
+        }
+	}
+	function addConsumption(){
+		$date_recorded = date("Y-m-d H:i:s");
+		$date = $this->input->post('date');
+        $remarks = $this->input->post('remarks');
+		$items = json_decode($this->input->post('items'), true); 
+		echo json_encode($items, true);
+		$account_id = $_SESSION["user_id"];
+		
+		$this->Chefmodel->add_consumptions($date, $remarks, $items, $date_recorded, $account_id);
+	}
 
 	function getConsumptionItems(){
 		if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){

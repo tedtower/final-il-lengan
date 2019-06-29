@@ -51,7 +51,7 @@ function viewInventory($error = null){
 }
 //---functions for viewing the different ADD and EDIT pages in the transaction
 function viewPOFormAdd(){
-    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+    if($this->checkIfLoggedIn()){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
