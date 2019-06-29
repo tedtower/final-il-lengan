@@ -10,7 +10,7 @@
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?>
                         </p>
-                        <h6 style="font-size: 16px;margin-left:15px">Add Purchase Order</h6>
+                        <h6 style="font-size: 16px;margin-left:15px">Edit Purchase Order</h6>
                     </div>
                     <!--Card--> 
                     <form id="addPurchaseOrder" accept-charset="utf-8" class="form">

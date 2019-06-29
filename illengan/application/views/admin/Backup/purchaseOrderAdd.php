@@ -10,70 +10,144 @@
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?>
                         </p>
-                        <h6 style="font-size: 16px;margin-left:15px">Add Purchase Order</h6>
                     </div>
                     <!--Card--> 
-                    <form id="addPurchaseOrder" accept-charset="utf-8" class="form">
-                        <input type="text" name="tID" hidden="hidden">
-                        <div class="modal-body">
-                            <div class="form-row">
-                                <!--Source Name-->
-                                <div class="input-group mb-3 col">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                            Supplier</span>
+                    <div style="overflow:auto">
+                        <div class="card" style="float:left;width:62%">
+                            <div class="card-header">
+                                <h6 style="font-size:15px;margin:0">Add Purchase Order</h6>
+                            </div>
+                            <form id="addPurchaseOrder" accept-charset="utf-8" class="form">
+                                <div class="card-body">
+                                    <input type="text" name="tID" hidden="hidden">
+
+                                    <div class="form-row">
+                                    <!--Supplier-->
+                                        <div class="input-group input-group-sm mb-3 col">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="width:70px">Supplier</span>
+                                            </div>
+                                            <select class="spID form-control" name="spID" required>
+                                                <option value="" selected>Choose</option>
+                                                <?php if(isset($supplier)){
+                                            foreach($supplier as $sup){?>
+                                                <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
+                                                <?php }}?>
+                                            </select>
+                                        </div>
+                                    <!--Date-->
+                                        <div class="input-group input-group-sm mb-3 col">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" style="width:70px">Date</span>
+                                            </div>
+                                            <input type="date" class="form-control" name="tDate">
+                                        </div>
                                     </div>
-                                    <select class="spID form-control form-control-sm  border-left-0" name="spID">
-                                        <option value="" selected>Choose</option>
-                                    <?php if(isset($supplier)){
-                                        foreach($supplier as $sup){?>
-                                        <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
-                                    <?php }}?>
-                                    </select>
+                                    <!--Remarks-->
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="width:70px">Remarks</span>
+                                        </div>
+                                        <textarea type="text" name="tRemarks" class="form-control form-control-sm"
+                                            rows="1"></textarea>
+                                    </div>
+                                    <!--div containing the different input fields in adding trans items -->
+                                    <p style="font-size:14px;border-bottom:1px solid whitesmoke;padding-bottom:5px">Purchase Order Items</p>
+                                    <div class="ic-level-2">
+                                        <div style="overflow:auto;margin-bottom:2%" class="ic-level-1" data-stockid="${merch.stID}" data-stqty="${merch.prstQty}" data-currqty="${merch.stQty}">
+                                            <div style="float:left;width:95%;overflow:auto;">
+                                                <div class="find input-group mb-1">
+                                                    <input type="text" name="itemName[]"
+                                                        class="form-control form-control-sm"
+                                                        value="" style="width:24%" readonly placeholder="Item Name">
+                                                    <input type="number" name="itemQty[]"
+                                                        class="tiQty form-control form-control-sm"
+                                                        placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
+                                                    <select name="itemUnit[]"
+                                                        class="itemUnit form-control form-control-sm" readonly>
+                                                        <option value="" selected="selected">Unit</option>
+                                                    </select>
+                                                    <input type="number" name="price[]"
+                                                        class="tiPrice form-control form-control-sm"
+                                                        value="${merch.spmPrice}" readonly placeholder="Price">
+                                                    <input type="number" name="itemSubtotal[]"
+                                                        class="tiSubtotal form-control form-control-sm"
+                                                        placeholder="Subtotal" readonly>
+                                                </div>
+                                                <div class="input-group">
+                                                    <select name="stID[]"
+                                                        class="stock form-control form-control-sm" readonly>
+                                                        <option value="" selected="selected">Stock Item
+                                                        </option>
+                                                    </select>
+                                                    <input name="actualQty[]" type="number"
+                                                        class="qtyPerItem form-control form-control-sm"
+                                                        value="${merch.spmActualQty}" readonly placeholder="Actual Quantity">
+                                                </div>
+                                            </div>
+                                            <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+                                                <img class="exitBtn" src="/assets/media/admin/error.png"style="width:18px;height:18px;float:right;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+                                    <span>Total: &#8369;<span class="total">0</span>
+                                    <!--Total of the trans items-->
                                 </div>
-                                <!--Invoice Type-->
-                                <div class="input-group mb-3 col">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:142px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                            Transaction Date</span>
-                                    </div>
-                                    <input type="date" class="form-control  border-left-0"
-                                        name="tDate">
+                                <div class="card-footer mb-0" style="overflow:auto">
+                                    <button class="btn btn-success btn-sm" type="submit"
+                                        style="float:right">Insert</button>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        style="float:right">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!--Start of Merchandise sidenav-->
+                        <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card-header" style="overflow:auto">
+                                <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Merchandise</div>
+                                <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
+                                    <input type="search"
+                                        style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
+                                        name="search" placeholder="Search...">
                                 </div>
                             </div>
-                            <!--Remarks-->
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text border border-secondary"
-                                        style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                        Remarks</span>
-                                </div>
-                                <textarea type="text" name="tRemarks"
-                                    class="form-control form-control-sm  border-left-0"
-                                    rows="1"></textarea>
-                            </div>
-                            <a id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
-                                data-target="#merchandiseBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;">Add Merchandise</a>
-                            <br><br>
-
-                            <!--div containing the different input fields in adding trans items -->
-                            <div class="ic-level-2"></div>
-
-                            <br>
-                            <span>Total: &#8369;<span class="total">0</span></span>
-                            <!--Total of the trans items-->
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger btn-sm"
-                                    data-dismiss="modal">Cancel</button>
-                                <button class="btn btn-success btn-sm"
-                                    type="submit">Insert</button>
+                            <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                                <!--checkboxes-->
+                                <table class="table table-borderless">
+                                    <thead style="border-bottom:2px solid #cccccc;font-weight:400 !important">
+                                        <tr>
+                                            <th width="3%"></th>
+                                            <th style="font-weight:500 !important">Merchandise Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="ic-level-2">
+                                        <tr class="ic-level-1">
+                                            <td><input type="checkbox" class="mr-2" name="stock"
+                                                data-name="" value=""></td>
+                                            <td class="">Strawberry Syrup</td>
+                                        </tr>
+                                        <tr class="ic-level-1">
+                                            <td><input type="checkbox" class="mr-2" name="stock"
+                                                data-name="" value=""></td>
+                                            <td class="">Strawberry Syrup</td>
+                                        </tr>
+                                        <tr class="ic-level-1">
+                                            <td><input type="checkbox" class="mr-2" name="stock"
+                                                data-name="" value=""></td>
+                                            <td class="">Strawberry Syrup</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </form>
+                        <!--End of Merchandise sidenav-->
+                    </div>
+
+
+
                                 <!--Start of Brochure Modal"-->
                                 <div class="modal fade bd-example-modal" id="brochureStock" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true"
@@ -172,7 +246,7 @@
                                         <div class="find input-group mb-1">
                                             <input type="text" name="itemName[]"
                                                 class="form-control form-control-sm"
-                                                value="${merch.stName} ${merch.stSize}" style="width:24%" readonly>
+                                                value="${merch.spmName}" style="width:24%" readonly>
                                             <input type="number" name="itemQty[]"
                                                 class="tiQty form-control form-control-sm"
                                                 placeholder="Quantity" value="1" min="1" onchange="setInputValues()">

@@ -33,7 +33,7 @@
                                     <?php foreach($drs as $dr){
                                     ?>
                                         <tr data-id="<?= $dr['id']?>">
-                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a><?= $dr['num']?></td>
+                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>DEl - <?= $dr['num']?></td>
                                             <td><?= $dr['receipt']?></td>
                                             <td><?= $dr['supplier']?></td>
                                             <td><?= $dr['date']?></td>

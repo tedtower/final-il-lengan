@@ -10,10 +10,10 @@
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?>
                         </p>
-                        <h6 style="font-size: 16px;margin-left:15px">Add Delivery Receipt</h6>
+                        <h6 style="font-size: 16px;margin-left:15px">Add Official Receipt</h6>
                     </div>
                     <!--Card--> 
-                    <form id="drForm" action="<?= site_url("admin/deliveryreceipt/add")?>" accept-charset="utf-8" class="form">
+                    <form id="orForm" action="<?= site_url("admin/officialreceipt/add")?>" accept-charset="utf-8">
                         <input type="text" name="tID" hidden="hidden">
                         <div class="modal-body">
                             <div class="form-row">
@@ -26,23 +26,13 @@
                                     </div>
                                     <select class="spID form-control form-control-sm  border-left-0" name="spID" required>
                                         <option value="" selected>Choose</option>
-                                    <?php if(isset($supplier)){
-                                        foreach($supplier as $sup){?>
-                                        <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
-                                    <?php }}?>
+                                        <?php if(isset($supplier)){
+                                            foreach($supplier as $sup){?>
+                                            <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
+                                        <?php }}?>
                                     </select>
                                 </div>
-                                <!--Date-->
-                                <div class="input-group mb-3 col">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text border border-secondary"
-                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                            Receipt</span>
-                                    </div>
-                                    <input type="text" class="form-control  border-left-0"
-                                        name="receipt">
-                                </div>
-                                <!--Date-->
+                                <!--Invoice Type-->
                                 <div class="input-group mb-3 col">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text border border-secondary"
@@ -50,33 +40,48 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="date" required>
+                                        name="tDate" required>
                                 </div>
                             </div>
-                            <!--Remarks-->
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text border border-secondary"
-                                        style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
-                                        Remarks</span>
+                            <div class="form-row">
+                                <div class="input-group mb-3 col">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border border-secondary"
+                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                            Receipt</span>
+                                    </div>
+                                    <input type="text" name="receipt"
+                                        class="form-control form-control-sm  border-left-0">
                                 </div>
-                                <textarea type="text" name="remarks"
-                                    class="form-control form-control-sm  border-left-0"
-                                    rows="1"></textarea>
+                                <!--Remarks-->
+                                <div class="input-group mb-3 col">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text border border-secondary"
+                                            style="width:100px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
+                                            Remarks</span>
+                                    </div>
+                                    <textarea type="text" name="tRemarks"
+                                        class="form-control form-control-sm  border-left-0"
+                                        rows="1"></textarea>
+                                </div>
                             </div>
-                            <a id="addNewBtn" class="btn btn-primary btn-sm"
-                                style="margin:0;color:blue;font-weight:600;">New Item</a>
-                            <a id="addMBtn" class="addMBtn btn btn-primary btn-sm" data-toggle="modal"
-                                data-target="#merchandiseBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getSupplierMerchandise')?>">Add Merchandise</a>
-                            <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
-                                data-target="#poBrochure"  data-original-title
-                                style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getPosFromSupplier')?>">PO Item</a>
-                            <br><br>
+                        <!--Transaction Items-->
+                        <a id="addItemBtn" class="btn btn-primary btn-sm" data-original-title
+                            style="margin:0;color:blue;font-weight:600">New Item</a>
+                        <a id="addMBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                            data-target="#merchandiseBrochure"  data-original-title
+                            style="margin:0;color:blue;font-weight:600;" data-url="<?= site_url('admin/getSupplierMerchandise')?>">Merchandise Item</a>
+                        <a id="addPOBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                            data-target="#poBrochure"
+                            style="color:blue;font-weight:600;" data-url="<?= site_url('admin/getPosFromSupplier')?>">PO Item</a>
+                        <a id="addDRBtn" class="btn btn-primary btn-sm" data-toggle="modal"
+                            data-target="#drBrochure"
+                            style="color:blue;font-weight:600;" data-url="<?= site_url('admin/getDrsFromSupplier')?>">DR Item</a>
+                        <br><br>
 
-                            <!--div containing the different input fields in adding trans items -->
-                            <div class="ic-level-2"></div>
-
+                            <!--div containing the different input fields in addig trans items -->
+                            <div class="ic-level-2">
+                            </div>
                             <br>
                             <span>Total: &#8369;<span class="total">0</span></span>
                             <!--Total of the trans items-->
@@ -90,8 +95,63 @@
                         </div>
                     </form>
 
+                        <!--Start of Delivery Brochure Modal"-->
+                        <div class="modal fade bd-example-modal-lg" id="drBrochure" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true"
+                            style="background:rgba(0, 0, 0, 0.3)">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Select Delivery Items</h5>
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form>
+                                        <div class="modal-body">
+                                            <div class="brochureErrMsg">
+                                            </div>
+                                            <div class="ic-level-3">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text "
+                                                            style="width:130px;background:#737373;color:white;font-size:14px;font-weight:600">
+                                                            Delivery Receipt</span>
+                                                    </div>
+                                                    <select class="form-control form-control-sm" name="dr">
+                                                        <option value="" selected>Choose</option>
+                                                    </select>
+                                                </div>
+                                                <br>
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Item Name</th>
+                                                            <th>Quantity</th>
+                                                            <th>Price</th>
+                                                            <th>Discount</th>
+                                                            <th>Subtotal</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="ic-level-2">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button class="btn btn-success btn-sm" type="submit">Ok</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!--End of Brochure Modal"-->
 
-                    <!--Start of merchandiseBrochure Modal"-->
+                    <!--Start of Merchandise Brochure Modal"-->
                     <div class="modal fade bd-example-modal-sm" id="merchandiseBrochure" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
                         <div class="modal-dialog " role="document">
@@ -120,8 +180,8 @@
                         </div>
                     </div>
                     <!--End of Brochure Modal"-->
-                
-                    <!--Start of POSelect Merchandise ItemModal"-->
+                    
+                    <!--Start of PO Brochure Modal"-->
                     <div class="modal fade bd-example-modal-lg" id="poBrochure" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
                         <div class="modal-dialog modal-lg" role="document">
@@ -171,6 +231,8 @@
                         </div>
                     </div>
                     <!--End of Merchandise Brochure Modal"-->
+
+                    <!--Start of Brochure Modal"-->
                     <div class="modal fade bd-example-modal-sm" id="stockBrochure" tabindex="-1" role="dialog"
                         aria-labelledby="exampleModalLabel" aria-hidden="true"
                         style="background:rgba(0, 0, 0, 0.3)">
@@ -214,12 +276,22 @@
                             </div>
                         </div>
                     </div>
+                    <!--End of Brochure Modal"-->
                 </div>
             </div>
         </div>
     </div>
 </div>
-<?php include_once('templates/scripts.php') ?>
+<script src="<?= framework_url().'mdb/js/jquery-3.3.1.min.js';?>"></script>
+<script src="<?= framework_url().'bootstrap-native/bootstrap.bundle.min.js'?>"></script>
+<!--  Charts Plugin -->
+<script src="assets/js/admin/chartist.min.js"></script>
+<!--  Notifications Plugin    -->
+<script src="assets/js/admin/bootstrap-notify.js"></script>
+<!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
+<script src="assets/js/admin/light-bootstrap-dashboard.js?v=1.4.0"></script>
+<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
+<script src="assets/js/admin/demo.js"></script>
 <script>
 $(function(){
     var uom;
@@ -231,8 +303,8 @@ $(function(){
             uom = data.uom;
         }
     });
-    $("#addNewBtn").on("click",function(){
-        $("#drForm").find(".ic-level-2").append(`
+    $("#addItemBtn").on("click",function(){
+        $("#orForm").find(".ic-level-2").append(`
         <div style="overflow:auto;margin-bottom:2%" class="ic-level-1">
             <div style="float:left;width:95%;overflow:auto;">
                 <div class="input-group mb-1">
@@ -279,7 +351,7 @@ $(function(){
     });
     $("#addMBtn").on("click",function(){
         var url = $(this).attr("data-url");
-        var supplier = $("#drForm select[name='spID']").val();
+        var supplier = $("#orForm select[name='spID']").val();
         if(!isNaN(parseInt(supplier))){
             $.ajax({
                 method: "POST",
@@ -305,7 +377,7 @@ $(function(){
         }
     });
     $("#addPOBtn").on("click",function(){
-        var supplier = $("#drForm select[name='spID']").val();
+        var supplier = $("#orForm select[name='spID']").val();
         var url = $(this).attr("data-url");
         if(!isNaN(parseInt(supplier))){
             $.ajax({
@@ -337,6 +409,39 @@ $(function(){
             $("#poBrochure .brochureErrMsg").text("No supplier selected.");
         }
     });
+    $("#addDRBtn").on("click",function(){
+        var supplier = $("#orForm select[name='spID']").val();
+        var url = $(this).attr("data-url");
+        if(!isNaN(parseInt(supplier))){
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: {
+                    id: supplier
+                },
+                dataType: "JSON",
+                success: function(data){
+                    data.uom = uom;
+                    if(data.drs.length === 0){
+                        $("#drBrochure .brochureErrMsg").show();
+                        $("#drBrochure .brochureErrMsg").text("No delivery receipts from current selected supplier.");
+                        $("#drBrochure .ic-level-3").hide();
+                    }else{
+                        $("#drBrochure .ic-level-3").show();
+                        setDRBrochure(data);
+                    }
+                },
+                error: function (response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+            });
+        }else{
+            $("#drBrochure .ic-level-3").hide();
+            $("#drBrochure .brochureErrMsg").show();
+            $("#drBrochure .brochureErrMsg").text("No supplier selected.");
+        }
+    });
     $("#merchandiseBrochure").on("hidden.bs.modal",function(){
         $(this).find("form")[0].reset();
         $(this).find("form").off("submit");
@@ -356,15 +461,23 @@ $(function(){
         $(this).find(".brochureErrMsg").hide();
         $(this).find("select[name='po'] option:first-child ~ option").remove();
     });
-    $("#drForm").on("submit",function(event){
+    $("#drBrochure").on("hidden.bs.modal",function(){
+        $(this).find("form")[0].reset();
+        $(this).find(".ic-level-2").empty();
+        $(this).find("form").off("submit");
+        $(this).find(".brochureErrMsg").empty();
+        $(this).find(".brochureErrMsg").hide();
+        $(this).find("select[name='dr'] option:first-child ~ option").remove();
+    });
+    $("#orForm").on("submit",function(event){
         event.preventDefault();
         var url = $(this).attr("action");
-        var supplier = $("#drForm select[name='spID']").val();
-        var date = $("#drForm input[name='tDate']").val();
-        var receipt = $("#drForm input[name='receipt']").val();
-        var remarks = $("#drForm textarea[name='tRemarks']").val();
+        var supplier = $("#orForm select[name='spID']").val();
+        var date = $("#orForm input[name='tDate']").val();
+        var receipt = $("#orForm input[name='receipt']").val();
+        var remarks = $("#orForm textarea[name='tRemarks']").val();
         var orItems = [];
-        $("#drForm .ic-level-1").each(function(index){
+        $("#orForm .ic-level-1").each(function(index){
             orItems.push({
                 tiID: $(this).attr("data-id"),
                 name: $(this).find("input[name='itemName[]']").val(),
@@ -399,32 +512,32 @@ $(function(){
 });
 
 function setIL1FormEvents(){
-    $("#drForm .ic-level-1:last-child .exitBtn").on("click",function(){
+    $("#orForm .ic-level-1:last-child .exitBtn").on("click",function(){
         $(this).closest(".ic-level-1").remove();
     });
-    $("#drForm .ic-level-1:last-child input[name='stID[]']").on('focus',function(){
+    $("#orForm .ic-level-1:last-child input[name='stID[]']").on('focus',function(){
         $("#stockBrochure").modal("show");
         $("#stockBrochure form").on("submit",function(event){
             event.preventDefault();
             var st = $(this).find(".ic-level-2 input[name='stocks']:checked");
-            $("#drForm .ic-level-1[data-focus='true'] input[name='stID[]']").attr("data-id",st.val());
-            $("#drForm .ic-level-1[data-focus='true'] input[name='stID[]']").val(st.attr("data-name"));
+            $("#orForm .ic-level-1[data-focus='true'] input[name='stID[]']").attr("data-id",st.val());
+            $("#orForm .ic-level-1[data-focus='true'] input[name='stID[]']").val(st.attr("data-name"));
             $("#stockBrochure").modal("hide");
         });
     });
-    $("#drForm .ic-level-1:last-child *").on("focus",function(){
+    $("#orForm .ic-level-1:last-child *").on("focus",function(){
         if(!$(this).closest(".ic-level-1").attr("data-focus")){
-            $("#drForm").find(".ic-level-1").removeAttr("data-focus");
+            $("#orForm").find(".ic-level-1").removeAttr("data-focus");
             $(this).closest(".ic-level-1").attr("data-focus",true);
         }
     });
-    $("#drForm .ic-level-1:last-child input[name='itemQty[]']").on("change",function(){
+    $("#orForm .ic-level-1:last-child input[name='itemQty[]']").on("change",function(){
         setTotals();
     });
-    $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").on("change",function(){
+    $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").on("change",function(){
         setTotals();
     });
-    $("#drForm .ic-level-1:last-child input[name='discount[]']").on("change",function(){
+    $("#orForm .ic-level-1:last-child input[name='discount[]']").on("change",function(){
         setTotals();
     });
 }
@@ -457,26 +570,27 @@ function setPOBrochure(pos){
         event.preventDefault();
         $(this).find("input[name='poitems']:checked").each(function(index){
             var item = pos.poItems.filter(item => item.itemID == $(this).val());
-            $("#addNewBtn").trigger("click");
-            $("#drForm .ic-level-1:last-child").attr("data-id",item[0].itemID);
-            $("#drForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child input[name='itemSubtotal[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child input[name='itemName[]']").val(item[0].NAME);
-            $("#drForm .ic-level-1:last-child input[name='itemQty[]']").val(item[0].qty)
-            $("#drForm .ic-level-1:last-child input[name='itemUnit[]']").prop("readonly",true);
-            $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${item[0].uom}]`).attr("selected","selected");
-            $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
-            $("#drForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
-            $("#drForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
-            $("#drForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
-            $("#drForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
-            $("#drForm .ic-level-1:last-child *").on("focus",function(){
+            console.log(item);
+            $("#addItemBtn").trigger("click");
+            $("#orForm .ic-level-1:last-child").attr("data-id",item[0].itemID);
+            $("#orForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='itemSubtotal[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='itemName[]']").val(item[0].NAME);
+            $("#orForm .ic-level-1:last-child input[name='itemQty[]']").val(item[0].qty)
+            $("#orForm .ic-level-1:last-child input[name='itemUnit[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${item[0].uom}]`).attr("selected","selected");
+            $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
+            $("#orForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
+            $("#orForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
+            $("#orForm .ic-level-1:last-child *").on("focus",function(){
                 if(!$(this).closest(".ic-level-1").attr("data-focus")){
-                    $("#drForm .ic-level-1").removeAttr("data-focus");
+                    $("#orForm .ic-level-1").removeAttr("data-focus");
                     $(this).closest(".ic-level-1").attr("data-focus",true);
                 }
             });
@@ -484,45 +598,92 @@ function setPOBrochure(pos){
         $("#poBrochure").modal("hide");
     });
 }
+function setDRBrochure(drs){
+    $("#drBrochure select[name='dr']").append(drs.drs.map(dr => {
+        return `<option value="${dr.transactionID}">DR#${dr.transNum}  Dated:${dr.date}</option>`;
+    }).join(''));
+    $("#drBrochure select[name='dr']").on("change",function(){
+        $("#drBrochure .ic-level-2").empty();
+        drs.drItems.filter(item => item.transactionID == $(this).val()).forEach(item => {
+            $("#drBrochure .ic-level-2").append(`<tr class="ic-level-1">
+                    <td><input type="checkbox" name="dritems" class="mr-2" value="${item.itemID}"></td>
+                    <td>${item.NAME}</td>
+                    <td>${item.qty} (${item.unit})</td>
+                    <td>${item.price}</td>
+                    <td>${item.discount}</td>
+                    <td>${item.subtotal}</td>
+                </tr>`);
+        });
+    });
+    $("#drBrochure form").on("submit", function(event){
+        event.preventDefault();
+        $(this).find("input[name='dritems']:checked").each(function(index){
+            var item = drs.drItems.filter(item => item.itemID == $(this).val());
+            $("#addItemBtn").trigger("click");
+            $("#orForm .ic-level-1:last-child").attr("data-id",item[0].itemID);
+            $("#orForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='itemSubtotal[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
+            $("#orForm .ic-level-1:last-child input[name='itemName[]']").val(item[0].NAME);
+            $("#orForm .ic-level-1:last-child input[name='itemQty[]']").val(item[0].qty)
+            $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${item[0].uom}]`).attr("selected","selected");
+            $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").val(item[0].price);
+            $("#orForm .ic-level-1:last-child input[name='itemSubtotal[]']").val(item[0].subtotal);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").val(item[0].stockname);
+            $("#orForm .ic-level-1:last-child input[name='stID[]']").attr("data-id", item[0].stock);
+            $("#orForm .ic-level-1:last-child input[name='actualQty[]']").val(item[0].actual);
+            $("#orForm .ic-level-1:last-child *").on("focus",function(){
+                if(!$(this).closest(".ic-level-1").attr("data-focus")){
+                    $("#orForm .ic-level-1").removeAttr("data-focus");
+                    $(this).closest(".ic-level-1").attr("data-focus",true);
+                }
+            });
+        });
+        $("#drBrochure").modal("hide");
+    });
+}
 function setInputUOM(uom){
-    $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").append(uom.map(unit=>{
+    $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").append(uom.map(unit=>{
         return `<option value="${unit.uomID}">${unit.uomAbbreviation} - ${unit.uomName}</option>`;
     }).join(''));
 }
 
 function setTotals(){
-    var qty = $("#drForm .ic-level-1[data-focus='true'] input[name='itemQty[]']").val();
-    var price = $("#drForm .ic-level-1[data-focus='true'] input[name='itemPrice[]']").val();
-    var discount = $("#drForm .ic-level-1[data-focus='true'] input[name='discount[]']").val();
+    var qty = $("#orForm .ic-level-1[data-focus='true'] input[name='itemQty[]']").val();
+    var price = $("#orForm .ic-level-1[data-focus='true'] input[name='itemPrice[]']").val();
+    var discount = $("#orForm .ic-level-1[data-focus='true'] input[name='discount[]']").val();
     var subtotal = qty*(price-discount);
     subtotal = subtotal < 0 ? 0 : subtotal;
     var total = 0;
-    $("#drForm .ic-level-1[data-focus='true'] input[name='itemSubtotal[]']").val(subtotal);
-    $("#drForm .ic-level-1 input[name='itemSubtotal[]']").each(function(index){
-        total+= isNaN(parseFloat($(this).val())) ? 0 : parseFloat($(this).val());
+    $("#orForm .ic-level-1[data-focus='true'] input[name='itemSubtotal[]']").val(subtotal);
+    $("#orForm .ic-level-1 input[name='itemSubtotal[]']").each(function(index){
+        total+= isNaN(parseInt($(this).val())) ? 0 : parseInt($(this).val());
     });
-    $("#drForm .total").text(total);
+    $("#orForm .total").text(total);
 }
 
 function merchBrochureOnSubmit(uom, merchandise, selectedMerch){
     var y;
     selectedMerch.each(function(index) {
         y = merchandise.filter(x => x.spmID == $(this).val());
-        $("#addNewBtn").trigger("click");
-        $("#drForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
-        $("#drForm .ic-level-1:last-child input[name='itemName[]']").val(y[0].spmName);
-        $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
-        $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${y[0].uomID}]`).attr("selected","selected");
-        $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
-        $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").val(y[0].spmPrice);
-        $("#drForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
-        $("#drForm .ic-level-1:last-child input[name='stID[]']").val(y[0].stName);
-        $("#drForm .ic-level-1:last-child input[name='stID[]']").attr("data-id",y[0].stID);
-        $("#drForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
-        $("#drForm .ic-level-1:last-child input[name='actualQty[]']").val(y[0].spmActualQty);
-        $("#drForm .ic-level-1:last-child *").on("focus",function(){
+        $("#addItemBtn").trigger("click");
+        $("#orForm .ic-level-1:last-child input[name='itemName[]']").prop("readonly",true);
+        $("#orForm .ic-level-1:last-child input[name='itemName[]']").val(y[0].spmName);
+        $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").prop("readonly",true);
+        $("#orForm .ic-level-1:last-child select[name='itemUnit[]']").find(`option[value=${y[0].uomID}]`).attr("selected","selected");
+        $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").prop("readonly",true);
+        $("#orForm .ic-level-1:last-child input[name='itemPrice[]']").val(y[0].spmPrice);
+        $("#orForm .ic-level-1:last-child input[name='stID[]']").prop("readonly",true);
+        $("#orForm .ic-level-1:last-child input[name='stID[]']").val(y[0].stName);
+        $("#orForm .ic-level-1:last-child input[name='stID[]']").attr("data-id",y[0].stID);
+        $("#orForm .ic-level-1:last-child input[name='actualQty[]']").prop("readonly",true);
+        $("#orForm .ic-level-1:last-child input[name='actualQty[]']").val(y[0].spmActualQty);
+        $("#orForm .ic-level-1:last-child *").on("focus",function(){
             if(!$(this).closest(".ic-level-1").attr("data-focus")){
-                $("#drForm .ic-level-1").removeAttr("data-focus");
+                $("#orForm .ic-level-1").removeAttr("data-focus");
                 $(this).closest(".ic-level-1").attr("data-focus",true);
             }
         });
@@ -530,4 +691,4 @@ function merchBrochureOnSubmit(uom, merchandise, selectedMerch){
     $("#merchandiseBrochure").modal("hide");
 }
 </script>
-</html>
+</body>
