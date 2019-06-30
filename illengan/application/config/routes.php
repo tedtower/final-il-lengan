@@ -162,6 +162,7 @@ $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
 $route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
+$route['admin/purchaseorder/get'] = "adminview/getPOItemsBySupplier";
 $route['admin/getPosFromSupplier'] = "adminview/getPOItemsBySupplier";
 $route['admin/getDrsFromSupplier'] = "adminview/getDRItemsBySupplier";
 $route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";

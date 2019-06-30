@@ -17,7 +17,7 @@
                                 <div class="card-header">
                                     <h6 style="font-size:15px;margin:0">Add Purchase Order</h6>
                                 </div>
-                                <form id="addPurchaseOrder"  action="<?= site_url("admin/purchaseorder/add")?>" accept-charset="utf-8" class="form">
+                                <form id="poForm"  action="<?= site_url("admin/purchaseorder/add")?>" accept-charset="utf-8" class="form">
                                     <div class="card-body">
                                         <input type="text" name="tID" hidden="hidden">
                                         <div class="form-row">
@@ -109,7 +109,7 @@
                             </div>
 
                             <!--Start of Merchandise sidenav-->
-                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card" id="poCard" style="float:left;width:35%;margin-left:3%">
                                 <div class="card-header" style="overflow:auto">
                                     <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">
                                         Merchandise</div>
@@ -130,7 +130,7 @@
                                         </thead>
                                         <tbody class="ic-level-2">
                                             <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="stock" data-name=""
+                                                <td><input type="checkbox" class="mr-2" name="poi" data-name=""
                                                         value=""></td>
                                                 <td class="">Strawberry Syrup</td>
                                             </tr>
@@ -227,6 +227,25 @@
     var supplier = [];
     var suppmerch = [];
     $(function() {
+        $("#poForm select[name='spID']").on("change",function(){
+            var supplier = $(this).val();
+            console.log(supplier);
+            $.ajax({
+                method: "GET",
+                url: "/admin/purchaseorder/get",
+                data: {
+                    id: supplier
+                },
+                dataType: "JSON",
+                success: function(data){
+                    console.log(data);
+                },
+                error: function(response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+            });
+        });
         $.ajax({
             url: '/admin/jsonPO',
             dataType: 'json',
@@ -366,37 +385,5 @@
             });
         });
     });
-
-    function setMerchandiseBrochure(suppstocks) {
-        $("#merchandiseBrochure .ic-level-2").empty();
-        $("#merchandiseBrochure .ic-level-2").append(`${suppstocks.map(st => {
-            return `<label style="width:96%"><input type="checkbox" id="stID${st.stID}" data-spmid="${st.spmID}" name="stockitems" class="stockitems mr-2" 
-            value="${st.stID}"> ${st.spmName} </label>`
-        }).join('')}`);
-    }
-
-
-    var subPrice = 0;
-
-    function setInputValues() {
-        var total = 0;
-        for (var i = 0; i <= $('.ic-level-1').length - 1; i++) {
-            var tiQty = parseInt($('.tiQty').eq(i).val());
-            var qtyPerItem = parseInt($('.qtyPerItem').eq(i).val());
-            var price = parseFloat($('.tiPrice').eq(i).val());
-
-            // Setting item subtotal
-            var subtotal = price * tiQty;
-            var actualqty = tiQty * qtyPerItem;
-            $('.actualQty').eq(i).val(actualqty);
-            $('.tiSubtotal').eq(i).val(subtotal);
-        }
-
-        //Setting items tota
-        for (var i = 0; i <= $('.tiSubtotal').length - 1; i++) {
-            total = total + parseFloat($('.tiSubtotal').eq(i).val());
-            $('.total').text(total);
-        }
-    }
     </script>
 </body>
