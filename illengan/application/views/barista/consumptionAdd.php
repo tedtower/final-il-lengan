@@ -1,8 +1,7 @@
-
+<body style="background: white">
     <div class="content">
         <div class="container-fluid">
             <br>
-            <div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Date and Time-->
                     <div style="overflow:auto">
@@ -14,48 +13,50 @@
                         <!--Card-->
                         <div class="card" style="float:left;width:60%">
                             <div class="card-header">
-                                <h6 style="font-size:15px;margin:0">Add Consumption</h6>
+                                <h6 style="font-size:15px;">Add Consumption</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/consumption/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("barista/consumption/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
-                                    <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary"
-                                                style="width:125px;font-size:14px;">
+                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                                 Date Consumed</span>
                                         </div>
                                         <input type="date" class="form-control" name="date">
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary"
-                                                style="width:125px;font-size:14px">
+                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                                 Remarks</span>
                                         </div>
                                         <textarea type="text" name="remarks"
-                                            class="form-control" rows="1"></textarea>
+                                            class="form-control form-control-sm  border-left-0" rows="1"></textarea>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
-                                            <thead style="border-bottom:2px solid #cccccc;font-size:14px">
+                                            <thead style="border-bottom:2px solid #cccccc">
                                                 <tr>
-                                                    <th style="font-weight:500 !important;">Stock Item</th>
-                                                    <th width="17%" style="font-weight:500 !important;">Quantity</th>
-                                                    <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
+                                                    <th>Stock Item</th>
+                                                    <th width="17%">Quantity</th>
+                                                    <th width="33%">Log Remarks</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="ic-level-2">
-
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="card-footer mb-0" style="overflow:auto">
-                                    <button class="btn btn-success btn-sm" type="submit"
-                                        style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        style="float:right">Cancel</button>
+
+                                <div class="card-footer">
+                                    <div>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            style="margin-left:0" data-dismiss="modal">Cancel</button>
+                                        <button class="btn btn-success btn-sm"
+                                            type="submit">Insert</button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -78,8 +79,8 @@
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
-                                            <th style="font-weight:500 !important;">Stock Item</th>
-                                            <th style="font-weight:500 !important;">Category</th>
+                                            <th>Stock Item</th>
+                                            <th>Category</th>
                                         </tr>
                                     </thead>
                                     <tbody class="ic-level-2"><?php
@@ -107,7 +108,6 @@
 
                     <!--End of container divs-->
                 </div>
-            </div>
         </div>
     </div>
     <?php include_once('templates/scripts.php');?>
@@ -126,11 +126,11 @@
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
+                                class="form-control" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="qty"></td>
+                                class="form-control" name="qty"></td>
                         <td style="padding:1% !important"><textarea type="text"
-                                class="form-control form-control-sm" name="cRemarks" rows="1"></textarea>
+                                class="form-control" name="cRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
             }else{

@@ -53,7 +53,7 @@ $route['admin/deliveryreceipt/formedit/(:num)'] = "adminview/viewDRFormEdit/$1";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
-
+$route['admin/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
 //End Viewing Routes
 
 //Not Sure Routes
@@ -163,6 +163,7 @@ $route['admin/inventory/restock'] = "adminadd/addRestockLog";
 $route['admin/jsonReturns'] = "adminview/jsonReturns";
 $route['admin/jsonPO'] = "adminview/jsonPO";
 $route['admin/jsonDR'] = "adminview/getPOItemsForBrochure";
+$route['admin/purchaseorder/get'] = "adminview/getPOItemsBySupplier";
 $route['admin/getPosFromSupplier'] = "adminview/getPOItemsBySupplier";
 $route['admin/getDrsFromSupplier'] = "adminview/getDRItemsBySupplier";
 $route['admin/getSupplierMerchandise'] = "adminview/getSuppMerchForBrochure";
@@ -217,8 +218,9 @@ $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
-
-
+//-----------------------------------------
+$route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
+$route['barista/consumption/add'] = "barista/addConsumption";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
@@ -248,3 +250,6 @@ $route['chef/inventory/deliveries/formadd'] = "chef/viewDRFormAdd";
 $route['chef/deliveryreceipt/add'] = "chef/addDeliveryReceipt";
 $route['chef/getSupplierMerchandise'] = "chef/getSuppMerchForBrochure";
 $route['chef/getPosFromSupplier'] = "chef/getPOItemsBySupplier";
+$route['chef/destock'] = "chef/destockitem";
+$route['chef/consumption/formadd'] = "chef/viewConsumptionFormAdd";
+$route['chef/consumption/add'] = "chef/addConsumption";

@@ -1,56 +1,3 @@
-<style>
-    .card-header-1 {
-        background: darkblue;
-        position: relative;
-        top: -30px;
-        left: 5%;
-        height: 80px;
-        width: 80px;
-    }
-
-    .card-header-2 {
-        background: green;
-        position: relative;
-        top: -30px;
-        left: 5%;
-        height: 80px;
-        width: 80px;
-    }
-
-    .card-header-3 {
-        background: indigo;
-        position: relative;
-        top: -30px;
-        left: 5%;
-        height: 80px;
-        width: 80px;
-    }
-
-    .card-header-4 {
-        background: darkred;
-        position: relative;
-        top: -30px;
-        left: 5%;
-        height: 80px;
-        width: 80px;
-    }
-
-    .card-top {
-        margin-top: -20% !important;
-    }
-
-    .card-content-text {
-        text-align: right;
-    }
-
-    .card-img {
-        height: 60%;
-        width: 60%;
-        margin: auto;
-        display: block;
-    }
-</style>
-
 <!--End Sidebar-->
 <div class="content">
 
@@ -72,11 +19,9 @@
                                         <div class="card-header-1">
                                             <img class="card-img m-3" src="../assets/media/admin/sales.png" alt="Sales">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p class="category">Today's Total Sales</p>
-                                            <h3 class="title">
-                                                123456
-                                            </h3>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Today's Menu Ordered</p>
+                                            <h3 class="title" id="tmo" style="color:#1c1ce0"><?php if (count($todaySales) > 0) echo $todaySales[0]->salesCount; else echo '0'; ?></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -86,11 +31,9 @@
                                         <div class="card-header-2">
                                             <img class="card-img m-3" src="../assets/media/admin/money.png" alt="Bill">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p class="category">Today's Total Revenue</p>
-                                            <h3 class="title">
-                                                12345
-                                            </h3>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Today's Total Sales</p>
+                                            <h3 class="title" id="tts" style="color:#0000c0">&#x20b1;<?php if (count($todaySales) > 0) echo $todaySales[0]->sales; else echo '0'; ?></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -100,11 +43,9 @@
                                         <div class="card-header-3">
                                             <img class="card-img m-3" src="../assets/media/admin/storage.png" alt="Items">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p class="category">Total Items</p>
-                                            <h3 class="title">
-                                                12345
-                                            </h3>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Today's Consumed Items</p>
+                                            <h3 class="title" id="tsi" style="color:#8210d3"><?= $todayConsumption[0]->total ?></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -114,12 +55,10 @@
                                         <div class="card-header-4">
                                             <img class="card-img m-3" src="../assets/media/admin/cart.png" alt="Restock">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p class="category">Needs Restock</p>
-                                            <h3 class="title">
-                                                12345
-                                            </h3>
-                                        </div>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Needs Restock</p>
+                                            <h3 class="title" id="nr" style="color:#ca1010"><?= count($stockroom)+count($kitchen) ?></h3>
+                                        </div> 
                                     </div>
                                 </div>
                             </div>
@@ -149,34 +88,6 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-lg-5">
-                                    <div class="row text-center">
-                                        <div class="col card m-1 p-0">
-                                            <div class="bg-dark text-white">
-                                                <span class="cnumber-text">245</span><br>
-                                                <span class="csub-text">Last Month's Menu Ordered</span>
-                                            </div>
-                                        </div>
-                                        <div class="col card m-1 p-0">
-                                            <div class="bg-dark text-white">
-                                                <span class="cnumber-text">245</span><br>
-                                                <span class="csub-text">Last Month's Menu Ordered</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row text-center mb-3">
-                                        <div class="col card m-1 p-0">
-                                            <div class="bg-dark text-white">
-                                                <span class="snumber-text">245</span><br>
-                                                <span class="csub-text">Last Month's Menu Ordered</span>
-                                            </div>
-                                        </div>
-                                        <div class="col card m-1 p-0">
-                                            <div class="bg-dark text-white">
-                                                <span class="snumber-text">245</span><br>
-                                                <span class="csub-text">Last Month's Menu Ordered</span>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-lg-12 card">
                                             <div class="header">
@@ -184,7 +95,7 @@
                                                 <p class="category">January <span id="maxMonth"></span> <?= date('Y') ?></p>
                                             </div>
                                             <div class="content">
-                                                <div style="overflow-y:scroll">
+                                                <div>
                                                     <?php if (count($topmenu) > 0) { ?>
                                                         <table class="table text-center">
                                                             <tr>
@@ -209,9 +120,6 @@
                                                 </div>
                                                 <div class="footer">
                                                     <hr>
-                                                    <div class="stats">
-                                                        <i class="fa fa-history"></i> Updated as of <?= date('g:i A') ?>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,38 +128,71 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12 col-lg-6">
-                                <div class="card ">
-                                    <div class="header">
-                                        <h4 class="title">Others</h4>
-                                        <p class="category"></p>
-                                    </div>
-                                    <div class="content">
-                                        <div class="footer">
-                                            <hr>
-                                            <div class="stats">
-                                                <i class="fa fa-history"></i> Updated 25 minutes ago
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="col-md-12 col-lg-6">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Stockroom Items Needed to Restock</h4>
+                                <p class="category"></p>
+                            </div>
+                            <div class="content">
+                                <?php if(count($stockroom) > 0) { ?>
+                                <table class="table text-center">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Actual</th>
+                                    <th>Minimum</th>
+                                </tr>
+                                <?php foreach($stockroom as $st) { ?>
+                                <tr>
+                                    <td><?= $st->stock ?></td>
+                                    <td class="text-danger"><b><?= $st->stQty ?></b></td>
+                                    <td><b><?= $st->stMin ?></b></td>
+                                </tr>
+                                <?php } ?>
+                                </table>
+                                <?php } else { ?>
+                                    <h5><i class="fa fa-check"></i> You have no insufficient stocks.</h5>
+                                <?php } ?>
+                                </table>
+                                <div class="footer">
+                                    <hr>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-lg-6">
-                                <div class="card ">
-                                    <div class="header">
-                                        <h4 class="title">Others</h4>
-                                        <p class="category"></p>
-                                    </div>
-                                    <div class="content">
-                                        <div class="footer">
-                                            <hr>
-                                            <div class="stats">
-                                                <i class="fa fa-history"></i> Updated 25 minutes ago
-                                            </div>
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-6">
+                        <div class="card ">
+                            <div class="header">
+                                <h4 class="title">Kitchen Items Needed to Restock</h4>
+                                <p class="category"></p>
+                            </div>
+                            <div class="content">
+                                <?php if(count($kitchen) > 0) { ?>
+                                <table class="table text-center">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Actual</th>
+                                    <th>Minimum</th>
+                                </tr>
+                                <?php foreach($kitchen as $st) { ?>
+                                <tr>
+                                    <td><?= $st->stock ?></td>
+                                    <td class="text-danger"><b><?= $st->stQty ?></b></td>
+                                    <td><b><?= $st->stMin ?></b></td>
+                                </tr>
+                                <?php } ?>
+                                </table>
+                                <?php } else { ?>
+                                        <h5><i class="fa fa-check"></i> You have no insufficient stocks.</h5>
+                                <?php } ?>
+                                </table>
+                                <div class="footer">
+                                    <hr>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    </div>
                         </div>
 
                     </div>
