@@ -64,7 +64,8 @@
                 <th style="width: 200px;">Item Name</th>
                 <th style="width: 150px;">Qty</th>
                 <th style="width: 150px;">Price</th>
-                <th style="width: 150px;">*added Add-on Total</th>
+                <th style="width: 150px;">Subtotal</th>
+                <th style="width: 150px;">*Add-on Total</th>
                 <th></th>
               </tr>
             </thead>
@@ -135,7 +136,8 @@
                 <th style="width: 200px;">Item Name</th>
                 <th style="width: 150px;">Qty</th>
                 <th style="width: 150px;">Price</th>
-                <th style="width: 150px;">*added Add-on Total</th>
+                <th style="width: 150px;">Subtotal</th>
+                <th style="width: 150px;">*Add-on Total</th>
                 <th></th>
               </tr>
             </thead>
@@ -313,6 +315,7 @@
                 setItemData(item);
                 for (var i = 0; i <= item.length - 1; i++) {
                   $("#Modal_Pay").find("input[name='amount_payable']").val(parseInt(data[i].osTotal));
+                  
                 }
               },
               failure: function () {
@@ -329,8 +332,9 @@
             $(".orderitemsTable> tbody").append(`${item.map(items =>{
               return `<tr>
                             <td></td>
-                            <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
-                            <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
+                            <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
+                            <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
+                            <td><input type="text" name="olPrice" class="form-control form-control-sm"  value="${items.olPrice}" required readonly></td>
                             <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal}" required readonly></td>
                             <td><input type="text" name="aoTotal" class="form-control form-control-sm"  value="${items.aoTotal}" required readonly></td>
                             <td></td>
@@ -422,6 +426,8 @@ function getSelectedSlips() {
                                     class="form-control form-control-sm" value="` + orders[i].olDesc + `"  required></td>
                             <td><input type="text" id="olQty` + i + `" name="olQty"
                                     class="form-control form-control-sm"  value="` + orders[i].olQty + `" readonly="readonly" required></td>
+                            <td><input type="text" id="olPrice` + i + `" name="olPrice"
+                                    class="form-control form-control-sm"  value="` + orders[i].olPrice + `" readonly="readonly" required></td>
                             <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
                                     class="olSubtotal form-control form-control-sm" value="` + orders[i].olSubtotal + `" readonly="readonly" required></td>
                             <td><input type="text" id="aoTotal` + i + `" name="aoTotal"
@@ -436,6 +442,7 @@ function getSelectedSlips() {
         }
         setTotal();
     }
+
 }
 
 function setTotal() {
@@ -447,8 +454,9 @@ function setTotal() {
 
       for(var i = 0; i <= length-1;i++) {
         var subtotal = 0;
-        subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val() * parseInt($("input[name='olQty']").eq(i).val()));
-        total = (total + subtotal) + parseFloat($("input[name='aoTotal']").eq(i).val());
+        //subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val() * parseInt($("input[name='olQty']").eq(i).val()));
+        subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val());
+        total = total + subtotal;
         osID = $("input[name='olSubtotal']").eq(i).closest("tr").attr("data-osid");
         osIDarr.push(osID);
         }
