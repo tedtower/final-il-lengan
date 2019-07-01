@@ -164,44 +164,40 @@
 
                         <!--Start of PO sidenav-->
                             <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
-                                <div class="status-level" data-show-level="3">
-                                    <div class="card-header" style="overflow:auto">
-                                        <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Purchase Order</div>
-                                        <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
-                                            <input type="search"
-                                                style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
-                                                name="search" placeholder="Search...">
-                                        </div>
-                                    </div>
-                                    <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                                        <!--checkboxes-->
-                                        <div class="mt-1 mb-1">
-                                            <select class="form-control form-control-sm">
-                                                <option value="" selected>Choose PO</option>
-                                            </select>
-                                        </div>
-                                        <table class="table table-borderless ic-level-3">
-                                            <thead style="border-bottom:2px solid #cccccc">
-                                                <tr>
-                                                    <th width="2%"></th>
-                                                    <th style="font-weight:500 !important">Item Name</th>
-                                                    <th style="font-weight:500 !important">Qty</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="ic-level-2">
-                                                <tr class="ic-level-1">
-                                                    <td><input type="checkbox" class="mr-2" name="stock"
-                                                        data-name="" value=""></td>
-                                                    <td class=""></td>
-                                                    <td class=""></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                <div>
+                                <div class="card-header" style="overflow:auto">
+                                    <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Purchase Order</div>
+                                    <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
+                                        <input type="search"
+                                            style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
+                                            name="search" placeholder="Search...">
                                     </div>
                                 </div>
-                                <div class="status-level" data-show-level="3">
+                                <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                                    <!--checkboxes-->
+                                    <div class="mt-1 mb-1">
+                                        <select class="form-control form-control-sm">
+                                            <option value="" selected>Choose PO</option>
+                                        </select>
+                                    </div>
+                                    <table class="table table-borderless ic-level-3">
+                                        <thead style="border-bottom:2px solid #cccccc">
+                                            <tr>
+                                                <th width="2%"></th>
+                                                <th style="font-weight:500 !important">Item Name</th>
+                                                <th style="font-weight:500 !important">Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="ic-level-2">
+                                            <tr class="ic-level-1">
+                                                <td><input type="checkbox" class="mr-2" name="stock"
+                                                    data-name="" value=""></td>
+                                                <td class=""></td>
+                                                <td class=""></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="status-level" data-show-level="2">
                                 </div>
                             </div>
                             <!--End of PO sidenav-->

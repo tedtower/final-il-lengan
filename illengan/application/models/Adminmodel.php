@@ -60,7 +60,8 @@ function get_transactions(){
                 transactions
             LEFT JOIN supplier USING(spID)
             WHERE
-                isArchived = '0' and tType = 'purchase order'";
+                isArchived = '0' and tType = 'purchase order'
+                order by tID desc";
     return $this->db->query($query)->result_array();
 }
 
@@ -329,7 +330,7 @@ function get_transitems(){
                 WHERE
                     slType = 'beginning' AND stID = ?
             )
-            order by slDateTime;";
+            order by dateRecorded;";
         return $this->db->query($query,array($stID,$stID))->result_array();
     }
 
@@ -488,7 +489,6 @@ function get_transitems(){
             )
         ) AS stName,
         stMin,
-        spmActualQty,
         stQty,
         uomID,
         uomAbbreviation,
@@ -689,13 +689,6 @@ function get_transitems(){
     }
     function get_stockitems() {
         $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
-        return $this->db->query($query)->result_array();
-    }
-    function get_stocktransitems() {
-        $query = "SELECT ti.stID, ti.tiID, trans.tDate, trans.receiptNo, pf.prstQty, sp.spID, sp.spmID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActualQty, sp.spmPrice, tr.tID
-        FROM `transitems` ti INNER JOIN trans_items USING (tiID) INNER JOIN transactions trans USING (tID) 
-        INNER JOIN uom USING (uomID) INNER JOIN suppliermerchandise sp USING (stID) INNER JOIN stockitems st USING (stID) 
-        LEFT JOIN prefstock pf USING (stID) LEFT JOIN transactions tr USING (tID) WHERE trans.tType = 'delivery receipt' ORDER BY 3";
         return $this->db->query($query)->result_array();
     }
     function get_returns() {
@@ -971,7 +964,7 @@ function add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockM
             NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         );";
     if($this->db->query($query,array($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, $stockBqty, $stockLocation,$stockSize))){
-        if($this->add_stockLog($this->db->insert_id(), NULL, 'beginning', date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $stockQty, "New item")){
+        if($this->add_stockLog($this->db->insert_id(), NULL, 'beginning', date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $stockQty, $stockQty, "New item")){
             return true;
         }
     }
