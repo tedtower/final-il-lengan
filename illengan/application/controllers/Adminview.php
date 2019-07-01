@@ -450,16 +450,28 @@ if($this->checkIfLoggedIn()){
     redirect('login');
 }
 }
-function viewSpoilagesStock(){
+function viewSpoilagesStockAdd(){
 if($this->checkIfLoggedIn()){
     $data['title'] = "Spoilages - Stock";
-    $this->load->view('admin/templates/head', $data);
+    $this->load->view('admin/templates/head2', $data);
     $this->load->view('admin/templates/sideNav');
-    $this->load->view('admin/adminspoilagesstock');
+    $data['stocks'] = $this->adminmodel->get_stocks();
+    $this->load->view('admin/adminspoilagesstockAdd', $data);
 }else{
     redirect('login');
 }
 }
+function viewSpoilagesStock(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/adminspoilagesstock');
+    }else{
+        redirect('login');
+    }
+    }
+
 function viewSpoilagesMenuJs(){
     if($this->checkIfLoggedIn()){
         $data= $this->adminmodel->get_spoilagesmenu();

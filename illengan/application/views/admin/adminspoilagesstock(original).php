@@ -38,6 +38,85 @@
 								</tbody>
 							</table>
 							<!--End Table Content-->
+							<!--Start of Modal "Add Stock Spoilages"-->
+							<div class="modal fade bd-example-modal-lg" id="addStockSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+								<div class="modal-dialog modal-lg" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Add Spoilage</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<form id="formAdd" action="<?= site_url('admin/stock/spoilages/add')?>" accept-charset="utf-8">
+											<div class="modal-body">
+												<div class="form-row">
+													<!--Container of Stock Spoilage Date-->
+													<!--Spoilage Date-->
+													<div class="input-group mb-3">
+														<div class="input-group-prepend">
+															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+																Spoilage Date</span>
+														</div>
+														<input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
+													</div>
+												</div>
+												<!--Add Stock Item-->
+												<!--Button to add row in the table-->
+												<!--Button to add launche the brochure modal-->
+												<a class="addSpoilageItem btn btn-default btn-sm" data-toggle="modal" data-target="#brochureSS" data-original-title style="margin:0" id="addStockSpoilage">Add Spoilage Items</a>
+												<br><br>
+												<table class="stockSpoilageTable table table-sm table-borderless">
+													<!--Table containing the different input fields in adding stock spoilages -->
+													<thead class="thead-light">
+														<tr>
+															<th>Name</th>
+															<th width="20%">Qty</th>
+															<th>Remarks</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table>
+												<!--Total of the trans items-->
+					
+												<div class="modal-footer">
+													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+													<button type="button" class="btn btn-success btn-sm" onclick="addStockItems()">Add</button>
+												</div>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<!--End of Modal "Add Stock Spoilage"-->
+
+							<!--Start of Brochure Modal"-->
+                            <div class="modal fade bd-example-modal" id="brochureSS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Select Stock Item</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form id="formAdd"  method="post" accept-charset="utf-8">
+                                            <div class="modal-body">
+                                                <div style="margin:1% 3%" id="list">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+												<button type="button" class="btn btn-danger btn-sm"
+													data-dismiss="modal">Cancel</button>
+												<button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedStocks()">Ok</button>
+											</div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <!--End of Brochure Modal"-->
 
 							<!--Delete Confirmation Box-->
 							<div class="modal fade" id="deleteSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -144,7 +223,31 @@
 	var stockchoice = [];
 	$(function() {
 		viewSpoilagesJs();
+//-----------------------Populate Brochure----------------------------------------
+		$.ajax({
+				url: '<?= site_url('admin/stock/spoilages/viewStockJS') ?>',
+				dataType: 'json',
+				success: function (data) {
+					var poLastIndex = 0;
+					stocks = data;
+					setStockData(stocks);
+				},
+				failure: function () {
+					console.log('None');
+				},
+				error: function (response, setting, errorThrown) {
+					console.log(errorThrown);
+					console.log(response.responseText);
+				}
+			});
 
+	});
+	function setStockData(stocks){
+			$("#list").empty();
+			$("#list").append(`${stocks.map(stock => {
+				return `<label style="width:96%"><input type="checkbox" name="stockchoice[]" class="choiceStock mr-2" value="${stock.stID}">${stock.stName}</label>`
+			}).join('')}`);
+	}
 	//-----------------------End of Brochure Populate--------------------------	
 	//POPULATE TABLE
 	var table = $('#spoilagesTable');
