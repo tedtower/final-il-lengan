@@ -693,20 +693,19 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
     function get_stocktransitems() {
-        $query = "SELECT ti.stID, ti.tiID, trans.tDate, trans.receiptNo, pf.prstQty, sp.spID, sp.spmID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActualQty, sp.spmPrice, tr.tID
-        FROM `transitems` ti INNER JOIN trans_items USING (tiID) INNER JOIN transactions trans USING (tID) 
+        $query = "SELECT ti.stID, ti.tiID, tri.tiQty, trans.tDate, ti.rRemarks,trans.supplierName,trans.receiptNo, pf.prstQty, sp.spID, sp.spmID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActualQty, sp.spmPrice, tr.tID
+        FROM `transitems` ti INNER JOIN trans_items tri USING (tiID) INNER JOIN transactions trans USING (tID) 
         INNER JOIN uom USING (uomID) INNER JOIN suppliermerchandise sp USING (stID) INNER JOIN stockitems st USING (stID) 
-        LEFT JOIN prefstock pf USING (stID) LEFT JOIN transactions tr USING (tID) WHERE trans.tType = 'delivery receipt' ORDER BY 3";
+        LEFT JOIN prefstock pf USING (stID) LEFT JOIN transactions tr USING (tID) WHERE trans.tType = 'delivery receipt' ORDER BY 4";
         return $this->db->query($query)->result_array();
     }
     function get_returns() {
-        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions
-        WHERE tType = 'return' AND isArchived != '1'";
+        $query = "SELECT * FROM `return`";
         return $this->db->query($query)->result_array();
     }
     function get_returnItems() {
-        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, uom.uomName, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
-        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID) INNER JOIN uom USING (uomID);";
+        $query = "SELECT * FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
+        INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID)";
         return $this->db->query($query)->result_array();
     }
 
@@ -1612,10 +1611,10 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     }
 
     function update_transitem($trans, $ti, $tID) {
-        $query = "UPDATE transitems SET rStatus = ? WHERE tiID = ?";
+        $query = "UPDATE transitems SET rStatus = ?, rRemarks = ? WHERE tiID = ?";
         if(count($trans) > 0) {
             for($in = 0; $in < count($trans) ; $in++){
-               if( $this->db->query($query, array($trans[$in]['rStatus'],$trans[$in]['tiID'])))
+               if( $this->db->query($query, array($trans[$in]['rStatus'], $ti[$in]['rRemark'], $trans[$in]['tiID'])))
                {
                    $this->update_trans_items($ti, $trans[$in]['tiID'], $tID, $trans[$in]['stID']);
                }

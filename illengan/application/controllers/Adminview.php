@@ -64,7 +64,16 @@ function viewPOFormAdd(){
         redirect('login');
     }
 }
-
+function viewReturnFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add Return";
+        $this->load->view('admin/templates/head2', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/returnsAdd');
+    }else{
+        redirect('login');
+    }
+}
 function viewPOFormEdit(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit PO";
@@ -747,8 +756,8 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
-                'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_stocktransitems()
+                'supplier' => $this->adminmodel->get_supplier()
+                // 'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);
