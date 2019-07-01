@@ -60,7 +60,8 @@ function get_transactions(){
                 transactions
             LEFT JOIN supplier USING(spID)
             WHERE
-                isArchived = '0' and tType = 'purchase order'";
+                isArchived = '0' and tType = 'purchase order'
+                order by tID desc";
     return $this->db->query($query)->result_array();
 }
 
@@ -329,7 +330,7 @@ function get_transitems(){
                 WHERE
                     slType = 'beginning' AND stID = ?
             )
-            order by slDateTime;";
+            order by dateRecorded;";
         return $this->db->query($query,array($stID,$stID))->result_array();
     }
 
@@ -963,7 +964,7 @@ function add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockM
             NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         );";
     if($this->db->query($query,array($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, $stockBqty, $stockLocation,$stockSize))){
-        if($this->add_stockLog($this->db->insert_id(), NULL, 'beginning', date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $stockQty, "New item")){
+        if($this->add_stockLog($this->db->insert_id(), NULL, 'beginning', date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $stockQty, $stockQty, "New item")){
             return true;
         }
     }

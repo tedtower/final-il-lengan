@@ -831,7 +831,7 @@ function getStockItem(){
     }
     function getPOItemsBySupplier(){
         if($this->checkIfLoggedIn()){
-            $id = $this->input->post('id');
+            $id = $this->input->get_post('id');
             if(is_numeric($id)){
                 echo json_encode(array(
                     "inputErr" => false,
