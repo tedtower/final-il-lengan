@@ -15,8 +15,9 @@
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#restock" data-original-title
                         style="margin:0;color:blue" id="rBtn">Restock</a>
-                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#beginning" data-original-title
-                        style="margin:0;color:blue" id="begBtn">Beginning</a>
+                    <a class="btn btn-primary btn-sm" href="<?= site_url('admin/inventory/physicalcount')?>" data-original-title style="margin:0"
+                        d="addBtn">Perform Inventory</a>
+                    <a class="btn btn-primary btn-sm" style="margin:0;color:blue;float:right" href="<?= site_url('admin/inventorylist')?>"><i class="fal fa-list-ul"></i> Inventory List</a>
                     <br><br>
                     <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
                         <thead class="thead-dark">
