@@ -202,6 +202,7 @@
                 btn = $(this);
             });
             $("button#remSlip").on("click", function() {
+                var oSlip = getElementById()
                 $(btn).closest("div.list").remove();
                 location.reload();
             });
