@@ -14,8 +14,7 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <button class="addReturnsbtn btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#addReturns" data-original-title style="margin:0">Add Returns</button>
+                                <a class="addReturnsbtn btn btn-primary btn-sm" href="<?= site_url('admin/returns/formadd')?>" style="margin:0">Add Returns</a>
                                 <br>
                                 <br>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"

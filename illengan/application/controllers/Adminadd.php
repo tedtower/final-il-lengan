@@ -457,7 +457,7 @@ function addspoilagesstock(){
             $total = 0;
             $dateTime = date("Y-m-d H:i:s");
             $dateOfTrans = $this->input->post('date');
-            $drItems = json_decode($this->input->post('transitems'),true);
+            $drItems = json_decode($this->input->post('items'),true);
             $dr = array(
                 "supplier" => $this->input->post('supplier'),
                 "supplierName" => NULL,
