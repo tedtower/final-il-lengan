@@ -44,8 +44,8 @@
                                             <img class="card-img m-3" src="../assets/media/admin/storage.png" alt="Items">
                                         </div>
                                         <div class="card-content-text m-1 p-2 card-top">
-                                            <p style="font-size: 14.5px !important">Today's Consumed Items</p>
-                                            <h3 class="title" id="tsi" style="color:#8210d3"><?= $todayConsumption[0]->total ?></h3>
+                                            <p style="font-size: 14.5px !important">This Month's Consumption</p>
+                                            <h3 class="title" id="tsi" style="color:#8210d3"><?= $monthConsumption[0]->total ?></h3>
                                         </div>
                                     </div>
                                 </div>

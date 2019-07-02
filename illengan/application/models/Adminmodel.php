@@ -36,9 +36,9 @@ function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
 }
-function getTodayConsumption(){
-    $query = "SELECT COUNT(tiQty) total FROM trans_items NATURAL JOIN transactions WHERE tType = 'consumption' AND isArchived = '0' AND tDate = ?";
-    return $this->db->query($query,array(date('Y-m-d')))->result();
+function getMonthConsumption(){
+    $query = "SELECT COUNT(tiQty) total FROM consumed_items NATURAL JOIN consumption NATURAL JOIN transitems WHERE DATE_FORMAT(cDate,'%Y-%m') = ?";
+    return $this->db->query($query,array(date('Y-m')))->result();
 }
 
 function get_transactions(){
