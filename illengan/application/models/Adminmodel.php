@@ -10,8 +10,32 @@ class Adminmodel extends CI_Model{
     }
 
 //GET FUNCTIONS-------------------------------------------------------------------
+//REPORT GENERATION GETTERS
+ function getInventoryList(){
+     $query = "SELECT ctID, ctName, stID, UPPER(stLocation) AS stLocation, stMin, CONCAT(stName, IF(stSize IS NULL, '', CONCAT(' ', stSize))) AS stockitemname, stQty, UPPER(stStatus) AS stStatus, UPPER(stType) AS stType, uomID, uomName, uomAbbreviation, stBqty FROM(stockitems LEFT JOIN categories USING(ctID)) LEFT JOIN uom USING(uomID) order by ctName, stName asc";
+     return $this->db->query($query)->result_array();
+ }
+ function get_inventoryReport($stID, $sDate, $eDate){
+    $query = "SELECT
+                slID, stID, uomAbbreviation, slType,
+                DATE_FORMAT(slDateTime, '%b %d, %Y %r') AS slDateTime, 
+                stocklog.dateRecorded, slQty, slRemarks, tNum
+            FROM
+                (
+                    stocklog
+                LEFT JOIN stockitems USING(stID)
+                )
+            LEFT JOIN transactions USING(tID)
+            LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
+    return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
+}
 
+function get_salesReport($sDate, $eDate){
+    $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
+    return $this->db->query($query, array($sDate, $eDate))->result_array();
+}
 //DASHBOARD GETTERS
+
 function getOSMonthByYear($year){
     $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
@@ -36,9 +60,9 @@ function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
 }
-function getTodayConsumption(){
-    $query = "SELECT COUNT(tiQty) total FROM trans_items NATURAL JOIN transactions WHERE tType = 'consumption' AND isArchived = '0' AND tDate = ?";
-    return $this->db->query($query,array(date('Y-m-d')))->result();
+function getMonthConsumption(){
+    $query = "SELECT COUNT(tiQty) total FROM consumed_items NATURAL JOIN consumption NATURAL JOIN transitems WHERE DATE_FORMAT(cDate,'%Y-%m') = ?";
+    return $this->db->query($query,array(date('Y-m')))->result();
 }
 
 function get_transactions(){
@@ -118,26 +142,6 @@ function get_transitems(){
         return $this->db->query($query,array($id))->result_array();
     }
 
-    function get_inventoryReport($stID, $sDate, $eDate){
-        $query = "SELECT
-                    slID, stID, uomAbbreviation, slType,
-                    DATE_FORMAT(slDateTime, '%b %d, %Y %r') AS slDateTime, 
-                    stocklog.dateRecorded, slQty, slRemarks, tNum
-                FROM
-                    (
-                        stocklog
-                    LEFT JOIN stockitems USING(stID)
-                    )
-                LEFT JOIN transactions USING(tID)
-                LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
-        return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
-    }
-
-    function get_salesReport($sDate, $eDate){
-        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
-        return $this->db->query($query, array($sDate, $eDate))->result_array();
-    }
-    
     function get_prefStocks(){
         $query="SELECT
                 prID,
@@ -503,11 +507,10 @@ function get_transitems(){
         (
             stockitems
         LEFT JOIN uom USING(uomID)
-        LEFT JOIN suppliermerchandise USING(uomID)
         )
     LEFT JOIN categories USING(ctID)
     GROUP BY
-        stID";
+        stID order by ctName, stName asc";
         return $this->db->query($query)->result_array();
     }
 
@@ -691,14 +694,20 @@ function get_transitems(){
         $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
         return $this->db->query($query)->result_array();
     }
+    function get_stocktransitems() {
+        $query = "SELECT ti.stID, ti.tiID, tri.tiQty, trans.tDate, ti.rRemarks,trans.supplierName,trans.receiptNo, pf.prstQty, sp.spID, sp.spmID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActualQty, sp.spmPrice, tr.tID
+        FROM `transitems` ti INNER JOIN trans_items tri USING (tiID) INNER JOIN transactions trans USING (tID) 
+        INNER JOIN uom USING (uomID) INNER JOIN suppliermerchandise sp USING (stID) INNER JOIN stockitems st USING (stID) 
+        LEFT JOIN prefstock pf USING (stID) LEFT JOIN transactions tr USING (tID) WHERE trans.tType = 'delivery receipt' ORDER BY 4";
+        return $this->db->query($query)->result_array();
+    }
     function get_returns() {
-        $query = "SELECT tID, spID, receiptNo, supplierName, tNum, tDate, dateRecorded, tType, tTotal, tRemarks, isArchived FROM transactions
-        WHERE tType = 'return' AND isArchived != '1'";
+        $query = "SELECT * FROM `return`";
         return $this->db->query($query)->result_array();
     }
     function get_returnItems() {
-        $query = "SELECT ti.tiID, tr.tID, ti.uomID, ti.stID, ti.tiName, tr.tiQty, uom.uomName, tr.qtyPerItem, tr.actualQty, ti.tiPrice, tr.tiSubtotal, 
-        ti.tiDiscount, ti.rStatus FROM transitems ti INNER JOIN trans_items tr USING (tiID) INNER JOIN uom USING (uomID);";
+        $query = "SELECT * FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
+        INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID)";
         return $this->db->query($query)->result_array();
     }
 
@@ -789,7 +798,7 @@ function get_transitems(){
                 $this->db->query($query, array($tID, $ti[$in]['tiID'], $ti[$in]['tiQty'], $ti[$in]['qtyPerItem'],
                 $ti[$in]['actualQty'], $ti[$in]['tiSubtotal']));
 
-                $this->update_stockitemqty($stID, $ti[$in]['actualQty']);
+                $this->update_stockitemqty($stID, $ti[$in]['updateQty']);
                 $this->add_stocklog($stID, $tID, "return", $tDate, $dateRecorded, $ti[$in]['actualQty'], $tRemarks);
                 $this->add_actlog($accountID, $dateRecorded, "Admin added a stockitem return.", "add", $tRemarks);
             }
@@ -805,16 +814,17 @@ function get_transitems(){
         $this->db->query($query, array($mID, $ao['aoID']));
     }
 
-    function update_stockitemqty($stID, $deductQty) {
+    function update_stockitemqty($stID, $updateQty) {
         $this->db->select('stQty');
         $this->db->from('stockitems');
         $this->db->where('stID', $stID);
         $stQty = $this->db->get()->row()->stQty;
 
-        $query = "UPDATE stockitems SET stQty = (? - ?) WHERE stID = ?";
-        $this->db->query($query, array(intval($stQty), intval($deductQty), $stID));
+        $query = "UPDATE stockitems SET stQty = (? + ?) WHERE stID = ?";
+        $this->db->query($query, array(intval($stQty), intval($updateQty), $stID));
+   
         echo $stQty;
-        echo $deductQty;
+        echo $updateQty;
     }
 
     function add_menucategory($ctName){
@@ -1604,24 +1614,26 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     }
 
     function update_transitem($trans, $ti, $tID) {
-        $query = "UPDATE transitems SET rStatus = ? WHERE tiID = ?";
+        $query = "UPDATE transitems SET rStatus = ?, rRemarks = ? WHERE tiID = ?";
         if(count($trans) > 0) {
             for($in = 0; $in < count($trans) ; $in++){
-               if( $this->db->query($query, array($trans[$in]['rStatus'],$trans[$in]['tiID'])))
+               if( $this->db->query($query, array($trans[$in]['rStatus'], $ti[$in]['rRemark'], $trans[$in]['tiID'])))
                {
-                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID);
+                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID, $trans[$in]['stID']);
                }
            }
         }
     }
 
-    function update_trans_items($ti, $tiID, $tID) {
+    function update_trans_items($ti, $tiID, $tID, $stID) {
         $query = "UPDATE trans_items SET tiQty = ?, actualQty = ?, tiSubtotal = ? WHERE tiID = ? AND tID = ?";
         if(count($ti) > 0) {
             for($in = 0; $in < count($ti) ; $in++){
             if($ti[$in]['tiID'] === $tiID) {
                 $this->db->query($query, array($ti[$in]['tiQty'], $ti[$in]['actualQty'], $ti[$in]['tiSubtotal'],
                 $ti[$in]['tiID'], $tID));
+                
+                $this->update_stockitemqty($stID, $ti[$in]['updateQty']);
             }
            }
         }
