@@ -16,7 +16,7 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Add Return</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/consumption/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("admin/return/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
                                     <div class="form-row">
@@ -58,7 +58,13 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="ic-level-2">
-
+                                                <tr>
+                                                    <td><input type="text" class="form-control form-control-sm" readonly></td>
+                                                    <td><input type="number" class="form-control form-control-sm"></td>
+                                                    <td>
+                                                    <textarea class="form-control form-control-sm" rows="1"></textarea>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>

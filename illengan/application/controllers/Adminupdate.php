@@ -84,25 +84,26 @@ class Adminupdate extends CI_Controller{
             $date_recorded = date("Y-m-d H:i:s");
             $user= $_SESSION["user_name"];
             $account_id= $_SESSION["user_id"];
+            $slRemainingQty = $stQty - $actualQtyUpdate;
 
             if($actualQty > $actualQtyUpdate){
                 $updateQtyl = ($actualQty - $actualQtyUpdate) + $stQty;
                 $this->adminmodel->edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID, $stID, $updateQtyl);
                 $this->adminmodel->update_stock($stID, $updateQtyl);
-                $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $tRemarks);
+                $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $slRemainingQty, $tRemarks);
                 $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tRemarks);
                                 
             }else if($actualQty < $actualQtyUpdate){
                     $updateQtyh = $stQty - ($actualQtyUpdate - $actualQty); 
                     $this->adminmodel->edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID, $stID, $updateQtyh);
                     $this->adminmodel->update_stock($stID, $updateQtyh);
-                    $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $tRemarks);
+                    $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $slRemainingQty, $tRemarks);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tRemarks);
 
             }else{
                     $this->adminmodel->edit_stockspoilage($tDate,$date_recorded,$actualQtyUpdate,$tRemarks,$tID, $tiID, $stID, $stQty);
                     $this->adminmodel->update_stock($stID, $stQty);
-                    $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $tRemarks);
+                    $this->adminmodel->add_stockLog($stID,$tID, "spoilage", $tDate, $date_recorded, $actualQtyUpdate, $slRemainingQty, $tRemarks);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tRemarks);
             }
            

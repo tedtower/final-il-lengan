@@ -113,6 +113,11 @@
                     </div>
                     <!--Footer-->
                     <div class="card-footer p-1 m-1 text-muted">
+                            <div style="overflow:auto;">
+                                <div style="float:right;width:25%;float:left;">
+                                    <button class="deleteOS btn btn-warning btn-sm" style="font-size:13px;margin:0" data-toggle="modal" data-target="#deleteModal">Remove Slip</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -198,6 +203,7 @@
             });
             $("button#remSlip").on("click", function() {
                 $(btn).closest("div.list").remove();
+                location.reload();
             });
             $("img.cancelBtn").on("click", function() {
                 var cancelID = $(this).attr('data-id');

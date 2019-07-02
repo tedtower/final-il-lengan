@@ -64,7 +64,7 @@ function performPhysicalCount($error = null){
 
 //---functions for viewing the different ADD and EDIT pages in the transaction
 function viewPOFormAdd(){
-    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+    if($this->checkIfLoggedIn()){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
@@ -77,7 +77,6 @@ function viewPOFormAdd(){
         redirect('login');
     }
 }
-
 function viewReturnFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Return";
@@ -88,7 +87,6 @@ function viewReturnFormAdd(){
         redirect('login');
     }
 }
-
 function viewPOFormEdit(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit PO";
@@ -474,16 +472,28 @@ if($this->checkIfLoggedIn()){
     redirect('login');
 }
 }
-function viewSpoilagesStock(){
+function viewSpoilagesStockAdd(){
 if($this->checkIfLoggedIn()){
     $data['title'] = "Spoilages - Stock";
-    $this->load->view('admin/templates/head', $data);
+    $this->load->view('admin/templates/head2', $data);
     $this->load->view('admin/templates/sideNav');
-    $this->load->view('admin/adminspoilagesstock');
+    $data['stocks'] = $this->adminmodel->get_stocks();
+    $this->load->view('admin/adminspoilagesstockAdd', $data);
 }else{
     redirect('login');
 }
 }
+function viewSpoilagesStock(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/adminspoilagesstock');
+    }else{
+        redirect('login');
+    }
+    }
+
 function viewSpoilagesMenuJs(){
     if($this->checkIfLoggedIn()){
         $data= $this->adminmodel->get_spoilagesmenu();
@@ -772,8 +782,8 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
-                'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_stocktransitems()
+                'supplier' => $this->adminmodel->get_supplier()
+                // 'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);
@@ -844,7 +854,7 @@ function getStockItem(){
     }
     function getPOItemsBySupplier(){
         if($this->checkIfLoggedIn()){
-            $id = $this->input->post('id');
+            $id = $this->input->get_post('id');
             if(is_numeric($id)){
                 echo json_encode(array(
                     "inputErr" => false,

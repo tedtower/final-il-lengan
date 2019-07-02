@@ -140,6 +140,7 @@ function setAddOnSubtotal() {
 function setAddonTotal() {
     aosubtotal = 0;
     elSubtotal = document.getElementsByClassName('aoSubtotal');
+    console.log(elSubtotal);
     var val = 0; 
     for(var i = 0; i <= elSubtotal.length-1; i++) {
         val = parseInt(elSubtotal[i].value);

@@ -272,7 +272,7 @@
             $("#spoilagesTable > tbody").append(`
 			<tr class="spoilagesTabletr" data-actualQty ="${table.actualQty}" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-tID="${table.tID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/barista/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-				<td>${table.tID}</td>
+				<td>${table.tNum}</td>
 				<td>${table.tiName}</td>
 				<td>${table.actualQty}</td>
 				<td>${table.tDate}</td>

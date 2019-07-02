@@ -454,6 +454,11 @@ function addspoilagesstock(){
 
     function addDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $supplier = $this->input->post("supplier");
+            $remarks = $this->input->post("remarks");
+            $receipt = $this->input->post("receipt");
+            $date = $this->input->post("date");
+            $source = $this->input->post("source");
             $total = 0;
             $dateTime = date("Y-m-d H:i:s");
             $dateOfTrans = $this->input->post('date');

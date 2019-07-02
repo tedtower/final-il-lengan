@@ -19,8 +19,8 @@
                                         <div class="card-header-1">
                                             <img class="card-img m-3" src="../assets/media/admin/sales.png" alt="Sales">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p>Today's Menu Ordered</p>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Today's Menu Ordered</p>
                                             <h3 class="title" id="tmo" style="color:#1c1ce0"><?php if (count($todaySales) > 0) echo $todaySales[0]->salesCount; else echo '0'; ?></h3>
                                         </div>
                                     </div>
@@ -31,8 +31,8 @@
                                         <div class="card-header-2">
                                             <img class="card-img m-3" src="../assets/media/admin/money.png" alt="Bill">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p>Today's Total Sales</p>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Today's Total Sales</p>
                                             <h3 class="title" id="tts" style="color:#0000c0">&#x20b1;<?php if (count($todaySales) > 0) echo $todaySales[0]->sales; else echo '0'; ?></h3>
                                         </div>
                                     </div>
@@ -43,8 +43,8 @@
                                         <div class="card-header-3">
                                             <img class="card-img m-3" src="../assets/media/admin/storage.png" alt="Items">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p>Today's Consumed Items</p>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Today's Consumed Items</p>
                                             <h3 class="title" id="tsi" style="color:#8210d3"><?= $todayConsumption[0]->total ?></h3>
                                         </div>
                                     </div>
@@ -55,8 +55,8 @@
                                         <div class="card-header-4">
                                             <img class="card-img m-3" src="../assets/media/admin/cart.png" alt="Restock">
                                         </div>
-                                        <div class="card-content-text m-2 p-2 card-top">
-                                            <p>Needs Restock</p>
+                                        <div class="card-content-text m-1 p-2 card-top">
+                                            <p style="font-size: 14.5px !important">Needs Restock</p>
                                             <h3 class="title" id="nr" style="color:#ca1010"><?= count($stockroom)+count($kitchen) ?></h3>
                                         </div> 
                                     </div>
