@@ -31,7 +31,7 @@
                                         </div>
                                         <div class="input-group input-group-sm mb-3 col">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text border border-secondary" style="width:80px;font-size:14px">
+                                                <span class="input-group-text border border-secondary" style="width:90px;font-size:14px">
                                                     Return Date</span>
                                             </div>
                                             <input type="date" class="form-control form-control-sm">
