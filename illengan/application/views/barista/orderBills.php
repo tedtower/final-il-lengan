@@ -64,8 +64,8 @@
                 <th style="width: 200px;">Item Name</th>
                 <th style="width: 150px;">Qty</th>
                 <th style="width: 150px;">Price</th>
-                <th style="width: 150px;">Subtotal</th>
                 <th style="width: 150px;">*Add-on Total</th>
+                <th style="width: 150px;">Subtotal</th>
                 <th></th>
               </tr>
             </thead>
@@ -136,8 +136,8 @@
                 <th style="width: 200px;">Item Name</th>
                 <th style="width: 150px;">Qty</th>
                 <th style="width: 150px;">Price</th>
-                <th style="width: 150px;">Subtotal</th>
                 <th style="width: 150px;">*Add-on Total</th>
+                <th style="width: 150px;">Subtotal</th>
                 <th></th>
               </tr>
             </thead>
@@ -335,8 +335,8 @@
                             <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
                             <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
                             <td><input type="text" name="olPrice" class="form-control form-control-sm"  value="${items.olPrice}" required readonly></td>
-                            <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal}" required readonly></td>
                             <td><input type="text" name="aoTotal" class="form-control form-control-sm"  value="${items.aoTotal}" required readonly></td>
+                            <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal}" required readonly></td>
                             <td></td>
                             </tr>`
             }).join('')}`);
@@ -428,10 +428,10 @@ function getSelectedSlips() {
                                     class="form-control form-control-sm"  value="` + orders[i].olQty + `" readonly="readonly" required></td>
                             <td><input type="text" id="olPrice` + i + `" name="olPrice"
                                     class="form-control form-control-sm"  value="` + orders[i].olPrice + `" readonly="readonly" required></td>
-                            <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
-                                    class="olSubtotal form-control form-control-sm" value="` + orders[i].olSubtotal + `" readonly="readonly" required></td>
                             <td><input type="text" id="aoTotal` + i + `" name="aoTotal"
                                     class="aoTotal form-control form-control-sm" value="` + orders[i].aoTotal + `" readonly="readonly" required></td>
+                            <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
+                                    class="olSubtotal form-control form-control-sm" value="` + orders[i].olSubtotal + `" readonly="readonly" required></td>
                             <td></td>
                             </tr>`;
                     $('.orderitemsTable > tbody').append(stockChecked);
@@ -457,7 +457,7 @@ function setTotal() {
         //subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val() * parseInt($("input[name='olQty']").eq(i).val()));
         subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val());
         total = total + subtotal;
-        osID = $("input[name='olSubtotal']").eq(i).closest("tr").attr("data-osid");
+        osID = $("input[name='olSubtotal']").eq(i).closest("tr").attr("data-osID");
         osIDarr.push(osID);
         }
   

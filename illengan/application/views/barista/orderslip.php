@@ -202,9 +202,8 @@
                 btn = $(this);
             });
             $("button#remSlip").on("click", function() {
-                var oSlip = getElementById()
                 $(btn).closest("div.list").remove();
-                location.reload();
+                //location.reload();
             });
             $("img.cancelBtn").on("click", function() {
                 var cancelID = $(this).attr('data-id');
