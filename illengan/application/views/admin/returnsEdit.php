@@ -16,26 +16,23 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Edit Return</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/return/edit")?>" accept-charset="utf-8"
-                                class="form">
+                            <form id="conForm" action="<?= site_url("admin/return/edit") ?>" accept-charset="utf-8" class="form">
                                 <div class="card-body">
                                     <div class="form-row">
                                         <div class="input-group input-group-sm mb-3 col">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text border border-secondary"
-                                                    style="width:80px;font-size:14px;">
+                                                <span class="input-group-text border border-secondary" style="width:80px;font-size:14px;">
                                                     Supplier</span>
                                             </div>
                                             <select class="form-control form-control-sm">
-                                                <option value="" selected>Select Supplier</option>  
-                                                <option></option>                                          
+                                                <option value="" selected>Select Supplier</option>
+                                                <option></option>
                                             </select>
                                         </div>
                                         <div class="input-group input-group-sm mb-3 col">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text border border-secondary"
-                                                    style="width:80px;font-size:14px">
-                                                    Date</span>
+                                                <span class="input-group-text border border-secondary" style="width:80px;font-size:14px">
+                                                    Return Date</span>
                                             </div>
                                             <input type="date" class="form-control form-control-sm">
                                         </div>
@@ -43,16 +40,14 @@
                                     <div class="form-row">
                                         <div class="input-group input-group-sm mb-3 col">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text border border-secondary"
-                                                    style="width:80px;font-size:14px;">
+                                                <span class="input-group-text border border-secondary" style="width:80px;font-size:14px;">
                                                     Receipt</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm">
                                         </div>
                                         <div class="input-group input-group-sm mb-3 col">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text border border-secondary"
-                                                    style="width:80px;font-size:14px">
+                                                <span class="input-group-text border border-secondary" style="width:80px;font-size:14px">
                                                     Receipt</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm">
@@ -74,9 +69,9 @@
                                                     <td><input type="number" class="form-control form-control-sm"></td>
                                                     <td>
                                                         <select class="form-control form-control-sm">
-                                                            <option value="" selected>Select Status</option>  
+                                                            <option value="" selected>Select Status</option>
                                                             <option>Active</option>
-                                                            <option>Inactive</option>                                          
+                                                            <option>Inactive</option>
                                                         </select>
                                                     </td>
                                                     <td>
@@ -88,10 +83,8 @@
                                     </div>
                                 </div>
                                 <div class="card-footer mb-0" style="overflow:auto">
-                                    <button class="btn btn-success btn-sm" type="submit"
-                                        style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        style="float:right">Cancel</button>
+                                    <button class="btn btn-success btn-sm" type="submit" style="float:right">Update</button>
+                                    <button type="button" class="btn btn-danger btn-sm" style="float:right">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -102,20 +95,20 @@
             </div>
         </div>
     </div>
-    <?php include_once('templates/scripts.php');?>
+    <?php include_once('templates/scripts.php'); ?>
     <script>
-    $(function() {
-        $("#stockCard .ic-level-1").on("click",function(event){
-            if(event.target.type !== "checkbox"){
-                $(this).find("input[name='stock']").trigger("click");
-            }
-        });
-        $("#stockCard input[name='stock']").on("click", function(event) {
-            var id = $(this).val();
-            var name = $(this).attr("data-name");
-            console.log(id, name, $(this).is(":checked"));
-            if($(this).is(":checked")){
-                $("#conForm .ic-level-2").append(`
+        $(function() {
+            $("#stockCard .ic-level-1").on("click", function(event) {
+                if (event.target.type !== "checkbox") {
+                    $(this).find("input[name='stock']").trigger("click");
+                }
+            });
+            $("#stockCard input[name='stock']").on("click", function(event) {
+                var id = $(this).val();
+                var name = $(this).attr("data-name");
+                console.log(id, name, $(this).is(":checked"));
+                if ($(this).is(":checked")) {
+                    $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
@@ -125,57 +118,57 @@
                                 class="form-control form-control-sm" name="cRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
-            }else{
-                $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
-            }
-        });
-        $("#stockCard input[name='search']").on("keyup",function(){
-            var string = $(this).val();
-            $("#stockCard .stock").each(function(index){
-                if(!$(this).text().includes(string)){
-                    $(this).closest(".ic-level-1").hide();
-                }else{
-                    $(this).closest(".ic-level-1").show();
+                } else {
+                    $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
                 }
             });
-        });
-        $("#conForm").on("submit", function(event){
-            event.preventDefault();
-            var url = $(this).attr("action");
-            var date = $(this).find("input[name='date']").val();
-            var remarks = $(this).find("textarea[name='remarks']").val();
-            var items = [];
-            $(this).find(".ic-level-1").each(function(index){
-                items.push({
-                    stock: $(this).find("input[name='stock']").attr('data-id'),
-                    qty: $(this).find("input[name='qty']").val(),
-                    status: $(this).fin
-                    remarks: $(this).find("textarea[name='cRemarks']").val()
+            $("#stockCard input[name='search']").on("keyup", function() {
+                var string = $(this).val();
+                $("#stockCard .stock").each(function(index) {
+                    if (!$(this).text().includes(string)) {
+                        $(this).closest(".ic-level-1").hide();
+                    } else {
+                        $(this).closest(".ic-level-1").show();
+                    }
                 });
             });
-            $.ajax({
-                method: "POST",
-                url: url,
-                data: {
-                    date: date,
-                    remarks: remarks,
-                    items: JSON.stringify(items)
-                },
-                dataType: "JSON",
-                succes: function(data){
-                    if(data.sessErr){
-                        location.replace("/login");
-                    }else{
-                        console.log(data);
+            $("#conForm").on("submit", function(event) {
+                event.preventDefault();
+                var url = $(this).attr("action");
+                var date = $(this).find("input[name='date']").val();
+                var remarks = $(this).find("textarea[name='remarks']").val();
+                var items = [];
+                $(this).find(".ic-level-1").each(function(index) {
+                    items.push({
+                        stock: $(this).find("input[name='stock']").attr('data-id'),
+                        qty: $(this).find("input[name='qty']").val(),
+                        status: $(this).find("input[name='status']").val(),
+                        remarks: $(this).find("textarea[name='cRemarks']").val()
+                    });
+                });
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    data: {
+                        date: date,
+                        remarks: remarks,
+                        items: JSON.stringify(items)
+                    },
+                    dataType: "JSON",
+                    succes: function(data) {
+                        if (data.sessErr) {
+                            location.replace("/login");
+                        } else {
+                            console.log(data);
+                        }
+                    },
+                    error: function(response, setting, error) {
+                        console.log(error);
+                        console.log(response.responseText);
                     }
-                },
-                error: function(response, setting, error) {
-                    console.log(error);
-                    console.log(response.responseText);
-                }
+                });
             });
         });
-    });
     </script>
 </body>
 
