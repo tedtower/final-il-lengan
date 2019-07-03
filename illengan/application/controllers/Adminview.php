@@ -194,7 +194,17 @@ function viewStockCard($stID){
         $data['logs'] = $this->adminmodel->get_stockLog($stID);
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
-        $this->load->view('admin/stockcard',$data);
+        $this->load->view('admin/stockcard', $data);
+    }else{
+        redirect('login');
+    }
+}
+function viewStockCardHistory(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Admin - Stock Card";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/stockcardHistory');
     }else{
         redirect('login');
     }

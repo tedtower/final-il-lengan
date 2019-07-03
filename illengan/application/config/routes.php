@@ -25,6 +25,7 @@ $route['admin/supplier/getDetails'] = "adminview/supplierGetDetails";
 $route['admin/accounts'] = "adminview/viewaccounts";
 $route['admin/inventory'] = "adminview/viewinventory";
 $route['admin/inventory/stockcard/(:num)'] = "adminview/viewstockcard/$1";
+$route['admin/inventory/stockcard/history'] = "adminview/viewstockcardhistory";
 $route['admin/purchaseorders'] = "adminview/viewpurchaseorders";
 $route['admin/spoilages/menu/add'] ="adminview/viewInsertSpoilageMenu";
 $route['admin/spoilages/stock/add'] ="adminview/viewInsertSpoilageStock";
