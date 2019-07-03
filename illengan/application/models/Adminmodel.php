@@ -10,8 +10,32 @@ class Adminmodel extends CI_Model{
     }
 
 //GET FUNCTIONS-------------------------------------------------------------------
+//REPORT GENERATION GETTERS
+ function getInventoryList(){
+     $query = "SELECT ctID, ctName, stID, UPPER(stLocation) AS stLocation, stMin, CONCAT(stName, IF(stSize IS NULL, '', CONCAT(' ', stSize))) AS stockitemname, stQty, UPPER(stStatus) AS stStatus, UPPER(stType) AS stType, uomID, uomName, uomAbbreviation, stBqty FROM(stockitems LEFT JOIN categories USING(ctID)) LEFT JOIN uom USING(uomID) order by ctName, stName asc";
+     return $this->db->query($query)->result_array();
+ }
+ function get_inventoryReport($stID, $sDate, $eDate){
+    $query = "SELECT
+                slID, stID, uomAbbreviation, slType,
+                DATE_FORMAT(slDateTime, '%b %d, %Y %r') AS slDateTime, 
+                stocklog.dateRecorded, slQty, slRemarks, tNum
+            FROM
+                (
+                    stocklog
+                LEFT JOIN stockitems USING(stID)
+                )
+            LEFT JOIN transactions USING(tID)
+            LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
+    return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
+}
 
+function get_salesReport($sDate, $eDate){
+    $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
+    return $this->db->query($query, array($sDate, $eDate))->result_array();
+}
 //DASHBOARD GETTERS
+
 function getOSMonthByYear($year){
     $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
@@ -36,9 +60,9 @@ function getTotalSales(){
     $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
     return $this->db->query($query)->result();
 }
-function getTodayConsumption(){
-    $query = "SELECT COUNT(tiQty) total FROM trans_items NATURAL JOIN transactions WHERE tType = 'consumption' AND isArchived = '0' AND tDate = ?";
-    return $this->db->query($query,array(date('Y-m-d')))->result();
+function getMonthConsumption(){
+    $query = "SELECT COUNT(tiQty) total FROM consumed_items NATURAL JOIN consumption NATURAL JOIN transitems WHERE DATE_FORMAT(cDate,'%Y-%m') = ?";
+    return $this->db->query($query,array(date('Y-m')))->result();
 }
 
 function get_transactions(){
@@ -118,26 +142,6 @@ function get_transitems(){
         return $this->db->query($query,array($id))->result_array();
     }
 
-    function get_inventoryReport($stID, $sDate, $eDate){
-        $query = "SELECT
-                    slID, stID, uomAbbreviation, slType,
-                    DATE_FORMAT(slDateTime, '%b %d, %Y %r') AS slDateTime, 
-                    stocklog.dateRecorded, slQty, slRemarks, tNum
-                FROM
-                    (
-                        stocklog
-                    LEFT JOIN stockitems USING(stID)
-                    )
-                LEFT JOIN transactions USING(tID)
-                LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
-        return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
-    }
-
-    function get_salesReport($sDate, $eDate){
-        $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
-        return $this->db->query($query, array($sDate, $eDate))->result_array();
-    }
-    
     function get_prefStocks(){
         $query="SELECT
                 prID,
@@ -503,11 +507,10 @@ function get_transitems(){
         (
             stockitems
         LEFT JOIN uom USING(uomID)
-        LEFT JOIN suppliermerchandise USING(uomID)
         )
     LEFT JOIN categories USING(ctID)
     GROUP BY
-        stID";
+        stID order by ctName, stName asc";
         return $this->db->query($query)->result_array();
     }
 

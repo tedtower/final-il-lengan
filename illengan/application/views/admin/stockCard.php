@@ -10,6 +10,7 @@
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?>
                         </p>
+                        <a class="btn btn-warning btn-sm m-0" href="<?= site_url('admin/inventory/stockcard/history')?>" style="background:#FDBD12;color:white;font-weight:900"><i class="fal fa-history"></i> History</a>
                         <button class="btn btn-danger btn-sm m-0" data-toggle="modal" data-target="#addReport" style="background:#cc0000;color:white;font-weight:900"><i class="fas fa-file-pdf"></i> Export to PDF</button>
                     </div>
                     <!--Card--> 
@@ -40,9 +41,6 @@
                                 <th><b class="pull-left">Date</b></th>
                                 <th><b class="pull-left">Log Quantity</b></th>
                                 <th><b class="pull-left">Remaining Qty</b></th>
-                                <th><b class="pull-left">Actual Qty</b></th>
-                                <th><b class="pull-left">Discrepancy</b></th>
-                                <th><b class="pull-left">Remarks</b></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,13 +66,20 @@
                                 <td><?= $log['slDateTime']?></td>
                                 <td><?= $log['slQty']?></td>
                                 <td><?= $log['slRemainingQty']?></td>
-                                <td><?= isset($log['actualQty']) ? $log['actualQty'] : "N/A"?></td>                                
-                                <td><?= $log['discrepancy'] > 0 && isset($log['discrepancy']) ? $log['discrepancy'] : "(".($log['discrepancy']*-1).")"?></td>
-                                <td><?= $log['slRemarks']?></td>
                             </tr>
                         <?php
                             }
                         }?>
+
+                            <!--table row when an inventory check was performed-->
+                            <!-- <tr style="background:whitesmoke">
+                                <td><img src="/assets/media/admin/check.png" style="height:18px;width:18px"/></td>
+                                <td>Inventory Check</td>
+                                <td><b>Date:</b> </td>
+                                <td><b>Physical Count:</b> </td>
+                                <td><b>Discrepancy:</b> </td>
+                                <td><b>Remarks:</b> </td>
+                            </tr> -->
                         </tbody>
                     </table>
 
