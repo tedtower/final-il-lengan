@@ -702,13 +702,13 @@ function setEditModal(modal, saleslist, ol, addons, stocks) {
 
         setDiscount();
         modal.find("select[name='discount']").find(`option[value=${ol.olDiscount}]`).attr("selected", "selected");
-    });
 
-    if (olAddons.length > 0) {
+        if (parseInt(olAddons.length) > 0) {
         setAddonTotal();
     }
-    setSubtotal();
+    });
 
+    setSubtotal();
 }
 
 function setAddonOptions(modal, mID, olID, aoID) {

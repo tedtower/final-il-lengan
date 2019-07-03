@@ -386,22 +386,14 @@ function addspoilagesstock(){
     function addReturns() {
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $spID = $this->input->post('spID'); 
-            $spName = $this->input->post('spName'); 
-            $receiptNo = $this->input->post('receiptNo');
-            $tDate = $this->input->post('tDate'); 
-            $maxtNum = intval($this->adminmodel->set_tNum());
-            $tNum = $maxtNum + 1;
-            $dateRecorded = date("Y-m-d H:i:s");
-            $tType = 'return';
-            $tTotal = $this->input->post('tTotal'); 
-            $tRemarks = $this->input->post('tRemarks');
-            $isArchived = intval(0);
-            $trans = json_decode($this->input->post('trans'), true);
-            $ti = json_decode($this->input->post('ti'), true);
+            $spAltName = $this->input->post('spAltName'); 
+            $rDate = $this->input->post('date'); 
+            $rDateRecorded = date("Y-m-d H:i:s");
+            $rTotal = 0;
+            $items = json_decode($this->input->post('items'), true);
             $accountID = $_SESSION["user_id"];
 
-            $this->adminmodel->add_returns($spID, $spName, $tNum, $receiptNo, $tDate, $dateRecorded, $tType, $tTotal, $tRemarks, 
-            $isArchived, $trans, $ti, $accountID);
+            $this->adminmodel->add_returns($spID, $spAltName, $rDate, $rDateRecorded, $rTotal, $items);
         }else{
             redirect("login");
         }

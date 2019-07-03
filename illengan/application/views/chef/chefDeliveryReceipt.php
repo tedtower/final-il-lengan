@@ -1,10 +1,11 @@
 <!--End Side Bar-->
 <body style="background:white">
+<div class="container" style="padding-top: 50px">
     <div class="content">
         <p style="text-align:right; font-weight: regular; font-size: 16px">
             <?php echo date("M j, Y -l"); ?>
         </p>
-        <a class="btn btn-sm" href="<?= site_url('barista/inventory/deliveryreceipt/formadd')?>" data-original-title style="margin:0;padding:6px 12% 6px 6px;background: #4da6ff;color:white"
+        <a class="btn btn-sm" href="<?= site_url('chef/inventory/deliveries/formadd')?>" data-original-title style="margin:0;padding:6px 12% 6px 6px;background: #4da6ff;color:white"
             id="addBtn"><i class="far fa-plus"></i> Add Delivery Receipt</a>
         <br>
         <br>
@@ -126,12 +127,7 @@
                                 <!--End of Modal "Delete Stock Item"-->
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+
     <?php include_once('scripts.php') ?>
     <script>
     var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals')?>';
