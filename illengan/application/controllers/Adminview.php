@@ -69,7 +69,8 @@ function viewReturnFormAdd(){
         $head['title'] = "Inventory - Add Return";
         $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/returnsAdd');
+        $data['deliveries'] = $this->adminmodel->get_deliveries();
+        $this->load->view('admin/returnsAdd', $data);
     }else{
         redirect('login');
     }
