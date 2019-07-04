@@ -82,7 +82,8 @@ function viewReturnFormAdd(){
         $head['title'] = "Inventory - Add Return";
         $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/returnsAdd');
+        $data['deliveries'] = $this->adminmodel->get_deliveries();
+        $this->load->view('admin/returnsAdd', $data);
     }else{
         redirect('login');
     }
@@ -194,7 +195,17 @@ function viewStockCard($stID){
         $data['logs'] = $this->adminmodel->get_stockLog($stID);
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
-        $this->load->view('admin/stockcard',$data);
+        $this->load->view('admin/stockcard', $data);
+    }else{
+        redirect('login');
+    }
+}
+function viewStockCardHistory(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Admin - Stock Card";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/stockcardHistory');
     }else{
         redirect('login');
     }
@@ -459,9 +470,21 @@ function viewMenuJS() {
     echo json_encode($data, JSON_PRETTY_PRINT);
 }
 function viewAddonJS(){
-    $data=$this->adminmodel->get_addons();
-    header('Content-Type: application/json');
-    echo json_encode($data, JSON_PRETTY_PRINT);
+    if($this->checkIfLoggedIn()){
+        $data=$this->adminmodel->get_spoilagesaddons();
+        echo json_encode($data);
+    }
+}
+function viewSpoilagesAddonAdd(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Addons";
+        $this->load->view('admin/templates/head2', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['addons'] = $this->adminmodel->get_addons();
+        $this->load->view('admin/adminspoilagesaddonsAdd', $data);
+    }else{
+        redirect('login');
+    }
 }
 function viewSpoilagesStockJs(){
 if($this->checkIfLoggedIn()){

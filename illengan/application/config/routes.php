@@ -25,6 +25,7 @@ $route['admin/supplier/getDetails'] = "adminview/supplierGetDetails";
 $route['admin/accounts'] = "adminview/viewaccounts";
 $route['admin/inventory'] = "adminview/viewinventory";
 $route['admin/inventory/stockcard/(:num)'] = "adminview/viewstockcard/$1";
+$route['admin/inventory/stockcard/history'] = "adminview/viewstockcardhistory";
 $route['admin/purchaseorders'] = "adminview/viewpurchaseorders";
 $route['admin/spoilages/menu/add'] ="adminview/viewInsertSpoilageMenu";
 $route['admin/spoilages/stock/add'] ="adminview/viewInsertSpoilageStock";
@@ -56,7 +57,8 @@ $route['admin/deliveryreceipt/formedit/(:num)'] = "adminview/viewDRFormEdit/$1";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
-$route['admin/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
+$route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
+$route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
 //End Viewing Routes
 
 //Not Sure Routes
