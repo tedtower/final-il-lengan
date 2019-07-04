@@ -24,7 +24,7 @@ function viewDashboard(){
         $data['kitchen'] = $this->adminmodel->getUnavailableKitchen();
         $data['stockroom'] = $this->adminmodel->getUnavailableStockRoom();
         $data['topmenu'] = $this->adminmodel->getTopTenMenu();
-        $data['todayConsumption'] = $this->adminmodel->getTodayConsumption();
+        $data['monthConsumption'] = $this->adminmodel->getMonthConsumption();
         $this->load->view('admin/templates/head',$data);
         $this->load->view('admin/templates/sideNav');            
         $this->load->view('admin/adminDashboard');
@@ -49,11 +49,24 @@ function viewInventory($error = null){
         redirect('login');
     }
 }
+
+function performPhysicalCount($error = null){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Admin Physical Count";
+        $this->load->view('admin/templates/head2', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['stocks'] = $this->adminmodel->get_stocks();
+        $this->load->view('admin/physicalCount',$data);
+    }else{
+        redirect('login');
+    }
+}
+
 //---functions for viewing the different ADD and EDIT pages in the transaction
 function viewPOFormAdd(){
     if($this->checkIfLoggedIn()){
         $head['title'] = "Inventory - Add PO";
-        $this->load->view('admin/templates/head2', $head);
+        $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['uom'] = $this->adminmodel->get_uomForStoring();
         $data['stock'] = $this->adminmodel->get_stockitems();
@@ -64,11 +77,21 @@ function viewPOFormAdd(){
         redirect('login');
     }
 }
-
+function viewReturnFormAdd(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Add Return";
+        $this->load->view('admin/templates/head2', $head);
+        $this->load->view('admin/templates/sideNav');
+        $data['deliveries'] = $this->adminmodel->get_deliveries();
+        $this->load->view('admin/returnsAdd', $data);
+    }else{
+        redirect('login');
+    }
+}
 function viewPOFormEdit(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit PO";
-        $this->load->view('admin/templates/head2', $head);
+        $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $this->load->view('admin/purchaseOrderEdit');
     }else{
@@ -78,7 +101,7 @@ function viewPOFormEdit(){
 function viewDRFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Delivery";
-        $this->load->view('admin/templates/head2', $head);
+        $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
@@ -92,7 +115,7 @@ function viewDRFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         if(is_numeric($id)){
             $head['title'] = "Inventory - Edit Delivery";
-            $this->load->view('admin/templates/head2', $head);
+            $this->load->view('admin/templates/head', $head);
             $this->load->view('admin/templates/sideNav');
             $data['dr'] = $this->adminmodel->get_receiptTransaction($id);
             $data['stocks'] = $this->adminmodel->get_stocks();
@@ -155,7 +178,7 @@ function getCardValuesForDR(){
 function viewConsumptionFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Consumption";
-        $this->load->view('admin/templates/head2', $head);
+        $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stocks();
         $this->load->view('admin/consumptionAdd', $data);
@@ -172,7 +195,17 @@ function viewStockCard($stID){
         $data['logs'] = $this->adminmodel->get_stockLog($stID);
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
-        $this->load->view('admin/stockcard',$data);
+        $this->load->view('admin/stockcard', $data);
+    }else{
+        redirect('login');
+    }
+}
+function viewStockCardHistory(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Admin - Stock Card";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/stockcardHistory');
     }else{
         redirect('login');
     }
@@ -437,9 +470,21 @@ function viewMenuJS() {
     echo json_encode($data, JSON_PRETTY_PRINT);
 }
 function viewAddonJS(){
-    $data=$this->adminmodel->get_addons();
-    header('Content-Type: application/json');
-    echo json_encode($data, JSON_PRETTY_PRINT);
+    if($this->checkIfLoggedIn()){
+        $data=$this->adminmodel->get_spoilagesaddons();
+        echo json_encode($data);
+    }
+}
+function viewSpoilagesAddonAdd(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Addons";
+        $this->load->view('admin/templates/head2', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['addons'] = $this->adminmodel->get_addons();
+        $this->load->view('admin/adminspoilagesaddonsAdd', $data);
+    }else{
+        redirect('login');
+    }
 }
 function viewSpoilagesStockJs(){
 if($this->checkIfLoggedIn()){
@@ -450,16 +495,28 @@ if($this->checkIfLoggedIn()){
     redirect('login');
 }
 }
-function viewSpoilagesStock(){
+function viewSpoilagesStockAdd(){
 if($this->checkIfLoggedIn()){
     $data['title'] = "Spoilages - Stock";
-    $this->load->view('admin/templates/head', $data);
+    $this->load->view('admin/templates/head2', $data);
     $this->load->view('admin/templates/sideNav');
-    $this->load->view('admin/adminspoilagesstock');
+    $data['stocks'] = $this->adminmodel->get_stocks();
+    $this->load->view('admin/adminspoilagesstockAdd', $data);
 }else{
     redirect('login');
 }
 }
+function viewSpoilagesStock(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/adminspoilagesstock');
+    }else{
+        redirect('login');
+    }
+    }
+
 function viewSpoilagesMenuJs(){
     if($this->checkIfLoggedIn()){
         $data= $this->adminmodel->get_spoilagesmenu();
@@ -537,12 +594,13 @@ function getStockItem(){
 
 
 
-    function getInventoryReport(){
+    function getInventoryList(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $head['title'] = "Admin - Report";
+            $head['title'] = "Admin - Inventory List";
             $this->load->view('admin/templates/head', $head);
-            $data['report'] = $this->adminmodel->get_inventoryReport($stID, $sDate, $eDate);
-            $this->load->view('admin/reportInventory',$data);
+            $data['stockitems'] = $this->adminmodel->getInventoryList();
+            $data['categories'] = $this->adminmodel->get_stockCategories();
+            $this->load->view('admin/reportInventoryList',$data);
         }else{
             redirect('login');
         }
@@ -747,8 +805,8 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
-                'supplier' => $this->adminmodel->get_supplier(),
-                'suppmerch' => $this->adminmodel->get_stocktransitems()
+                'supplier' => $this->adminmodel->get_supplier()
+                // 'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
             header('Content-Type: application/json');
             echo json_encode($data, JSON_PRETTY_PRINT);

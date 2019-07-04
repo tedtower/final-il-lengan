@@ -14,15 +14,13 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <button class="addReturnsbtn btn btn-primary btn-sm" data-toggle="modal"
-                                    data-target="#addReturns" data-original-title style="margin:0">Add Returns</button>
+                                <a class="addReturnsbtn btn btn-primary btn-sm" href="<?= site_url('admin/returns/formadd')?>" style="margin:0">Add Return</a>
                                 <br>
                                 <br>
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
                                         <th><b class="pull-left">Transaction #</b></th>
-                                        <th><b class="pull-left">Delivery Receipt #</b></th>
                                         <th><b class="pull-left">Supplier</b></th>
                                         <th><b class="pull-left">Date</b></th>
                                         <th><b class="pull-left">Total</b></th>
@@ -361,8 +359,7 @@
                                             </div>
                                                 <div class="modal-body">
                                                     <h6 id="deleteReturnItem"></h6>
-                                                    <p>Do you want to resolve a return?</p>
-                                                    <input type="number" name="tID" value="" hidden="hidden">
+                                                    <input type="number" name="tiID" value="" hidden="hidden">
                                                     <div>
                                                         Remarks:<textarea name="tRemarks"
                                                             id="tRemarks" class="form-control form-control-sm"></textarea>
@@ -426,7 +423,7 @@ var suppmerch = [];
 
         $("#list").find('table > tbody').append(`${suppstocks.map(st => {
             return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="stockitems" onchange="disableReceipts(this)" 
-            class="${st.receiptNo} stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
+            class="${st.receiptNo} receipts stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
                     <td>${st.receiptNo}</td>
                     <td>${st.tDate}</td>
                     <td>${st.spmName}</td></tr>`
@@ -436,10 +433,9 @@ var suppmerch = [];
     }
 
     function disableReceipts(checkbox) {
-        console.log(receiptNo);
         var receiptNo = $(checkbox).data('receipt');
         var checkboxes = $("input[name='stockitems']");
-
+        console.log(receiptNo);
         if($(checkbox).prop('checked')) {
             $(checkbox).addClass('checked');
             for(var i = 0; i <= checkboxes.length - 1; i++) {
@@ -482,17 +478,16 @@ var suppmerch = [];
     function showTable() {
         returns.forEach(function (item) {
             var tableRow = `
-                <tr class="table_row" data-id="${item.returns.tID}">   <!-- table row ng table -->
+                <tr class="table_row" data-id="${item.returns.rID}">   <!-- table row ng table -->
                     <td><a href="javascript:void(0)" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
-                    ${item.returns.tNum}</td>                    
-                    <td>${item.returns.receiptNo}</td>
-                    <td>${item.returns.supplierName}</td>
-                    <td>${item.returns.tDate}</td>
-                    <td>${item.returns.tTotal}</td>
+                    ${item.returns.rID}</td>                    
+                    <td>${item.returns.spAltName}</td>
+                    <td>${item.returns.rDate}</td>
+                    <td>${item.returns.rTotal}</td>
                     <td>
                     <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editReturns" id="editSalesBtn">Edit</button>
-                        <button class="deleteBtn btn btn-sm btn-warning" data-id="${item.returns.tID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
+                        <button class="deleteBtn btn btn-sm btn-warning" data-id="${item.returns.rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
                     </td>
                 </tr>
             `;
@@ -507,22 +502,26 @@ var suppmerch = [];
                         <tr>
                         <th>Name</th>
                         <th>Qty</th>
-                        <th>UOM</th>
+                        <th>Per</th>
+                        <th>Qty per Unit</th>
                         <th>Price</th>
                         <th>Subtotal</th>
                         <th>Status</th>
+                        <th>Remarks</th>
                         </tr>
                     </thead>
                     <tbody>
                     ${item.returnitems.map(ret => {
                         return `
-                        <tr id="${ret.tiID}">
-                            <td>${ret.tiName}</td>
+                        <tr id="${ret.riID}">
+                            <td>${ret.stName}</td>
                             <td>${ret.tiQty}</td>
                             <td>${ret.uomName}</td>
-                            <td>&#8369; ${ret.tiPrice}</td>
+                            <td>${ret.tiActual}</td>
+                            <td>&#8369; ${ret.spmPrice}</td>
                             <td>&#8369; ${ret.tiSubtotal}</td>
-                            <td>${ret.rStatus}</td>
+                            <td>${ret.tiActual}</td>
+                            <td>${ret.tiRemarks === null ? " " : ret.tiRemarks}</td>
                         </tr>
                         `;
                     }).join('')}
@@ -531,24 +530,7 @@ var suppmerch = [];
                 `}
             </div>
             `;
-            var remarksDiv = `
-            <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
-                ${item.returns.tRemarks === "" || item.returns.tRemarks === null ? " " : 
-                `<caption><b>Orders</b></caption>
-                <br>
-                <table id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
-                    <thead class="thead-light">
-                        <tr>
-                        <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr><td>${item.returns.tRemarks}</td></tr>
-                    </tbody>
-                </table>
-                `}
-            </div>
-            `;
+
             var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
@@ -568,7 +550,6 @@ var suppmerch = [];
             $("#transTable > tbody").append(tableRow);
             $("#transTable > tbody").append(accordion);
             $(".returnsContent").last().append(returnsDiv);
-            $(".returnsContent").last().append(remarksDiv);
 
         });
 
@@ -687,8 +668,6 @@ var suppmerch = [];
                                         Status</span>
                                 </div><select class="rStatus form-control" onchange="resolveReturn(this)" style="font-size: 14px;" name="rStatus">
                                     <option value="pending">pending</option>
-                                    <option value="parital">parital</option>
-                                    <option value="delivered">delivered</option>
                                     <option value="resolved">resolved</option>
                                 </select>
                             </div>
@@ -827,6 +806,7 @@ var suppmerch = [];
                     tiQty: row.find("input[name='tiQty']").val(),
                     qtyPerItem: row.find("input[name='qtyPerItem']").val(),
                     actualQty: subrow.find("input[name='actualQty']").val(),
+                    updateQty: -(parseInt(subrow.find("input[name='actualQty']").val())),
                     tiSubtotal: subrow.find("input[name='tiSubtotal']").val()
                 });
             }
@@ -873,13 +853,13 @@ var suppmerch = [];
         modal.find("input[name='tDate']").val(returns.returns.tDate);
         modal.find("textarea[name='tRemarks']").val(returns.returns.tRemarks);
         modal.find("input[name='trID']").val(returns.returns.tID);
-
+        
         returns.returnitems.forEach(rt => {
             modal.find(".returnsTable > tbody").append(`
-        <tr class="returnElements" data-stockid="${rt.stID}" data-id="${rt.tiID}">
+        <tr class="returnElements" data-stockid="${rt.stID}" id="returns${rt.tiID}" data-id="${rt.tiID}">
                     <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
                             value="${rt.tiName}" readonly="readonly"></td>
-                    <td><input type="number" id="tiQty" onchange="setInputValues()" name="tiQty"
+                    <td><input type="number" id="tiQty" onchange="setInputValues()" data-tiQty="${rt.tiQty}" name="tiQty"
                             class="tiQty form-control form-control-sm" value="${rt.tiQty}" required min="1"></td>
                     <td><input type="text" id="uomID" data-id="${rt.uomID}" name="uomID" class="uomID form-control form-control-sm"
                             value="${rt.uomName}" readonly="readonly"></td>
@@ -897,7 +877,7 @@ var suppmerch = [];
                                     style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                     Actual Qty</span>
                             </div>
-                            <input type="number" name="actualQty" class="actualQty form-control form-control-sm"
+                            <input type="number" name="actualQty" data-qty="${rt.actualQty}" class="actualQty form-control form-control-sm"
                                 value="${rt.actualQty}" readonly="readonly">
                         </div>
                     </td>
@@ -930,66 +910,45 @@ var suppmerch = [];
                                     style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                     Status</span>
                             </div><select class="rStatus form-control" style="font-size: 14px;"
-                                name="rStatus" onchange="resolveReturn(this)">
+                                name="rStatus" id="rStatus${rt.tiID}" onchange="resolveReturn(this,${rt.tiID})">
                                 <option value="pending">pending</option>
-                                <option value="parital">parital</option>
-                                <option value="delivered">delivered</option>
+                                <option value="pending">parital</option>
+                                <option value="pending">delivered</option>
                                 <option value="resolved">resolved</option>
                             </select>
                         </div>
                     </td>
                    
-                </tr>`);
+                </tr>
+                <tr class="accordion" style="display:table-row">
+                <td colspan="6"> <!-- table row ng accordion -->
+                    <div style="overflow:auto;"> <!-- container ng accordion -->
+                        
+                        <div style="width:100%;overflow:auto;padding-right: 5%"> <!-- description, preferences, and addons container -->
+                            
+                            <div class="returnsContent" style="overflow:hidden;margin-top:1%"> <!-- Preferences and addons container-->
+                            <div class="form-row">
+                                                        <div class="input-group mb-3 col">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                    Remarks</span>
+                                                            </div>
+                                                            <textarea name="tRemarks" id="tRemarks"
+                                                                class="form-control form-control-sm">${rt.rRemarks} </textarea>
+                                                        </div>
+                                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`);
+                modal.find("select[id='rStatus"+rt.tiID+"']").find(`option[value=${rt.rStatus}]`).attr("selected", "selected");
 
-            modal.find("select[name='rStatus']").find(`option[value=${rt.rStatus}]`).attr("selected", "selected");
         });
 
         setInputValues();
 
-        $('.resolveBtn').eq(0).one("click", function() {
-            console.log($('#editReturns').find('.resolveSel').find('.delBtn').length > 0);
-            if($('#editReturns').find('.resolveSel').find('.delBtn').length > 0) {
-                var delBtn = $('.delBtn')[0];
-                $(this).css('border-color', '#229954');
-                $(this).css('color', '#229954');
-                $(this).closest('#editReturns').eq(0).find('.delBtn').remove();
-                $(this).closest('#editReturns').eq(0).find('.resolveSel').append(`
-                <input type="checkbox" name="transitems" onchange="resolveItm(this)" class="transitems mr-2" value="">`);
-            } else {
-                $(this).css('border-color', '');
-                $(this).css('color', '');
-                $(this).closest('#editReturns').eq(0).find('.transitems').remove();
-                $(this).closest('#editReturns').eq(0).find('.resolveSel').append(`
-                <img class="delBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"
-                onclick="removeItem(this)">`);
-            }   
-           
-        });
-    }
-
-    function resolveItm(select) {
-        if($(select).prop("checked")) {
-            $('input[name="transitems"]').attr("disabled", "disabled");
-            $('input:checked').removeAttr("disabled");
-            $('.resolve').remove();
-            $('.resolveBtn').after(`<a id="resolve" data-toggle="modal"
-            class="resolve btn btn-default btn-sm" data-original-title data-target="#stockItemsModal">Resolve</a>`);
-        } else {
-            $('input[name="transitems"]').removeAttr("disabled");
-            $('.resolveItems').remove();
-        }
-
-        $(".resolve").on("click", function() {
-        $('#stockItemsModal').find('.returnsTable').empty();
-        var stID = $('#editReturns').find("input:checked").closest('tr').data("stockid");
-        var rStatus = $('#editReturns').find("input:checked").closest('tr').next('tr').find('select').val();
-
-        if(rStatus == "delivered") {
-            setBrochureContent(suppmerch.filter(sm => sm.stID == stID));
-            $('#stockItemsModal').find(".getSelected").removeAttr("onclick");
-            $('#stockItemsModal').find(".getSelected").attr("onclick", "getSelectedReceipts()");
-        }
-    });
     }
     function getSelectedReceipts() {
         $(document).ready(function() {
@@ -1002,67 +961,26 @@ var suppmerch = [];
                     st = suppmerch.filter(st => st.stID === value);
                    console.log(st);
                     merchChecked = `
-                    <tr class="returnElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-tid="${st[0].tID}"
+                    <tr class="resolveElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-tid="${st[0].tID}"
                         data-currqty="${st[0].stQty}">
                         <input type="hidden" name="tiID" id="tiID" value="${st[0].tiID}">                        
                         <input type="hidden" id="spmID" value="${st[0].spmID}">
                         <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
-                                value="${st[0].spmName}" readonly="readonly"></td>
-                        <td><input type="number" id="tiQty" onchange="setInputValues()" name="tiQty"
-                                class="tiQty form-control form-control-sm" value="1" required min="1"></td>
-                        <td><input type="text" id="uomID" data-id="${st[0].uomID}" name="uomID"
-                                class="uomID form-control form-control-sm" value="${st[0].uomName}" readonly="readonly">
+                                value=" ${st[0].tiQty} ${st[0].spmName} ${st[0].uomName}" readonly="readonly"></td>
+                        <td><input type="text" id="receiptNo" onchange="setInputValues()" name="receiptNo"
+                                class="tiQty form-control form-control-sm" value="${st[0].receiptNo}" required min="1" readonly="readonly"></td>         
+                        <td><input type="text" id="supplierName" name="supplierName"
+                                class="uomID form-control form-control-sm" value="${st[0].supplierName}" readonly="readonly">
                         </td>
-                        <td><input type="number" name="qtyPerItem" class="qtyPerItem form-control form-control-sm"
-                                value="${st[0].spmActualQty}" disabled></td>
+                        <td><input type="date" name="tDate" class="tDate form-control form-control-sm"
+                                value="${st[0].tDate}" disabled></td>
                         <td><img class="delBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"
                                 onclick="removeItem(this)"></td>
-                    </tr>
-
-                    <tr class="subreturnElements">
-                        <td>
-                            <div class="input-group ">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm"
-                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                        Actual Qty</span>
-                                </div>
-                                <input type="number" name="actualQty" class="actualQty form-control form-control-sm"
-                                    value="" readonly="readonly">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="input-group ">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm"
-                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                        Price</span>
-                                </div>
-                                <input type="number" name="tiPrice" class="tiPrice form-control form-control-sm"
-                                    value="${st[0].spmPrice}" disabled>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="input-group ">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm"
-                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                        Subtotal</span>
-                                </div>
-                                <input type="number" name="tiSubtotal" class="tiSubtotal form-control form-control-sm"
-                                    value="0" readonly="readonly">
-                            </div>
-                        </td>
-                        <td>
-                                <p style="text-align:center;"> --- </p>
-
-                        </td>
-
                     </tr>
                          `;
 
                     if ($('#editReturns').is(':visible')) {
-                        $('#editReturns').find("input:checked").closest('tr').next('tr').after(merchChecked);
+                        $('#editReturns').find('tr#returns'+st[0].stID).next('tr').after(merchChecked);
                         setInputValues();
                     } 
                 }
@@ -1070,25 +988,6 @@ var suppmerch = [];
         });
     }
 
-    function setBrochureContent(suppstocks) {
-        $("#list").empty();
-        $("#list").append(`<table class="table"><thead>
-                    <th></th>
-                    <th>Receipt No.</th>
-                    <th>Date</th>
-                    <th>Stock</th>
-                </thead><tbody></tbody></table>`);
-
-        $("#list").find('table > tbody').append(`${suppstocks.map(st => {
-            return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="receipts" onchange="disableReceipts(this)" 
-            class="receipts stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
-                    <td>${st.receiptNo}</td>
-                    <td>${st.tDate}</td>
-                    <td>${st.spmName}</td></tr>`
-        }).join('')}`);
-
-        disableSelected();
-    }
 
     // --------------------- E D I T I N G  R E T U R N S ---------------------------------
     $(document).ready(function () {
@@ -1101,11 +1000,14 @@ var suppmerch = [];
             var tDate = $(this).find("input[name='tDate']").val();
             var tTotal = $(this).find("span[id='total1']").text();
             var tRemarks = $(this).find("textarea[name='tRemarks']").val();
+            var rRemarks; 
 
             var trans = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
                 var row = $(this).find(".returnElements").eq(index);
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+                var resolve = $(this).find(".accordion").eq(index);
+                rRemarks = resolve.find("textarea[name='rRemarks']").val();
                 trans.push({
                     tID: tID,
                     tiID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
@@ -1114,6 +1016,7 @@ var suppmerch = [];
                     tiName: row.find("input[name='stName']").val(),
                     tiPrice: subrow.find("input[name='tiPrice']").val(),
                     rStatus: subrow.find("select[name='rStatus']").val(),
+                    rRemark: rRemarks,
                     del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
                 });
             }
@@ -1122,6 +1025,8 @@ var suppmerch = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
                 var row = $(this).find(".returnElements").eq(index);
                 var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+                var realQty = parseInt(subrow.find("input[name='actualQty']").data("qty"));
+                var newQty = parseInt(subrow.find("input[name='actualQty']").val());
 
                 transitems.push({
                     tID: tID,
@@ -1131,9 +1036,13 @@ var suppmerch = [];
                     qtyPerItem: row.find("input[name='qtyPerItem']").val(),
                     actualQty: subrow.find("input[name='actualQty']").val(),
                     tiSubtotal: subrow.find("input[name='tiSubtotal']").val(),
+                    updateQty: parseInt(realQty - newQty),
+                    rRemark: rRemarks,
                     del: isNaN(parseInt(subrow.attr('data-delete'))) ? (null) : parseInt(subrow.attr('data-delete'))
                 });
             }
+
+         
                     console.log('spID ' + spID);
                     console.log('spName ' + spName);
                     console.log('tDate ' + tDate);
@@ -1179,21 +1088,47 @@ var suppmerch = [];
     // ----------------------- E N D  O F  E D I T I N G  R E T U R N S --------------------------
 
 var menuItem;
-function resolveReturn(item) {
+function resolveReturn(item, tiID) {
     if($(item).val() === "resolved") {
         $("#resolveModal").modal('show');
-    }
-    menuItem = $(item).closest("tr").prev("tr").find("input[name='stName']").val();
+        $('#resolveModal').find('input[name="tiID"]').val(tiID);
+    } 
+
 }
 
 function setRemarks() {
+    var tiID =  $('#resolveModal').find('input[name="tiID"]').val();
     var tRemarks = $('#resolveModal').find("textarea[name='tRemarks']").val();
-    tRemarks = menuItem + ' return was resolved with '+ tRemarks;
-    var retRemarks = $('#editReturns').find("textarea[name='tRemarks']").val();
-    var stockitem = $('#editReturns').find("textarea[name='tRemarks']").val();
+    console.log(tRemarks);
+    
+    merchChecked = `
+    <tr class="accordion" style="display:table-row">
+                <td colspan="6"> <!-- table row ng accordion -->
+                    <div style="overflow:auto;"> <!-- container ng accordion -->
+                        
+                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
+                            
+                            <div class="returnsContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
+                            <div class="input-group " style="padding-right: 20px">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                    Remarks</span>
+                            </div>
+                            <textarea name="rRemarks" value="" class="rRemarks form-control form-control-sm"b row="1">${tRemarks}</textarea>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+                         `;
 
-    retRemarks = retRemarks +', '+ tRemarks;
-    $("#editReturns").find("textarea[name='tRemarks']").val(retRemarks);
+    if ($('#editReturns').is(':visible')) {
+        $('#editReturns').find('tr#returns'+tiID).next('tr').after(merchChecked);
+        setInputValues();
+    }
+    
     $("#resolveModal").modal("hide");
 }
 

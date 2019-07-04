@@ -25,6 +25,7 @@ $route['admin/supplier/getDetails'] = "adminview/supplierGetDetails";
 $route['admin/accounts'] = "adminview/viewaccounts";
 $route['admin/inventory'] = "adminview/viewinventory";
 $route['admin/inventory/stockcard/(:num)'] = "adminview/viewstockcard/$1";
+$route['admin/inventory/stockcard/history'] = "adminview/viewstockcardhistory";
 $route['admin/purchaseorders'] = "adminview/viewpurchaseorders";
 $route['admin/spoilages/menu/add'] ="adminview/viewInsertSpoilageMenu";
 $route['admin/spoilages/stock/add'] ="adminview/viewInsertSpoilageStock";
@@ -39,20 +40,25 @@ $route['admin/log/activity'] = "adminview/viewActivityLog";
 // $route['admin/transactions/return'] = "adminview/viewreturntransactions";
 // $route['admin/transactions/getReturns'] = "adminview/getReturns";
 $route['admin/stocklog/report'] = "adminview/getInventoryReport";
+$route['admin/inventorylist'] = "adminview/getInventoryList";
 $route['admin/purchaseorder'] = "adminview/viewPurchaseOrder";
 $route['admin/deliveryreceipt'] = "adminview/viewDeliveryReceipt";
 $route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
 $route['admin/return'] = "adminview/viewReturn";
+$route['admin/inventory/physicalcount'] = "adminview/performPhysicalCount";
 $route['admin/consumption'] = "adminview/viewConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
+$route['admin/returns/formadd'] = "adminview/viewReturnFormAdd";
 $route['admin/purchaseorder/formadd'] = "adminview/viewPOFormAdd";
 $route['admin/purchaseorder/formedit'] = "adminview/viewPOFormEdit";
 $route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
+$route['admin/returns/formadd'] = "adminview/viewReturnFormAdd";
 $route['admin/deliveryreceipt/formedit/(:num)'] = "adminview/viewDRFormEdit/$1";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
-
+$route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
+$route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
 //End Viewing Routes
 
 //Not Sure Routes
@@ -246,6 +252,9 @@ $route['chef/spoilages/stock/edit'] = "chef/editStockSpoil";
 $route['chef/spoilages/stock/delete'] ="chef/deletestockspoilages";
 $route['chef/inventory/deliveries'] = "chef/viewDeliveryReceipt";
 $route['chef/inventory/deliveries/formadd'] = "chef/viewDRFormAdd";
+$route['chef/deliveryreceipt/add'] = "chef/addDeliveryReceipt";
+$route['chef/getSupplierMerchandise'] = "chef/getSuppMerchForBrochure";
+$route['chef/getPosFromSupplier'] = "chef/getPOItemsBySupplier";
 $route['chef/destock'] = "chef/destockitem";
 $route['chef/consumption/formadd'] = "chef/viewConsumptionFormAdd";
 $route['chef/consumption/add'] = "chef/addConsumption";
