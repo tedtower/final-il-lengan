@@ -11,7 +11,7 @@ class Adminmodel extends CI_Model{
 
 //GET FUNCTIONS-------------------------------------------------------------------
 
-//DASHBOARD GETTERS
+//DASHBOARD GETTERSdate_format
 function getOSMonthByYear($year){
     $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
@@ -1713,24 +1713,22 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     }
     function get_purchaseOrders(){
         $query = "SELECT
-                tID AS id,
-                tNum AS num,
-                IF(
-                    spID IS NULL,
-                    supplierName,
-                    spName
-                ) AS supplier,
-                tType AS type,
-                tTotal AS total,
-                tRemarks AS remarks,
-                tDate AS date,
-                dateRecorded AS daterecorded
-            FROM
-                transactions
-            LEFT JOIN supplier USING(spID)
-            WHERE
-                isArchived = '0' and tType = 'purchase order'
-        ORDER BY tID desc";
+            pID AS id,
+            spID AS supplier,
+            spName AS supplierName,
+            DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
+            DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
+            SUM(tiSubtotal) AS total,
+            pRemarks as remarks
+        FROM
+            (
+                purchases
+            LEFT JOIN purchase_items USING(pID)
+            )
+        LEFT JOIN transitems USING(piID)
+        LEFT JOIN supplier USING(spID)
+        WHERE pType = 'purchase order'
+        ORDER BY transDate DESC ,pID DESC";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceipts(){
