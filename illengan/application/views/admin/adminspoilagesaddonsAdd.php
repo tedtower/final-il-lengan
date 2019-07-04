@@ -16,7 +16,7 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Add Spoilage</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/stock/spoilages/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("admin/addons/spoilages/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
@@ -73,7 +73,7 @@
                             </div>
                             <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
                                 <!--checkboxes-->
-                                <?php if(!empty($stocks)){
+                                <?php if(!empty($addons)){
                             ?>
                                 <table class="table table-borderless">
                                     <thead style="border-bottom:2px solid #cccccc">
@@ -84,12 +84,11 @@
                                         </tr>
                                     </thead>
                                     <tbody class="ic-level-2"><?php
-                                foreach($stocks as $stock){
+                                foreach($addons as $addon){
                                 ?>
-                                        <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
-                                            <td class="stock"><?= $stock['stName']?></td>
-                                            <td class="category"><?= $stock['ctName']?></td>
+                                        <tr class="ic-level-1" >
+                                            <td><input type="checkbox" class="mr-2" name="addon" data-name="<?= $addon['aoName']?>" value="<?= $addon['aoID']?>"></td>
+                                            <td class="addon"><?= $addon['aoName']?></td>
                                         </tr>
                                         <?php 
                                 }?>
@@ -98,7 +97,7 @@
                                 <?php
                             }else{
                             ?>
-                                <p>No stock items recorded!</p>
+                                <p>No addon items recorded!</p>
                                 <?php
                             }?>
                             </div>
@@ -116,10 +115,10 @@
         
         $("#stockCard .ic-level-1").on("click",function(event){
             if(event.target.type !== "checkbox"){
-                $(this).find("input[name='stock']").trigger("click");
+                $(this).find("input[name='addon']").trigger("click");
             }
         });
-        $("#stockCard input[name='stock']").on("click", function(event) {
+        $("#stockCard input[name='addon']").on("click", function(event) {
              //---
             //---
             var id = $(this).val();
@@ -127,22 +126,18 @@
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
-                    <tr class="ic-level-1" data-stock="${id}">
-                    <input name="curQty" id="curQty" type="hidden">
-					<input name="uomID" id="uomID" type="hidden">
+                    <tr class="ic-level-1" data-addon="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
+                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
                                 class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
-                    $('input[name="curQty"]').val($(this).closest("tr").data('curqty'));
-                    $('input[name="uomID"]').val($(this).closest("tr").data('uomid')); 
                     console.log($(this));
             }else{
-                $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
+                $(`#conForm .ic-level-1[data-addon=${id}]`).remove();
             }
         });
 
@@ -150,7 +145,7 @@
                     
         $("#stockCard input[name='search']").on("keyup",function(){
             var string = $(this).val();
-            $("#stockCard .stock").each(function(index){
+            $("#stockCard .addon").each(function(index){
                 if(!$(this).text().includes(string)){
                     $(this).closest(".ic-level-1").hide();
                 }else{
@@ -163,16 +158,12 @@
             var url = $(this).attr("action");
             var tDate = $(this).find("input[name='tDate']").val();
             var remarks = $(this).find("textarea[name='remarks']").val();
-            var uomID = $(this).find("input[name='uomID']").val();
-            var curQty = $(this).find("input[name='curQty']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
-                    stID: $(this).find("input[name='stock']").attr('data-id'),
+                    aoID: $(this).find("input[name='addon']").attr('data-id'),
                     actualQty: $(this).find("input[name='actualQty']").val(),
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
-                    uomID: uomID,
-                    curQty: curQty,
                 });
             });
             console.log(items);
