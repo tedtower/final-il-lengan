@@ -2346,5 +2346,28 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     // DELETE FROM prefstock
     // WHERE prID = ? AND stID = ?
 
+// SELECT
+//     tiID,
+//     tiType,
+//     SUM(tiQty) AS qty,
+//     SUM(tiActual) AS actual,
+//     SUM(tiSubtotal) AS subtotal,
+//     remainingQty,
+//     tiRemarks,
+//     tiDate,
+//     CONCAT(
+//         stName,
+//         IFNULL(CONCAT(' ', stSize),
+//         '')
+//     ) AS stockname,
+//     spmName,
+//     piID,
+//     piStatus
+// FROM
+//     transitems
+// LEFT JOIN purchase_items USING(piID)
+// LEFT JOIN stockitems USING(stID)
+// LEFT JOIN suppliermerchandise USING(spmID)
+
 }
 ?>
