@@ -66,7 +66,7 @@ function performPhysicalCount($error = null){
 function viewPOFormAdd(){
     if($this->checkIfLoggedIn()){
         $head['title'] = "Inventory - Add PO";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['uom'] = $this->adminmodel->get_uomForStoring();
         $data['stock'] = $this->adminmodel->get_stockitems();
