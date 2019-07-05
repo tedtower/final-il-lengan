@@ -158,14 +158,14 @@
                                                     <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Start Date</span>
                                                 </div>
-                                                <input type="date" name="sDate" class="form-control form-control-sm">
+                                                <input type="date" name="sDate" class="form-control form-control-sm" required>
                                             </div>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         End Date</span>
                                                 </div>
-                                                <input type="date" name="eDate" class="form-control form-control-sm">
+                                                <input type="date" name="eDate" class="form-control form-control-sm" required>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
