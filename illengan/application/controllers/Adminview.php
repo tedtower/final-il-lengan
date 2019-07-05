@@ -499,9 +499,21 @@ function viewMenuJS() {
     echo json_encode($data, JSON_PRETTY_PRINT);
 }
 function viewAddonJS(){
-    $data=$this->adminmodel->get_addons();
-    header('Content-Type: application/json');
-    echo json_encode($data, JSON_PRETTY_PRINT);
+    if($this->checkIfLoggedIn()){
+        $data=$this->adminmodel->get_spoilagesaddons();
+        echo json_encode($data);
+    }
+}
+function viewSpoilagesAddonAdd(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Addons";
+        $this->load->view('admin/templates/head2', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['addons'] = $this->adminmodel->get_addons();
+        $this->load->view('admin/adminspoilagesaddonsAdd', $data);
+    }else{
+        redirect('login');
+    }
 }
 function viewSpoilagesStockJs(){
 if($this->checkIfLoggedIn()){
@@ -758,8 +770,8 @@ function getStockItem(){
             $data['title'] = "Purchase Order";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $data['transactions'] = $this->adminmodel->get_transactions();
-            $data['transitems'] = $this->adminmodel->get_transitems();
+            $data['pos'] = $this->adminmodel->get_purchaseOrders();
+            $data['poitems'] = $this->adminmodel->get_purchaseOrderItems();
             $this->load->view('admin/adminPurchaseOrder', $data);
         }else{
             redirect('login');

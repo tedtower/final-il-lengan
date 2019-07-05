@@ -57,7 +57,8 @@ $route['admin/deliveryreceipt/formedit/(:num)'] = "adminview/viewDRFormEdit/$1";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
 $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
-$route['admin/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
+$route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
+$route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
 //End Viewing Routes
 
 //Not Sure Routes

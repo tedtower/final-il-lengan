@@ -14,7 +14,8 @@
 						<div class="card-content">
 
 							<!--Add Addon Spoilage BUTTON-->
-							<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addAddonSpoilage" data-original-title style="margin:0">Add Addon Spoilage</button><br>
+							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/addons/spoilage/formadd')?>" data-original-title style="margin:0"
+                                    id="addBtn">Add Spoilage</a>
 							<!--eND Add Addon Spoilage BUTTON-->
 							<br>
 							<table id="addonTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
@@ -30,85 +31,6 @@
 								</tbody>
 							</table>
 							<!--End Table Content-->
-							<!--Start of Modal "Add Addon Spoilages"-->
-							<div class="modal fade bd-example-modal-lg" id="addAddonSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
-								<div class="modal-dialog modal-lg" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title" id="exampleModalLabel">Add Spoilage</h5>
-											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-												<span aria-hidden="true">&times;</span>
-											</button>
-										</div>
-										<form id="formAdd" accept-charset="utf-8">
-											<div class="modal-body">
-												<div class="form-row">
-													<!--Container of Addon Spoilage Date-->
-													<!--Spoilage Date-->
-													<div class="input-group mb-3">
-														<div class="input-group-prepend">
-															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-																Spoilage Date</span>
-														</div>
-														<input type="date" name="spoilDate" id="spoilDate" class="form-control form-control-sm" required>
-													</div>
-												</div>
-												<!--Add Addon Item-->
-												<!--Button to add row in the table-->
-												<!--Button to add launche the brochure modal-->
-												<a class="addSpoilageItem btn btn-default btn-sm" data-toggle="modal" data-target="#brochureSS" data-original-title style="margin:0" id="addAddonSpoilage">Add Spoilage Items</a>
-												<br><br>
-												<table class="addonspoilageTable table table-sm table-borderless">
-													<!--Table containing the different input fields in adding addon spoilages -->
-													<thead class="thead-light">
-														<tr>
-															<th>Name</th>
-															<th width="20%">Qty</th>
-															<th>Remarks</th>
-															<th></th>
-														</tr>
-													</thead>
-													<tbody>
-													</tbody>
-												</table>
-												<!--Total of the trans items-->
-					
-												<div class="modal-footer">
-													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-													<button type="button" class="btn btn-success btn-sm" onclick="addAddonItems()">Add</button>
-												</div>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-							<!--End of Modal "Add Addon Spoilage"-->
-
-							<!--Start of Brochure Modal"-->
-                            <div class="modal fade bd-example-modal" id="brochureSS" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Select Addons</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form id="formAdd"  method="post" accept-charset="utf-8">
-                                            <div class="modal-body">
-                                                <div style="margin:1% 3%" id="list">
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-												<button type="button" class="btn btn-danger btn-sm"
-													data-dismiss="modal">Cancel</button>
-												<button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedAddons()">Ok</button>
-											</div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        <!--End of Brochure Modal"-->
 
 							<!--Delete Confirmation Box-->
 							<div class="modal fade" id="deleteSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -198,36 +120,9 @@
 </div>
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
-<script src="<?= admin_js().'addAddonSpoilBrochure.js'?>"></script>
 <script>
 	var spoilages = [];
-	var addonchoice = [];
-	$(function() {
-		viewSpoilagesJs();
-//-----------------------Populate Brochure----------------------------------------
-		$.ajax({
-				url: '<?= site_url('admin/addon/spoilages/viewAddonJS') ?>',
-				dataType: 'json',
-				success: function (data) {
-					addons = data;
-					setAddonData(addons);
-				},
-				failure: function () {
-					console.log('None');
-				},
-				error: function (response, setting, errorThrown) {
-					console.log(errorThrown);
-					console.log(response.responseText);
-				}
-			});
 
-	});
-	function setAddonData(addons){
-			$("#list").empty();
-			$("#list").append(`${addons.map(addon => {
-				return `<label style="width:96%"><input type="checkbox" name="addonchoice[]" class="choiceAddon mr-2" value="${addon.aoID}">${addon.aoName}</label>`
-			}).join('')}`);
-	}
 	//-----------------------End of Brochure Populate--------------------------		
 	//POPULATE TABLE
 	var table = $('#addonTable');

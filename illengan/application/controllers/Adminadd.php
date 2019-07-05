@@ -125,13 +125,13 @@ function addPromo() {
 
 function addspoilagesaddons(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $this->load->model('adminmodel');
         $date_recorded = date("Y-m-d H:i:s");
-        $addons = json_decode($this->input->post('addons'), true);
+        $date = $this->input->post('date');
+        $remarks = $this->input->post('remarks');
+        $addons = json_decode($this->input->post('items'), true);
         $account_id = $_SESSION["user_id"];
         $user= $_SESSION["user_name"];
-        echo json_encode($addons, true);
-        $this->adminmodel->add_aospoil($date_recorded,$addons,$account_id,$user);
+        $this->adminmodel->add_aospoil($date_recorded,$date,$remarks,$addons,$account_id,$user);
        
     }else{
         redirect('login');
@@ -153,17 +153,21 @@ function addspoilagesmenu(){
 }
 function addspoilagesstock(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $lastNumget = intval($this->adminmodel->getLastNum());
+        //$lastNumget = intval($this->adminmodel->getLastNum());
         $date_recorded = date("Y-m-d H:i:s");
-        $stocks = json_decode($this->input->post('stocks'), true);
+        $stocks = json_decode($this->input->post('items'), true);
+        $date = $this->input->post('date');
+        $remarks = $this->input->post('remarks');
         $account_id = $_SESSION["user_id"];
         $user= $_SESSION["user_name"];
-        $lastNum = $lastNumget + 1;
-        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
+        //$lastNum = $lastNumget + 1;
+        //$this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
+        $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$user,$date,$remarks);
     }else{
     redirect('login');
     }
 }
+
 
     function addaccounts(){
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[50]');

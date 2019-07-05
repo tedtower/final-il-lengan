@@ -16,7 +16,7 @@
 							<!--Add Stock Spoilage BUTTON-->
 							<div class="col-md-4 col-lg-2">
 							<!-- <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br> -->
-							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/spoilage/formadd')?>" data-original-title style="margin:0"
+							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/stock/spoilage/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Spoilage</a>
 							<!--eND Add Stock Spoilage BUTTON-->
 							</div>
@@ -30,7 +30,7 @@
 									<th>STOCK ITEM</th>
 									<th>QUANTITY</th>
 									<th>DATE SPOILED</th>
-									<th>DATE RECORDED</th>
+									<!-- <th>DATE RECORDED</th> -->
 									<th>OPERATION</th>
 								
 								</thead>
@@ -138,7 +138,6 @@
 </div>
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
-<script src="<?= admin_js().'addStockSpoilBrochure.js'?>"></script>
 <script>
 	var spoilages = [];
 	var stockchoice = [];
@@ -164,6 +163,7 @@
             }
         });
 	}
+	});
 	function setSpoilagesData() {
         if ($("#spoilagesTable> tbody").children().length > 0) {
             $("#spoilagesTable> tbody").empty();
@@ -172,11 +172,10 @@
             $("#spoilagesTable > tbody").append(`
 			<tr class="spoilagesTabletr" data-actualQty ="${table.actualQty}" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-tID="${table.tID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-				<td>${table.tNum}</td>
-				<td>${table.tiName}</td>
-				<td>${table.actualQty}</td>
-				<td>${table.tDate}</td>
-				<td>${table.dateRecorded}</td>
+				<td>${table.tiID}</td>
+				<td>${table.stName}</td>
+				<td>${table.tiActual}</td>
+				<td>${table.tiDate}</td>
                 <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
