@@ -122,30 +122,26 @@
                                 <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
                                     <!--checkboxes-->
                                     <table class="table table-borderless">
-                                        <thead style="border-bottom:2px solid #cccccc;font-weight:400 !important">
+                                        <thead style="border-bottom:2px solid #cccccc">
                                             <tr>
-                                                <th width="3%"></th>
-                                                <th style="font-weight:500 !important">Merchandise Name</th>
+                                                <th width="2%"></th>
+                                                <th style="font-weight:500 !important;">Merchandise</th>
+                                                <th style="font-weight:500 !important;">Price</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="ic-level-2">
+                                        <tbody class="ic-level-2"><?php
+                                    foreach($suppmerch as $suppmerch){
+                                    ?>
                                             <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="poi" data-name=""
-                                                        value=""></td>
-                                                <td class="">Strawberry Syrup</td>
+                                                <td><input type="checkbox" class="mr-2" name="stock"
+                                                    data-name="<?= $suppmerch['spmName']?>" value="<?= $suppmerch['spmID']?>"></td>
+                                                <td class="stock"><?= $suppmerch['spmName']?></td>
+                                                <td class="category"><?= $suppmerch['spmPrice']?></td>
                                             </tr>
-                                            <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="stock" data-name=""
-                                                        value=""></td>
-                                                <td class="">Strawberry Syrup</td>
-                                            </tr>
-                                            <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="stock" data-name=""
-                                                        value=""></td>
-                                                <td class="">Strawberry Syrup</td>
-                                            </tr>
+                                            <?php 
+                                    }?>
                                         </tbody>
-                                    </table>
+                                </table>
                                 </div>
                             </div>
                             <!--End of Merchandise sidenav-->

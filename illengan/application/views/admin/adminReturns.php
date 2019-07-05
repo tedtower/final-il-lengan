@@ -392,12 +392,10 @@ var suppmerch = [];
                     returns.push({
                         "returns": items
                     });
-                    returns[index].returnitems = data.returnitems.filter(ret => ret.tID == items.tID);
+                    returns[index].returnitems = data.returnitems.filter(ret => ret.rID == items.rID);
                 });
-
                 supplier = data.supplier;
-                suppmerch = data.suppmerch;
-                console.log(suppmerch);
+                
                 showTable();
             },
             error: function (response, setting, errorThrown) {
@@ -486,7 +484,7 @@ var suppmerch = [];
                     <td>${item.returns.rDate}</td>
                     <td>${item.returns.rTotal}</td>
                     <td>
-                    <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editReturns" id="editSalesBtn">Edit</button>
+                    <a class="editReturnsbtn btn btn-secondary btn-sm" href="returns/formedit/${item.returns.rID}" style="margin:0">Edit Return</a>                 
                         <button class="deleteBtn btn btn-sm btn-warning" data-id="${item.returns.rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
                     </td>
                 </tr>
@@ -497,9 +495,10 @@ var suppmerch = [];
                 ${item.returnitems.length === 0 ? "No orders" : 
                 `<caption><b>Orders</b></caption>
                 <br>
-                <table id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
+                <table width="100%" id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
                     <thead class="thead-light">
                         <tr>
+                        <th>Receipt</th>
                         <th>Name</th>
                         <th>Qty</th>
                         <th>Per</th>
@@ -514,13 +513,14 @@ var suppmerch = [];
                     ${item.returnitems.map(ret => {
                         return `
                         <tr id="${ret.riID}">
+                        <td>${ret.returnReference}</td>
                             <td>${ret.stName}</td>
                             <td>${ret.tiQty}</td>
                             <td>${ret.uomName}</td>
                             <td>${ret.tiActual}</td>
                             <td>&#8369; ${ret.spmPrice}</td>
                             <td>&#8369; ${ret.tiSubtotal}</td>
-                            <td>${ret.tiActual}</td>
+                            <td>${ret.riStatus}</td>
                             <td>${ret.tiRemarks === null ? " " : ret.tiRemarks}</td>
                         </tr>
                         `;

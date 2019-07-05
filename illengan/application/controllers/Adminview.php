@@ -77,13 +77,42 @@ function viewPOFormAdd(){
         redirect('login');
     }
 }
+function viewReturn(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Returns";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/adminReturns');
+    }else{
+        redirect('login');
+    }
+}
+
 function viewReturnFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Return";
         $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['deliveries'] = $this->adminmodel->get_deliveries();
+        $data['supplier'] = $this->adminmodel->get_supplier();
         $this->load->view('admin/returnsAdd', $data);
+    }else{
+        redirect('login');
+    }
+}
+function viewReturnFormEdit($id){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Inventory - Edit Return";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $data = array(
+            'id' => $id,
+            'returns' => $this->adminmodel->get_returns(),
+            'returnitems' => $this->adminmodel->get_returnItems(),
+            'supplier' => $this->adminmodel->get_supplier()
+            // 'suppmerch' => $this->adminmodel->get_stocktransitems()
+        );
+        $this->load->view('admin/returnsEdit', $data);
     }else{
         redirect('login');
     }
@@ -736,6 +765,7 @@ function getStockItem(){
             redirect('login');
         }
     }
+    
     function viewPurchaseOrder(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Purchase Order";
@@ -769,17 +799,6 @@ function getStockItem(){
             $data['ors'] = $this->adminmodel->get_officialReceipts();
             $data['orItems'] = $this->adminmodel->get_officialReceiptItems();
             $this->load->view('admin/adminOfficialReceipt', $data);
-        }else{
-            redirect('login');
-        }
-    }
-
-    function viewReturn(){
-        if($this->checkIfLoggedIn()){
-            $data['title'] = "Returns";
-            $this->load->view('admin/templates/head', $data);
-            $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/adminReturns');
         }else{
             redirect('login');
         }
