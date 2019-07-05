@@ -7,6 +7,8 @@
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
+                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption')?>" data-original-title style="margin:0;width:15%"
+                                            id="addBtn">View Consumption</a>
                     </div>
                     <!--Card Container-->
                     <div style="overflow:auto">
@@ -25,15 +27,6 @@
                                                 Date Consumed</span>
                                         </div>
                                         <input type="date" class="form-control" name="date" required/>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text border border-secondary"
-                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
-                                                Remarks</span>
-                                        </div>
-                                        <textarea type="text" name="remarks"
-                                            class="form-control form-control-sm  border-left-0" rows="1"></textarea>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
@@ -88,7 +81,7 @@
                                 ?>
                                         <tr class="ic-level-1">
                                             <td><input type="checkbox" class="mr-2" name="stock"
-                                                   data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                                   data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -126,8 +119,8 @@
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control" data-id="${id}" value="${name}" name="stock" readonly></td>
-                        <td style="padding:1% !important"><input type="number" min="1"
+                                class="form-control" data-id="${id}" value="${name}" name="stock" readonly required></td>
+                        <td style="padding:1% !important"><input type="number" value="1" min="1"
                                 class="form-control" name="qty" required/></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control" name="cRemarks" rows="1"></textarea>
@@ -151,32 +144,28 @@
             event.preventDefault();
             var url = $(this).attr("action");
             var date = $(this).find("input[name='date']").val();
-            var remarks = $(this).find("textarea[name='remarks']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
-                    stock: $(this).find("input[name='stock']").attr('data-id'),
+                    stID: $(this).find("input[name='stock']").attr('data-id'),
                     qty: $(this).find("input[name='qty']").val(),
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
             console.log(items);
+            console.log(date);
             if(items != null){
             $.ajax({
                 method: "POST",
                 url: url,
                 data: {
                     date: date,
-                    remarks: remarks,
                     items: JSON.stringify(items)
                 },
                 dataType: "JSON",
-                succes: function(data){
-                    if(data.sessErr){
-                        location.replace("/login");
-                    }else{
-                        console.log(data);
-                    }
+                complete: function(data){
+                    location.reload();
+                    alert('Added');
                 },
                 error: function(response, setting, error) {
                     console.log(error);
