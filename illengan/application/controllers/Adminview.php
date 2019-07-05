@@ -736,6 +736,7 @@ function getStockItem(){
             redirect('login');
         }
     }
+    
     function viewPurchaseOrder(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Purchase Order";
