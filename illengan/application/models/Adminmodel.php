@@ -1786,26 +1786,27 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     
     function get_purchaseOrderItems(){
         $query = "SELECT
-            tID AS transaction,
-            tiID AS id,
-            tiName AS name,
-            tiQty AS qty,
-            qtyPerItem AS equivalent,
-            actualQty AS actualqty,
-            tiPrice AS price,
-            tiDiscount AS discount,
-            drStatus AS deliverystatus,
-            payStatus AS paymentstatus,
-            rStatus AS returnstatus
-        FROM
-            (
+                tiID,
+                tiType,
+                SUM(tiQty) AS qty,
+                SUM(tiActual) AS actual,
+                SUM(tiSubtotal) AS subtotal,
+                remainingQty,
+                tiRemarks,
+                tiDate,
+                CONCAT(
+                    stName,
+                    IFNULL(CONCAT(' ', stSize),
+                    '')
+                ) AS stockname,
+                spmName,
+                piID,
+                piStatus
+            FROM
                 transitems
-            LEFT JOIN trans_items USING(tiID)
-            )
-        LEFT JOIN transactions USING(tID)
-        LEFT JOIN uom USING(uomID)
-        WHERE
-            tType = 'purchase order'";
+            LEFT JOIN purchase_items USING(piID)
+            LEFT JOIN stockitems USING(stID)
+            LEFT JOIN suppliermerchandise USING(spmID)";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceiptItems(){
