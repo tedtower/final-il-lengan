@@ -76,6 +76,7 @@ class Chef extends CI_Controller {
 	function viewSpoilagesMenu(){
 		if($this->checkIfLoggedIn()){
 			$data['title'] = " Menu Spoilages";
+			$data['slip'] = $this->Chefmodel->getSlipNum();
 			$this->load->view('chef/head', $data);
 			$this->load->view('chef/navigation');
 			$this->load->view('chef/scripts');
@@ -84,6 +85,20 @@ class Chef extends CI_Controller {
 			redirect('login');
 		}
 	}
+
+	function viewMenuSpoilageFormAdd(){
+        if($this->checkIfLoggedIn()){
+            $head['title'] = "Inventory - Add Menu Spoilage";
+            $this->load->view('chef/head', $head);
+            $this->load->view('chef/navigation');
+			$data['menu'] = $this->Chefmodel->get_menuPref();
+			$data['slip'] = $this->Chefmodel->getSlipNum();
+            $this->load->view('chef/menuspoilageAdd', $data);
+        }else{
+            redirect('login');
+        }
+	}
+	
 
     function viewSpoilagesMenuJs(){
         if($this->checkIfLoggedIn()){
@@ -100,29 +115,33 @@ class Chef extends CI_Controller {
             $msID = $this->input->post('msID');
             $prID = $this->input->post('prID');
             $msQty = $this->input->post('msQty');
-	    $oldQty = $this->input->post('oldQty');
+	    	$oldQty = $this->input->post('oldQty');
             $msDate = $this->input->post('msDate');
             $msRemarks = $this->input->post('msRemarks');
-            $date_recorded = date("Y-m-d H:i:s");
-
-            $this->Chefmodel->edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded);
+			$date_recorded = date("Y-m-d H:i:s");
+			$osID = $this->input->post('osID');
+			
+            $this->Chefmodel->edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded,$osID);
         }else{
             redirect('login');
         } 
 	}
 	
-	function addspoilagesmenu(){
+	function addMenuSpoilage(){
 		if($this->checkIfLoggedIn()){
-            $date_recorded = date("Y-m-d H:i:s");
+			$date_recorded = date("Y-m-d H:i:s");
+			$date = $this->input->post('date');
 			$menus = json_decode($this->input->post('menus'), true);
 			$account_id = $_SESSION["user_id"];
+			$tiType = "spoilage";
 
             echo json_encode($menus, true);
-			$this->Chefmodel->add_menuspoil($date_recorded,$account_id, $menus);
+			$this->Chefmodel->add_menuspoil($date, $date_recorded,$account_id, $menus, $tiType);
         }else{
             redirect('login');
         }
 	}
+
 
 	
 // --------------- S T O C K  S P O I L A G E S ----------------- 
@@ -239,12 +258,15 @@ function addspoilagesstock(){
 	function addConsumption(){
 		$date_recorded = date("Y-m-d H:i:s");
 		$date = $this->input->post('date');
-        $remarks = $this->input->post('remarks');
 		$items = json_decode($this->input->post('items'), true); 
 		echo json_encode($items, true);
 		$account_id = $_SESSION["user_id"];
+		$tiType = "consumed";
 		
-		$this->Chefmodel->add_consumptions($date, $remarks, $items, $date_recorded, $account_id);
+		$this->Chefmodel->destock($items);
+		$this->Chefmodel->add_consumptions($date, $items, $date_recorded, $account_id, $tiType);
+		$this->Chefmodel->add_consactlog($account_id, $date_recorded);
+
 	}
 
 	function getConsumptionItems(){
@@ -254,6 +276,19 @@ function addspoilagesstock(){
 	}else{
 		redirect('login');
 		}
+	}
+	function editConsumption(){
+		$tiID = $this->input->post('tiID');
+		$stID = $this->input->post('stID');
+		$ciID = $this->input->post('ciID');
+        $cQty = $this->input->post('cQty');
+		$coldQty = $this->input->post('coldQty');
+        $cDate = $this->input->post('cDate');
+		$cRemarks = $this->input->post('cRemarks');
+		$drecorded = date("Y-m-d H:i:s");
+		
+		$this->Chefmodel->update_iStocks($stID, $cQty, $coldQty);
+		$this->Chefmodel->update_editCons($tiID,$stID,$ciID,$cQty,$coldQty,$cDate,$cRemarks,$drecorded);
 	}
 
 	//------------ D E L I V E R Y  R E C E I P T --------------
