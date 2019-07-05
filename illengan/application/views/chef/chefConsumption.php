@@ -3,23 +3,23 @@
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
-            <br>
+            <div style="overflow:auto">
             <p style="text-align:right; font-weight: regular; font-size: 16px">
                 <!-- Real Time Date & Time -->
                 <?php echo date("M j, Y -l"); ?>
             </p>
+            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption/formadd')?>" data-original-title style="margin:0; width:15%;"
+                                                id="addBtn">Add Consumption</a>
+            </div>
                 <div class="container-fluid">
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption/formadd')?>" data-original-title style="margin:0"
-                                    id="addBtn">Add Consumption</a>
-                                <br>
-                                <br>
                                 <table id="inventoryTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
+                                        <th></th>
                                         <th><b class="pull-left">Transaction #</b></th>
                                         <th><b class="pull-left">Stock Name</b></th>
                                         <th><b class="pull-left">Qty Consumed</b></th>
@@ -28,21 +28,75 @@
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
-                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('chef/consumption/formedit')?>" data-original-title style="margin:0"
-                                                id="editBtn">Edit</a>
-                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteConsumption">Archive</button>
-                                            </td>
-                                        </tr>
-                                       
                                     </tbody>
                                 </table>
                                 <!--End Table Content-->
+                                <!--Edit Consumption-->
+							<div class="modal fade" id="editConsump" name="editConsump" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit Consumption</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="editConsump" accept-charset="utf-8"> 
+												<div class="modal-body">
+                                                    <!--Quantity-->
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Current Quantity</span>
+                                                        </div>
+                                                        <input type="text" name="coldQty" id="coldQty" class="form-control form-control-sm" readonly>
+														<span class="text-danger"><?php echo form_error("coldQty"); ?></span>
+														<div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                New Quantity</span>
+                                                        </div>
+                                                        <input type="number" min="1" name="cQty" id="cQty" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("cQty"); ?></span>
+                                                    </div>
+													<!--Date Spoiled-->
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:170px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Current Date Consumed</span>
+                                                        </div>
+                                                        <input type="text" name="coldDate" id="coldDate" class="form-control form-control-sm" readonly/>
+                                                        <span class="text-danger"><?php echo form_error("coldDate"); ?></span>
+													</div>
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:170px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                New Date Consumed</span>
+                                                        </div>
+                                                        <input type="date" name="cDate" id="cDate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("cDate"); ?></span>
+                                                    </div>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Remarks</span>
+                                                        </div>
+                                                        <input type="text" name="cRemarks" id="cRemarks" class="form-control form-control-sm" >
+                                                        <span class="text-danger"><?php echo form_error("cRemarks"); ?></span>
+                                                    </div>
+													<input name="tiID" id="tiID" hidden="hidden">
+													<input name="stID" id="stID" hidden="hidden">
+                                                    <input name="ciID" id="ciID" hidden="hidden">
+                                                    <!--Footer-->
+                                                    <div class="modal-footer">
+													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                            		<button class="btn btn-success btn-sm" type="submit">Update</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
+							<!--End of Edit Modal-->
 
                                 <!--Start of Modal "Add Transaction"-->
                                 <div class="modal fade bd-example-modal-lg" id="addEditTransaction" tabindex="-1"
@@ -314,16 +368,18 @@
     </div>
 	<?php include_once('scripts.php') ?>
     <script>
-    var getEnumValsUrl = '<?= site_url('chef/transactions/getEnumVals')?>';
-    var crudUrl = '<?= site_url('barista/transactions/add')?>';
-    var getTransUrl = '<?= site_url('barista/transactions/getTransaction')?>';
-    var loginUrl = '<?= site_url('login')?>';
-    var getPOsUrl = '<?= site_url('barista/transactions/getPOs')?>';
-    var getDRsUrl = '<?= site_url('barista/transactions/getDRs')?>';
-    var getSPMsUrl = '<?= site_url('barista/transactions/getSPMs')?>';
-
-    $(function() {	
-		//POPULATE TABLE
+        $(function () {
+        viewInventoryJs()
+        });
+    // var getEnumValsUrl = '< ?= site_url('chef/transactions/getEnumVals')?>';
+    // var crudUrl = '< ?= site_url('barista/transactions/add')?>';
+    // var getTransUrl = '< ?= site_url('barista/transactions/getTransaction')?>';
+    // var loginUrl = '< ?= site_url('login')?>';
+    // var getPOsUrl = '< ?= site_url('barista/transactions/getPOs')?>';
+    // var getDRsUrl = '< ?= site_url('barista/transactions/getDRs')?>';
+    // var getSPMsUrl = '< ?= site_url('barista/transactions/getSPMs')?>';
+//POPULATE TABLE
+    var inventoryitems = [];
 	var table = $('#inventoryTable');
 
 function viewInventoryJs() {
@@ -334,7 +390,7 @@ function viewInventoryJs() {
 		success: function (data) {
 			inventoryitems = data;
 			setInventoryData(inventoryitems);
-			console.log(data);
+			console.log('Success');
 		},
 		error: function (response, setting, errorThrown) {
 			console.log(response.responseText);
@@ -344,22 +400,112 @@ function viewInventoryJs() {
 }
 
 function setInventoryData() {
-	if ($("#inventoryTable> tbody").children().length > 0) {
-		$("#inventoryTable> tbody").empty();
+	if ($("#inventoryTable > tbody").children().length > 0) {
+		$("#inventoryTable > tbody").empty();
 	}
 	inventoryitems.forEach(table => {
-		$("#inventoryTable> tbody").append(`
-		<tr data-stID="${table.tID}" data-stID="${table.stID}">
-			<td>${table.tID}</td>
-			<td>${table.stID}</td>
-			<td>${table.tiName}</td>
-			<td>${table.actualQty}</td>
-			<td>${table.tDate}</td>
-			<td>${table.dateRecorded}</td>
+		$("#inventoryTable > tbody").append(`
+		<tr data-tiID="${table.tiID}" data-stID="${table.stID}" data-ciID="${table.ciID}">
+        <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
+			<td>${table.tiID}</td>
+			<td>${table.stName}</td>
+			<td>${table.tiQty}</td>
+			<td>${table.tiDate}</td>
+			<td>${table.cDateRecorded}</td>
+            <td>
+            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                                data-target="#editConsump">Edit</button>
+                            <!--Delete button-->
+            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                            data-target="#deleteSpoilage">Archived</button>
+            </td>
 		</tr>`);
+    var accordion = `
+            <tr class="accordion" style="display:none;background: #f9f9f9">
+                <td colspan="6"> <!-- table row ng accordion -->
+                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                        
+					<div style="overflow:auto;"> <!-- description, preferences, and addons container -->
+                            <div style="margin:0 46px;overflow:auto;">
+							<b style="float:left;">Remarks: </b><!-- label-->
+								<p style="float:left;margin-left:2%">
+								${table.tiRemarks == null || table.tiRemarks == '' ? "No remarks." : table.tiRemarks}
+                                </p>
+                            </div> 
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            `;
+        $(".updateBtn").last().on('click', function () {
+				$("#editConsump").find("input[name='tiID']").val($(this).closest("tr").attr(
+                    "data-tiID"));
+                $("#editConsump").find("input[name='stID']").val($(this).closest("tr").attr(
+                    "data-stID"));
+                $("#editConsump").find("input[name='ciID']").val($(this).closest("tr").attr(
+                    "data-ciID"));
+				$("#editConsump").find("input[name='cQty']").val($(this).closest("tr").attr(
+                    "data-cQty"));
+				$("#editConsump").find("input[name='coldQty']").val(table.tiQty);
+				$("#editConsump").find("input[name='coldDate']").val(table.tiDate);
+				$("#editConsump").find("input[name='cDate']").val($(this).closest("tr").attr(
+					"data-cDate"));
+				$("#editConsump").find("input[name='cRemarks']").val($(this).closest("tr").attr(
+					"data-cRemarks"));
+            });
+            $("#inventoryTable > tbody").append(accordion);
 	});
+    $(".accordionBtn").on('click', function(){
+            if($(this).closest("tr").next(".accordion").css("display") == 'none'){
+                $(this).closest("tr").next(".accordion").css("display","table-row");
+				$(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+			
+            }else{
+                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                $(this).closest("tr").next(".accordion").hide("slow");
+            }
+        	});
 }
 //END OF POPULATING TABLE
+//-------------------------Function for Edit-------------------------------
+$(document).ready(function() {
+    $("#editConsump form#editConsump").on('submit', function(event) {
+		event.preventDefault();
+		var tiID = $(this).find("input[name='tiID']").val();
+        var stID = $(this).find("input[name='stID']").val();
+        var ciID = $(this).find("input[name='ciID']").val();
+        var cQty = $(this).find("input[name='cQty']").val();
+		var coldQty = $(this).find("input[name='coldQty']").val();
+        var cDate = $(this).find("input[name='cDate']").val();
+        var cRemarks = $(this).find("input[name='cRemarks']").val();
+        console.log('tiID:',tiID,',','stID:', stID,',','ciID:',ciID,',','cQty:', cQty,',','coldQty',coldQty,',',
+       'cDate',cDate,',','cRemarks:',cRemarks);
+        $.ajax({
+            url: "<?= site_url("chef/consumption/edit")?>",
+            method: "post",
+            data: {
+				tiID: tiID,
+                stID : stID,
+                ciID : ciID,
+                cQty: cQty,
+				coldQty: coldQty,
+                cDate: cDate,
+                cRemarks: cRemarks
+            },
+            dataType: "json",
+            complete: function() {
+                $("#editConsump").modal("hide");
+				location.reload();
+            },
+            error: function (response, setting, errorThrown) {
+					console.log(errorThrown);
+					console.log(response.responseText);
+				}
+            
+        });
+    });
+});
+	//--------------------End of Function for Edit-----------------------------
         $("#addBtn").on("click", function(){
             setAddEditBtnHandlers();
         });
@@ -393,7 +539,6 @@ function setInventoryData() {
             var type = $(this).find('select[name="tType"]').val();
             var receipt = $(this).find('input[name="tNum"]').val();
             var date = $(this).find('input[name="tDate"]').val();
-            var remarks = $(this).find('textarea[name="tRemarks"]').val();
             var transitems = [];
             for(var x = 0; x < $(this).find('.ic-level-1').length ; x++){
                 var tiID = $(this).find('.ic-level-1').eq(x).attr("data-id");
@@ -452,7 +597,6 @@ function setInventoryData() {
             $(this).find("form")[0].reset();
             $(this).find("form").off('submit');
         });
-    });
 
     function getEnumVals(url) {
         $.ajax({
