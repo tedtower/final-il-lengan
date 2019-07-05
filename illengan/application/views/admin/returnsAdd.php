@@ -45,7 +45,7 @@
                                                 <tr>
                                                     <th width="17%" style="font-weight:500 !important;">Receipt</th>
                                                     <th style="font-weight:500 !important;">Stock Item</th>
-                                                    <th width="17%" style="font-weight:500 !important;">Quantity</th>
+                                                    <th width="20%" style="font-weight:500 !important;">Quantity</th>
                                                     <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
                                             </thead>
@@ -74,35 +74,24 @@
                                 </div>
                             </div>
                             <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                                <select class="form-control form-control-sm">
+                                <select class="suppliers form-control form-control-sm" name="suppliers">
                                     <option value="" selected>Select Delivery</option>
-                                    <option></option>
+                                    <?php
+                                foreach($supplier as $supp){
+                                ?>
+                                    <option value="<?= $supp['spID']?>"><?= $supp['spName']?></option>
+                                <?php } ?>
                                 <select>
                                 <!--checkboxes-->
                                 <table class="table table-borderless">
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
-                                            <th style="font-weight:500 !important;">Date</th>
                                             <th style="font-weight:500 !important;">Receipt</th>
                                             <th style="font-weight:500 !important;">Item</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="ic-level-2"><?php
-                                foreach($deliveries as $del){
-                                ?>
-                                        <tr class="ic-level-1">
-                                            <td><input type="checkbox" class="mr-2" name="delivery"
-                                                   data-name="<?= $del['stName']?>" data-uom="<?= $del['uomName']?>" 
-                                                   data-stid="<?= $del['stID']?>"  data-actual="<?= $del['tiActual']?>" 
-                                                   data-price="<?= $del['spmPrice']?>"  data-spmid="<?= $del['spmID']?>"
-                                                    value="<?= $del['stID']?>"></td>
-                                            <td class="receipt" data-receipt='<?= $del['receiptNo']?>'><?= $del['pDate']?></td>
-                                            <td class="trans" data-supplier='<?= $del['spAltName']?>' data-spid="<?= $del['spID']?>"><?= $del['trans']?></td>
-                                            <td class="item" data-stid='<?= $del['stID']?>'><?= $del['item']?></td>
-                                        </tr>
-                                        <?php 
-                                }?>
+                                    <tbody class="deliveries ic-level-2">
                                     </tbody>
                                 </table>
                             </div>
@@ -116,13 +105,42 @@
     </div>
     <?php include_once('templates/scripts.php');?>
     <script>
+    var deliveries = <?= json_encode($deliveries) ?>;
+
+   function showDeliveries() {
+        $("tbody.deliveries").empty();
+        deliveries.forEach(function(del) {
+            $("tbody.deliveries").append(`
+            <tr class="ic-level-1">
+                    <td><input type="checkbox" class="mr-2" name="delivery"
+                            data-name="${del.stName}" data-uom="${del.uomName}" 
+                            data-stid="${del.stID}"  data-actual="${del.spmActual}" 
+                            data-price="${del.spmPrice}"  data-spmid="${del.spmID}"
+                             value="${del.stID}"></td>
+                    <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spAltName}' 
+                    data-spid="${del.spID}">${del.trans}</td>
+                    <td class="item" data-stid='${del.stID}'>${del.item}</td>
+                </tr>`
+        );
+        });
+    }
+
     $(function() {
+        $(document).on("change","select[name='suppliers']", function() {
+            deliveries = <?= json_encode($deliveries) ?>;
+            var spID = $(this).val();
+            console.log(spID);
+            deliveries = deliveries.filter(del => del.spID === spID);
+            console.log(deliveries);
+            showDeliveries();
+        });
+
         $("#listDeliver .ic-level-1").on("click",function(event){
             if(event.target.type !== "checkbox"){
                 $(this).find("input[name='delivery']").trigger("click");
-            }
+            } console.log("eyeyeye");
         });
-        $("#listDeliver input[name='delivery']").on("click", function(event) {
+        $(document).on("click", "#listDeliver input[name='delivery']", function(event) {
             var id = $(this).val();
             var name = $(this).attr("data-name");
             var uom = $(this).data("uom");
@@ -131,14 +149,14 @@
             var supplier = $(this).closest("tr").find("td.trans").data("supplier");
             var spID = $(this).closest("tr").find("td.trans").data("spid");
             var spmID = $(this).data("spmid");
-            var receiptNo = $(this).closest("tr").find("td.receipt").data("receipt");
+            var receiptNo = $(this).closest("tr").find("td.trans").data("receipt");
 
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text" class="form-control form-control-sm"
-                                value="${receiptNo}" name="receipt" readonly></td>
+                                data-stock="${id}" value="${receiptNo}" name="receipt" readonly></td>
                         <td style="padding:1% !important"><input type="text" class="form-control form-control-sm"
                                 data-id="${id}" data-spmid="${spmID}" data-actqty="${actualQty}" data-price="${price}" 
                                 value="${name}" name="stock" readonly></td>
@@ -187,21 +205,26 @@
             var date = $(this).find("input[name='date']").val();
             console.log(date);
             var returnitems = [];
+            var rTotal = 0;
+
             $(this).find(".ic-level-1").each(function(index){
                 var tiQty = parseInt($(this).find("input[name='qty']").val());
                 var actqty = parseInt($(this).find("input[name='stock']").attr('data-actqty'));
                 var price = parseFloat($(this).find("input[name='stock']").attr('data-price'));
                 var actualQty = tiQty * actqty;
+                var subtotal = parseFloat(tiQty * price);
+                rTotal = parseFloat(rTotal + subtotal);
 
                 returnitems.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
                     spmID: $(this).find("input[name='stock']").attr('data-spmid'),
                     tiQty: tiQty,
                     tiActual: actualQty,
-                    tiSubtotal: tiQty * price,
+                    tiSubtotal: subtotal,
                     tiRemarks: $(this).find("textarea[name='tiRemarks']").val(),
                     tiDate: date,
-                    receipt: $(this).find("input[name='receipt']").val()
+                    receipt: $(this).find("input[name='receipt']").val(),
+                    riStatus: 'pending'
                 }); 
             }); 
 
@@ -212,10 +235,11 @@
                     date: date,
                     spID: spID,
                     spAltName: spAltName,
+                    rTotal: rTotal,
                     items: JSON.stringify(returnitems)
                 },
                 succes: function(){
-                    console.log("euwue");
+                    location.reload();
                 },
                 error: function(response, setting, error) {
                     console.log(error);
