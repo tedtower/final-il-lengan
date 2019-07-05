@@ -1737,57 +1737,11 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         ORDER BY transDate DESC ,pID DESC";
         return $this->db->query($query)->result_array();
     }
-    function get_deliveryReceipts(){
-        $query = "SELECT
-                tID AS id,
-                tNum AS num,
-                receiptNo AS receipt,
-                IF(
-                    spID IS NULL,
-                    supplierName,
-                    spName
-                ) AS supplier,
-                tType AS type,
-                tTotal AS total,
-                tRemarks AS remarks,
-                tDate AS date,
-                dateRecorded AS daterecorded
-            FROM
-                transactions
-            LEFT JOIN supplier USING(spID)
-            WHERE
-                isArchived = '0' and tType = 'delivery receipt'
-        ORDER BY tID desc";
-        return $this->db->query($query)->result_array();
-    }
-    function get_officialReceipts(){
-        $query = "SELECT
-                tID AS id,
-                tNum AS num,
-                receiptNo AS receipt,
-                IF(
-                    spID IS NULL,
-                    supplierName,
-                    spName
-                ) AS supplier,
-                tType AS type,
-                tTotal AS total,
-                tRemarks AS remarks,
-                tDate AS date,
-                dateRecorded AS daterecorded
-            FROM
-                transactions
-            LEFT JOIN supplier USING(spID)
-            WHERE
-                isArchived = '0' and tType = 'official receipt'
-        ORDER BY tID desc";
-        return $this->db->query($query)->result_array();
-    }
     
     function get_purchaseOrderItems(){
         $query = "SELECT
                 tiID,
-                tiType,
+                tiType as type,
                 SUM(tiQty) AS qty,
                 SUM(tiActual) AS actual,
                 SUM(tiSubtotal) AS subtotal,
@@ -1809,52 +1763,52 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             LEFT JOIN suppliermerchandise USING(spmID)";
         return $this->db->query($query)->result_array();
     }
-    function get_deliveryReceiptItems(){
+    function get_deliveryReceipts(){
         $query = "SELECT
-            tID AS transaction,
-            tiID AS id,
-            tiName AS name,
-            tiQty AS qty,
-            qtyPerItem AS equivalent,
-            actualQty AS actualqty,
-            tiPrice AS price,
-            tiDiscount AS discount,
-            drStatus AS deliverystatus,
-            payStatus AS paymentstatus,
-            rStatus AS returnstatus
+            pID AS id,
+            receiptNo as receipt,
+            spID AS supplier,
+            spName AS supplierName,
+            spAltName as altSupplier,
+            DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
+            DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
+            SUM(tiSubtotal) AS total,
+            pRemarks as remarks
         FROM
             (
-                transitems
-            LEFT JOIN trans_items USING(tiID)
+                purchases
+            LEFT JOIN purchase_items USING(pID)
             )
-        LEFT JOIN transactions USING(tID)
-        LEFT JOIN uom USING(uomID)
-        WHERE
-            tType = 'delivery receipt'";
+        LEFT JOIN transitems USING(piID)
+        LEFT JOIN supplier USING(spID)
+        WHERE pType = 'delivery'
+        ORDER BY transDate DESC ,pID DESC";
         return $this->db->query($query)->result_array();
     }
-    function get_officialReceiptItems(){
+    function get_deliveryReceiptItems(){
         $query = "SELECT
-            tID AS transaction,
-            tiID AS id,
-            tiName AS name,
-            tiQty AS qty,
-            qtyPerItem AS equivalent,
-            actualQty AS actualqty,
-            tiPrice AS price,
-            tiDiscount AS discount,
-            drStatus AS deliverystatus,
-            payStatus AS paymentstatus,
-            rStatus AS returnstatus
-        FROM
-            (
+                tiID,
+                tiType as type,
+                SUM(tiQty) AS qty,
+                SUM(tiActual) AS actual,
+                SUM(tiSubtotal) AS subtotal,
+                remainingQty,
+                tiRemarks,
+                tiDate,
+                CONCAT(
+                    stName,
+                    IFNULL(CONCAT(' ', stSize),
+                    '')
+                ) AS stockname,
+                spmName,
+                piID,
+                piStatus
+            FROM
                 transitems
-            LEFT JOIN trans_items USING(tiID)
-            )
-        LEFT JOIN transactions USING(tID)
-        LEFT JOIN uom USING(uomID)
-        WHERE
-            tType = 'official receipt'";
+            LEFT JOIN purchase_items USING(piID)
+            LEFT JOIN stockitems USING(stID)
+            LEFT JOIN suppliermerchandise USING(spmID)
+            WHERE piStatus in ('partially delivered','delivered')";
         return $this->db->query($query)->result_array();
     }
 
