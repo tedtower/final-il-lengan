@@ -389,7 +389,7 @@ function addspoilagesstock(){
             $spAltName = $this->input->post('spAltName'); 
             $rDate = $this->input->post('date'); 
             $rDateRecorded = date("Y-m-d H:i:s");
-            $rTotal = 0;
+            $rTotal = $this->input->post('rTotal');
             $items = json_decode($this->input->post('items'), true);
             $accountID = $_SESSION["user_id"];
 
