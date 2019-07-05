@@ -15,6 +15,7 @@ class Adminmodel extends CI_Model{
      $query = "SELECT ctID, ctName, stID, UPPER(stLocation) AS stLocation, stMin, CONCAT(stName, IF(stSize IS NULL, '', CONCAT(' ', stSize))) AS stockitemname, stQty, UPPER(stStatus) AS stStatus, UPPER(stType) AS stType, uomID, uomName, uomAbbreviation, stBqty FROM(stockitems LEFT JOIN categories USING(ctID)) LEFT JOIN uom USING(uomID) order by ctName, stName asc";
      return $this->db->query($query)->result_array();
  }
+ 
  function get_inventoryReport($stID, $sDate, $eDate){
     $query = "SELECT
                 slID, stID, uomAbbreviation, slType,
@@ -62,7 +63,7 @@ function getTotalSales(){
     return $this->db->query($query)->result();
 }
 function getMonthConsumption(){
-    $query = "SELECT COUNT(tiQty) total FROM consumed_items NATURAL JOIN consumption NATURAL JOIN transitems WHERE DATE_FORMAT(cDate,'%Y-%m') = ?";
+    $query = "SELECT COUNT(tiQty) total FROM consumed_items NATURAL JOIN consumptions NATURAL JOIN transitems WHERE DATE_FORMAT(cDate,'%Y-%m') = ?";
     return $this->db->query($query,array(date('Y-m')))->result();
 }
 
@@ -1724,8 +1725,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             spName AS supplierName,
             DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
             DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-            SUM(tiSubtotal) AS total,
-            pRemarks as remarks
+            SUM(tiSubtotal) AS total
         FROM
             (
                 purchases
@@ -1754,15 +1754,18 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
                     '')
                 ) AS stockname,
                 spmName,
+                spmPrice,
                 piID,
                 piStatus
             FROM
                 transitems
             LEFT JOIN purchase_items USING(piID)
             LEFT JOIN stockitems USING(stID)
-            LEFT JOIN suppliermerchandise USING(spmID)";
+            LEFT JOIN suppliermerchandise USING(spmID)
+            where tiType = 'purchase order'";
         return $this->db->query($query)->result_array();
     }
+
     function get_deliveryReceipts(){
         $query = "SELECT
             pID AS id,
@@ -1772,8 +1775,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             spAltName as altSupplier,
             DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
             DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-            SUM(tiSubtotal) AS total,
-            pRemarks as remarks
+            SUM(tiSubtotal) AS total
         FROM
             (
                 purchases
@@ -1795,12 +1797,14 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
                 remainingQty,
                 tiRemarks,
                 tiDate,
+                tiDiscount,
                 CONCAT(
                     stName,
                     IFNULL(CONCAT(' ', stSize),
                     '')
                 ) AS stockname,
                 spmName,
+                spmPrice,
                 piID,
                 piStatus
             FROM
