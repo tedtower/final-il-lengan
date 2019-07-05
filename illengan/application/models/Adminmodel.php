@@ -1619,11 +1619,11 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         $query = "UPDATE transitems SET rStatus = ?, rRemarks = ? WHERE tiID = ?";
         if(count($trans) > 0) {
             for($in = 0; $in < count($trans) ; $in++){
-               if( $this->db->query($query, array($trans[$in]['rStatus'], $ti[$in]['rRemark'], $trans[$in]['tiID'])))
-               {
-                   $this->update_trans_items($ti, $trans[$in]['tiID'], $tID, $trans[$in]['stID']);
-               }
-           }
+                if( $this->db->query($query, array($trans[$in]['rStatus'], $ti[$in]['rRemark'], $trans[$in]['tiID'])))
+                {
+                    $this->update_trans_items($ti, $trans[$in]['tiID'], $tID, $trans[$in]['stID']);
+                }
+            }
         }
     }
 
@@ -1631,19 +1631,16 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         $query = "UPDATE trans_items SET tiQty = ?, actualQty = ?, tiSubtotal = ? WHERE tiID = ? AND tID = ?";
         if(count($ti) > 0) {
             for($in = 0; $in < count($ti) ; $in++){
-            if($ti[$in]['tiID'] === $tiID) {
-                $this->db->query($query, array($ti[$in]['tiQty'], $ti[$in]['actualQty'], $ti[$in]['tiSubtotal'],
-                $ti[$in]['tiID'], $tID));
-                
-                $this->update_stockitemqty($stID, $ti[$in]['updateQty']);
+                if($ti[$in]['tiID'] === $tiID) {
+                    $this->db->query($query, array($ti[$in]['tiQty'], $ti[$in]['actualQty'], $ti[$in]['tiSubtotal'],
+                    $ti[$in]['tiID'], $tID));
+                    
+                    $this->update_stockitemqty($stID, $ti[$in]['updateQty']);
+                }
             }
-           }
         }
     }
-        
-    function delete_transitem() {
 
-    }
     function update_paymentStatus($tiID, $status){
         $this->db->query("UPDATE transitems SET payStatus = ? WHERE tiID = ?;",array($status, $tiID));
     }
@@ -1717,6 +1714,66 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         WHERE tiID = ? AND tID = ?;";
         return $this->db->query($query, array($tiID, $tID))->num_rows();
     }
+    function add_purchaseOrder($po){
+        $query = "INSERT INTO `purchases`(
+                spID,
+                pType,
+                pDate,
+                pDateRecorded
+            )
+            VALUES(
+                ?,
+                ?,
+                ?,
+                ?
+            );";
+        return $this->db->query($query, array($po["supplier"], $po["type"], $po["date"], $po["current"]));
+    }
+    function add_poItem($poiStatus){
+        $query = "INSERT INTO purchase_items(piStatus) VALUES(?)";
+        return $this->db->query($query,array($poiStatus));
+    }
+    function add_purItem($pID, $piID){
+        $query = "INSERT INTO pur_items(pID, piID) VALUES(?,?)";
+        return $this->db->query($query, array($pID, $piID));
+    }
+    #
+    function add_transitem($item){
+        $query = "INSERT INTO `transitems`(
+                tiID,
+                tiType,
+                tiQty,
+                tiActual,
+                tiSubtotal,
+                remainingQty,
+                tiRemarks,
+                tiDate,
+                stID,
+                spmID,
+                riID,
+                piID,
+                ciID,
+                siI`
+            )
+            VALUES(
+                NULL,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
+            );";
+        return $this->db->query($query,array());
+    }
+
     function get_purchaseOrders(){
         $query = "SELECT
             pID AS id,
@@ -2324,5 +2381,17 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
 // LEFT JOIN stockitems USING(stID)
 // LEFT JOIN suppliermerchandise USING(spmID)
 
+// INSERT INTO `purchases`(
+//     spID,
+//     pType,
+//     pDate,
+//     pDateRecorded
+// )
+// VALUES(
+//     ?,
+//     ?,
+//     ?,
+//     ?
+// );
 }
 ?>
