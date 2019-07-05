@@ -157,7 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
         function get_servedorderslips(){
-            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID WHERE CAST(osDateTime AS date) = cast((now()) as date) GROUP BY orderslips.osID, tableCode";
+            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode"; //WHERE CAST(osDateTime AS date) = cast((now()) as date)
             return $this->db->query($query)->result_array();
         }
         function get_servedOlist(){

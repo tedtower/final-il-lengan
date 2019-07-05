@@ -2,6 +2,7 @@
 <html>
 
 <head>
+<!-- <meta http-equiv="refresh" content="3"> -->
   <?php include_once('templates/head.php') ?>
 </head>
 
@@ -91,7 +92,7 @@
                   style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                   Cash</span>
               </div>
-              <input type="text" step="any" min="0" class="form-control" name="cash" id="cash" value="0.00" required>
+              <input type="number" step="any" min="0" class="form-control" name="cash" id="cash" value="0.00" required>
               <span class="text-danger"><?php echo form_error("cash"); ?></span>
             </div>
             <div class="input-group mb-3">
@@ -163,7 +164,7 @@
                   style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                   Cash</span>
               </div>
-              <input type="text" step="any" min="0" class="form-control" name="cash2" id="cash2" value="0.00" required>
+              <input type="number" step="any" min="0" class="form-control" name="cash2" id="cash2" value="0.00" required>
               <span class="text-danger"><?php echo form_error("cash2"); ?></span>
             </div>
             <div class="input-group mb-3">
