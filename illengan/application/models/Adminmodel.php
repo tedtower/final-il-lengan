@@ -1729,9 +1729,17 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             );";
         return $this->db->query($query, array($po["supplier"], $po["type"], $po["date"], $po["current"]));
     }
-    function add_poItem($poiStatus){
+    function edit_purchaseOrder($po){
+        $query = "UPDATE purchases SET pDate = ?, pDateRecorded = ? WHERE pID = ?";
+        return $this->db->query($query, array($po["date"], $po["current"], $po["pID"]));
+    }
+    function add_pItem($piStatus){
         $query = "INSERT INTO purchase_items(piStatus) VALUES(?)";
-        return $this->db->query($query,array($poiStatus));
+        return $this->db->query($query,array($piStatus));
+    }
+    function edit_pItem($piID, $piStatus){
+        $query = "UPDATE purchase_items SET piStatus WHERE piID = ?";
+        return $this->db->query($query, array($piStatus, $piID));
     }
     function add_purItem($pID, $piID){
         $query = "INSERT INTO pur_items(pID, piID) VALUES(?,?)";
@@ -1774,7 +1782,6 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         return $this->db->query($query,array($item["type"], $item["qty"], $item["actual"], $item["subtotal"], $item["remaining"], 
         $item["remarks"], $item["date"], $item["stock"] ,$item[merch], $item["return"], $item["purchase"], $item["consume"], $item["spoil"]));
     }
-
     function get_purchaseOrders(){
         $query = "SELECT
             pID AS id,
