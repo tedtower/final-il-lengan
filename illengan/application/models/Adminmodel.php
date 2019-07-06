@@ -1782,17 +1782,19 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             spName AS supplierName,
             DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
             DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-            SUM(tiSubtotal) AS total,
-            pRemarks as remarks
+            SUM(tiSubtotal) AS total
         FROM
             (
-                purchases
-            LEFT JOIN purchase_items USING(pID)
+                (
+                    purchases
+                LEFT JOIN pur_items USING(pID)
+                )
+            LEFT JOIN purchase_items USING(piID)
             )
         LEFT JOIN transitems USING(piID)
         LEFT JOIN supplier USING(spID)
         WHERE pType = 'purchase order'
-        ORDER BY transDate DESC ,pID DESC";
+        ORDER BY transDate DESC, pID DESC";
         return $this->db->query($query)->result_array();
     }
     
@@ -1815,8 +1817,9 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
                 piID,
                 piStatus
             FROM
-                transitems
-            LEFT JOIN purchase_items USING(piID)
+                (transitems
+            LEFT JOIN purchase_items USING(piID))
+            LEFT JOIN pur_items using (piID)
             LEFT JOIN stockitems USING(stID)
             LEFT JOIN suppliermerchandise USING(spmID)";
         return $this->db->query($query)->result_array();
@@ -1830,8 +1833,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
             spAltName as altSupplier,
             DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
             DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-            SUM(tiSubtotal) AS total,
-            pRemarks as remarks
+            SUM(tiSubtotal) AS total
         FROM
             (
                 purchases
