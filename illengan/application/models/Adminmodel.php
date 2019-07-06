@@ -1717,21 +1717,26 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     function add_purchaseOrder($po){
         $query = "INSERT INTO `purchases`(
                 spID,
+                receiptNo
                 pType,
                 pDate,
-                pDateRecorded
+                pDateRecorded,
+                spAltName
             )
             VALUES(
                 ?,
                 ?,
                 ?,
+                ?,
+                ?,
                 ?
             );";
-        return $this->db->query($query, array($po["supplier"], $po["type"], $po["date"], $po["current"]));
+        return $this->db->query($query, array($po["supplier"], $po["receipt"], 
+        $po["type"], $po["date"], $po["current"], $po["alt"]));
     }
-    function edit_purchaseOrder($po){
-        $query = "UPDATE purchases SET pDate = ?, pDateRecorded = ? WHERE pID = ?";
-        return $this->db->query($query, array($po["date"], $po["current"], $po["pID"]));
+    function edit_purchase($p){
+        $query = "UPDATE purchases SET receiptNo = ?, pDate = ?, pDateRecorded = ?, spAltName = ? WHERE pID = ?";
+        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"] $p["pID"]));
     }
     function add_pItem($piStatus){
         $query = "INSERT INTO purchase_items(piStatus) VALUES(?)";
