@@ -15,6 +15,13 @@ class Adminview extends CI_Controller{
         return false;
     }
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
+function inventoryJS(){
+    if($this->checkIfLoggedIn()){
+    echo json_encode($this->baristamodel->get_inventory_consumption());
+}else{
+    redirect('login');
+    }
+}
 
 function viewDashboard(){
     if($this->checkIfLoggedIn()){

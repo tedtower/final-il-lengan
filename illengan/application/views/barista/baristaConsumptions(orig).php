@@ -237,32 +237,7 @@
 				});
 			}
 			//END OF POPULATING TABLE
-
-			// 		//-----------------------Populate Dropdown----------------------------------------
-			// 			$.ajax({
-			// 				url: '<= site_url('barista/inventoryJS') ?>',
-			// 				dataType: 'json',
-			// 				success: function (data) {
-			// 					var poLastIndex = 0;
-			// 					stockitem = data;
-			// 					setStockData(stockitem);
-			// 				},
-			// 				failure: function () {
-			// 					console.log('None');
-			// 				},
-			// 				error: function (response, setting, errorThrown) {
-			// 					console.log(errorThrown);
-			// 					console.log(response.responseText);
-			// 				}
-			// 			});
-
-			// 	function setStockData(stockitem){
-			// 			$("#stockitems").empty();
-			// 			$("#stockitems").append(`${stockitem.map(stocks => {
-			// 				return `<option name= "stName" id ="stName" value="${stocks.stID}">${stocks.stName}</option>`
-			// 			}).join('')}`);
-			// 	}
-			//   //-----------------------End of Dropdown Populate--------------------------	
+	
 		</script>
 </body>
 

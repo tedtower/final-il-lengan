@@ -2,7 +2,6 @@
     <div class="content">
         <div class="container-fluid">
             <br>
-            <div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Date and Time-->
                     <div style="overflow:auto">
@@ -16,7 +15,7 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Add Spoilage</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/stock/spoilages/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("barista/stock/spoilages/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
@@ -107,7 +106,6 @@
 
                     <!--End of container divs-->
                 </div>
-            </div>
         </div>
     </div>
     <?php include_once('templates/scripts.php');?>
