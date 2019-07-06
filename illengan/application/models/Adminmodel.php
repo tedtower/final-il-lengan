@@ -717,7 +717,6 @@ function get_transitems(){
         FROM `transitems` ti LEFT JOIN purchase_items USING (piID) LEFT JOIN purchases pur USING (pID) LEFT JOIN stockitems st USING (stID) 
         LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) WHERE pur.ptype = 'delivery' AND ti.tiType = 'restock'";
         return $this->db->query($query)->result_array();
-
     }
 //INSERT FUNCTIONS----------------------------------------------------------------
     function add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch){
@@ -1714,7 +1713,15 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         WHERE tiID = ? AND tID = ?;";
         return $this->db->query($query, array($tiID, $tID))->num_rows();
     }
-    function add_purchaseOrder($po){
+    function add_reconciliation($re){
+        $query = "INSERT INTO reconciliation (reDate, reDateRecorded) VALUES (?, ?)";
+        return $this->db->query($query, array($re["date"], $re["current"]));
+    }
+    function add_reItems($rei){
+        $query = "INSERT INTO st_recon (reID, stID, reQty, reRemain, reDiscrepancy, reRemarks) VALUES (?, ?, ?, ?, ?, ?)";
+        return $this->db->query($query,array($rei["reID"], $rei["stock"], $rei["qty"], $rei["remain"], $rei["discrepancy"], $rei["remarks"]));
+    }
+    function add_purchase($p){
         $query = "INSERT INTO `purchases`(
                 spID,
                 receiptNo
@@ -1731,8 +1738,8 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
                 ?,
                 ?
             );";
-        return $this->db->query($query, array($po["supplier"], $po["receipt"], 
-        $po["type"], $po["date"], $po["current"], $po["alt"]));
+        return $this->db->query($query, array($p["supplier"], $p["receipt"], 
+        $p["type"], $p["date"], $p["current"], $p["alt"]));
     }
     function edit_purchase($p){
         $query = "UPDATE purchases SET receiptNo = ?, pDate = ?, pDateRecorded = ?, spAltName = ? WHERE pID = ?";
