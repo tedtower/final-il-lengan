@@ -75,8 +75,8 @@
     <script>
     $(function() {
         $("#physicalCount").find("input[name='actual']").on("change",function(){
-                    var discrep = $(this).val()- $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
-                    $(this).closest(".stockitems > tbody > tr").find("input[name='discrep']").val(discrep);
+            var discrep = $(this).val()- $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
+            $(this).closest(".stockitems > tbody > tr").find("input[name='discrep']").val(discrep);
         });
         $("#stockCard input[name='search']").on("keyup",function(){
             var string = $(this).val();

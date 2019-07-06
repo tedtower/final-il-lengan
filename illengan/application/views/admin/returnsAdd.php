@@ -206,7 +206,7 @@
             console.log(date);
             var returnitems = [];
             var rTotal = 0;
-
+            console.log(spAltName);
             $(this).find(".ic-level-1").each(function(index){
                 var tiQty = parseInt($(this).find("input[name='qty']").val());
                 var actqty = parseInt($(this).find("input[name='stock']").attr('data-actqty'));
@@ -219,6 +219,7 @@
                     stID: $(this).find("input[name='stock']").attr('data-id'),
                     spmID: $(this).find("input[name='stock']").attr('data-spmid'),
                     tiQty: tiQty,
+                    tiActualQty: actualQty,
                     tiActual: actualQty,
                     tiSubtotal: subtotal,
                     tiRemarks: $(this).find("textarea[name='tiRemarks']").val(),
