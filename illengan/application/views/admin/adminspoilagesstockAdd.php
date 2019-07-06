@@ -25,7 +25,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" class="form-control" name="tDate">
+                                        <input type="date" id="spoiledDate" class="form-control" name="tDate">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -201,6 +201,15 @@
                 }
             });
         });
+    }); 
+
+    $('#conForm').submit(function(event){
+        var spoiledDate = $("#spoiledDate").val();
+        var currentDate = new Date();
+        if(Date.parse(spoiledDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
     });
     </script>
 </body>

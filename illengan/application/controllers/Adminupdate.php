@@ -41,9 +41,11 @@ class Adminupdate extends CI_Controller{
             $osDateRecorded = date("Y-m-d H:i:s");
             $orderlists = json_decode($this->input->post('orderlists'), true);
             $addons = json_decode($this->input->post('addons'), true);
-               
+            $accountID = $_SESSION["user_id"];
+            $action = 'update';
+
             $this->adminmodel->edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, 
-            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons);
+            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id, $action);
         }else{
             redirect('login');
         }
@@ -51,18 +53,18 @@ class Adminupdate extends CI_Controller{
 
     function editReturns() {
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $tID = $this->input->post('tID');
-            $spID = $this->input->post('spID');
-            $spName = $this->input->post('spName');
-            $receiptNo = $this->input->post('receiptNo');
-            $tDate = $this->input->post('tDate');
-            $tTotal = $this->input->post('tTotal');
-            $tRemarks = $this->input->post('tRemarks');
-            $trans = json_decode($this->input->post('trans'), true);
-            $ti = json_decode($this->input->post('ti'), true);
+            $rID = $this->input->post('rID'); 
+            $spID = $this->input->post('spID'); 
+            $spAltName = $this->input->post('spAltName'); 
+            $rDate = $this->input->post('date'); 
+            $rDateRecorded = date("Y-m-d H:i:s");
+            $rTotal = $this->input->post('rTotal');
+            $items = json_decode($this->input->post('items'), true);
+            $accountID = $_SESSION["user_id"];
+            $action = 'update';
 
-            echo $tRemarks;
-            $this->adminmodel->edit_returns($tID, $spID, $spName, $receiptNo, $tDate, $tTotal, $tRemarks, $trans, $ti);
+            $this->adminmodel->edit_returns($rID, $rTotal, $rDate);
+            $this->adminmodel->update_riStatus($items, $accountID, $action);
             }else{
                 redirect('login');
             }

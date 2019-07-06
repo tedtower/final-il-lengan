@@ -33,10 +33,10 @@
                                     <?php foreach($drs as $dr){
                                     ?>
                                         <tr data-id="<?= $dr['id']?>">
-                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>DEl - <?= $dr['num']?></td>
+                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>DEl - <?= $dr['id']?></td>
                                             <td><?= $dr['receipt']?></td>
-                                            <td><?= $dr['supplier']?></td>
-                                            <td><?= $dr['date']?></td>
+                                            <td><?= $dr['supplierName']?></td>
+                                            <td><?= $dr['transDate']?></td>
                                             <td><?= $dr['total']?></td>
                                             <td>
                                             <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/'.$dr['id'])?>" data-original-title style="margin:0"
@@ -47,39 +47,36 @@
                                         <tr class="accordion" style="display:none">
                                             <td colspan="6">
                                                 <div class="container" style="display:none">
-                                                <div>Date Recorded:<?= $dr['daterecorded'] == null ? "N/A" : $dr['daterecorded']?></div>
-                                                <div>Remarks:<?= $dr['remarks'] == null ? "N/A" : $dr['remarks']?></div>
+                                                <div>Date Recorded:<?= $dr['dateRecorded'] == null ? "N/A" : $dr['dateRecorded']?></div>
+                                                <?php foreach($drItems as $drItem){
+                                                        if($drItem['piID'] == $dr['id']){?>
+                                                <div>Remarks:<?= $drItem['tiRemarks'] == null ? "N/A" : $drItem['tiRemarks']?></div>
 
                                                 <table class="table table-bordered">
                                                     <thead class="thead-light">
                                                         <tr>
                                                             <th>Name</th>
                                                             <th>Qty</th>
-                                                            <th>Equivalent</th>
                                                             <th>Actual Qty</th>
                                                             <th>Price</th>
                                                             <th>Discount</th>
                                                             <th>Subtotal</th>
-                                                            <th>Payment Status</th>
                                                             <th>Delivery Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php foreach($drItems as $drItem){
-                                                        if($drItem['transaction'] == $dr['id']){?>
+
+
                                                         <tr>
-                                                            <td><?= $drItem['name']?></td>
+                                                            <td><?= $drItem['stockname']?></td>
                                                             <td><?= $drItem['qty']?></td>
-                                                            <td><?= $drItem['equivalent']?></td>
-                                                            <td><?= $drItem['actualqty']?></td>
-                                                            <td><?= $drItem['price']?></td>
-                                                            <td><?= $drItem['discount'] == null ||  $drItem['discount'] == 0 ? "N/A" : $drItem['discount']?></td>
-                                                            <td><?= ($drItem['qty']*$drItem['price'])-$drItem['discount']?></td>
-                                                            <td><?= $drItem['paymentstatus']?></td>
-                                                            <td><?= $drItem['deliverystatus']?></td>
+                                                            <td><?= $drItem['actual']?></td>
+                                                            <td><?= $drItem['spmPrice']?></td>
+                                                            <td><?= $drItem['tiDiscount'] == null ||  $drItem['tiDiscount'] == 0 ? "N/A" : $drItem['tiDiscount']?></td>
+                                                            <td><?= ($drItem['qty']*$drItem['spmPrice'])-$drItem['tiDiscount']?></td>
+                                                            <td><?= $drItem['piStatus']?></td>
                                                         </tr>
-                                                        <?php }
-                                                        }?>
+
                                                     </tbody>
                                                 </table>
                                                 </div>
@@ -89,6 +86,8 @@
                                     }?>
                                     </tbody>
                                 </table>
+                                <?php }
+                                                        }?>
                                 <?php
                                 }else{
                                 ?>

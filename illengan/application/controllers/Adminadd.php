@@ -90,11 +90,12 @@ function addSales() {
         $osDateRecorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
         $account_id = $_SESSION["user_id"];
+        $action = 'add';
        
         header('Content-Type: application/json');
         echo json_encode($addons, JSON_PRETTY_PRINT);
         $this->adminmodel->add_salesOrder($tableCode, $custName, $osTotal, $osDateTime,
-        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id);
+        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id, $action);
 
     }else{
         redirect('login');
@@ -389,11 +390,12 @@ function addspoilagesstock(){
             $spAltName = $this->input->post('spAltName'); 
             $rDate = $this->input->post('date'); 
             $rDateRecorded = date("Y-m-d H:i:s");
-            $rTotal = 0;
+            $rTotal = $this->input->post('rTotal');
             $items = json_decode($this->input->post('items'), true);
             $accountID = $_SESSION["user_id"];
-
-            $this->adminmodel->add_returns($spID, $spAltName, $rDate, $rDateRecorded, $rTotal, $items);
+            $action = 'add';
+            
+            $this->adminmodel->add_returns($spID, $spAltName, $rDate, $rDateRecorded, $rTotal, $items, $accountID, $action);
         }else{
             redirect("login");
         }

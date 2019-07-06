@@ -2,6 +2,7 @@
 <htmL>
 
 <head>
+    <!-- <meta http-equiv="refresh" content="3"> -->
     <?php include_once('templates/head.php') ?>
     <link rel="stylesheet" href="<?php echo base_url() . 'assets/css/barista/cards.css' ?>" type="text/css">
 </head>
@@ -112,13 +113,13 @@
                         </table>
                     </div>
                     <!--Footer-->
-                    <div class="card-footer p-1 m-1 text-muted">
+                    <!--<div class="card-footer p-1 m-1 text-muted">
                             <div style="overflow:auto;">
                                 <div style="float:right;width:25%;float:left;">
                                     <button class="deleteOS btn btn-warning btn-sm" style="font-size:13px;margin:0" data-toggle="modal" data-target="#deleteModal">Remove Slip</button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             `;
@@ -203,13 +204,13 @@
             });
             $("button#remSlip").on("click", function() {
                 $(btn).closest("div.list").remove();
-                location.reload();
+                //location.reload();
             });
             $("img.cancelBtn").on("click", function() {
                 var cancelID = $(this).attr('data-id');
                 var chckStats = $(this).attr('data-status');
                 if (chckStats == 'served') {
-                    alert('Can not cancel!Already Served');
+                    alert('Cannot cancel! Already Served');
                 } else {
                     cancelOrder(cancelID);
                 }
@@ -226,7 +227,7 @@
             $('#cancelModal').remove();
             console.log(cancelID);
             var name = orderlists.filter(item => item.olID === cancelID);
-            console.log(name[0].mName);
+            console.log(name[0].olDesc);
             var cancel = `<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="deleteOrderModal" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -239,7 +240,7 @@
                         <div class="modal-body text-center py-2">
                             <i class="fas fa-times fa-4x animated rotateIn text-danger"></i>
                             <input hidden id="remID">
-                            <p class="delius">Are you sure you want to cancel <strong>${name[0].mName}</strong>?</p>
+                            <p class="delius">Are you sure you want to cancel <strong>${name[0].olDesc}</strong>?</p>
                         </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>

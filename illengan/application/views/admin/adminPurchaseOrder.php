@@ -28,17 +28,17 @@
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody>
-                                        <?php if(isset($transactions[0])){
-                                        foreach($transactions as $transaction){
+                                        <?php if(isset($pos[0])){
+                                        foreach($pos as $po){
                                     ?>
-                                        <tr data-id="<?= $transaction['id']?>">
+                                        <tr data-id="<?= $po['id']?>">
                                             <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn"
                                                         src="/assets/media/admin/down-arrow%20(1).png"
-                                                        style="height:15px;width: 15px" /></a><?=  $transaction['num'];?>
+                                                        style="height:15px;width: 15px" /></a><?=  $po['id'];?>
                                             </td>
-                                            <td><?= $transaction['supplier']?></td>
-                                            <td><?= $transaction['date']?></td>
-                                            <td>&#8369; <?=$transaction['total']?></td>
+                                            <td><?= $po['supplierName']?></td>
+                                            <td><?= $po['transDate']?></td>
+                                            <td>&#8369; <?=$po['total']?></td>
                                             <td>
                                                 <a class="editBtn btn btn-sm btn-secondary"
                                                     href="<?= site_url('admin/purchaseorder/formedit')?>">Edit</a>
@@ -50,10 +50,10 @@
                                             <td colspan="5">
                                                 <div class="container" style="display:none">
                                                     <div>Date
-                                                        Recorded:<?= $transaction['daterecorded'] == null ? "No recorded date." : $transaction['daterecorded']?>
+                                                        Recorded:<?= $po['dateRecorded'] == null ? "No recorded date." : $po['dateRecorded']?>
                                                     </div>
                                                     <div>
-                                                        Remarks:<?= $transaction['remarks'] == null ? "None" : $transaction['remarks']?>
+                                                        <!-- Remarks:<?= $transaction['remarks'] == null ? "None" : $transaction['remarks']?> -->
                                                     </div>
 
                                                     <table class="table table-bordered">
@@ -61,29 +61,28 @@
                                                             <tr>
                                                                 <th>Name</th>
                                                                 <th>Qty</th>
-                                                                <th>Equivalent</th>
+                                                                <!-- <th>Equivalent</th> -->
                                                                 <th>Actual Qty</th>
                                                                 <th>Price</th>
-                                                                <th>Discount</th>
+                                                                <!-- <th>Discount</th> -->
                                                                 <th>Subtotal</th>
-                                                                <th>Payment Status</th>
+                                                                <!-- <th>Payment Status</th> -->
                                                                 <th>Delivery Status</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <?php foreach($transitems as $transitem){
-                                                        if($transitem['transaction'] == $transaction['id']){?>
-                                                            <tr>
-                                                                <td><?= $transitem['name']?></td>
-                                                                <td><?= $transitem['qty']?></td>
-                                                                <td><?= $transitem['equivalent']?></td>
-                                                                <td><?= $transitem['actualqty']?></td>
-                                                                <td><?= $transitem['price']?></td>
-                                                                <td><?= $transitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?>
-                                                                </td>
-                                                                <td><?= $transitem['subtotal']?></td>
-                                                                <td><?= $transitem['paymentstatus']?></td>
-                                                                <td><?= $transitem['deliverystatus']?></td>
+                                                            <?php foreach($poitems as $poitem){
+                                                        if($poitem['piID'] == $po['id']){?>
+                                                                <td><?= $poitem['spmName']?></td>
+                                                                <td><?= $poitem['qty']?></td>
+                                                                <!-- <td><?= $poitem['equivalent']?></td> -->
+                                                                <td><?= $poitem['actual']?></td>
+                                                                <td><?= $poitem['spmPrice']?></td>
+                                                                <!-- <td><?= $poitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?>
+                                                                </td> -->
+                                                                <td><?= $poitem['subtotal']?></td>
+                                                                <!-- <td><?= $poitem['paymentstatus']?></td> -->
+                                                                <td><?= $poitem['piStatus']?></td>
                                                             </tr>
                                                             <?php }
                                                         }?>

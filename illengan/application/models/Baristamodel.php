@@ -90,6 +90,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $query->result();
     }
 
+    function get_oslips(){
+        $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" GROUP BY osID, tableCode' );
+        return $query->result();
+
+    }
+
         function get_orderlists($osID){
             $query = "Select olID, olDesc, olQty, olSubtotal from orderlists inner join preferences using (prID) inner join orderslips using (osID) where osID = ?";
             return $this->db->query($query, array($order_id))->result_array(); 
@@ -151,7 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
         function get_servedorderslips(){
-            $query = "Select * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode";
+            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode"; //WHERE CAST(osDateTime AS date) = cast((now()) as date)
             return $this->db->query($query)->result_array();
         }
         function get_servedOlist(){

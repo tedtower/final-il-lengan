@@ -224,35 +224,6 @@ class Barista extends CI_Controller{
             }
         }
 
-        //barista functions for orderslips-cards
-
-        function sample(){
-            if($this->checkIfLoggedIn()){
-            $this->load->view('barista/templates/head'); 
-            $this->load->view('barista/templates/navigation'); 
-                $data["slip"] = $this->baristamodel->slipData();
-                $this->load->view("barista/orderCards", $data);
-            }else{
-                redirect('login');
-                }
-        }
-
-        function get_slipData(){
-            if($this->checkIfLoggedIn()){
-            $this->load->helper->form();
-            $data = array(
-                $slip_id => $this->input->post('osID'),
-                'table_code' => $this->input->post('tableCode'),
-                'customerName' => $this->input->post('custName'),
-                'paymentStatus' => $this->input->post('payStatus'),
-            );
-            $this->load->view('barista/orderCards', $data);
-            //$this->load->view('barista/viewOrderslipJS', $data);
-        }else{
-            redirect('login');
-            }
-        }
-
         function orderData(){
             if($this->checkIfLoggedIn()){
             $data= $this->baristamodel->get_ordersData();
@@ -326,7 +297,7 @@ class Barista extends CI_Controller{
         function getOrderslip(){
             if($this->checkIfLoggedIn()){
             $data = array(
-                'orderslips' => $this->baristamodel->get_orderslips(),
+                'orderslips' => $this->baristamodel->get_oslips(),
                 'orderlists' => $this->baristamodel->get_pendingOlist(),
                 'addons' => $this->baristamodel->get_addons(),
 		 'tables' => $this->baristamodel->get_availableTables()
