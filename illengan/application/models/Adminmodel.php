@@ -775,8 +775,8 @@ function get_transitems(){
     }
 
     function add_preference($mID, $pref){
-       $query = "INSERT into preferences (mID, prName, mTemp, prPrice, prStatus) values (?,?,?,?,?)";
-       $this->db->query($query, array($mID, $pref['prName'], $pref['mTemp'], $pref['prPrice'], $pref['prStatus']));
+        $query = "INSERT into preferences (mID, prName, mTemp, prPrice, prStatus) values (?,?,?,?,?)";
+        $this->db->query($query, array($mID, $pref['prName'], $pref['mTemp'], $pref['prPrice'], $pref['prStatus']));
     }
     function set_tNum() {
         $this->db->select('MAX(tNum) AS lastnum');
@@ -1817,7 +1817,15 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
                 ?
             );";
         return $this->db->query($query,array($item["type"], $item["qty"], $item["actual"], $item["subtotal"], $item["remaining"], 
-        $item["remarks"], $item["date"], $item["stock"] ,$item[merch], $item["return"], $item["purchase"], $item["consume"], $item["spoil"]));
+        $item["remarks"], $item["date"], $item["stock"] ,$item["merch"], $item["return"], $item["purchase"], $item["consume"], $item["spoil"]));
+    }
+    function add_consumption($c){
+        $query = "INSERT INTO consumptions (cDate, cDateRecorded) VALUES (?,?)";
+        return $this->db->query($query,array($c["date"], $c["current"]));
+    }
+    function add_consumptionItem($cID){
+        $query = "INSERT INTO consumed_items (cID) VALUES (?)";
+        return $this->db->query($query, array($cID));
     }
     function get_purchaseOrders(){
         $query = "SELECT
