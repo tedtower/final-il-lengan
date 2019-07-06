@@ -2,6 +2,7 @@
 <html>
 
 <head>
+<!-- <meta http-equiv="refresh" content="3"> -->
   <?php include_once('templates/head.php') ?>
 </head>
 
@@ -64,8 +65,8 @@
                 <th style="width: 200px;">Item Name</th>
                 <th style="width: 150px;">Qty</th>
                 <th style="width: 150px;">Price</th>
-                <th style="width: 150px;">Subtotal</th>
                 <th style="width: 150px;">*Add-on Total</th>
+                <th style="width: 150px;">Subtotal</th>
                 <th></th>
               </tr>
             </thead>
@@ -91,7 +92,7 @@
                   style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                   Cash</span>
               </div>
-              <input type="text" step="any" min="0" class="form-control" name="cash" id="cash" value="0.00" required>
+              <input type="number" step="any" min="0" class="form-control" name="cash" id="cash" value="0.00" required>
               <span class="text-danger"><?php echo form_error("cash"); ?></span>
             </div>
             <div class="input-group mb-3">
@@ -136,8 +137,8 @@
                 <th style="width: 200px;">Item Name</th>
                 <th style="width: 150px;">Qty</th>
                 <th style="width: 150px;">Price</th>
-                <th style="width: 150px;">Subtotal</th>
                 <th style="width: 150px;">*Add-on Total</th>
+                <th style="width: 150px;">Subtotal</th>
                 <th></th>
               </tr>
             </thead>
@@ -163,7 +164,7 @@
                   style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                   Cash</span>
               </div>
-              <input type="text" step="any" min="0" class="form-control" name="cash2" id="cash2" value="0.00" required>
+              <input type="number" step="any" min="0" class="form-control" name="cash2" id="cash2" value="0.00" required>
               <span class="text-danger"><?php echo form_error("cash2"); ?></span>
             </div>
             <div class="input-group mb-3">
@@ -335,8 +336,8 @@
                             <td><input type="text" name="olDesc" class="form-control form-control-sm"  value="${items.olDesc}" required readonly></td>
                             <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
                             <td><input type="text" name="olPrice" class="form-control form-control-sm"  value="${items.olPrice}" required readonly></td>
-                            <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal}" required readonly></td>
                             <td><input type="text" name="aoTotal" class="form-control form-control-sm"  value="${items.aoTotal}" required readonly></td>
+                            <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal}" required readonly></td>
                             <td></td>
                             </tr>`
             }).join('')}`);
@@ -404,9 +405,10 @@ function getSelectedSlips() {
     var choices = document.getElementsByClassName('choiceStock');
     var stockChecked;
     
-    for (var i = 0; i <= choices.length - 1; i++) {
+    for (var i = 0; i <= choices.length -1; i++) {
         if (choices[i].checked) {
             value = choices[i].value;
+            
             $.ajax({
                 type: 'POST',
                 url: 'http://www.illengan.com/barista/viewOrderslipJS',
@@ -428,10 +430,10 @@ function getSelectedSlips() {
                                     class="form-control form-control-sm"  value="` + orders[i].olQty + `" readonly="readonly" required></td>
                             <td><input type="text" id="olPrice` + i + `" name="olPrice"
                                     class="form-control form-control-sm"  value="` + orders[i].olPrice + `" readonly="readonly" required></td>
-                            <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
-                                    class="olSubtotal form-control form-control-sm" value="` + orders[i].olSubtotal + `" readonly="readonly" required></td>
                             <td><input type="text" id="aoTotal` + i + `" name="aoTotal"
                                     class="aoTotal form-control form-control-sm" value="` + orders[i].aoTotal + `" readonly="readonly" required></td>
+                            <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
+                                    class="olSubtotal form-control form-control-sm" value="` + orders[i].olSubtotal + `" readonly="readonly" required></td>
                             <td></td>
                             </tr>`;
                     $('.orderitemsTable > tbody').append(stockChecked);
@@ -457,7 +459,7 @@ function setTotal() {
         //subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val() * parseInt($("input[name='olQty']").eq(i).val()));
         subtotal = parseFloat($("input[name='olSubtotal']").eq(i).val());
         total = total + subtotal;
-        osID = $("input[name='olSubtotal']").eq(i).closest("tr").attr("data-osid");
+        osID = $("input[name='olSubtotal']").eq(i).closest("tr").attr("data-osID");
         osIDarr.push(osID);
         }
   
