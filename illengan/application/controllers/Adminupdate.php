@@ -41,11 +41,9 @@ class Adminupdate extends CI_Controller{
             $osDateRecorded = date("Y-m-d H:i:s");
             $orderlists = json_decode($this->input->post('orderlists'), true);
             $addons = json_decode($this->input->post('addons'), true);
-            $accountID = $_SESSION["user_id"];
-            $action = 'update';
-
+               
             $this->adminmodel->edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, 
-            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id, $action);
+            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons);
         }else{
             redirect('login');
         }
@@ -61,10 +59,9 @@ class Adminupdate extends CI_Controller{
             $rTotal = $this->input->post('rTotal');
             $items = json_decode($this->input->post('items'), true);
             $accountID = $_SESSION["user_id"];
-            $action = 'update';
 
             $this->adminmodel->edit_returns($rID, $rTotal, $rDate);
-            $this->adminmodel->update_riStatus($items, $accountID, $action);
+            $this->adminmodel->update_riStatus($items);
             }else{
                 redirect('login');
             }

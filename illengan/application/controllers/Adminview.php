@@ -833,18 +833,6 @@ function getStockItem(){
             redirect('login');
         }
     }
-    function jsonConsumptions() {
-        if($this->checkIfLoggedIn()){
-            $data = array(
-                'consumption' => $this->adminmodel->get_consumptions(),
-                'consitems' => $this->adminmodel->get_consumpitems()
-            );
-            header('Content-Type: application/json');
-            echo json_encode($data, JSON_PRETTY_PRINT);
-        }else{
-            redirect('login');
-        }
-    }
     function viewConsumptions(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Consumption";
