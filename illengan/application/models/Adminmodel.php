@@ -1387,18 +1387,6 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
             VALUES (NULL, ?, ?, ?, ?, ?)";
             return $this->db->query($query, array($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks));
     }   
-
-    function add_consumption($con) {
-        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
-            VALUES(NULL, ?, ?, ?, ?, ?)";
-        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
-            WHERE tType = ?",array($con['type']))->result_array()[0]['lastnum'];
-        $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
-        if($this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']))){
-            return $this->db->insert_id();
-        }
-        return 0;
-    }
     function edit_consumption($con){
         $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
         return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
