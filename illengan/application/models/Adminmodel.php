@@ -1736,7 +1736,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
     }
     function edit_purchase($p){
         $query = "UPDATE purchases SET receiptNo = ?, pDate = ?, pDateRecorded = ?, spAltName = ? WHERE pID = ?";
-        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"] $p["pID"]));
+        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"], $p["pID"]));
     }
     function add_pItem($piStatus){
         $query = "INSERT INTO purchase_items(piStatus) VALUES(?)";
