@@ -27,8 +27,9 @@
 
 
     // --------------- I N V E N T O R Y ---------------
-    function get_inventory(){
-        $query = "SELECT * FROM `transactions` LEFT JOIN trans_items USING (tID) left JOIN transitems using (tiID) WHERE tType = 'consumption'";
+     function get_inventory(){
+        $query = "SELECT tiID,stockitems.stID as stID,transitems.ciID as ciID,stName,tiQty,tiDate,cDateRecorded,tiRemarks FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
+        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID WHERE tiType = 'consumed'";
         return $this->db->query($query)->result_array();
     }
         function restock($stocks){
@@ -39,14 +40,20 @@
                 }
             }
         }
-         function destock($stocks){
-            $query = "Update stockitems set stQty = ? - ? where stID = ?";
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                    $this->db->query($query, array($stocks[$in]['curQty'], $stocks[$in]['consQty'], $stocks[$in]['stID'],  )); 
-                }
-            }
-        }
+         function destock($items){
+            if(count($items) > 0){
+               for($in = 0; $in < count($items) ; $in++){
+               $stID= $items[$in]['stID'];
+               $query1 = "SELECT stQty FROM stockitems where stID = '$stID'";
+               $result= $this->db->query($query1)->result_array();
+               foreach($result as $r){
+                   $curQty = $r['stQty'];
+               }
+               $query = "Update stockitems set stQty = ? - ? where stID = ?";
+               $this->db->query($query, array($curQty, $items[$in]['qty'], $items[$in]['stID'])); 
+               }
+           }
+       }
         function destockvarItems($stID,$curQty,$tNum){
             $query = "UPDATE stockitems 
             SET 
@@ -59,13 +66,13 @@
 
     // --------------- S P O I L A G E S ---------------
         function get_spoilagesmenu(){
-            $query = "Select msID,prID, mName,msQty,DATE_FORMAT(msDate, '%b %d, %Y %r') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
-            AS msDateRecorded,msRemarks from menuspoil inner join spoiledmenu using (msID) inner join preferences using (prID) 
+            $query = "Select osID,msID,prID,sID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
+            AS msDateRecorded,msRemarks from stockspoil left join menuspoil using (msID) inner join spoiledmenu using (msID) inner join preferences using (prID) 
             inner join menu using (mID)";
             return  $this->db->query($query)->result_array();
         }
         function get_spoilagesstock(){
-            $query = "SELECT * FROM `transactions` left JOIN trans_items USING (tID) inner JOIN transitems using (tiID)";
+            $query = "SELECT * FROM transitems inner join stockitems using (stID) where siID != 'NULL'";
             return  $this->db->query($query)->result_array();
         }
         function get_stocks(){
@@ -146,110 +153,150 @@
             }    
         }
     }
-    function add_menuspoil($date_recorded,$account_id,$menu){
-        $query = "insert into menuspoil (msID,msDateRecorded) values (NULL,?)";
-        if($this->db->query($query,array($date_recorded))){ 
-            $this->add_spoiledmenu($this->db->insert_id(),$account_id,$menu);
-            return true;
+    //--------------------------------- A D D I N G  M E N U  S P O I L A G E --------------------------------------------------
+function add_menuspoil($date,$date_recorded,$account_id,$menu, $tiType){
+    $query = "insert into menuspoil (msID,msDate,msDateRecorded) values (NULL,?,?)";
+    if($this->db->query($query,array($date,$date_recorded))){ 
+        $this->add_spoiledmenu($this->db->insert_id(),$account_id,$menu,$date,$date_recorded, $tiType);
+        return true;
+    }
+}
+
+function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
+    $query = "insert into spoiledmenu (msID,prID,osID,msQty,msDate,msRemarks) values (?,?,?,?,?,?)";
+    if(count($menus) > 0){
+        for($in = 0; $in < count($menus) ; $in++){
+            if($menus[$in]['slip'] === ''){
+                $osID = NULL;
+            }else{
+                $osID = $menus[$in]['slip'];
+            }
+        $this->db->query($query, array($msID, $menus[$in]['prID'],$osID,$menus[$in]['qty'],$date,$menus[$in]['remarks']));
+            if($menus[$in]['stID'] !== null && $menus[$in]['stID'] !== '') {
+                $this->update_stockqty($menus[$in]['qty'], $menus[$in]['prID']);
+                $this->add_stockSpoiled($menus[$in]['prID'],$msID,$menus[$in]['qty'],$menus[$in]['remarks'],$date,$date_recorded, $tiType);
+            }
         }
     }
-    function add_spoiledmenu($msID,$account_id,$menus){
-        $query = "insert into spoiledmenu (msID,prID,msQty,msDate,msRemarks) values (?,?,?,?,?)";
-        if(count($menus) > 0){
-            for($in = 0; $in < count($menus) ; $in++){
-            $this->db->query($query, array($msID, $menus[$in]['prID'], $menus[$in]['msQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks']));
-            if($menus[$in]['stID'] !== null) {
-                $this->update_stockqty($menus[$in]['newQty'], $menus[$in]['stID']);
-                $this->add_consumption($menus[$in]['stID'], $menus[$in]['deductQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks'], $account_id);
+}
+    function add_stockSpoiled($prID,$msID,$qty,$remarks,$date,$date_recorded,$tiType){
+        $query1 = "SELECT stID FROM prefstock where prID = '$prID'";
+        $return = $this->db->query($query1)->result_array();
+        foreach($return as $ret){
+            $query = "insert into stockspoil (sID, msID,sDate, sDateRecorded) values (NULL,?,?,?)";
+            if($this->db->query($query, array($msID,$date,$date_recorded))){
+                $sID = $this->db->insert_id();
+                $query2 = "insert into spoiledstock (siID,sID) values (NULL,?)";
+                if($this->db->query($query2, array($sID))){
+                    $this->add_trans($prID,$ret['stID'],$qty,$remarks,$date, $this->db->insert_id(), $tiType);
                 }
             }
-            
         }
     }
-    function update_stockqty($newQty, $stID) {
-        $query = "UPDATE stockitems SET stQty = ? WHERE stID = ?";
-        $this->db->query($query, array($newQty, $stID));
+    function add_trans($prID,$stID,$qty,$remarks, $date, $siID, $tiType){
+        $query1 = "SELECT stQty, prstQty FROM stockitems inner join prefstock on stockitems.stID=prefstock.stID where stockitems.stID = '$stID' AND prID = '$prID'";
+        $result= $this->db->query($query1)->result_array();
+        foreach($result as $r){
+            $prstQty = $r['prstQty'];
+            $stQty = $r['stQty'];
+        $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, stID, siID)
+            VALUES (NULL, ?,?,?,?,?,?,?,?)";
+         $this->db->query($query, array($tiType, $qty, $prstQty, $stQty, $remarks, $date, $stID, $siID));
+        } 
+        
     }
 
-
-    function add_varspoilitems($ssID,$stocks,$date_recorded,$slType){ 
-        $tID = NULL;
-        $query = "insert into spoiledstock (ssID,stID,ssQty,ssDate,ssRemarks) values (?,?,?,?,?)";
-            if(count($stocks) > 0){
-                for($in = 0; $in < count($stocks) ; $in++){
-                   $this->db->query($query, array($ssID, $stocks[$in]['stID'], $stocks[$in]['ssQty'], $stocks[$in]['ssDate'],$stocks[$in]['ssRemarks']));  
-                   $this->destockvarItems($stocks[$in]['stID'],$tID,$stocks[$in]['curstQty'],$stocks[$in]['ssQty'], $slType, $date_recorded, $stocks[$in]['ssDate'], $stocks[$in]['ssRemarks'] );   
-                }    
+    function update_stockqty($qty,$prID) {
+        $query2 = "Select stID from prefstock where prID='$prID'";
+        $result2= $this->db->query($query2)->result_array();
+        foreach($result2 as $r2){
+            $stID = $r2['stID'];
+            $query1 = "SELECT stQty,prstQty FROM stockitems inner join prefstock on stockitems.stID=prefstock.stID where stockitems.stID = '$stID' AND prID='$prID'";
+            $result= $this->db->query($query1)->result_array();
+            foreach($result as $r){
+                $prstQty = $r['prstQty'];
+                $curQty = $r['stQty'];
             }
+            $mul = $qty * $prstQty;
+            $diff = $curQty - $mul;
+     $query = "Update stockitems set stQty = ? where stID = ?";
+     $this->db->query($query, array($diff, $stID));   
+        } 
     }
-
-    // --------------- E D I T I N G  S P O I L A G E S ---------------
-      function edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded, $account_id){
-        $query = "Update menuspoil set msDateRecorded = ? where msID=?";
-        if($this->db->query($query,array($date_recorded,$msID))){
-            $query = "Update spoiledmenu set msQty = ?, msDate = ?,msRemarks = ? where msID = ? AND prID = ?";
-             $this->db->query($query,array($msQty,$msDate,$msRemarks,$msID,$prID));
-             $query2 = "INSERT INTO `activitylog` (alID, aID, alDate, alDesc, alType, additionalRemarks)
-             Values (NULL, ?, ?, ?, ?, ?)";
-            $this->db->query($query2, array($account_id, $date_recorded, "Chef updated a menu spoiled item.", "update", $msRemarks));
+// ------------------------------------------- E D I T I N G  M E N U  S P O I L A G E S ------------------------------------------------
+      function edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded,$osID){
+        if($osID === ''){
+            $osID = NULL;
+        }else{
+            $osID = $osID;
+        }
+        $query = "Update menuspoil set msDateRecorded = ?, msDate=? where msID=?";
+        if($this->db->query($query,array($date_recorded,$msDate,$msID))){
+            $query = "Update spoiledmenu set osID = ?, msQty = ?, msDate = ?,msRemarks = ? where msID = ? AND prID = ?";
+             $this->db->query($query,array($osID,$msQty,$msDate,$msRemarks,$msID,$prID));
             
             $spoiled = "Select stID from spoiledmenu inner join prefstock on spoiledmenu.prID=prefstock.prID where msID = '$msID'";
             $stock = $this->db->query($spoiled)->result_array();
             foreach($stock as $stk){
-                if($stk['stID'] != null){
-                    $this->edit_stockItems($prID, $msQty, $oldQty);
-                    $this->edit_msTransactions($msID, $msDate, $msRemarks, $date_recorded);
+                if($stk['stID'] != null && $stk['stID'] != ''){
+                    $this->update_stockItems($prID, $msQty, $oldQty);
+                    $this->update_spoiledStock($msID,$msDate,$date_recorded,$msQty,$msRemarks,$prID);
                 }
             }
         }else{
             return false;
         }
     }
-    function edit_msTransactions($msID, $msDate, $msRemarks, $date_recorded){
-        $query = "SELECT transactions.tID as tID, transitems.stID as stID  FROM spoiledmenu inner join prefstock on spoiledmenu.prID = prefstock.prID inner join transitems on prefstock.stID=transitems.stID
-        inner join trans_items on transitems.tiID=trans_items.tiID inner join transactions on trans_items.tID=transactions.tID where msID='$msID'";
-        $mspoiled = $this->db->query($query)->result_array();
-        foreach($mspoiled as $ms){
-            $tID = $ms['tID'];
-            $stID = $ms['stID'];
-        }
-        $query2 = "Update transactions set tDate=?, dateRecorded = ?, tRemarks=? where tID = ?";
-        $this->db->query($query2, array($msDate, $date_recorded, $msRemarks, $tID));
-        $this->edit_msStocklog($stID, $tID, $msDate, $msRemarks, $date_recorded);
-    }
-     function edit_msStocklog($stID, $tID, $msDate, $msRemarks, $date_recorded){
-        $query = "Update stocklog set slDateTime = ?, dateRecorded = ?, slRemarks =? where stID = ? and tID = ?";
-        return $this->db->query($query, array($msDate, $date_recorded, $msRemarks, $stID, $tID));
-     }
-    function edit_stockItems($prID, $msQty, $oldQty){
+    function update_stockItems($prID, $msQty, $oldQty){
         $query3 = "Select stID from prefstock where prID = '$prID'";
         $stID = $this->db->query($query3)->result_array();
         foreach($stID as $s){
             $id = $s['stID'];
-        }
-        $query4 = "Select stQty, prstQty from stockitems inner join prefstock on stockitems.stID=prefstock.stID
-        where stockitems.stID = '$id'";
-        $data = $this->db->query($query4)->result_array();
-        foreach($data as $d){
-            $stQty = $d['stQty'];
-            $qty = $d['prstQty'];
-            //$stMin = $d['stMin'];
-        }
-        if($msQty > $oldQty){
-            $diff = ($msQty * $qty) - ($oldQty * $qty);
-            $finQty = $stQty - $diff;
-            $updateQty = "Update stockitems set stQty = ? where stID = ?";
-            return $this->db->query($updateQty, array($finQty, $id));
-        }else if($msQty < $oldQty){
-            $sum = ($oldQty * $qty) - ($msQty * $qty);
-            $finQty = $sum + $stQty;
-            $updateQty = "Update stockitems set stQty = ? where stID = ?";
-            return $this->db->query($updateQty, array($finQty, $id));
-        }else{
-            $same = "Update stockitems set stQty = ? where stID = ?";
-            return $this->db->query($same, array($stQty, $id));
+            $query4 = "Select stQty, prstQty from stockitems inner join prefstock on stockitems.stID=prefstock.stID
+            where stockitems.stID = '$id' and prID='$prID'";
+            $data = $this->db->query($query4)->result_array();
+            foreach($data as $d){
+                $stQty = $d['stQty'];
+                $qty = $d['prstQty'];
+            }
+            if($msQty > $oldQty){
+                $diff = ($msQty * $qty) - ($oldQty * $qty);
+                $finQty = $stQty - $diff;
+                $updateQty = "Update stockitems set stQty = ? where stID = ?";
+                $this->db->query($updateQty, array($finQty, $id));
+            }else if($msQty < $oldQty){
+                $sum = ($oldQty * $qty) - ($msQty * $qty);
+                $finQty = $sum + $stQty;
+                $updateQty = "Update stockitems set stQty = ? where stID = ?";
+                $this->db->query($updateQty, array($finQty, $id));
+            }else{
+                $same = "Update stockitems set stQty = ? where stID = ?";
+                $this->db->query($same, array($stQty, $id));
+            }
         }
     }
+    function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
+        $query = "Update stockspoil set  sDate=?, sDateRecorded = ? where msID=?";
+        $this->db->query($query, array($sDate,$dateRecorded, $msID));
+        $query1 = "SELECT sID from stockspoil where msID='$msID'";
+        $rest = $this->db->query($query1)->result_array();
+        foreach($rest as $r){
+            $sID = $r['sID'];
+            $query2 = "SELECT siID from spoiledstock where sID = '$sID'";
+            $rest2 = $this->db->query($query2)->result_array();
+            foreach($rest2 as $r2){
+                $siID = $r2['siID'];
+            }
+            $query3 = "SELECT  stID from prefstock where prID = '$prID'";
+            $rest3 = $this->db->query($query3)->result_array();
+            foreach($rest3 as $r3){
+                $stID = $r3['stID'];
+            }
+            $tiType = 'spoilage';
+            $this->add_trans($prID,$stID,$qty,$remarks, $sDate, $siID, $tiType);
+        }
+    }
+
     // --------------- A D D I N G  T O  S T O C K L O G ---------------
     function add_stockLog2($stID, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks, $updateQtyh, $updateQtyl,$curSsQty,$ssQtyUpdate){
         if ($curSsQty > $ssQtyUpdate){
@@ -359,50 +406,42 @@
                 return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
         } 
 
-         //------------------------------ C O N S U M P T I O N ------------------------------------------------------------------------------
-        function add_consumptions($date, $remarks, $items, $date_recorded, $account_id){//Consumption
-            $query1 = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'consumption'";
-            $num = $this->db->query($query1)->result_array();
-            foreach($num as $n){
-                $lnum = $n['lastnum'];
-            }
-            $lastNum = $lnum + 1;
+       //------------------------------ C O N S U M P T I O N ------------------------------------------------------------------------------
+        function add_consumptions($date, $items, $date_recorded, $account_id, $tiType){//Consumption
+            $query2 = "INSERT INTO consumptions(cID, cDate, cDateRecorded) VALUES (NULL, ?,?)";
+            $this->db->query($query2, array($date, $date_recorded));
+            $cID = $this->db->insert_id();
+            $this->add_cons($date,$items, $cID, $account_id, $tiType);
+        }
+        function add_cons($date,$items,$cID, $account_id, $tiType){
             if(count($items) > 0){
                 for($in = 0; $in < count($items) ; $in++){
-                    $this->destock($items);  
-                    $this->add_contransaction(NULL, $date, "consumption", $date_recorded, $remarks, $lastNum, $items[$in]['stock'],$items[$in]['qty'],$account_id, $items);
+                $stID= $items[$in]['stID'];
+                $tiQty = $items[$in]['qty'];
+                $remarks = $items[$in]['remarks'];
+                $this->cons_items($cID, $tiQty,$remarks, $date, $stID, $account_id, $tiType);
                 }
             }
         }
-//consumption
-        function add_contransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID, $consQty,$account_id, $items){
-            $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
-            if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
-                $this->add_contransitems($this->db->insert_id(), $stID, $consQty,$date,$dateRecorded,$remarks,$account_id, $items);
-                return true;
-             }
+        function cons_items($cID, $tiQty,$remarks, $date, $stID, $account_id, $tiType){
+            $query3 = "INSERT INTO consumed_items (ciID, cID) VALUES (NULL,?)";
+            $this->db->query($query3, array($cID));
+            $ciID = $this->db->insert_id();
+            $this->add_itrans($tiQty,'1',$remarks, $date, $stID, $ciID, $account_id, $tiType);
         }
-        function add_contransitems($tID,$stID,$consQty,$date,$dateRecorded,$remarks,$account_id, $items){
-            $query1= "Select uomID, stName from stockitems where stID = '$stID'";
-            $result = $this->db->query($query1)->result_array();
+
+        function add_itrans($tiQty,$actual,$remarks, $date, $stID, $ciID, $tiType){
+            $query1 = "SELECT stQty FROM stockitems where stID = '$stID'";
+            $result= $this->db->query($query1)->result_array();
             foreach($result as $r){
-                $uomID = $r['uomID'];
-                $stName = $r['stName'];
-            }
-            $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
-             if($this->db->query($query,array($uomID, $stID, $stName))){
-                $this->add_contrans_items($this->db->insert_id(), $stID, $tID, $consQty);
-                for($in = 0; $in < count($items) ; $in++){
-                $this->add_consstocklog($items[$in]['stock'], $tID, "consumed",$date, $dateRecorded, $items[$in]['qty'], $remarks);
-                $this->add_consactlog($account_id, $dateRecorded, "Chef added a consumption.", "add", $remarks);
-            }
-             }
+                $stQty = $r['stQty'];
+            } 
+            $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, stID, ciID)
+                VALUES (NULL, ?,?,?,?,?,?,?,?)";
+             return $this->db->query($query, array($tiType, $tiQty, $actual, $stQty, $remarks, $date, $stID, $ciID));
         }
-        function add_contrans_items($tiID, $stID, $tID, $consQty){
-            $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
-            $this->db->query($query,array($tID, $tiID, $consQty));
-        }
-        function add_consactlog($aID, $alDate, $alDesc, $defaultType, $additionalRemarks){
+
+        function add_consactlog($account_id, $date_recorded){
             $query = "INSERT INTO `activitylog`(
                 `alID`,
                 `aID`,
@@ -412,22 +451,39 @@
                 `additionalRemarks`
                 ) 
                 VALUES (NULL, ?, ?, ?, ?, ?)";
-                 $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
+                return $this->db->query($query, array($account_id, $date_recorded, "Chef added consumption", "add", ""));
         } 
-        function add_consstockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks){
-            $query = "INSERT INTO `stocklog`(
-                    `slID`,
-                    `stID`,
-                    `tID`,
-                    `slType`,
-                    `slDateTime`,
-                    `dateRecorded`,
-                    `slQty`,
-                    `slRemarks`
-                )
-                VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);";
-             $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $slQty, $slRemarks));
+        function update_editCons($tiID,$stID,$ciID,$cQty,$coldQty,$cDate,$cRemarks,$drecorded){
+            $query = "SELECT cID FROM consumed_items where ciID='$ciID'";
+            $result = $this->db->query($query)->result_array();
+            foreach($result as $r){
+                $cID = $r['cID'];
+            }
+            $uquery = "UPDATE consumptions set cDate=?,cDateRecorded=? where cID = ?";
+            $this->db->query($uquery,array($cDate,$drecorded,$cID));
+            $this->add_itrans($cQty,'1',$cRemarks, $cDate, $stID, $ciID, 'consumed');
         }
+        function update_iStocks($id, $cQty, $coldQty){
+                $query4 = "Select stQty from stockitems where stID = '$id'";
+                $data = $this->db->query($query4)->result_array();
+                foreach($data as $d){
+                    $stQty = $d['stQty'];
+                }
+                if($cQty > $coldQty){
+                    $diff = $cQty - $coldQty;
+                    $finQty = $stQty - $diff;
+                    $updateQty = "Update stockitems set stQty = ? where stID = ?";
+                    $this->db->query($updateQty, array($finQty, $id));
+                }else if($cQty < $coldQty){
+                    $sum = $coldQty - $cQty;
+                    $finQty = $sum + $stQty;
+                    $updateQty = "Update stockitems set stQty = ? where stID = ?";
+                    $this->db->query($updateQty, array($finQty, $id));
+                }else{
+                    $same = "Update stockitems set stQty = ? where stID = ?";
+                    $this->db->query($same, array($stQty, $id));
+                }
+            }
 
         // ---------  D E L I V E R Y  R E C E I P T S ---------
         function get_deliveryReceipts(){

@@ -17,7 +17,7 @@
                                 <div class="card-header">
                                     <h6 style="font-size:15px;margin:0">Add Purchase Order</h6>
                                 </div>
-                                <form id="poForm"  action="<?= site_url("admin/purchaseorder/add")?>" accept-charset="utf-8" class="form">
+                                <form id="conForm"  action="<?= site_url("admin/purchaseorder/add")?>" accept-charset="utf-8" class="form">
                                     <div class="card-body">
                                         <input type="text" name="tID" hidden="hidden">
                                         <div class="form-row">
@@ -26,74 +26,47 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Supplier</span>
                                                 </div>
-                                                <select class="spID form-control" name="spID" required>
-                                                    <option value="" selected>Choose</option>
-                                                    <?php if(isset($supplier)){
-                                            foreach($supplier as $sup){?>
-                                                    <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
-                                                    <?php }}?>
-                                                </select>
+                                                <select class="suppliers form-control form-control-sm" name="suppliers">
+                                                    <option value="" selected>Select Supplier</option>
+                                                    <?php
+                                                foreach($supplier as $supp){
+                                                ?>
+                                                    <option value="<?= $supp['spID']?>"><?= $supp['spName']?></option>
+                                                <?php } ?>
+                                                <select>
                                             </div>
                                             <!--Date-->
                                             <div class="input-group input-group-sm mb-3 col">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" class="form-control" name="tDate">
+                                                <input type="date" class="form-control" name="date">
                                             </div>
                                         </div>
                                         <!--Remarks-->
-                                        <div class="input-group input-group-sm mb-3">
+                                        <!-- <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" style="width:70px">Remarks</span>
                                             </div>
                                             <textarea type="text" name="tRemarks" class="form-control form-control-sm"
                                                 rows="1"></textarea>
-                                        </div>
-                                        <!--div containing the different input fields in adding trans items -->
-                                        <p style="font-size:14px;border-bottom:1px solid whitesmoke;padding-bottom:5px">
-                                            Purchase Order Items</p>
-                                        <div class="ic-level-2">
-                                            <div style="overflow:auto;margin-bottom:2%" class="ic-level-1"
-                                                data-stockid="${merch.stID}" data-stqty="${merch.prstQty}"
-                                                data-currqty="${merch.stQty}">
-                                                <div
-                                                    style="overflow:auto;margin-bottom:2%;float:left;width:95%;overflow:auto;">
-                                                    <div class="find input-group mb-1">
-                                                        <input type="text" name="itemName[]"
-                                                            class="form-control form-control-sm" value=""
-                                                            style="width:24%" readonly placeholder="Item Name">
-                                                        <input type="number" name="itemQty[]"
-                                                            class="tiQty form-control form-control-sm"
-                                                            placeholder="Quantity" value="1" min="1"
-                                                            onchange="setInputValues()">
-                                                        <select name="itemUnit[]"
-                                                            class="itemUnit form-control form-control-sm" readonly>
-                                                            <option value="" selected="selected">Unit</option>
-                                                        </select>
-                                                        <input type="number" name="price[]"
-                                                            class="tiPrice form-control form-control-sm"
-                                                            value="${merch.spmPrice}" readonly placeholder="Price">
-                                                        <input type="number" name="itemSubtotal[]"
-                                                            class="tiSubtotal form-control form-control-sm"
-                                                            placeholder="Subtotal" readonly>
-                                                        <select hidden name="stID[]"
-                                                            class="stock form-control form-control-sm" readonly>
-                                                            <option value="" selected="selected">Stock Item
-                                                            </option>
-                                                        </select>
-                                                        <input hidden name="actualQty[]" type="number"
-                                                            class="qtyPerItem form-control form-control-sm"
-                                                            value="${merch.spmActualQty}" readonly
-                                                            placeholder="Actual Quantity">
-                                                    </div>
-                                                </div>
-                                                <div class="mt-4" style="float:left:width:3%;overflow:auto;">
-                                                    <img class="exitBtn" src="/assets/media/admin/error.png"
-                                                        style="width:18px;height:18px;float:right;">
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div> -->
+                                        <div class="ic-level-3">
+                                        <table class="poitems table table-borderless">
+                                            <thead style="border-bottom:2px solid #cccccc;font-size:14px">
+                                                <tr>
+                                                    <th style="font-weight:500 !important;width: 40%">Item Name</th>
+                                                    <th style="font-weight:500 !important;">Qty</th>
+                                                    <th style="font-weight:500 !important;width:5%">Unit</th>
+                                                    <th style="font-weight:500 !important;">Price</th>
+                                                    <th style="font-weight:500 !important;">Subtotal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="ic-level-2">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
 
                                         <br>
                                         <span>Total: &#8369;<span class="total">0</span>
@@ -129,88 +102,14 @@
                                                 <th style="font-weight:500 !important;">Price</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="ic-level-2"><?php
-                                    foreach($suppmerch as $suppmerch){
-                                    ?>
-                                            <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="stock"
-                                                    data-name="<?= $suppmerch['spmName']?>" value="<?= $suppmerch['spmID']?>"></td>
-                                                <td class="stock"><?= $suppmerch['spmName']?></td>
-                                                <td class="category"><?= $suppmerch['spmPrice']?></td>
-                                            </tr>
-                                            <?php 
-                                    }?>
+                                        <tbody class="merchandises ic-level-2">
+
                                         </tbody>
                                 </table>
                                 </div>
                             </div>
                             <!--End of Merchandise sidenav-->
                         </div>
-
-                        <!--Start of Brochure Modal"-->
-                        <div class="modal fade bd-example-modal" id="brochureStock" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true"
-                            style="background:rgba(0, 0, 0, 0.3)">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Select Stock</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form method="post" accept-charset="utf-8">
-                                        <div class="modal-body">
-                                            <div style="margin:1% 3%" class="ic-level-2">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger btn-sm"
-                                                data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-success btn-sm">Ok</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <!--End of Brochure Modal"-->
-                        <!--Start of Brochure Modal"-->
-                        <div class="modal fade bd-example-modal-sm" id="merchandiseBrochure" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true"
-                            style="background:rgba(0, 0, 0, 0.3)">
-                            <div class="modal-dialog " role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Select Merchandise Item</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form>
-                                        <div class="modal-body">
-                                            <div style="margin:1% 3%" class="ic-level-2" id="list">
-                                                <!--checkboxes-->
-                                                <?php if(!empty($merchandise)){
-                                            foreach($merchandise as $merch){
-                                        ?>
-                                                <label style="width:96%"><input type="checkbox" name="merch[]"
-                                                        class="mr-2"
-                                                        value="<?= $merch['spmID']?>"><?= ucWords($merch['spmName'])?></label>
-                                                <?php
-                                            }
-                                        }?>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger btn-sm"
-                                                data-dismiss="modal">Cancel</button>
-                                            <button class="btn btn-success btn-sm" type="submit">Ok</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <!--End of Brochure Modal"-->
                     </div>
                 </div>
             </div>
@@ -218,168 +117,310 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
-    var stocks = [];
-    var uom = [];
-    var supplier = [];
-    var suppmerch = [];
-    $(function() {
-        $("#poForm select[name='spID']").on("change",function(){
-            var supplier = $(this).val();
-            console.log(supplier);
-            $.ajax({
-                method: "GET",
-                url: "/admin/purchaseorder/get",
-                data: {
-                    id: supplier
-                },
-                dataType: "JSON",
-                success: function(data){
-                    console.log(data);
-                },
-                error: function(response, setting, errorThrown) {
-                    console.log(errorThrown);
-                    console.log(response.responseText);
-                }
-            });
-        });
-        $.ajax({
-            url: '/admin/jsonPO',
-            dataType: 'json',
-            success: function(data) {
-                var poLastIndex = 0;
-                stocks = data.stock;
-                supplier = data.supplier;
-                suppmerch = data.suppmerch;
-                uom = data.uom;
-                $(".addMBtn").on('click', function() {
-                    var spID = parseInt($(this).closest('.form').find('.spID').val());
-                    var merchandise = suppmerch.filter(sm => sm.spID == spID);
-                    setMerchandiseBrochure(merchandise);
-                    $("#merchandiseBrochure form").on("submit", function(event) {
-                        event.preventDefault();
-                        $(this).find("input[name='stockitems']:checked").each(
-                            function(index) {
-                                var selectedMerch = merchandise.filter(merch =>
-                                    merch.spmID == $(this).attr(
-                                        "data-spmid"));
-                                $("#addPurchaseOrder .ic-level-2").append(
-                                    selectedMerch.map(merch => {
-                                        return `<div style="overflow:auto;margin-bottom:2%" class="ic-level-1" data-stockid="${merch.stID}" data-stqty="${merch.prstQty}" data-currqty="${merch.stQty}">
-                                    <div style="float:left;width:95%;overflow:auto;">
-                                        <div class="find input-group mb-1">
-                                            <input type="text" name="itemName[]"
-                                                class="form-control form-control-sm"
-                                                value="${merch.stName} ${merch.stSize}" style="width:24%" readonly>
-                                            <input type="number" name="itemQty[]"
-                                                class="tiQty form-control form-control-sm"
-                                                placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
-                                            <select name="itemUnit[]"
-                                                class="itemUnit form-control form-control-sm" readonly>
-                                                <option value="" selected="selected">Unit</option>
-                                            </select>
-                                            <input type="number" name="price[]"
-                                                class="tiPrice form-control form-control-sm"
-                                                value="${merch.spmPrice}" readonly>
-                                            <input type="number" name="discount[]"
-                                                class="form-control form-control-sm "
-                                                placeholder="Discount">
-                                            <input type="number" name="itemSubtotal[]"
-                                                class="tiSubtotal form-control form-control-sm"
-                                                placeholder="Subtotal" readonly>
-                                        </div>
-                                        <div class="input-group">
-                                            <select name="stID[]"
-                                                class="stock form-control form-control-sm" readonly="readonly">
-                                                <option value="" selected="selected">Stock Item
-                                                </option>
-                                            </select>
-                                            <input name="actualQty[]" type="number"
-                                                class="qtyPerItem form-control border-right"
-                                                value="${merch.spmActualQty}" readonly="readonly">
-                                        </div>
-                                    </div>
-                                    <div class="mt-4"style="float:left:width:3%;overflow:auto;">
-                                        <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
-                                    </div>
-                                </div>`;
-                                    }).join(''));
-                                setInputValues()
-                                $(".exitBtn").last().on('click', function() {
-                                    $(this).closest(".ic-level-1")
-                                        .remove();
-                                });
-                                $('.itemUnit').last().empty();
-                                $(".itemUnit").last().append(`${uom.map(uom => {
-                                return `<option value="${uom.uomID}">${uom.uomName}</option>`
-                            }).join('')}`);
-                                $("select[name='itemUnit[]']").last().find(
-                                    `option[value=${selectedMerch[0].uomID}]`
-                                    ).attr("selected", "selected");
-                                $('.stock').last().empty();
-                                $(".stock").last().append(`${stocks.map(stock => {
-                                return `<option value="${stock.stID}">${stock.stName}</option>`
-                            }).join('')}`);
-                                $(".ic-level-1").last().find(
-                                    `select[name='stID[]'] > option[value='${selectedMerch[0].stID}']`
-                                    ).attr("selected", "selected");
-                            });
-                        $("#merchandiseBrochure").modal("hide");
-                    });
-                });
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(errorThrown);
-                console.log(response.responseText);
-            }
-        });
-        $("#merchandiseBrochure").on("hidden.bs.modal", function() {
-            $(this).find("form")[0].reset();
-            $(this).find("form").off("submit");
-            $(this).find(".ic-level-2").empty();
-        });
-        $("#addPurchaseOrder").on('submit', function(event) {
-            event.preventDefault();
-            var supplier = $(this).find("select[name='spID']").val();
-            var date = $(this).find("input[name='tDate']").val();
-            var remarks = $(this).find("textarea[name='tRemarks']").val();
-            var transitems = [];
-            for (var index = 0; index < $(this).find(".ic-level-1").length; index++) {
-                var row = $(this).find(".ic-level-1").eq(index);
-                transitems.push({
-                    uomID: row.find("select[name='itemUnit[]']").val(),
-                    stID: row.find("select[name='stID[]']").val(),
-                    name: row.find("input[name='itemName[]']").val(),
-                    price: row.find("input[name='price[]']").val(),
-                    discount: row.find("input[name='discount[]']").val(),
-                    qty: row.find("input[name='itemQty[]']").val(),
-                    actualQty: row.find("input[name='actualQty[]']").val()
-                });
-            }
+    var suppmerch = <?= json_encode($suppmerch) ?>;
 
-            $.ajax({
-                method: "post",
-                url: "<?= site_url("admin/purchaseorder/add")?>",
-                data: {
-                    supplier: supplier,
-                    date: date,
-                    remarks: remarks,
-                    transitems: JSON.stringify(transitems)
-                },
-                dataType: "json",
-                beforeSend: function() {
-                    console.log(supplier, date, remarks, transitems);
-                },
-                success: function(data) {
-                    if (data.success) {
-                        location.replace('<?= site_url("admin/purchaseorder")?>');
-                    }
-                },
-                error: function(response, setting, error) {
-                    console.log(error);
-                    console.log(response.responseText);
-                }
-            });
-        });
+function showMerchandise() {
+     $("tbody.merchandises").empty();
+     suppmerch.forEach(function(merch) {
+         $("tbody.merchandises").append(`
+         <tr class="ic-level-1">
+            <td><input type="checkbox" class="mr-2" name="stock"
+                value="${merch.spmID}"
+                data-name="${merch.spmName}" 
+                data-uom="${merch.uomAbbreviation}"
+                data-price="${merch.spmPrice}"
+                data-actual="${merch.spmActual}"
+                data-stid="${merch.stID}"
+                data-uomid="${merch.uomID}"></td>
+            <td class="stock">${merch.spmName} (${merch.uomAbbreviation})</td>
+            <td class="price">${merch.spmPrice}</td>
+         </tr>`
+     );
+     });
+ }
+
+ $(function() {
+     $(document).on("change","select[name='suppliers']", function() {
+        // $(".poitems > tbody").empty();
+         suppmerch = <?= json_encode($suppmerch) ?>;
+         var spID = $(this).val();
+         suppmerch = suppmerch.filter(merch => merch.spID === spID);
+         showMerchandise();
+     });
+
+     $("#poCard .ic-level-1").on("click",function(event){
+         if(event.target.type !== "checkbox"){
+             $(this).find("input[name='stock']").trigger("click");
+         }
+     });
+     $(document).on("click", "#poCard input[name='stock']", function(event) {
+         var spmid = $(this).val();
+         var spmName = $(this).attr("data-name");
+         var spmPrice = $(this).attr("data-price");
+         var spmActual = $(this).attr("data-actual");
+         var uomID = $(this).attr("data-uomid");
+         var uomAbbreviation = $(this).attr("data-uom");
+         var stID = $(this).attr("data-stid");
+
+
+         console.log(spmid, spmName, $(this).is(":checked"));
+         if($(this).is(":checked")){
+             $("#conForm .ic-level-2").append(`
+                    <tr class="ic-level-1" data-stock="${spmid}">
+                        <td style="padding:1% !important"><input type="text"
+                                class="form-control form-control-sm" data-id="${spmid}" data-actual="${spmActual}" data-stid="${stID}" value="${spmName}" name="spm" readonly></td>
+                        <td style="padding:1% !important"><input type="number"
+                                class="form-control form-control-sm" value='0' name="qty"></td>
+                        <td style="padding:1% !important"><input type="text"
+                                class="form-control form-control-sm" data-uom="${uomID}" value="${uomAbbreviation}" name="unit" readonly></td>
+                        <td style="padding:1% !important"><input type="number"
+                                class="form-control form-control-sm" data-price="${spmPrice}" value="${spmPrice}" name="price" readonly></td>
+                        <td style="padding:1% !important"><input type="number"
+                                class="subtotal form-control form-control-sm" name="subtotal" readonly></td>
+                    </tr>`);
+             
+         }else{
+             $(`#conForm .ic-level-1[data-stock=${spmid}]`).remove();
+             if(isNaN($("#conForm .ic-level-2 tr").length) || $("#conForm .ic-level-2 tr").length == 0) {
+                 $('#conForm')[0].reset();
+             }
+          
+         }
+     });
+     $(document).on("change","input[name='qty']", function() {
+        var total = 0;
+        var subtotal = $(this).val() * $(this).closest(".poitems > tbody > tr").find("input[name='price']").val();
+        $(this).closest(".poitems > tbody > tr").find("input[name='subtotal']").val(subtotal);
+
+        for(var i = 0; i <= $('.subtotal').length-1; i++) {
+            total = total + parseFloat($('.subtotal').eq(i).val());
+            $('.total').text(total);
+        }
     });
+
+     $("#poCard input[name='search']").on("keyup",function(){
+         var string = $(this).val();
+         $("#poCard .stock").each(function(index){
+             if(!$(this).text().includes(string)){
+                 $(this).closest(".ic-level-1").hide();
+             }else{
+                 $(this).closest(".ic-level-1").show();
+             }
+         });
+     });
+
+     $("#conForm").on("submit", function(event){
+         event.preventDefault();
+         var url = $(this).attr("action");
+         var spID = $(this).find("input[name='suppliers']").val();
+         var date = $(this).find("input[name='date']").val();
+         console.log(date);
+         var poitems = [];
+         var poTotal = 0;
+
+         $(this).find(".ic-level-1").each(function(index){
+             var tiQty = parseInt($(this).find("input[name='qty']").val());
+             var actqty = parseInt($(this).find("input[name='stock']").attr('data-actqty'));
+             var price = parseFloat($(this).find("input[name='stock']").attr('data-price'));
+             var actualQty = tiQty * actqty;
+             var subtotal = parseFloat(tiQty * price);
+             rTotal = parseFloat(rTotal + subtotal);
+
+             returnitems.push({
+                 stID: $(this).find("input[name='stock']").attr('data-id'),
+                 spmID: $(this).find("input[name='stock']").attr('data-spmid'),
+                 tiQty: tiQty,
+                 tiActual: actualQty,
+                 tiSubtotal: subtotal,
+                 tiRemarks: $(this).find("textarea[name='tiRemarks']").val(),
+                 tiDate: date,
+                 receipt: $(this).find("input[name='receipt']").val(),
+                 riStatus: 'pending'
+             }); 
+         }); 
+
+         $.ajax({
+             method: "POST",
+             url: url,
+             data: {
+                 date: date,
+                 spID: spID,
+                 spAltName: spAltName,
+                 rTotal: rTotal,
+                 items: JSON.stringify(returnitems)
+             },
+             succes: function(){
+                 location.reload();
+             },
+             error: function(response, setting, error) {
+                 console.log(error);
+                 console.log(response.responseText);
+             }
+         });
+     });
+ });
+    // var stocks = [];
+    // var uom = [];
+    // var supplier = [];
+    // var suppmerch = [];
+    // $(function() {
+    //     $("#poForm select[name='spID']").on("change",function(){
+    //         var supplier = $(this).val();
+    //         console.log(supplier);
+    //         $.ajax({
+    //             method: "GET",
+    //             url: "/admin/purchaseorder/get",
+    //             data: {
+    //                 id: supplier
+    //             },
+    //             dataType: "JSON",
+    //             success: function(data){
+    //                 console.log(data);
+    //             },
+    //             error: function(response, setting, errorThrown) {
+    //                 console.log(errorThrown);
+    //                 console.log(response.responseText);
+    //             }
+    //         });
+    //     });
+    //     $.ajax({
+    //         url: '/admin/jsonPO',
+    //         dataType: 'json',
+    //         success: function(data) {
+    //             var poLastIndex = 0;
+    //             stocks = data.stock;
+    //             supplier = data.supplier;
+    //             suppmerch = data.suppmerch;
+    //             uom = data.uom;
+    //             $(".addMBtn").on('click', function() {
+    //                 var spID = parseInt($(this).closest('.form').find('.spID').val());
+    //                 var merchandise = suppmerch.filter(sm => sm.spID == spID);
+    //                 setMerchandiseBrochure(merchandise);
+    //                 $("#merchandiseBrochure form").on("submit", function(event) {
+    //                     event.preventDefault();
+    //                     $(this).find("input[name='stockitems']:checked").each(
+    //                         function(index) {
+    //                             var selectedMerch = merchandise.filter(merch =>
+    //                                 merch.spmID == $(this).attr(
+    //                                     "data-spmid"));
+    //                             $("#addPurchaseOrder .ic-level-2").append(
+    //                                 selectedMerch.map(merch => {
+    //                                     return `<div style="overflow:auto;margin-bottom:2%" class="ic-level-1" data-stockid="${merch.stID}" data-stqty="${merch.prstQty}" data-currqty="${merch.stQty}">
+    //                                 <div style="float:left;width:95%;overflow:auto;">
+    //                                     <div class="find input-group mb-1">
+    //                                         <input type="text" name="itemName[]"
+    //                                             class="form-control form-control-sm"
+    //                                             value="${merch.stName} ${merch.stSize}" style="width:24%" readonly>
+    //                                         <input type="number" name="itemQty[]"
+    //                                             class="tiQty form-control form-control-sm"
+    //                                             placeholder="Quantity" value="1" min="1" onchange="setInputValues()">
+    //                                         <select name="itemUnit[]"
+    //                                             class="itemUnit form-control form-control-sm" readonly>
+    //                                             <option value="" selected="selected">Unit</option>
+    //                                         </select>
+    //                                         <input type="number" name="price[]"
+    //                                             class="tiPrice form-control form-control-sm"
+    //                                             value="${merch.spmPrice}" readonly>
+    //                                         <input type="number" name="discount[]"
+    //                                             class="form-control form-control-sm "
+    //                                             placeholder="Discount">
+    //                                         <input type="number" name="itemSubtotal[]"
+    //                                             class="tiSubtotal form-control form-control-sm"
+    //                                             placeholder="Subtotal" readonly>
+    //                                     </div>
+    //                                     <div class="input-group">
+    //                                         <select name="stID[]"
+    //                                             class="stock form-control form-control-sm" readonly="readonly">
+    //                                             <option value="" selected="selected">Stock Item
+    //                                             </option>
+    //                                         </select>
+    //                                         <input name="actualQty[]" type="number"
+    //                                             class="qtyPerItem form-control border-right"
+    //                                             value="${merch.spmActualQty}" readonly="readonly">
+    //                                     </div>
+    //                                 </div>
+    //                                 <div class="mt-4"style="float:left:width:3%;overflow:auto;">
+    //                                     <img class="exitBtn" src="/assets/media/admin/error.png"style="width:20px;height:20px;float:right;">
+    //                                 </div>
+    //                             </div>`;
+    //                                 }).join(''));
+    //                             setInputValues()
+    //                             $(".exitBtn").last().on('click', function() {
+    //                                 $(this).closest(".ic-level-1")
+    //                                     .remove();
+    //                             });
+    //                             $('.itemUnit').last().empty();
+    //                             $(".itemUnit").last().append(`${uom.map(uom => {
+    //                             return `<option value="${uom.uomID}">${uom.uomName}</option>`
+    //                         }).join('')}`);
+    //                             $("select[name='itemUnit[]']").last().find(
+    //                                 `option[value=${selectedMerch[0].uomID}]`
+    //                                 ).attr("selected", "selected");
+    //                             $('.stock').last().empty();
+    //                             $(".stock").last().append(`${stocks.map(stock => {
+    //                             return `<option value="${stock.stID}">${stock.stName}</option>`
+    //                         }).join('')}`);
+    //                             $(".ic-level-1").last().find(
+    //                                 `select[name='stID[]'] > option[value='${selectedMerch[0].stID}']`
+    //                                 ).attr("selected", "selected");
+    //                         });
+    //                     $("#merchandiseBrochure").modal("hide");
+    //                 });
+    //             });
+    //         },
+    //         error: function(response, setting, errorThrown) {
+    //             console.log(errorThrown);
+    //             console.log(response.responseText);
+    //         }
+    //     });
+    //     $("#merchandiseBrochure").on("hidden.bs.modal", function() {
+    //         $(this).find("form")[0].reset();
+    //         $(this).find("form").off("submit");
+    //         $(this).find(".ic-level-2").empty();
+    //     });
+    //     $("#addPurchaseOrder").on('submit', function(event) {
+    //         event.preventDefault();
+    //         var supplier = $(this).find("select[name='spID']").val();
+    //         var date = $(this).find("input[name='tDate']").val();
+    //         var remarks = $(this).find("textarea[name='tRemarks']").val();
+    //         var transitems = [];
+    //         for (var index = 0; index < $(this).find(".ic-level-1").length; index++) {
+    //             var row = $(this).find(".ic-level-1").eq(index);
+    //             transitems.push({
+    //                 uomID: row.find("select[name='itemUnit[]']").val(),
+    //                 stID: row.find("select[name='stID[]']").val(),
+    //                 name: row.find("input[name='itemName[]']").val(),
+    //                 price: row.find("input[name='price[]']").val(),
+    //                 discount: row.find("input[name='discount[]']").val(),
+    //                 qty: row.find("input[name='itemQty[]']").val(),
+    //                 actualQty: row.find("input[name='actualQty[]']").val()
+    //             });
+    //         }
+
+    //         $.ajax({
+    //             method: "post",
+    //             url: "<?= site_url("admin/purchaseorder/add")?>",
+    //             data: {
+    //                 supplier: supplier,
+    //                 date: date,
+    //                 remarks: remarks,
+    //                 transitems: JSON.stringify(transitems)
+    //             },
+    //             dataType: "json",
+    //             beforeSend: function() {
+    //                 console.log(supplier, date, remarks, transitems);
+    //             },
+    //             success: function(data) {
+    //                 if (data.success) {
+    //                     location.replace('<?= site_url("admin/purchaseorder")?>');
+    //                 }
+    //             },
+    //             error: function(response, setting, error) {
+    //                 console.log(error);
+    //                 console.log(response.responseText);
+    //             }
+    //         });
+    //     });
+    // });
     </script>
 </body>

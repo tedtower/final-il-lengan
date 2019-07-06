@@ -259,3 +259,5 @@ $route['chef/getPosFromSupplier'] = "chef/getPOItemsBySupplier";
 $route['chef/destock'] = "chef/destockitem";
 $route['chef/consumption/formadd'] = "chef/viewConsumptionFormAdd";
 $route['chef/consumption/add'] = "chef/addConsumption";
+$route['chef/menuspoilage/add'] = "chef/addMenuSpoilage";
+$route['chef/consumption/edit'] = "chef/editConsumption";
