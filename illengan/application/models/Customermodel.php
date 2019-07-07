@@ -145,18 +145,17 @@ class Customermodel extends CI_Model {
             $query = $this->db->get_where('menu', array('ctID' => '12'));
             return $query->result();
         }
-        function add_orderslip($slip){
-            $query = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
-			if($this->db->query($query, array( $slip['table'], $slip['custName'], $slip['total'], 'unpaid', $slip['osDateTime'],'', $slip['dateRecorded']))){
-                return $this->db->insert_id();
-            }
-            return 0;
-        }
-        function add_orderlist($item){
-		$query = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
-            	if($this->db->query($query, array(NULL,$item['osID'], $item['prID'], $item['olDesc'],$item['qty'], $item['subtotal'], 'pending', $item['remarks'], $item['price'], ''))){
-                 $olID = $this->db->insert_id();
-		 $addOns = $item['addons'];
+        function orderInsert($total, $tableCode, $orderlist, $customer, $dateTime){//insert in table orderslip
+            $query1 = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
+			$this->db->query($query1, array( $tableCode, $customer, $total, 'unpaid', $dateTime,'', $dateTime)); 
+			$order_id= $this->db->insert_id();
+			$bool = false;
+	    foreach($orderlist as $items){
+		$query2 = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
+                 $this->db->query($query2, array(NULL,$order_id, $items['id'],'',$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
+                $olID = $this->db->insert_id(); 
+
+                $addOns = $items['addons'];
                 if(!empty($addOns)){
                 $bool3= false;
                 foreach($addOns as $key => $value){
@@ -173,31 +172,9 @@ class Customermodel extends CI_Model {
                 $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
                 $bool3 = $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
                }
+              }
             }
-            }
-            return 0;
-        }
-        function add_addon($olID, $orderlist){
-            foreach($orderlist as $items){
-                    $addOns = $items['addons'];
-                    if(!empty($addOns)){
-                    $bool3= false;
-                    foreach($addOns as $key => $value){
-                       if($key == 'addonIds'){
-                        $addonIds = $value;
-                        }else if($key == 'addonQtys'){
-                            $addonQtys = $value;
-                        }else if($key == 'addonSubtotals'){
-                            $addonSubtotals = $value;
-                        }
-                    }
-                    for($i = 0, $q=0, $s=0; $i < count($addonIds), $q <  count($addonQtys),$s <  count($addonSubtotals)
-                         ; $i++, $q++, $s++){
-                    $query3 ="Insert into orderaddons(aoID, olID, aoQty, aoTotal)values(?,?,?,?)";
-                    return $this->db->query($query3, array($addonIds[$i], $olID, $addonQtys[$q], $addonSubtotals[$s]));
-                   }
-                  }
-                }
+            return true;
         }
 
         // function add_consumedItems($pref, $olID) {

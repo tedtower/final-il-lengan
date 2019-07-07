@@ -146,6 +146,8 @@
             var uom = $(this).data("uom");
             var price = $(this).data("price");
             var actualQty = $(this).data("actual");
+            console.log($(this));
+
             var supplier = $(this).closest("tr").find("td.trans").data("supplier");
             var spID = $(this).closest("tr").find("td.trans").data("spid");
             var spmID = $(this).data("spmid");
@@ -215,6 +217,7 @@
                 var subtotal = parseFloat(tiQty * price);
                 rTotal = parseFloat(rTotal + subtotal);
 
+                console.log($(this).find("input[name='stock']"));
                 returnitems.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
                     spmID: $(this).find("input[name='stock']").attr('data-spmid'),
@@ -239,7 +242,8 @@
                     rTotal: rTotal,
                     items: JSON.stringify(returnitems)
                 },
-                succes: function(){
+                success: function(){
+                    console.log("YEYYEYE");
                     location.reload();
                 },
                 error: function(response, setting, error) {

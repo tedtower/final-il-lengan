@@ -45,7 +45,7 @@ class Adminupdate extends CI_Controller{
             $action = 'update';
 
             $this->adminmodel->edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, 
-            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id, $action);
+            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $accountID, $action);
         }else{
             redirect('login');
         }

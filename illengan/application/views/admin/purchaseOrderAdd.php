@@ -44,20 +44,20 @@
                                             </div>
                                         </div>
                                         <!--Remarks-->
-                                        <!-- <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" style="width:70px">Remarks</span>
                                             </div>
                                             <textarea type="text" name="tRemarks" class="form-control form-control-sm"
                                                 rows="1"></textarea>
-                                        </div> -->
+                                        </div>
                                         <div class="ic-level-3">
-                                        <table class="poitems table table-borderless">
+                                        <table class="table table-borderless">
                                             <thead style="border-bottom:2px solid #cccccc;font-size:14px">
                                                 <tr>
-                                                    <th style="font-weight:500 !important;width: 40%">Item Name</th>
+                                                    <th style="font-weight:500 !important;">Item Name</th>
                                                     <th style="font-weight:500 !important;">Qty</th>
-                                                    <th style="font-weight:500 !important;width:5%">Unit</th>
+                                                    <th style="font-weight:500 !important;">Unit</th>
                                                     <th style="font-weight:500 !important;">Price</th>
                                                     <th style="font-weight:500 !important;">Subtotal</th>
                                                 </tr>
@@ -93,6 +93,14 @@
                                     </div>
                                 </div>
                                 <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                                <select class="suppliers form-control form-control-sm" name="suppliers">
+                                    <option value="" selected>Select Supplier</option>
+                                    <?php
+                                foreach($supplier as $supp){
+                                ?>
+                                    <option value="<?= $supp['spID']?>"><?= $supp['spName']?></option>
+                                <?php } ?>
+                                <select>
                                     <!--checkboxes-->
                                     <table class="table table-borderless">
                                         <thead style="border-bottom:2px solid #cccccc">
@@ -128,12 +136,9 @@ function showMerchandise() {
                 value="${merch.spmID}"
                 data-name="${merch.spmName}" 
                 data-uom="${merch.uomAbbreviation}"
-                data-price="${merch.spmPrice}"
-                data-actual="${merch.spmActual}"
-                data-stid="${merch.stID}"
-                data-uomid="${merch.uomID}"></td>
+                data></td>
             <td class="stock">${merch.spmName} (${merch.uomAbbreviation})</td>
-            <td class="price">${merch.spmPrice}</td>
+            <td class="category">${merch.spmPrice}</td>
          </tr>`
      );
      });
@@ -141,74 +146,62 @@ function showMerchandise() {
 
  $(function() {
      $(document).on("change","select[name='suppliers']", function() {
-        // $(".poitems > tbody").empty();
          suppmerch = <?= json_encode($suppmerch) ?>;
          var spID = $(this).val();
+         console.log(spID);
          suppmerch = suppmerch.filter(merch => merch.spID === spID);
+         console.log(suppmerch);
          showMerchandise();
      });
 
      $("#poCard .ic-level-1").on("click",function(event){
          if(event.target.type !== "checkbox"){
              $(this).find("input[name='stock']").trigger("click");
-         }
+         } console.log("eyeyeye");
      });
      $(document).on("click", "#poCard input[name='stock']", function(event) {
-         var spmid = $(this).val();
-         var spmName = $(this).attr("data-name");
-         var spmPrice = $(this).attr("data-price");
-         var spmActual = $(this).attr("data-actual");
-         var uomID = $(this).attr("data-uomid");
-         var uomAbbreviation = $(this).attr("data-uom");
-         var stID = $(this).attr("data-stid");
+         var id = $(this).val();
+         var name = $(this).attr("data-name");
 
-
-         console.log(spmid, spmName, $(this).is(":checked"));
+         console.log(id, name, $(this).is(":checked"));
          if($(this).is(":checked")){
              $("#conForm .ic-level-2").append(`
-                    <tr class="ic-level-1" data-stock="${spmid}">
+                    <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control form-control-sm" data-id="${spmid}" data-actual="${spmActual}" data-stid="${stID}" value="${spmName}" name="spm" readonly></td>
+                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" value='0' name="qty"></td>
-                        <td style="padding:1% !important"><input type="text"
-                                class="form-control form-control-sm" data-uom="${uomID}" value="${uomAbbreviation}" name="unit" readonly></td>
+                                class="form-control form-control-sm" name="qty"></td>
+                        <td style="padding:1% !important"><input type="number"
+                                class="form-control form-control-sm" name="qty"></td>
                         <td style="padding:1% !important"><input type="number"
                                 class="form-control form-control-sm" value="${spmPrice}" name="price" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="subtotal form-control form-control-sm" name="subtotal" readonly></td>
+                                class="form-control form-control-sm" name="qty"></td>
                     </tr>`);
+
+             $("#conForm").find('input[name="supplier"]').val(supplier);
+             $("#conForm").find('input[name="supplier"]').attr('data-id', spID);
+             $("#conForm").find('input[name="supplier"]').attr("readonly", true);
              
          }else{
-             $(`#conForm .ic-level-1[data-stock=${spmid}]`).remove();
+             $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
              if(isNaN($("#conForm .ic-level-2 tr").length) || $("#conForm .ic-level-2 tr").length == 0) {
                  $('#conForm')[0].reset();
              }
           
          }
      });
-     $(document).on("change","input[name='qty']", function() {
-        var total = 0;
-        var subtotal = $(this).val() * $(this).closest(".poitems > tbody > tr").find("input[name='price']").val();
-        $(this).closest(".poitems > tbody > tr").find("input[name='subtotal']").val(subtotal);
-
-        for(var i = 0; i <= $('.subtotal').length-1; i++) {
-            total = total + parseFloat($('.subtotal').eq(i).val());
-            $('.total').text(total);
-        }
-    });
-
-     $("#poCard input[name='search']").on("keyup",function(){
+     $("#listDeliver input[name='search']").on("keyup",function(){
          var string = $(this).val();
-         $("#poCard .stock").each(function(index){
+         $("#listDeliver .item").each(function(index){
              if(!$(this).text().includes(string)){
                  $(this).closest(".ic-level-1").hide();
              }else{
                  $(this).closest(".ic-level-1").show();
              }
          });
-     });
 
+     });
      $("#conForm").on("submit", function(event){
          event.preventDefault();
          var url = $(this).attr("action");
