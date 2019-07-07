@@ -124,12 +124,14 @@
                         <td style="padding:1% !important"><input type="number" value="1" min="1"
                                 class="form-control" name="qty" required/></td>
                         <td style="padding:1% !important">
-                            <select class="form-control" name="slipNum" >
+                        <div class="input-group mb-3">
+                            <input list="orderslips" class="form-control" name="slipNum" >
+                            <datalist id="orderslips">
                                 <option value="">None</option>
-                        <?php foreach($slip as $s){ 
-                          echo '<option value="'.$s['osID'].'">'.$s['osID'].'</option>';
-                        }?>
-                            </select>
+                                <?php foreach($slip as $s){ 
+                            echo '<option value="'.$s['osID'].'">'.$s['osID'].'</option>';
+                                }?>
+                            </datalist>
                         </td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control" name="cRemarks" rows="1"></textarea>
@@ -159,7 +161,7 @@
                     prID: $(this).find("input[name='stock']").attr('data-id'),
                     stID: $(this).find("input[name='stock']").attr('data-stID'),
                     qty: $(this).find("input[name='qty']").val(),
-                    slip: $(this).find("select[name='slipNum']").val(),
+                    slip: $(this).find("input[name='slipNum']").val(),
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
