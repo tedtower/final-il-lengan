@@ -782,7 +782,6 @@ function get_transitems(){
                 $this->add_return_items($this->db->insert_id(),$items);
             }
         }
-        
     }
 
     function add_return_items($rID, $ti) {
@@ -1714,33 +1713,28 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         WHERE tiID = ? AND tID = ?;";
         return $this->db->query($query, array($tiID, $tID))->num_rows();
     }
-    function add_purchaseOrder($po){
-        $query = "INSERT INTO `purchases`(
-                spID,
-                receiptNo
-                pType,
-                pDate,
-                pDateRecorded,
-                spAltName
-            )
-            VALUES(
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
-            );";
-        return $this->db->query($query, array($po["supplier"], $po["receipt"], 
-        $po["type"], $po["date"], $po["current"], $po["alt"]));
+    function add_purchaseOrder($supplier, $date, $current, $type, $poitems){
+        $query = "INSERT INTO purchases(spID, receiptNo, pType, pDate, pDateRecorded, spAltName) VALUES(?,NULL,?,?,?,NULL)";
+        if($this->db->query($query,array($supplier, $type, $date, $current))){
+            $pID = $this->db->insert_id();
+            if(count($poitems) > 0){
+                $this->add_pItem($pID, $poitems);
+            }
+        }
     }
+
     function edit_purchase($p){
         $query = "UPDATE purchases SET receiptNo = ?, pDate = ?, pDateRecorded = ?, spAltName = ? WHERE pID = ?";
-        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"] $p["pID"]));
+        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"], $p["pID"]));
     }
-    function add_pItem($piStatus){
-        $query = "INSERT INTO purchase_items(piStatus) VALUES(?)";
-        return $this->db->query($query,array($piStatus));
+    function add_pItem($pID, $poitems){
+        $query = "INSERT INTO purchase_items (piStatus) VALUES(?)";
+        for($in = 0; $in < count($poitems) ; $in++){
+            $this->db->query($query, array($poitems[$in]['piStatus']));
+            $piID = $this->db->insert_id();
+            $this->add_purItem($pID, $piID);
+            $this->add_potransitem($poitems[$in]["piType"], $poitems[$in]["tiQty"], $poitems[$in]["tiActual"], $poitems[$in]["tiSubtotal"], $poitems[$in]["date"], $poitems[$in]["stID"] ,$poitems[$in]["spmID"], $piID);
+        }
     }
     function edit_pItem($piID, $piStatus){
         $query = "UPDATE purchase_items SET piStatus WHERE piID = ?";
@@ -1751,7 +1745,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         return $this->db->query($query, array($pID, $piID));
     }
     
-    function add_transitem($item){
+    function add_transitem($item){ 
         $query = "INSERT INTO `transitems`(
                 tiID,
                 tiType,
@@ -1785,8 +1779,14 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
                 ?
             );";
         return $this->db->query($query,array($item["type"], $item["qty"], $item["actual"], $item["subtotal"], $item["remaining"], 
-        $item["remarks"], $item["date"], $item["stock"] ,$item[merch], $item["return"], $item["purchase"], $item["consume"], $item["spoil"]));
+        $item["remarks"], $item["date"], $item["stock"] ,$item["merch"], $item["return"], $item["purchase"], $item["consume"], $item["spoil"]));
     }
+    function add_potransitem($type, $qty, $actualQty, $subtotal, $date, $stID, $spmID, $piID){
+        $query = "INSERT INTO transitems (tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, tiDate, stID, spmID, riID, piID, ciID, siID) 
+                 VALUES(?, ?, ?, ?, NULL, NULL, ?, ?, ?, NULL, ?, NULL, NULL)";
+        return $this->db->query($query,array($type, $qty, $actualQty, $subtotal, $date, $stID, $spmID, $piID));
+    }
+
     function get_purchaseOrders(){
         $query = "SELECT
             pID AS id,
@@ -1806,7 +1806,7 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
         LEFT JOIN transitems USING(piID)
         LEFT JOIN supplier USING(spID)
         WHERE pType = 'purchase order'
-        ORDER BY transDate DESC, pID DESC";
+        GROUP BY pID ORDER BY transDate DESC, pID DESC";
         return $this->db->query($query)->result_array();
     }
     
@@ -1826,14 +1826,16 @@ function add_constrans_items($tID, $tiID, $stID, $dQty, $dateRecorded, $tDate, $
                     '')
                 ) AS stockname,
                 spmName,
+                spmPrice,
                 piID,
+                pID,
                 piStatus
             FROM
                 (transitems
             LEFT JOIN purchase_items USING(piID))
             LEFT JOIN pur_items using (piID)
             LEFT JOIN stockitems USING(stID)
-            LEFT JOIN suppliermerchandise USING(spmID)";
+            LEFT JOIN suppliermerchandise USING(spmID) GROUP BY piID";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceipts(){

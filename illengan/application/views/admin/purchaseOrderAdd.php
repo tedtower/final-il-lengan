@@ -26,7 +26,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Supplier</span>
                                                 </div>
-                                                <select class="suppliers form-control form-control-sm" name="suppliers">
+                                                <select class="suppliers form-control form-control-sm" name="suppliers" required>
                                                     <option value="" selected>Select Supplier</option>
                                                     <?php
                                                 foreach($supplier as $supp){
@@ -40,7 +40,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" class="form-control" name="date">
+                                                <input type="date" class="form-control" name="date" required>
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -75,8 +75,8 @@
                                     <div class="card-footer mb-0" style="overflow:auto">
                                         <button class="btn btn-success btn-sm" type="submit"
                                             style="float:right">Insert</button>
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            style="float:right">Cancel</button>
+                                        <a href="<?= site_url('admin/purchaseorder')?>" class="btn btn-danger btn-sm"
+                                            style="float:right" role="button">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -174,7 +174,7 @@ function showMerchandise() {
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-uom="${uomID}" value="${uomAbbreviation}" name="unit" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" data-price="${spmPrice}" value="${spmPrice}" name="price" readonly></td>
+                                class="form-control form-control-sm" value="${spmPrice}" name="price" readonly></td>
                         <td style="padding:1% !important"><input type="number"
                                 class="subtotal form-control form-control-sm" name="subtotal" readonly></td>
                     </tr>`);
@@ -212,30 +212,29 @@ function showMerchandise() {
      $("#conForm").on("submit", function(event){
          event.preventDefault();
          var url = $(this).attr("action");
-         var spID = $(this).find("input[name='suppliers']").val();
+         var supplier = $(this).find("select[name='suppliers']").val();
          var date = $(this).find("input[name='date']").val();
-         console.log(date);
-         var poitems = [];
+         poitems = [];
          var poTotal = 0;
 
          $(this).find(".ic-level-1").each(function(index){
+             var date = $("#conForm").find("input[name='date']").val();
              var tiQty = parseInt($(this).find("input[name='qty']").val());
-             var actqty = parseInt($(this).find("input[name='stock']").attr('data-actqty'));
-             var price = parseFloat($(this).find("input[name='stock']").attr('data-price'));
+             var actqty = parseInt($(this).find("input[name='spm']").attr('data-actual'));
+             var price = parseFloat($(this).find("input[name='price']").val());
              var actualQty = tiQty * actqty;
              var subtotal = parseFloat(tiQty * price);
-             rTotal = parseFloat(rTotal + subtotal);
+             poTotal = parseFloat(poTotal + subtotal);
 
-             returnitems.push({
-                 stID: $(this).find("input[name='stock']").attr('data-id'),
-                 spmID: $(this).find("input[name='stock']").attr('data-spmid'),
+             poitems.push({
+                 stID: $(this).find("input[name='spm']").attr('data-stid'),
+                 spmID: $(this).find("input[name='spm']").attr('data-id'),
                  tiQty: tiQty,
+                 date: date,
                  tiActual: actualQty,
                  tiSubtotal: subtotal,
-                 tiRemarks: $(this).find("textarea[name='tiRemarks']").val(),
-                 tiDate: date,
-                 receipt: $(this).find("input[name='receipt']").val(),
-                 riStatus: 'pending'
+                 piStatus: 'pending',
+                 piType: 'purchase order'
              }); 
          }); 
 
@@ -243,12 +242,14 @@ function showMerchandise() {
              method: "POST",
              url: url,
              data: {
+                 supplier: supplier,
                  date: date,
-                 spID: spID,
-                 spAltName: spAltName,
-                 rTotal: rTotal,
-                 items: JSON.stringify(returnitems)
+                 total: poTotal,
+                 poitems: JSON.stringify(poitems)
              },
+             beforeSend: function() {
+                    console.log(supplier, date, poitems);
+            },
              succes: function(){
                  location.reload();
              },

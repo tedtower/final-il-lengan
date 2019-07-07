@@ -392,7 +392,6 @@ function addspoilagesstock(){
             $rTotal = $this->input->post('rTotal');
             $items = json_decode($this->input->post('items'), true);
             $accountID = $_SESSION["user_id"];
-
             $this->adminmodel->add_returns($spID, $spAltName, $rDate, $rDateRecorded, $rTotal, $items);
         }else{
             redirect("login");
@@ -401,50 +400,14 @@ function addspoilagesstock(){
 
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $total = 0;
-            $poItems = json_decode($this->input->post('transitems'),true);
-            $po = array(
-                "supplier" => $this->input->post('supplier'),
-                "supplierName" => NULL,
-                "receipt" => NULL,
-                "date" => $this->input->post('date'),
-                "dateRecorded" => date("Y-m-d H:i:s"),
-                "type" => "purchase order",
-                "total" => $this->input->post('total'),
-                "remarks" => $this->input->post('remarks')
-            );
-            $poID = $this->adminmodel->add_receiptTransaction($po);
-            if(count($poItems)>0){
-                foreach($poItems as $poItem){
-                    $po = array(
-                        "uom" => $poItem['uomID'],
-                        "stock" => $poItem['stID'],
-                        "price" => $poItem['price'],
-                        "name" => $poItem['name'],
-                        "discount" => $poItem['discount'],
-                        "delivery" => 'pending',
-                        "payment" => NULL,
-                        "return" => NULL,
-                        "tiQty" => $poItem['qty'],
-                        "perUnit" => $poItem['actualQty'],
-                        "actual" => $poItem['qty'] * $poItem['actualQty'],
-                        "subtotal" => ($poItem['price'] - $poItem['discount']) * $poItem['qty'],
-                        "tiID" => NULL
-                    );
-                    $poiID = $this->adminmodel->add_receiptTransactionItems($po);
-                    $po['tiID'] = $poiID;
-                    $total += floatval($po['subtotal']);
-                    $this->adminmodel->add_receiptTransactionItemsQty($poID, $po);
-                }
-                $this->adminmodel->edit_receiptTransactionTotal($poID, $total);
-            }
-            echo json_encode(array(
-                "success" => true
-            ));
+            $supplier = $this->input->post('supplier');
+            $date = $this->input->post('date');
+            $current = date("Y-m-d H:i:s");
+            $type = "purchase order";
+            $poitems = json_decode($this->input->post('poitems'),true);
+            $this->adminmodel->add_purchaseOrder($supplier, $date, $current, $type, $poitems);
         }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
+            redirect("login");
         }
     }
 
