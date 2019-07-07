@@ -722,7 +722,7 @@ function get_transitems(){
     }
     function get_deliveries() {
         $query = "SELECT tiID, spmID, pur.spID, ti.stID, spmPrice, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, DATE_FORMAT(pDate, '%b %d, %Y') AS pDate, tiActual, 
-        CONCAT(receiptNo,' - ', spAltName) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
+        CONCAT(receiptNo,' - ', spAltName) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item, 
         FROM `transitems` ti LEFT JOIN purchase_items USING (piID) LEFT JOIN purchases pur USING (pID) LEFT JOIN stockitems st USING (stID) 
         LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) WHERE pur.ptype = 'delivery' AND ti.tiType = 'restock'";
         return $this->db->query($query)->result_array();
@@ -1607,7 +1607,6 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
     function update_changedAddon($aoID, $oldaoID, $olID) {
         $query = "UPDATE orderaddons SET aoID = ? WHERE orderaddons.aoID = ? AND orderaddons.olID = ?;";
         $this->db->query($query, array($aoID, $oldaoID, $olID));
-
     }
 
     function edit_returns($tID, $spID, $spName, $receiptNo, $tDate, $tTotal, $tRemarks, $trans, $ti) {
@@ -1745,6 +1744,16 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
             }
         }
     }
+    function edit_purchaseorder($pID, $supplier, $date, $current, $type, $poitems){
+        $query = "UPDATE purchases SET pDate = ?, pDateRecorded = ? where pID = ?";
+        if($this->db->query($query,array($date, $current, $pID))){
+            $pID = $this->db->insert_id();
+            if(count($poitems) > 0){
+                $this->add_pItem($pID, $poitems);
+            }
+        }
+    }
+
     function add_reconciliation($re){
         $query = "INSERT INTO reconciliation (reDate, reDateRecorded) VALUES (?, ?)";
         return $this->db->query($query, array($re["date"], $re["current"]));
@@ -1851,7 +1860,7 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
             pID AS id,
             spID AS supplier,
             spName AS supplierName,
-            DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
+            pDate AS transDate,
             DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
             SUM(tiSubtotal) AS total
         FROM
@@ -1886,6 +1895,8 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
                 ) AS stockname,
                 spmName,
                 spmPrice,
+                suppliermerchandise.uomID,
+                uomAbbreviation,
                 piID,
                 pID,
                 piStatus
@@ -1894,7 +1905,8 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
             LEFT JOIN purchase_items USING(piID))
             LEFT JOIN pur_items using (piID)
             LEFT JOIN stockitems USING(stID)
-            LEFT JOIN suppliermerchandise USING(spmID) GROUP BY piID";
+            LEFT JOIN suppliermerchandise USING(spmID)
+            LEFT JOIN uom ON (suppliermerchandise.uomID = uom.uomID) GROUP BY piID";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceipts(){

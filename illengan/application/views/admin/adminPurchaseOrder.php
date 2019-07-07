@@ -41,7 +41,7 @@
                                             <td>&#8369; <?=$po['total']?></td>
                                             <td>
                                                 <a class="editBtn btn btn-sm btn-secondary"
-                                                    href="<?= site_url('admin/purchaseorder/formedit')?>">Edit</a>
+                                                    href="<?= site_url('admin/purchaseorder/formedit/')?><?= $po['id']?>">Edit</a>
                                                 <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
                                                     data-target="#deletePO">Archive</button>
                                             </td>
