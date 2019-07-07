@@ -14,8 +14,10 @@
 						<div class="card-content">
 
 							<!--Add Addon Spoilage BUTTON-->
+                            <div class="col-md-4 col-lg-2">
 							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/addons/spoilage/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Spoilage</a>
+                            </div>
 							<!--eND Add Addon Spoilage BUTTON-->
 							<br>
 							<table id="addonTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
@@ -122,10 +124,11 @@
 <?php include_once('templates/scripts.php') ?>
 <script>
 	var spoilages = [];
+    $(function() {
+		viewSpoilagesJs();
 
-	//-----------------------End of Brochure Populate--------------------------		
-	//POPULATE TABLE
 	var table = $('#addonTable');
+
 	function viewSpoilagesJs() {
         $.ajax({
             url: "<?= site_url('admin/spoilagesaddonsjson') ?>",
@@ -134,6 +137,7 @@
             success: function(data) {
                 spoilages = data;
                 setSpoilagesData(spoilages);
+                console.log(spoilages);
             },
             error: function(response, setting, errorThrown) {
                 console.log(response.responseText);
@@ -141,6 +145,7 @@
             }
         });
 	}
+});
 	function setSpoilagesData() {
         if ($("#addonTable> tbody").children().length > 0) {
             $("#addonTable> tbody").empty();

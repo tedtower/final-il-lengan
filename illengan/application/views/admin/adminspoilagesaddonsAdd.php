@@ -43,6 +43,7 @@
                                                 <tr>
                                                     <th style="font-weight:500 !important;">Stock Item</th>
                                                     <th width="17%" style="font-weight:500 !important;">Quantity</th>
+                                                    <th width="17%" style="font-weight:500 !important;">Orderslip</th>
                                                     <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
                                             </thead>
@@ -64,7 +65,7 @@
                         <div class="card" id="stockCard" style="float:left;width:37%;margin-left:3%">
                             <div class="card-header" style="overflow:auto">
                                 <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Select
-                                    Stock Items</div>
+                                    Addon Items</div>
                                 <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
                                     <input type="search"
                                         style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
@@ -79,8 +80,7 @@
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
-                                            <th style="font-weight:500 !important;">Stock Item</th>
-                                            <th style="font-weight:500 !important;">Category</th>
+                                            <th style="font-weight:500 !important;">Addon Item</th>
                                         </tr>
                                     </thead>
                                     <tbody class="ic-level-2"><?php
@@ -131,6 +131,8 @@
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
                                 class="form-control form-control-sm" name="actualQty"></td>
+                        <td style="padding:1% !important"><input type="text"
+                                class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
@@ -162,7 +164,8 @@
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
                     aoID: $(this).find("input[name='addon']").attr('data-id'),
-                    actualQty: $(this).find("input[name='actualQty']").val(),
+                    aosQty: $(this).find("input[name='actualQty']").val(),
+                    osID: $(this).find("input[name='osID']").val(),
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                 });
             });
@@ -183,6 +186,9 @@
                         console.log(data);
                     }
                 },
+                complete: function() {
+                location.reload();
+                },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);
@@ -190,6 +196,31 @@
             });
         });
     });
+    			//-----------------------Populate Dropdown----------------------------------------
+				// 		$.ajax({
+				// 			url: '<= site_url('barista/inventoryJS') ?>',
+				// 			dataType: 'json',
+				// 			success: function (data) {
+				// 				var poLastIndex = 0;
+				// 				stockitem = data;
+				// 				setStockData(stockitem);
+				// 			},
+				// 			failure: function () {
+				// 				console.log('None');
+				// 			},
+				// 			error: function (response, setting, errorThrown) {
+				// 				console.log(errorThrown);
+				// 				console.log(response.responseText);
+				// 			}
+				// 		});
+
+				// function setStockData(stockitem){
+				// 		$("#orderslips").empty();
+				// 		$("#orderslips").append(`${stockitem.map(stocks => {
+				// 			return `<option name= "osID" id ="osID" value="${stocks.osID}">${stocks.stName}</option>`
+				// 		}).join('')}`);
+				// }
+			  //-----------------------End of Dropdown Populate--------------------------
     </script>
 </body>
 

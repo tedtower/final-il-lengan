@@ -100,7 +100,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="datetime-local" name="tDate" id="tDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="tiDate" id="tiDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("tDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
@@ -108,14 +108,13 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Remarks</span>
                                                         </div>
-                                                        <input type="text" name="tRemarks" id="tRemarks" class="form-control form-control-sm" required>
+                                                        <input type="text" name="tiRemarks" id="tiRemarks" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
                                                     </div>
-													<input name="stID" id="stID" hidden="hidden">
-													<input name="tiID" id="tiID" hidden="hidden">
-													<input name="tID" id="tID" hidden="hidden">
+													<input name="tiActual" id="tiActual" hidden="hidden">
 													<input name="stQty" id="stQty" hidden="hidden">
-													<input name="actualQty" id="actualQty" hidden="hidden">
+													<input name="stID" id="stID" hidden="hidden">
+													<input name="siID" id="siID" hidden="hidden">
                                                     <!--Footer-->
                                                     <div class="modal-footer">
 													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -140,11 +139,10 @@
 <?php include_once('templates/scripts.php') ?>
 <script>
 	var spoilages = [];
-	var stockchoice = [];
 	$(function() {
 		viewSpoilagesJs();
 
-	//-----------------------End of Brochure Populate--------------------------	
+
 	//POPULATE TABLE
 	var table = $('#spoilagesTable');
 	
@@ -170,7 +168,7 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr" data-actualQty ="${table.actualQty}" data-actualQty="${table.actualQty}" data-stID="${table.stID}" data-tiID="${table.tiID}" data-tID="${table.tID}" data-spoilname="${table.tiName}" data-stQty="${table.stQty}" data-tDate="${table.tDate}" data-tRemarks="${table.tRemarks}">
+			<tr class="spoilagesTabletr" data-tiActual="${table.tiActual}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
 				<td>${table.tiID}</td>
 				<td>${table.stName}</td>
@@ -199,7 +197,7 @@
                             <div style="margin:0 46px;overflow:auto;">
 							<b style="float:left;">Remarks: </b><!-- label-->
 								<p style="float:left;margin-left:2%">
-								${table.tRemarks == null || table.tRemarks == '' ?  "No remarks." : table.tRemarks}
+								${table.tiRemarks == null || table.tiRemarks == '' ?  "No remarks." : table.tiRemarks}
                                 </p>
                             </div> 
                         </div>
@@ -211,22 +209,21 @@
 			
 			$(".updateBtn").last().on('click', function () {
 				
-                $("#editSpoil").find("input[name='tID']").val($(this).closest("tr").attr(
-					"data-tID"));
-				$("#editSpoil").find("input[name='tiID']").val($(this).closest("tr").attr(
-					"data-tiID")); 
-				$("#editSpoil").find("input[name='tDate']").val($(this).closest("tr").attr(
-					"data-tDate")); 
-				$("#editSpoil").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
-					"data-actualQty"));
-				$("#editSpoil").find("input[name='actualQty']").val($(this).closest("tr").attr(
-					"data-actualQty"));	
-				$("#editSpoil").find("input[name='tRemarks']").val($(this).closest("tr").attr(
-					"data-tRemarks"));
+				$("#editSpoil").find("input[name='tiActual']").val($(this).closest("tr").attr(
+					"data-tiActual")); 
+				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
+					"data-stQty")); 
+				$("#editSpoil").find("input[name='tiRemarks']").val($(this).closest("tr").attr(
+					"data-tiRemarks"));
+				$("#editSpoil").find("input[name='tiDate']").val($(this).closest("tr").attr(
+					"data-tiDate"));	
 				$("#editSpoil").find("input[name='stID']").val($(this).closest("tr").attr(
 					"data-stID"));
-				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
-					"data-stQty"));
+				$("#editSpoil").find("input[name='siID']").val($(this).closest("tr").attr(
+					"data-siID"));
+				$("#editSpoil").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
+					"data-tiActual"));
+
 				
             });
             $(".item_delete").last().on('click', function () {
@@ -258,34 +255,32 @@
 	$(document).ready(function() {
     $("#editSpoil form").on('submit', function(event) {
 		event.preventDefault();
-		var tID = $(this).find("input[name='tID']").val();
-		var tiID = $(this).find("input[name='tiID']").val(); 
-        var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
-        var tDate = $(this).find("input[name='tDate']").val();
-        var tRemarks = $(this).find("input[name='tRemarks']").val();
-		var stQty = $(this).find("input[name='stQty']").val();
-		var stID = $(this).find("input[name='stID']").val();
-		var actualQty = $(this).find("input[name='actualQty']").val();
-		console.log('tId '+ tID);
-		console.log('tiId  '+tiID);
-		console.log(' actualQtyUpdate '+actualQtyUpdate);
-		console.log(' tDate'+tDate);
-		console.log(' tRemarks'+tRemarks);
-		console.log(' actualQty'+actualQty);
-		console.log(' stQty'+stQty);
+		var tiActual = $(this).find("input[name='tiActual']").val();
+		var stQty = $(this).find("input[name='stQty']").val(); 
+        var tiRemarks = $(this).find("input[name='tiRemarks']").val();
+        var tiDate = $(this).find("input[name='tiDate']").val();
+        var stID = $(this).find("input[name='stID']").val();
+		var siID = $(this).find("input[name='siID']").val();
+		var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
+
+		console.log('tiActual '+ tiActual);
+		console.log('stQty  '+stQty);
+		console.log(' tiRemarks '+tiRemarks);
+		console.log(' tiDate'+tiDate);
+		console.log(' stID'+stID);
+		console.log(' siID'+siID);
 		console.log(' stID'+stID);
         $.ajax({
             url: "<?= site_url("admin/stock/spoilage/edit")?>",
             method: "post",
             data: {
-				actualQty : actualQty,
-				stID: stID,
-				tiID: tiID,
-				tID: tID,
+				tiActual: tiActual,
 				stQty: stQty,
-				actualQtyUpdate: actualQtyUpdate,
-                tDate: tDate,
-                tRemarks: tRemarks                                                                                                                                                                                                                               
+				tiRemarks: tiRemarks,
+				tiDate: tiDate,
+				stID: stID,
+				siID: siID,
+				actualQtyUpdate: actualQtyUpdate
             },
             dataType: "json",
             success: function(data) {
