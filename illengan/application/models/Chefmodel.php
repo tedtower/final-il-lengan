@@ -79,28 +79,36 @@
             $query = "SELECT * FROM transitems inner join stockitems using (stID) where siID != 'NULL'";
             return  $this->db->query($query)->result_array();
         }
-        function get_stocks(){
+       function get_stocks(){
             $query = "SELECT
-                stID,
-                CONCAT(stName, if(stSize IS Null,'', concat(' ',stSize))) as stName,
-                stMin,
-                stQty,
-                uomID,
-                uomAbbreviation,
-                stBqty,
-                UPPER(stStatus) as stStatus,
-                stType,
-                UPPER(stLocation) as stLocation,
-                ctName,
-                ctID
-            FROM
-                (
-                    stockitems
-                LEFT JOIN uom USING(uomID)
+            stockitems.stID,
+            CONCAT(
+                stName,
+                IF(
+                    stSize IS NULL,
+                    '',
+                    CONCAT(' ', stSize)
                 )
-            LEFT JOIN categories USING(ctID)
-            GROUP BY
-                stID;";
+            ) AS stName,
+            stMin,
+            stQty,
+            uomID,
+            uomAbbreviation,
+            uomStore,
+            stBqty,
+            UPPER(stStatus) AS stStatus,
+            stType,
+            UPPER(stLocation) AS stLocation,
+            ctName,
+            ctID
+        FROM
+            (
+                stockitems
+            LEFT JOIN uom USING(uomID)
+            )
+        LEFT JOIN categories USING(ctID)
+        GROUP BY
+            stID order by ctName, stName asc";
             return $this->db->query($query)->result_array();
         }
         function get_menuPref(){
@@ -111,53 +119,51 @@
             return $this->db->query($query)->result_array();
         }
 
-    // --------------- A D D I N G  S P O I L A G E S ---------------
-    function getLastNum(){
-        $query = "SELECT MAX(tNum) AS lastnum FROM transactions WHERE tType = 'spoilage'";
-        return $result = $this->db->query($query)->result();
-        
+    // --------------- A D D I N G  S T O C K  S P O I L A G E S ---------------
+    function add_stockspoil($date_recorded,$stocks,$account_id,$user,$date,$remarks){
+        $query = "INSERT INTO `stockspoil`(`sID`, `sDate`, `sDateRecorded`) VALUES (NULL,?,?)";
+        if($this->db->query($query,array($date,$date_recorded))){
+            $this->add_spoileditems($this->db->insert_id(),$stocks,$remarks,$date,$account_id,$date_recorded,$user);
+        }
     }
-    function add_stockspoil($date_recorded,$stocks,$account_id,$lastNum){
+    function add_spoileditems($sID,$stocks,$remarks,$date,$account_id,$date_recorded,$user){
+        $query = "INSERT INTO `spoiledstock`(`siID`, `sID`) VALUES (NULL,?)";
+        if($this->db->query($query,array($sID))){
+            $this->add_spoiltransitems($this->db->insert_id(),$stocks,$remarks,$date,$account_id,$date_recorded,$user);
+        }
+    }
+    function add_spoiltransitems($siID,$stocks,$remarks,$date,$account_id,$date_recorded,$user){
+        $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
         if(count($stocks) > 0){
             for($in = 0; $in < count($stocks) ; $in++){
+                $this->db->query($query,array("spoilage",$stocks[$in]['actualQty'],'1',$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$siID));
                 $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
-                $this->add_spoiltransaction(NULL, $stocks[$in]['tDate'], "spoilage", $date_recorded, $stocks[$in]['tRemarks'],$lastNum,$stocks[$in]['stID'],$stocks[$in]['uomID'],$stocks[$in]['stName'],$stocks[$in]['actualQty'],$account_id,$stocks);
+                $this->add_actlog($account_id,$date_recorded, "$user added a stock spoilage.", "add", $remarks);
             }
         }
     }
-    function add_spoiltransaction($id, $date, $type, $dateRecorded, $remarks,$lastNum,$stID,$uomID,$stName,$actualQty,$account_id,$stocks){
-        $query = "INSERT INTO transactions(tID,tNum,tDate,dateRecorded,tType,tRemarks) VALUES(NULL, ?, ?, ?, ?, ?)";
-       
-        if($this->db->query($query,array($lastNum, $date, $dateRecorded, $type, $remarks))){
-            $this->add_spoiltransitems($this->db->insert_id(), $stID, $uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks);
-            return true;
-         }
-    }
-    function add_spoiltransitems($tID,$stID,$uomID,$stName,$actualQty,$date,$dateRecorded,$remarks,$account_id,$stocks){
-        $query = "INSERT INTO `transitems` (`tiID`, `uomID`, `stID`, `tiName`) VALUES (null,?,?,?)";
-         if($this->db->query($query,array($uomID, $stID, $stName))){
-            $this->add_spoiltrans_items($this->db->insert_id(), $stID, $tID, $actualQty);
-            for($in = 0; $in < count($stocks)-1 ; $in++){
-            $this->add_stocklog($stocks[$in]['stID'], $tID, "spoilage",$stocks[$in]['tDate'], $dateRecorded, $stocks[$in]['actualQty'], $stocks[$in]['tRemarks']);
-            $this->add_actlog($account_id, $dateRecorded, "Chef added a stockitem spoilage.", "add", $stocks[$in]['tRemarks']);
-        }
-         }
-    }
-
-    function add_spoiltrans_items($tiID, $stID, $tID, $actualQty){
-        $query = "INSERT INTO `trans_items`(`tID`, `tiID`, `actualQty`) VALUES (?,?,?)";
-        return  $this->db->query($query,array($tID, $tiID, $actualQty));
-    }
-    function add_spoiledaddon($aosID,$addons){
-        $query = "insert into addonspoil (aosID,aoID,aosQty,aosDate,aosRemarks) values (?,?,?,?,?)";
-        if(count($addons) > 0){
-            for($in = 0; $in < count($addons) ; $in++){
-                $this->db->query($query, array($aosID, $addons[$in]['aoID'], $addons[$in]['aosQty'],
-                $addons[$in]['aosDate'],$addons[$in]['aosRemarks']));
-            }    
-        }
-    }
-    //--------------------------------- A D D I N G  M E N U  S P O I L A G E --------------------------------------------------
+//-------------------------------------- U P D A T I N G  S T O C K  S P O I L A G E S -----------------------------------------------------------------
+function add_stocktransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID){
+    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?)";
+    return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID));
+}
+function update_stock($stID, $stQty) {
+    $query = "UPDATE `stockitems` SET `stQty` = ? WHERE `stID` = ?;";
+    $this->db->query($query, array($stQty, $stID));
+}
+function add_activlog($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks){
+    $query = "INSERT INTO `activitylog`(
+        `alID`,
+        `aID`,
+        `alDate`, 
+        `alDesc`, 
+        `alType`, 
+        `additionalRemarks`
+        ) 
+        VALUES (NULL, ?, ?, ?, ?, ?)";
+        return $this->db->query($query, array($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks));
+} 
+    //--------------------------------- A D D I N G  A N D  U P D A T I N G  M E N U  S P O I L A G E --------------------------------------------------
 function add_menuspoil($date,$date_recorded,$account_id,$menu, $tiType){
     $query = "insert into menuspoil (msID,msDate,msDateRecorded) values (NULL,?,?)";
     if($this->db->query($query,array($date,$date_recorded))){ 
