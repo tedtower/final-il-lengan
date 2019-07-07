@@ -135,12 +135,13 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Orderslip No.</span>
                                                         </div>
-                                                        <select class="form-control form-control-sm" name="osID" id="osID" >
-                                                                    <option value="">None</option>
+                                                        <input list="orderslips" name="osID" id="osID"/>
+                                                        <datalist id="orderslips">
+                                                            <option value="">None</option>
                                                             <?php foreach($slip as $s){ 
                                                             echo '<option value="'.$s['osID'].'">'.$s['osID'].'</option>';
                                                             }?>
-                                                        </select>
+                                                        </datalist>
                                                     </div>
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -434,7 +435,7 @@ $(document).ready(function() {
 		var oldQty = $(this).find("input[name='msoldQty']").val();
         var msDate = $(this).find("input[name='msDate']").val();
         var msRemarks = $(this).find("input[name='msRemarks']").val();
-        var osID = $(this).find("select[name='osID']").val();
+        var osID = $(this).find("input[name='osID']").val();
        console.log('msID:',msID,',','osID:', osID,',','prID:', prID,',','msQty',msQty,',',
        'msDate',msDate,',','msRemarks:',msRemarks,',','oldQty:',oldQty);
         $.ajax({
