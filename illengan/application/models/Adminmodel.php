@@ -1744,6 +1744,7 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
                 $this->add_pItem($pID, $poitems);
             }
         }
+    }
     function add_reconciliation($re){
         $query = "INSERT INTO reconciliation (reDate, reDateRecorded) VALUES (?, ?)";
         return $this->db->query($query, array($re["date"], $re["current"]));
