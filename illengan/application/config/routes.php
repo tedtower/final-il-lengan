@@ -59,6 +59,7 @@ $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
 $route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
 $route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
+
 //End Viewing Routes
 
 //Not Sure Routes
@@ -151,7 +152,6 @@ $route['admin/addon/spoilages/viewAddonJS'] ="adminview/viewAddonJS";
 $route['admin/jsonPOrders'] ="adminview/jsonPurchaseOrders";
 $route['admin/jsonSupp'] ="adminview/jsonSuppliers";
 $route['admin/jsonMerchandise'] ="adminview/jsonSuppMerchandise";
-$route['admin/jsonConsumptions'] ="adminview/jsonConsumptions";
 $route['admin/jsonSales'] ="adminview/jsonSales";
 $route['admin/jsonPrefDetails'] ="adminview/jsonPrefDetails";
 $route['admin/inventory/getitem'] = "adminview/getStockDetails";
@@ -206,12 +206,6 @@ $route['barista/inventoryJS'] = "barista/inventoryJS";
 $route['barista/restock'] = "barista/restockitem";
 $route['barista/destock'] = "barista/destockitem";
 $route['barista/updateStatus'] = "barista/updateStatus";
-$route['barista/stock/spoilages'] = "barista/viewSpoilagesStock";
-$route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
-$route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
-$route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
-$route['barista/stock/spoilage/delete'] ="barista/deleteStockSpoil";
-$route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
 $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
 $route['barista/getSupplierMerchandise'] = "barista/getSuppMerchForBrochure";
@@ -222,6 +216,18 @@ $route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
 $route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
 $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
+$route['barista/stock/spoilage/formadd'] = "barista/viewSpoilagesStockAdd";;
+$route['barista/spoilagesstockjson'] = "barista/viewSpoilagesStockJs";
+$route['barista/stock/spoilage/edit'] = "barista/editStockSpoil";
+$route['barista/stock/spoilage/delete'] ="barista/deleteStockSpoil";
+$route['barista/stock/spoilages'] = "barista/viewSpoilagesStock";
+$route['barista/stock/spoilages/viewStockJS'] ="barista/viewStockJS";
+$route['barista/stock/spoilages/add'] = "barista/addspoilagesstock";
+$route['barista/addons/spoilages'] = "barista/viewSpoilagesAddons";
+$route['barista/addons/spoilage/formadd'] = "barista/viewSpoilagesAddonAdd";
+$route['barista/spoilagesaddonsjson'] = "barista/viewSpoilagesAddonsJs";
+$route['barista/addons/spoilage/edit'] = "barista/editAoSpoil";
+$route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
 //-----------------------------------------

@@ -150,7 +150,7 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <form action="<?php echo base_url()?>admin/sales/report/add" method="post" accept-charset="utf-8">
+                                    <form action="<?php echo base_url()?>admin/sales/report/add" method="post" accept-charset="utf-8" id="formDateReport">
                                         <div class="modal-body">
                                             <p>Please input the date for the following:</p>
                                             <div class="input-group mb-3">
@@ -158,14 +158,14 @@
                                                     <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Start Date</span>
                                                 </div>
-                                                <input type="date" name="sDate" class="form-control form-control-sm">
+                                                <input type="date" name="sDate" id="sDate" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                             </div>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         End Date</span>
                                                 </div>
-                                                <input type="date" name="eDate" class="form-control form-control-sm">
+                                                <input type="date" name="eDate" id="eDate" class="form-control form-control-sm" max="<?php echo date("M j, Y -l"); ?>" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -813,8 +813,7 @@ $(document).ready(function () {
             } else {
                 stQty = parseInt(row.attr('data-currqty'));
             }
-            
-            var olQty = row.find("input[name='olQty']").val();
+
             ol.push({
                 olID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
                 prID: row.find("input[name='prID']").val(),
@@ -822,7 +821,7 @@ $(document).ready(function () {
                 stQty: stQty,
                 osID: osID,
                 olDesc: row.find("input[name='olDesc']").val(),
-                olQty: olQty,
+                olQty: row.find("input[name='olQty']").val(),
                 olSubtotal: row.find("input[name='subtotal']").val(),
                 olStatus: 'served',
                 olRemarks: ' ',
@@ -873,6 +872,29 @@ $(document).ready(function () {
                 console.log(response.responseText);
             }
         });
+    });
+
+    $('#formDateReport').submit(function(event){
+        var sDate = $("#sDate").val();
+        var eDate = $("#eDate").val();
+        var currentDate = new Date();
+        if(Date.parse(eDate) <= Date.parse(sDate)){
+            alert('Invalid Date Range!');
+            return false;
+        }
+        if(Date.parse(eDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
+    });
+
+    $('#formAdd').submit(function(event){
+        var payDate = $("#osPayDateTime").val();
+        var orderDate = $("#osDateTime").val();
+        if(Date.parse(payDate) <= Date.parse(orderDate)){
+            alert('Invalid Date!');
+            return false;
+        }
     });
 });
 

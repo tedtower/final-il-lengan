@@ -72,10 +72,9 @@
                                                         </thead>
                                                         <tbody>
                                                             <?php foreach($poitems as $poitem){
-                                                        if($poitem['piID'] == $po['id']){?>
+                                                            if($poitem['pID'] == $po['id']){?>
                                                                 <td><?= $poitem['spmName']?></td>
                                                                 <td><?= $poitem['qty']?></td>
-                                                                <!-- <td><?= $poitem['equivalent']?></td> -->
                                                                 <td><?= $poitem['actual']?></td>
                                                                 <td><?= $poitem['spmPrice']?></td>
                                                                 <!-- <td><?= $poitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?>
