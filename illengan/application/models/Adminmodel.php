@@ -1461,7 +1461,7 @@ function add_constsales($stID, $dQty, $cDate, $account_id, $action) {
          $this->add_constransitems($this->db->insert_id(), $stID, $dQty, $cDate, $cDateRecorded,$account_id, $action);
     }
 }
-function add_constransitems($cID, $stID, $dQty, $cDate, $cDateRecorded, $account_id, $action) {
+function add_consumptransitems($cID, $stID, $dQty, $cDate, $cDateRecorded, $account_id, $action) {
     $query = "INSERT INTO consumed_items (ciID, cID) VALUES (NULL,?)";
     if($this->db->query($query, array($cID))) {
         $this->add_constrans_items($this->db->insert_id(), $stID, $dQty, $cDateRecorded, $cDate, 
@@ -1476,6 +1476,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
     if($this->db->query($query, array('consumed', $dQty, $dQty, $remainingQty, $cDate, $stID, $ciID))) {
         $this->add_actlog($account_id, $cDateRecorded, "Admin ".$action."Edited a stockitem consumption.", $action, "Sales");
     }
+}
 //------------CONSUMPTIONS---------------------------
 function add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks) {
     $query = "INSERT INTO consumptions (cID, cDate, cDateRecorded) VALUES (NULL,?,?)";
@@ -2446,5 +2447,5 @@ function add_constransitems($ciID, $stocks,$remarks,$date,$account_id,$date_reco
 //     ?,
 //     ?
 // );
-}
+ }
 ?>
