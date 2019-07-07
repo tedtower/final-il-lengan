@@ -211,17 +211,7 @@ function getCardValuesForDR(){
 //         redirect('login');
 //     }
 // }
-function viewConsumptionFormAdd(){
-    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Add Consumption";
-        $this->load->view('admin/templates/head', $head);
-        $this->load->view('admin/templates/sideNav');
-        $data['stocks'] = $this->adminmodel->get_stocks();
-        $this->load->view('admin/consumptionAdd', $data);
-    }else{
-        redirect('login');
-    }
-}
+
 //-------------end-----------------------
 function viewStockCard($stID){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -840,14 +830,11 @@ function getStockItem(){
             redirect('login');
         }
     }
+    //---CONSUMPTIONS-----------------------------
     function jsonConsumptions() {
         if($this->checkIfLoggedIn()){
-            $data = array(
-                'consumption' => $this->adminmodel->get_consumptions(),
-                'consitems' => $this->adminmodel->get_consumpitems()
-            );
-            header('Content-Type: application/json');
-            echo json_encode($data, JSON_PRETTY_PRINT);
+            $data=$this->adminmodel->get_consumpitems();
+            echo json_encode($data);
         }else{
             redirect('login');
         }
@@ -862,6 +849,18 @@ function getStockItem(){
             redirect('login');
         }
     }
+    function viewConsumptionFormAdd(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $head['title'] = "Inventory - Add Consumption";
+            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/sideNav');
+            $data['stocks'] = $this->adminmodel->get_stocks();
+            $this->load->view('admin/consumptionAdd', $data);
+        }else{
+            redirect('login');
+        }
+    }
+    //---------------------------------------------------------
     function viewActivityLog() {
         if($this->checkIfLoggedIn()){
             $data['title'] = "Activity Logs";
