@@ -13,7 +13,7 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('barista/consumption/formadd')?>" data-original-title style="margin:0"
+                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/consumption/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Consumption</a>
                                 <br>
                                 <br>
@@ -34,7 +34,7 @@
                                             <td></td>
                                             <td></td>
                                             <td>
-                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('barista/consumption/formedit')?>" data-original-title style="margin:0"
+                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/consumption/formedit')?>" data-original-title style="margin:0"
                                                 id="editBtn">Edit</a>
                                             <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteConsumption">Archive</button>
                                             </td>
@@ -314,13 +314,13 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
-    var getEnumValsUrl = '<?= site_url('barista/transactions/getEnumVals')?>';
-    var crudUrl = '<?= site_url('barista/transactions/add')?>';
-    var getTransUrl = '<?= site_url('barista/transactions/getTransaction')?>';
+    var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals')?>';
+    var crudUrl = '<?= site_url('admin/transactions/add')?>';
+    var getTransUrl = '<?= site_url('admin/transactions/getTransaction')?>';
     var loginUrl = '<?= site_url('login')?>';
-    var getPOsUrl = '<?= site_url('barista/transactions/getPOs')?>';
-    var getDRsUrl = '<?= site_url('barista/transactions/getDRs')?>';
-    var getSPMsUrl = '<?= site_url('barista/transactions/getSPMs')?>';
+    var getPOsUrl = '<?= site_url('admin/transactions/getPOs')?>';
+    var getDRsUrl = '<?= site_url('admin/transactions/getDRs')?>';
+    var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs')?>';
     $(function() {
         $("#addBtn").on("click", function(){
             setAddEditBtnHandlers();
@@ -480,7 +480,7 @@
                         <div class="mt-4"
                             style="float:left:width:3%;overflow:auto;">
                             <img class="exitBtn"
-                                src="/assets/media/barista/error.png"
+                                src="/assets/media/admin/error.png"
                                 style="width:20px;height:20px;float:right;">
                         </div>
                     </div>`);
