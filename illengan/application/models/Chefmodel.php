@@ -13,6 +13,10 @@
             WHERE cat.supcatID = '1' AND ol.olStatus='pending'";
             return $this->db->query($query)->result_array();
         }
+        function getSlipNum(){
+            $query="SELECT osID FROM  orderslips";
+            return $this->db->query($query)->result_array();
+        }
     
         function get_addons() {
             $query = "SELECT * FROM orderaddons INNER JOIN addons USING (aoID)";
