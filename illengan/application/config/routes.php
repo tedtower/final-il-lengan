@@ -267,3 +267,7 @@ $route['chef/consumption/formadd'] = "chef/viewConsumptionFormAdd";
 $route['chef/consumption/add'] = "chef/addConsumption";
 $route['chef/menuspoilage/add'] = "chef/addMenuSpoilage";
 $route['chef/consumption/edit'] = "chef/editConsumption";
+$route['chef/menuspoilage/formadd'] = "chef/viewMenuSpoilageFormAdd";
+$route['chef/stock/spoilage/formadd'] = "chef/viewSpoilagesStockAdd";
+$route['chef/stock/spoilages/add']= "chef/addspoilagesstock";
+$route['chef/stock/spoilage/edit'] = "chef/editStockSpoil";

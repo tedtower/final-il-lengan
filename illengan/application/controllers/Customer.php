@@ -180,66 +180,7 @@ class Customer extends CI_Controller {
 				$customer = $this->input->post('cust_name');
 				$orderlist = $this->session->userdata('orders');
 				$total = $this->input->post('total');
-				$slip = array(
-					"table" => $tableCode,
-					"custName" => $customer,
-					"total" => $total,
-					"osDateTime" => $dateTime,
-					"dateRecorded" => $dateTime
-				);
-				$osID = $this->customermodel->add_orderslip($slip);
-				$consumptionItems = array("stID"=> array() , "qty" => array());
-				foreach($orderlist as $list){
-					$priceaName = $this->customermodel->get_priceAndName($list['id']);
-					$list = array(
-						"osID" => $osID,
-						"prID" => $list['id'],
-						"qty" => $list['qty'],
-						"subtotal" => $list['subtotal'],
-						"remarks" => $list['remarks'],
-						"price" => $priceaName['price'],
-						"olDesc" => $priceaName['name'],
-						"addons" => $list['addons']
-					);
-					$olID = $this->customermodel->add_orderlist($list);
-					$prefStocks = $this->customermodel->get_prefStocks($list['prID']);
-					if(isset($prefStocks[0])){
-						$prefStock = $prefStocks[0];
-						$stID = $prefStock['stID'];
-						$qty = $prefStock['prstQty'];
-						$index = array_search($stID, $consumptionItems['stID']);
-						if($index !== FALSE){
-							$consumptionItems['qty'][$index] += $qty * $list['qty'];
-						}else{
-							array_push($consumptionItems['stID'], $stID);
-							array_push($consumptionItems['qty'], $list['qty'] * $qty);
-						}
-					}
-				}
-				$consumption = array(
-					"date" => $dateTime,
-					"dateRecorded" => $dateTime,
-					"remarks" => "Orderslip #".$osID
-				);
-				if(count($consumptionItems['stID'])>0){
-					$consumptionID = $this->customermodel->add_consumption($consumption);
-					for($x = 0 ; $x < count($consumptionItems['stID']) ; $x++){
-						$consumptionItemID = $this->customermodel->add_consumedItems($consumptionItems['stID'][$x]);
-						$this->customermodel->add_consumedItemsQty($consumptionID, $consumptionItemID, $consumptionItems['qty'][$x]);
-						$log = array(
-							"stID" => $consumptionItems['stID'][$x],
-							"tID" => $consumptionID,
-							"slQty" => $consumptionItems['qty'][$x],
-							"slRemain"=> $this->customermodel->get_stockQty($consumptionItems['stID'][$x])[0]['stQty'] - $consumptionItems['qty'][$x],
-							"slDateTime" => $dateTime,
-							"dateRecorded" => $dateTime,
-							"slRemarks" => "Sales"
-						);
-						$this->customermodel->add_consumedLog($log);
-						$this->customermodel->update_stQty($consumptionItems['stID'][$x], $consumptionItems['qty'][$x]);
-					}
-				}
-				// $this->customermodel->orderInsert($total, $tableCode, $orderlist, $customer, $dateTime);
+				$this->customermodel->orderInsert($total, $tableCode, $orderlist, $customer, $dateTime);
 			}else{
 				redirect('customer/checkin');
 			}
