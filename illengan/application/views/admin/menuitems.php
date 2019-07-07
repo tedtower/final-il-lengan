@@ -61,7 +61,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input type="text" name="mName" class="form-control form-control-sm border border-secondary border-left-0" required>
+                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
                                 </div>  
                                 <!--Description-->
                                 <div class="input-group mb-3">
@@ -85,7 +85,7 @@
                                         <?php }?>
                                     </select>
                                 </div>
-                                    <!--Transaction date-->
+                                    <!--Status-->
                                     <div class="input-group mb-3 col">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
@@ -162,7 +162,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input type="text" name="mName" class="form-control form-control-sm border border-secondary border-left-0" required>
+                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
                                 </div>  
                                 <!--Description-->
                                 <div class="input-group mb-3">
@@ -350,7 +350,7 @@ $(document).ready(function() {
     $(".addPreference").on('click',function(){
         var row=`
         <tr data-id="">
-            <td><input type="text" name="prName[]" class="form-control form-control-sm"></td>
+            <td><input class="form-control form-control-sm" required name="prName[]" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Preferences should only countain letters and white spaces."></td>
             <td>
                 <select class="form-control" name="mTemp[]">
                     <option value="" selected>Choose</option>
@@ -660,7 +660,7 @@ $(document).ready(function() {
         preference.forEach(preference => {
             modal.find(".preferencetable > tbody").append(`
             <tr class="menuElem" data-id="${preference.prID}">
-                <td><input type="text" name="prName[]" value="${preference.prName}" class="form-control form-control-sm"></td>
+               <td><input class="form-control form-control-sm" required name="prName[]" type="textarea" value="${preference.prName}" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Preferences should only countain letters and white spaces."></td>
                 <td>
                     <select class="form-control" name="mTemp[]" value="${preference.mTemp}">
                         <option value="" selected>Choose</option>
