@@ -829,6 +829,8 @@ $(document).ready(function () {
                 olPrice: row.find("input[name='prPrice']").val(),
                 olDiscount: parseFloat((row.find("select[name='discount']").val()).trim()),
                 deductQty : isNaN((parseInt(row.attr("data-stqty")) * olQty)) ? (null) : (parseInt(row.data("stqty")) * olQty),
+                tiActual: Math.abs((parseInt(oldQty - newQty) * parseInt(row.attr('data-stqty')))),
+                update: (oldQty !== newQty) ? (1) : (0),
                 del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
             });
         }

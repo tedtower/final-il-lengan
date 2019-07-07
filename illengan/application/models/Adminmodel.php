@@ -1388,17 +1388,6 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
             return $this->db->query($query, array($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks));
     }   
 
-    function add_consumption($con) {
-        $query = "INSERT INTO transactions(tID, tNum, tDate, dateRecorded, tType, tRemarks)
-            VALUES(NULL, ?, ?, ?, ?, ?)";
-        $lastNum = $this->db->query("SELECT MAX(tNum) AS lastnum FROM transactions
-            WHERE tType = ?",array($con['type']))->result_array()[0]['lastnum'];
-        $lastNum = $lastNum == NULL ? 1 : $lastNum+1;
-        if($this->db->query($query, array($lastNum, $con['date'],$con['dateRecorded'],$con['type'],$con['remarks']))){
-            return $this->db->insert_id();
-        }
-        return 0;
-    }
     function edit_consumption($con){
         $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
         return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
@@ -1544,7 +1533,9 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
                     'olStatus' => $orderlists[$i]['olStatus'],
                     'olRemarks' => $orderlists[$i]['olRemarks'],
                     'olPrice' => $orderlists[$i]['olPrice'],
-                    'olDiscount' => $orderlists[$i]['olDiscount']
+                    'olDiscount' => $orderlists[$i]['olDiscount'],
+                    'tiActual' => $orderlists[$i]['tiActual'],
+                    'update' => $orderlists[$i]['update']
                 );
 
                 if($orderlists[$i]['del'] === 0) {
@@ -1570,7 +1561,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         $orlist['olID'])))  {
             if($orlist['stID'] !== null) {
                 $this->update_stock($orlist['stID'], $orlist['stQty']);
-                $this->add_constsales($orderlists[$in]['stID'], $orderlists[$in]['deductQty'], $osDateTime,
+                $this->add_constsales($orlist['stID'], $orlist['tiActual'], $osDateTime,
                 $account_id, $action);
             }
             if(count($addons) > 0) {
@@ -1768,7 +1759,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
     }
     function edit_purchase($p){
         $query = "UPDATE purchases SET receiptNo = ?, pDate = ?, pDateRecorded = ?, spAltName = ? WHERE pID = ?";
-        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"] $p["pID"]));
+        return $this->db->query($query, array($p["receipt"], $p["date"], $p["current"], $p["alt"], $p["pID"]));
     }
     function add_pItem($piStatus){
         $query = "INSERT INTO purchase_items(piStatus) VALUES(?)";
