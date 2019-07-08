@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
                                 <form action="<?php echo base_url()?>admin/promo/add" method="get"
-                                    accept-charset="utf-8">
+                                    accept-charset="utf-8" id="addNewPromo">
                                     <div class="modal-body">
                                         <!--Menu Name-->
                                         <div class="input-group mb-3">
@@ -52,7 +52,7 @@
                                                     Promo Name</span>
                                             </div>
                                             <input type="text" name="pmName" id="pmName"
-                                                class="form-control form-control-sm">
+                                                class="form-control form-control-sm" required>
                                         </div>
                                         <!--Description-->
                                         <div class="input-group mb-3">
@@ -62,14 +62,14 @@
                                                     Start Date</span>
                                             </div>
                                             <input type="date" name="pmStartDate" id="pmStartDate"
-                                                class="form-control form-control-sm">
+                                                class="form-control form-control-sm" required>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="inputGroup-sizing-sm"
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;margin-left: 10px;">
                                                     End Date</span>
                                             </div>
                                             <input type="date" name="pmEndDate" id="pmEndDate"
-                                                class="form-control form-control-sm">
+                                                class="form-control form-control-sm" required>
                                         </div>
 
  
@@ -113,10 +113,10 @@
                                             <tbody>
                                                 <tr>
                                                     <td><select class="form-control promoOpt" name="dc_item"
-                                                            id="dc_item">
+                                                            id="dc_item" required>
                                                         </select></td>
                                                     <td><input type="number" name="pcQty" min="0" id="pcQty"
-                                                            class="form-control form-control-sm"></td>
+                                                            class="form-control form-control-sm" required></td>
                                                 </tr>
                                         </table>
 
@@ -397,6 +397,16 @@ function showTable(){
             var menuID = $(this).closest("tr").attr("data-menuID");
             //set Modal contents;
         });
+
+        $('#addnewPromo').submit(function(event){
+        var startDate = $("#pmStartDate").val();
+        var endDate = $("#pmEndDate").val();
+        if(Date.parse(endDate) < Date.parse(startDate)){
+            alert('Incorrect Date Range!');
+            return false;
+        }
+    });
+
 }
 var btn;
 function getSelectedMenu() {

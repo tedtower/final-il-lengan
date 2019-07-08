@@ -29,7 +29,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date">
+                                        <input type="date" class="form-control" name="date" required>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="stockitems table table-borderless">

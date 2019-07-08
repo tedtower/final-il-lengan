@@ -524,7 +524,7 @@ $(document).ready(function() {
             var preferencesDiv = `
             <div class="preferences" style="width:45%;overflow:auto;float:left;margin-right:3%" > <!-- Preferences table container-->
                 <span><b>Preferences:</b></span><br> <!-- label-->
-                ${item.preferences.length === 0 ? "No prefernces are set for this menu item" : 
+                ${item.preferences.length === 0 ? "No preferences are set for this menu item" : 
                 `
                 <table class="table table-bordered"> <!-- Preferences table-->
                     <thead class="thead-light">
