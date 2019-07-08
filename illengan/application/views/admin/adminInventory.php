@@ -232,7 +232,7 @@
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Stock Name</span>
                                             </div>
-                                            <input class="form-control form-control-sm" name="stockName" type="textarea" value="" id="stockName" require pattern="[a-zA-Z][a-zA-Z\s]*" title="Stock name should only countain letters and white spaces.">
+                                            <input class="form-control form-control-sm" name="stockName" type="textarea" value="" id="stockName" require pattern="[a-zA-Z][a-zA-Z\s]*" title="Stock name should only countain letters and white spaces." required>
                                         </div>
                                         <div class="form-row">
                                             <!--Stock Type-->

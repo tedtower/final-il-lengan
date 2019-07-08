@@ -21,14 +21,14 @@
                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                 Start Date</span>
                                         </div>
-                                        <input type="date" name="sDate" class="form-control form-control-sm">
+                                        <input class="form-control form-control-sm" name="sDate" type="date" class="no-border"  data-validate="required" message="Start date is required!" required>
                                     </div>
                                     <div class="input-group mb-3 col">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                 End Date</span>
                                         </div>
-                                        <input type="date" name="eDate" class="form-control form-control-sm">
+                                        <input class="form-control form-control-sm" name="eDate" type="date" class="no-border"  data-validate="required" message="End date is required!" required>
                                         <button class="btn btn-sm" style="background:#227C57;color:white;width:10%;border:0"><b>Ok</b></button>
                                     </div>
                                 </div>
