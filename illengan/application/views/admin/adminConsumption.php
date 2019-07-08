@@ -1,4 +1,4 @@
-\<body style="background:white">
+<body style="background:white">
 <div class="content">
 	<div class="container-fluid">
 		<br>
@@ -20,7 +20,7 @@
                                     id="addBtn">Add Consumption</a>
 							<!--eND Add Consumption BUTTON-->
 							</div>
-  </div>
+                            </div>
 							<!--eND Add Consumption BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">

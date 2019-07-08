@@ -51,7 +51,7 @@
                                                     style="width:105px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Promo Name</span>
                                             </div>
-                                            <input class="form-control form-control-sm border border-secondary border-left-0" required name="pmName" type="textarea" value="" id="pmName" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Promo name should only countain letters and white spaces.">
+                                            <input class="form-control form-control-sm border border-secondary border-left-0" required name="pmName" type="textarea" value="" id="pmName" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Promo name should only countain letters and white spaces." required>
                                         </div>
                                         <!--Description-->
                                         <div class="input-group mb-3">

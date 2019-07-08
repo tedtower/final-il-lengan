@@ -29,7 +29,7 @@
                                                 style="width:80px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                                 Supplier</span>
                                         </div>
-                                        <input type="text" data-id="<?= $dr[0]['sp']?>" value="<?= $dr[0]['spName']?>" name="supplier" class="form-control border-left-0"/>
+                                        <input type="text" data-id="<?= $dr[0]['sp']?>" value="<?= $dr[0]['spName']?>" name="supplier" class="form-control border-left-0" require/>
                                     </div>
                                     <!--Invoice Type-->
                                     <div class="input-group mb-3 col">
@@ -38,8 +38,7 @@
                                                 style="width:80px;background:#bfbfbf;color:white;font-size:14px;font-weight:600">
                                                 Date</span>
                                         </div>
-                                        <input type="date" class="form-control border-left-0"
-                                            name="tDate" value="<?= $dr[0]['date']?>">
+                                        <input class="form-control border-left-0" name="tdate" id="tdate" type="date" data-validate="required" value="<?= $dr[0]['date']?>" message="Date is required!"  require>
                                     </div>
                                 </div>
                                     <div class="input-group mb-3">
@@ -49,7 +48,7 @@
                                                 Receipt</span>
                                         </div>
                                         <input type="text" name="receipt"
-                                            class="form-control form-control-sm  border-left-0" value="<?= $dr[0]['receipt']?>">
+                                            class="form-control form-control-sm  border-left-0" value="<?= $dr[0]['receipt']?>" require>
                                     </div>
                                     <!--Remarks-->
                                     <div class="input-group mb-3">
@@ -98,7 +97,7 @@
                                         </select>
                                         <input type="number" name="itemPrice[]"
                                             class="form-control form-control-sm "
-                                            placeholder="Price" >
+                                            placeholder="Price" require>
                                         <input type="number" name="discount[]"
                                             class="form-control form-control-sm "
                                             placeholder="Discount">

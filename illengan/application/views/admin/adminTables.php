@@ -47,7 +47,7 @@
                                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Table Code</span>
                                                     </div>
-                                                    <input type="text" name="tableCode" id="tableCode" class="form-control form-control-sm">
+                                                    <input type="text" name="tableCode" id="tableCode" class="form-control form-control-sm" required>
                                                 </div>
                                             </div>
 
@@ -82,10 +82,10 @@
                                                             Table Code</span>
                                                     </div>
                                                     <input class="form-control" type="text" name="prevTableCode" hidden="hidden">
-                                                    <input class="form-control" type="text" name="tableCode" value="">
+                                                    <input class="form-control" type="text" name="tableCode" value="" required>
                                                 </div>
                                             </div>
-                                            <!--End of Mpdal "Edit Table"-->
+                                            <!--End of Modal "Edit Table"-->
 
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>

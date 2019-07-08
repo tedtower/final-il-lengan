@@ -25,7 +25,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" id="spoiledDate" class="form-control" name="tDate">
+                                        <input type="date" id="spoiledDate" class="form-control" name="tDate" required>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">

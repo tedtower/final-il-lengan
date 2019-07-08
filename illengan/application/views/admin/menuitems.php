@@ -359,7 +359,7 @@ $(document).ready(function() {
                     <option value="hc">Hot and Cold</option>
                 </select>
             </td>
-            <td><input type="number" name="prPrice[]" class="form-control form-control-sm"></td>
+            <td><input type="number" name="prPrice[]" class="form-control form-control-sm" required></td>
             <td>
                 <select class="form-control" name="prStatus[]">
                     <option value="" selected disabled>Choose</option>

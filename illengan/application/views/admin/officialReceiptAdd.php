@@ -51,7 +51,7 @@
                                             Receipt</span>
                                     </div>
                                     <input type="text" name="receipt"
-                                        class="form-control form-control-sm  border-left-0">
+                                        class="form-control form-control-sm  border-left-0" required>
                                 </div>
                                 <!--Remarks-->
                                 <div class="input-group mb-3 col">

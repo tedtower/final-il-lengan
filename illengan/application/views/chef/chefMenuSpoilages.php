@@ -135,7 +135,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Orderslip No.</span>
                                                         </div>
-                                                        <input list="orderslips" name="osID" id="osID"/>
+                                                        <input list="orderslips" type="number" name="osID" id="osID"/>
                                                         <datalist id="orderslips">
                                                             <option value="">None</option>
                                                             <?php foreach($slip as $s){ 
