@@ -120,8 +120,7 @@
             }
         });
         $("#stockCard input[name='stock']").on("click", function(event) {
-             //---
-            //---
+           
             var id = $(this).val();
             var name = $(this).attr("data-name");
             console.log(id, name, $(this).is(":checked"));
@@ -168,6 +167,7 @@
             var uomID = $(this).find("input[name='uomID']").val();
             var curQty = $(this).find("input[name='curQty']").val();
             var items = [];
+            
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
@@ -178,10 +178,8 @@
                     curQty: curQty,
                 });
             });
-            console.log(items);
             $.ajax({
                 method: "POST",
-                url: url,
                 data: {
                     date: tDate,
                     remarks: remarks,
@@ -214,6 +212,7 @@
             return false;
         }
     });
+
     </script>
 </body>
 

@@ -47,6 +47,7 @@ $route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
 $route['admin/return'] = "adminview/viewReturn";
 $route['admin/inventory/physicalcount'] = "adminview/performPhysicalCount";
 $route['admin/consumption'] = "adminview/viewConsumptions";
+$route['admin/jsonConsumptions'] = "adminview/jsonConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 $route['admin/returns/formadd'] = "adminview/viewReturnFormAdd";
 $route['admin/returns/formedit/(:num)'] = "adminview/viewReturnFormEdit/$1";
