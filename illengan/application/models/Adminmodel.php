@@ -2443,5 +2443,31 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
 //     ?,
 //     ?
 // );
+
+// SELECT
+//     CONCAT(
+//         stName,
+//         COALESCE(stSize, CONCAT(' ', stSize))
+//     ),
+//     tiActual AS qty,
+//     tiType,
+//     reQty,
+//     remainingQty,
+//     IFNULL(tiDate, reDate) AS logDate,
+//     reDiscrepancy,
+//     reRemarks,
+//     reID,
+//     COALESCE(rID, pcID, cID, sID) AS tID
+// FROM
+//     stockitems
+//     RIGHT JOIN transitems USING(stID)
+//     RIGHT JOIN(
+//             suppliermerchandise
+//         RIGHT JOIN transitems USING(spmID)
+//         ) USING(stID)
+// RIGHT JOIN(
+//         st_recon
+//     RIGHT JOIN reconciliation USING(reID)
+//     ) USING(stID)
 }
 ?>
