@@ -1,187 +1,370 @@
-<!--End Side Bar-->
-
 <body style="background:white">
-    <div class="content">
-        <div class="container-fluid">
-            <br>
-            <p style="text-align:right; font-weight: regular; font-size: 16px">
-                <!-- Real Time Date & Time -->
-                <?php echo date("M j, Y -l"); ?>
-            </p>
-            <div class="content" style="margin-left:250px;">
-                <div class="container-fluid">
-                    <div class="content">
-                        <div class="container-fluid">
-                            <!--Table-->
-                            <div class="card-content">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/consumption/formadd')?>" data-original-title style="margin:0"
+<div class="content">
+	<div class="container-fluid">
+		<br>
+		<p style="text-align:right; font-weight: regular; font-size: 16px">
+			<!-- Real Time Date & Time -->
+			<?php echo date("M j, Y -l"); ?>
+		</p>
+		<div div class="content" style="margin-left:250px;">
+			<div class="container-fluid">
+				<div class="content">
+					<div class="container-fluid">
+						<!--Table-->
+						<div class="card-content">
+
+							<!--Add Consumption BUTTON-->
+							<div class="col-md-4 col-lg-2">
+							<!-- <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Consumption</button><br> -->
+							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/consumption/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Consumption</a>
-                                <br>
-                                <br>
-                                <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
-                                    width="100%">
-                                    <thead class="thead-dark">
-                                        <th><b class="pull-left">Transaction #</b></th>
-                                        <th><b class="pull-left">Stock Name</b></th>
-                                        <th><b class="pull-left">Qty Consumed</b></th>
-                                        <th><b class="pull-left">Date Consumed</b></th>
-                                        <th><b class="pull-left">Date Recorded</b></th>
-                                        <th><b class="pull-left">Actions</b></th>
-                                    </thead>
-                                    <tbody>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>
-                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/consumption/formedit')?>" data-original-title style="margin:0"
-                                                id="editBtn">Edit</a>
-                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteConsumption">Archive</button>
-                                            </td>
-                                        </tr>
-                                       
-                                    </tbody>
-                                </table>
-                                <!--End Table Content-->
-
-                     
+							<!--eND Add Consumption BUTTON-->
+							</div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php include_once('templates/scripts.php') ?>
-  
-</body>
+							<!--eND Add Consumption BUTTON-->
+							<br>
+							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
+								<thead class="thead-dark" style="font-weight:900">
+									<th></th>
+									<th>TRANSACTION #</th>
+									<th>STOCK ITEM</th>
+									<th>QUANTITY</th>
+									<th>DATE SPOILED</th>
+									<!-- <th>DATE RECORDED</th> -->
+									<th>OPERATION</th>
+								
+								</thead>
+								<tbody id="spoilage_data">
+								</tbody>
+							</table>
+							<!--End Table Content-->
+
+							<!--Delete Confirmation Box-->
+							<div class="modal fade" id="deleteSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLongTitle">Delete Consumption</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<form id="confirmDelete">
+											<div class="modal-body">
+												<h6 id="deleteTableCode"></h6>
+												<p>Are you sure you want to delete the selected consumption?</p>
+												<input type="text" name="tID" hidden="hidden">
+												<div class="input-group mb-2">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Remarks</span>
+                                                        </div>
+                                                        <input type="text" name="delRemarks" id="delRemarks" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("delRemarks"); ?></span>
+                                                </div>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+												<button type="submit" class="btn btn-danger btn-sm">Archive</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+							<!--End of Delete Modal-->
+							<!--Edit Consumption-->
+							
+							<div class="modal fade" id="editSpoil" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit Consumption</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <form id="formEdit"  action="<?= site_url('admin/consumption/edit')?>" accept-charset="utf-8" > 
+												<div class="modal-body">
+                                                    <!-- Quantity-->
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Quantity</span>
+                                                        </div>
+                                                        <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("actualQtyUpdate"); ?></span>
+                                                    </div>
+                                                    <!--Date Spoiled-->
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Date Spoiled</span>
+                                                        </div>
+                                                        <input type="date" name="tiDate" id="tiDate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("tDate"); ?></span>
+                                                    </div>
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Remarks</span>
+                                                        </div>
+                                                        <input type="text" name="tiRemarks" id="tiRemarks" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
+                                                    </div>
+													<input name="tiActual" id="tiActual" hidden="hidden">
+													<input name="stQty" id="stQty" hidden="hidden">
+													<input name="stID" id="stID" hidden="hidden">
+													<input name="siID" id="siID" hidden="hidden">
+                                                    <!--Footer-->
+                                                    <div class="modal-footer">
+													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                            		<button class="btn btn-success btn-sm" type="submit">Update</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                            </div>
+
+							
+							<!--End of Edit Modal-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--End Table Content-->
+<?php include_once('templates/scripts.php') ?>
 <script>
-var cons = [];
-var stocks = [];
-var supplier = [];
-var suppmerch = [];
+	var consumption = [];
+	$(function() {
+		viewSpoilagesJs();
 
-    $(function () {
+
+	//POPULATE TABLE
+	var table = $('#spoilagesTable');
+	
+	function viewSpoilagesJs() {
         $.ajax({
-            url: '/admin/jsonReturns',
-            dataType: 'json',
-            success: function (data) {
-                var poLastIndex = 0;
-                $.each(data.consumption, function (index, items) {
-                    cons.push({
-                        "cons": items
-                    });
-                    cons[index].consitems = data.consitems.filter(cn => cn.cID == items.cID);
-                });
-                
-                showTable();
+            url: "<?= site_url('admin/jsonConsumptions') ?>",
+            method: "post",
+            dataType: "json",
+            success: function(data) {
+                consumption = data;
+                setSpoilagesData(consumption);
             },
-            error: function (response, setting, errorThrown) {
-                console.log(errorThrown);
+            error: function(response, setting, errorThrown) {
                 console.log(response.responseText);
+                console.log(errorThrown);
             }
+            $.ajax({
+                method: 'POST',
+                url: crudUrl,
+                data: {
+                    id: id,
+                    supplier: supplier,
+                    type: type,
+                    receipt: receipt,
+                    date: date,
+                    remarks: remarks,
+                    transitems: JSON.stringify(transitems)
+                },
+                dataType: 'JSON',
+                beforeSend: function(){
+                    console.log(transitems);
+                },
+                success: function(data){
+                    console.log(data);
+                },
+                error: function(response, setting, error) {
+                    console.log(response.responseText);
+                    console.log(error);
+                }
+            });
         });
+        $("#stockBrochure form").on('submit',function(event){
+            event.preventDefault();
+            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).find("input[name='stocks']:checked").attr("data-name"));
+            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id", $(this).find("input[name='stocks']:checked").val());
+            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("select[name='actualUnit[]']").trigger('change');
+            $(this)[0].reset();
+            $("#stockBrochure").modal("hide");
+        });
+        $("#merchandiseBrochure, #stockBrochure").on("hidden.bs.modal", function(){
+            $(this).find(".ic-level-2").empty();
+            $(this).find("form")[0].reset();
+            $(this).find("form").off('submit');
+        });
+        $("#transactionBrochure").on("hidden.bs.modal", function(){
+            $(this).find(".ic-level-4").empty();
+            $(this).find("form")[0].reset();
+            $(this).find("form").off('submit');
+        });
+	}
+	});
+	function setSpoilagesData() {
+        if ($("#spoilagesTable> tbody").children().length > 0) {
+            $("#spoilagesTable> tbody").empty();
+        }
+        consumption.forEach(table => {
+            $("#spoilagesTable > tbody").append(`
+			<tr class="spoilagesTabletr" data-cID="${table.cID}">
+				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
+				<td>${table.cID}</td>
+				<td>${table.stName}</td>
+				<td>${table.cDate}</td>
+				<td>${table.cDateRecorded}</td>
+                <td>
+                        <!--Action Buttons-->
+                        <div class="onoffswitch">
 
-    });
-                            
-    function showTable() {
-        cons.forEach(function (item) {
-            var tableRow = `
-                <tr class="table_row" data-id="${item.cons.cID}">   <!-- table row ng table -->
-                    <td><a href="javascript:void(0)" class="ml-2 mr-4">
-                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
-                    ${item.cons.cID}</td>                    
-                    <td>${item.cons.stName}</td>
-                    <td>${item.cons.cDate}</td>
-                    <td>${item.cons.cDateRecorded}</td>
-                    <td>
-                    <a class="editReturnsReturnsbtn btn btn-secondary btn-sm" href="returns/formedit/${item.returns.rID}" style="margin:0">Edit Return</a>                 
-                        <button class="deleteBtn btn btn-sm btn-warning" data-id="${item.returns.rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
+                            <!--Edit button-->
+                            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                                data-target="#editSpoil">Edit</button>
+                            <!--Delete button-->
+                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                            data-target="#deleteSpoilage">Archive</button>                      
+                        </div>
                     </td>
-                </tr>
-            `;
+				</tr>`);
 
-            var consDiv = `
-            <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
-                ${item.consitems.length === 0 ? "No consumed items" : 
-                `<caption><b>Orders</b></caption>
-                <br>
-                <table width="100%" id="consitems" class=" table table-bordered"> <!-- Preferences table-->
-                    <thead class="thead-light">
-                        <tr>
-                        <th>t</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    ${item.returnitems.map(ret => {
-                        return `
-                        <tr id="${ret.ciID}">
-                        <td>${ret.returnReference}</td>
-                            <td>${ret.stName}</td>
-                            <td>${ret.tiQty}</td>
-                            <td>${ret.uomName}</td>
-                            <td>${ret.tiActual}</td>
-                            <td>&#8369; ${ret.spmPrice}</td>
-                            <td>&#8369; ${ret.tiSubtotal}</td>
-                            <td>${ret.riStatus}</td>
-                            <td>${ret.tiRemarks === null ? " " : ret.tiRemarks}</td>
-                        </tr>
-                        `;
-                    }).join('')}
-                    </tbody>
-                </table>
-                `}
-            </div>
-            `;
-
-            var accordion = `
-            <tr class="accordion" style="display:none">
-                <td colspan="6"> <!-- table row ng accordion -->
+			var accordion = `
+            <tr class="accordion" style="display:none;background: #f9f9f9">
+                <td colspan="7"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none"> <!-- container ng accordion -->
                         
-                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
-                            
-                            <div class="returnsContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
-                                
-                            </div>
+                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
+                            <div style="margin:0 46px;overflow:auto;">
+							<b style="float:left;">Remarks: </b><!-- label-->
+								<p style="float:left;margin-left:2%">
+								${table.tiRemarks == null || table.tiRemarks == '' ?  "No remarks." : table.tiRemarks}
+                                </p>
+                            </div> 
                         </div>
                     </div>
                 </td>
             </tr>
             `;
+			
+			
+			$(".updateBtn").last().on('click', function () {
+				
+				$("#editSpoil").find("input[name='tiActual']").val($(this).closest("tr").attr(
+					"data-tiActual")); 
+				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
+					"data-stQty")); 
+				$("#editSpoil").find("input[name='tiRemarks']").val($(this).closest("tr").attr(
+					"data-tiRemarks"));
+				$("#editSpoil").find("input[name='tiDate']").val($(this).closest("tr").attr(
+					"data-tiDate"));	
+				$("#editSpoil").find("input[name='stID']").val($(this).closest("tr").attr(
+					"data-stID"));
+				$("#editSpoil").find("input[name='siID']").val($(this).closest("tr").attr(
+					"data-siID"));
+				$("#editSpoil").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
+					"data-tiActual"));
 
-            $("#transTable > tbody").append(tableRow);
-            $("#transTable > tbody").append(accordion);
-            $(".returnsContent").last().append(returnsDiv);
-
-        });
-
-        $(".accordionBtn").on('click', function () {
-            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
-                $(this).closest("tr").next(".accordion").css("display", "table-row");
-                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
-            } else {
+				
+            });
+            $(".item_delete").last().on('click', function () {
+                $("#deleteSpoilageId").text(
+                    `Delete consumption code ${$(this).closest("tr").attr("data-spoilname")}`);
+				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
+					"data-tID"));
+				$("#deleteSpoilage").find("input[name='stID']").val($(this).closest("tr").attr(
+					"data-stID"));
+				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
+                    "data-tID"));
+            });
+			$("#spoilagesTable > tbody").append(accordion);
+		});
+		$(".accordionBtn").on('click', function(){
+            if($(this).closest("tr").next(".accordion").css("display") == 'none'){
+                $(this).closest("tr").next(".accordion").css("display","table-row");
+				$(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+			
+            }else{
                 $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
+        	});
+	}
+	//END OF POPULATING TABLE
+	//-------------------------Function for Edit-------------------------------
+
+	$(document).ready(function() {
+    $("#editSpoil form").on('submit', function(event) {
+		event.preventDefault();
+		var tiActual = $(this).find("input[name='tiActual']").val();
+		var stQty = $(this).find("input[name='stQty']").val(); 
+        var tiRemarks = $(this).find("input[name='tiRemarks']").val();
+        var tiDate = $(this).find("input[name='tiDate']").val();
+        var stID = $(this).find("input[name='stID']").val();
+		var siID = $(this).find("input[name='siID']").val();
+		var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
+
+		console.log('tiActual '+ tiActual);
+		console.log('stQty  '+stQty);
+		console.log(' tiRemarks '+tiRemarks);
+		console.log(' tiDate'+tiDate);
+		console.log(' stID'+stID);
+		console.log(' siID'+siID);
+		console.log(' stID'+stID);
+        $.ajax({
+            url: "<?= site_url("admin/consumption/edit")?>",
+            method: "post",
+            data: {
+				tiActual: tiActual,
+				stQty: stQty,
+				tiRemarks: tiRemarks,
+				tiDate: tiDate,
+				stID: stID,
+				siID: siID,
+				actualQtyUpdate: actualQtyUpdate
+            },
+            dataType: "json",
+            success: function(data) {
+                alert('Consumption Updated');
+				console.log(data);
+            },
+            complete: function() {
+                $("#editSpoil").modal("hide");
+				location.reload();
+            },
+            error: function(error) {
+				console.log(error);
+            }
         });
-
-        $('.deleteBtn').on('click',function() {
-            var id = $(this).attr("data-id");
-            console.log(id);
-            console.log(this);
-            $("#deleteReturns").find('input[name="tID"]').val(id);
-           
     });
-    }
 
-</script>
+	//--------------------End of Function for Edit-----------------------------
+	// Function for Delete
+	
+	$("#deleteSpoilage form").on('submit', function(event) {
+		event.preventDefault();
+		var delRemarks =$(this).find("input[name='delRemarks']").val();
+		var tID =$(this).find("input[name='tID']").val();
+        $.ajax({
+                url: '<?= site_url('admin/consumption/delete') ?>',
+                method: 'POST',
+                data: {
+					tID: tID,
+					delRemarks:delRemarks
+                },
+                dataType: 'json',
+                complete: function() {
+                $("#deleteSpoilage").modal("hide");
+				location.reload();
+                }
+            });
+        });
+	});
+
+	//End Function Delete
+
+</script> 
+</body>
+
+</html>

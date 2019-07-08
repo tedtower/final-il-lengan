@@ -12,28 +12,23 @@
 						<!--Table-->
 						<div class="card-content">
 
-							<!--Add Stock Spoilage BUTTON-->
-							<div class="col-md-4 col-lg-2">
-							<!-- <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br> -->
-							<a class="btn btn-primary btn-sm" href="<?= site_url('barista/stock/spoilage/formadd')?>" data-original-title style="margin:0"
+							<!--Add Addon Spoilage BUTTON-->
+                            <div class="col-md-4 col-lg-2">
+							<a class="btn btn-primary btn-sm" href="<?= site_url('barista/addons/spoilage/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Spoilage</a>
-							<!--eND Add Stock Spoilage BUTTON-->
-							</div>
-  </div>
-							<!--eND Add Stock Spoilage BUTTON-->
+                            </div>
+							<!--eND Add Addon Spoilage BUTTON-->
 							<br>
-							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
-								<thead class="thead-dark" style="font-weight:900">
-									<th></th>
-									<th>TRANSACTION #</th>
-									<th>STOCK ITEM</th>
+							<table id="addonTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
+								<thead class="thead-dark">
+									<th>ITEM NAME</th>
+									<th>CATEGORY</th>
 									<th>QUANTITY</th>
 									<th>DATE SPOILED</th>
-									<!-- <th>DATE RECORDED</th> -->
+									<th>DATE RECORDED</th>
 									<th>OPERATION</th>
-								
 								</thead>
-								<tbody id="spoilage_data">
+								<tbody id="addon_data">
 								</tbody>
 							</table>
 							<!--End Table Content-->
@@ -43,7 +38,7 @@
 								<div class="modal-dialog modal-dialog-centered" role="document">
 									<div class="modal-content">
 										<div class="modal-header">
-											<h5 class="modal-title" id="exampleModalLongTitle">Delete Stock Spoilage</h5>
+											<h5 class="modal-title" id="exampleModalLongTitle">Delete Addon Spoilage</h5>
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 												<span aria-hidden="true">&times;</span>
 											</button>
@@ -51,20 +46,15 @@
 										<form id="confirmDelete">
 											<div class="modal-body">
 												<h6 id="deleteTableCode"></h6>
-												<p>Are you sure you want to delete the selected stock spoilages?</p>
-												<input type="text" name="tID" hidden="hidden">
-												<div class="input-group mb-2">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                Remarks</span>
-                                                        </div>
-                                                        <input type="text" name="delRemarks" id="delRemarks" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("delRemarks"); ?></span>
-                                                </div>
+												<p>Are you sure you want to delete the selected addon spoilages?</p>
+												<input type="text" name="tableCode" hidden="hidden">
+												<div>
+													Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm" required>
+												</div>
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-												<button type="submit" class="btn btn-danger btn-sm">Archive</button>
+												<button type="submit" class="btn btn-danger btn-sm">Delete</button>
 											</div>
 										</form>
 									</div>
@@ -72,9 +62,8 @@
 							</div>
 							<!--End of Delete Modal-->
 							<!--Edit Spoilage-->
-							
-							<div class="modal fade" id="editSpoil" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-							<div class="modal-dialog" role="document">
+							<div class="modal fade" id="editSpoil" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+                                    <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Edit Spoilage</h5>
@@ -82,16 +71,16 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formEdit"  action="<?= site_url('barista/stock/spoilage/edit')?>" accept-charset="utf-8" > 
+                                            <form id="formEdit" accept-charset="utf-8" > 
 												<div class="modal-body">
-                                                    <!-- Quantity-->
+                                                    <!--Quantity-->
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Quantity</span>
                                                         </div>
-                                                        <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("actualQtyUpdate"); ?></span>
+                                                        <input type="number" min="1" name="aosQty" id="aosQty" class="form-control form-control-sm">
+                                                        <span class="text-danger"><?php echo form_error("aosQty"); ?></span>
                                                     </div>
                                                     <!--Date Spoiled-->
 													<div class="input-group mb-3">
@@ -99,21 +88,19 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="tiDate" id="tiDate" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("tDate"); ?></span>
+                                                        <input type="date" name="aosDate" id="aosDate" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("aosDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Remarks</span>
                                                         </div>
-                                                        <input type="text" name="tiRemarks" id="tiRemarks" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
+                                                        <input type="text" name="aosRemarks" id="aosRemarks" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("aosRemarks"); ?></span>
                                                     </div>
-													<input name="tiActual" id="tiActual" hidden="hidden">
-													<input name="stQty" id="stQty" hidden="hidden">
-													<input name="stID" id="stID" hidden="hidden">
-													<input name="siID" id="siID" hidden="hidden">
+													<input name="aoID" id="aoID" hidden="hidden">
+													<input name="aosID" id="aosID" hidden="hidden">
                                                     <!--Footer-->
                                                     <div class="modal-footer">
 													<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -124,34 +111,31 @@
                                         </div>
                                     </div>
                             </div>
-
-							
 							<!--End of Edit Modal-->
 						</div>
 					</div>
 				</div>
-		</div>
+			</div>
 	</div>
 </div>
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
 <script>
 	var spoilages = [];
-	$(function() {
+    $(function() {
 		viewSpoilagesJs();
 
+	var table = $('#addonTable');
 
-	//POPULATE TABLE
-	var table = $('#spoilagesTable');
-	
 	function viewSpoilagesJs() {
         $.ajax({
-            url: "<?= site_url('barista/spoilagesstockjson') ?>",
+            url: "<?= site_url('barista/spoilagesaddonsjson') ?>",
             method: "post",
             dataType: "json",
             success: function(data) {
                 spoilages = data;
                 setSpoilagesData(spoilages);
+                console.log(spoilages);
             },
             error: function(response, setting, errorThrown) {
                 console.log(response.responseText);
@@ -159,19 +143,19 @@
             }
         });
 	}
-	});
+});
 	function setSpoilagesData() {
-        if ($("#spoilagesTable> tbody").children().length > 0) {
-            $("#spoilagesTable> tbody").empty();
+        if ($("#addonTable> tbody").children().length > 0) {
+            $("#addonTable> tbody").empty();
         }
         spoilages.forEach(table => {
-            $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr" data-tiActual="${table.tiActual}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/barista/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-				<td>${table.tiID}</td>
-				<td>${table.stName}</td>
-				<td>${table.tiActual}</td>
-				<td>${table.tiDate}</td>
+            $("#addonTable> tbody").append(`
+			<tr data-aoID="${table.aoID}" data-aosID="${table.aosID}" data-aosQty="${table.aosQty}"  data-aosDate="${table.aosDate}"  data-aosRemarks="${table.aosRemarks}"  >
+				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${table.aoName}</td>
+                <td>${table.aoCategory}</td>
+                <td>${table.aosQty}</td>
+				<td>${table.aosDate}</td>
+				<td>${table.aosDateRecorded}</td>
                 <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
@@ -181,21 +165,21 @@
                                 data-target="#editSpoil">Edit</button>
                             <!--Delete button-->
                             <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteSpoilage">Archive</button>                      
+                            data-target="#deleteSpoilage">Archived</button>                      
                         </div>
                     </td>
-				</tr>`);
+                </tr>`);
 
-			var accordion = `
+				var accordion = `
             <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="7"> <!-- table row ng accordion -->
+                <td colspan="6"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none"> <!-- container ng accordion -->
                         
-                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
+					<div style="overflow:auto;"> <!-- description, preferences, and addons container -->
                             <div style="margin:0 46px;overflow:auto;">
 							<b style="float:left;">Remarks: </b><!-- label-->
 								<p style="float:left;margin-left:2%">
-								${table.tiRemarks == null || table.tiRemarks == '' ?  "No remarks." : table.tiRemarks}
+								${table.aosRemarks == null || table.aosRemarks == '' ? "No remarks." : table.aosRemarks}
                                 </p>
                             </div> 
                         </div>
@@ -203,39 +187,26 @@
                 </td>
             </tr>
             `;
-			
-			
-			$(".updateBtn").last().on('click', function () {
-				
-				$("#editSpoil").find("input[name='tiActual']").val($(this).closest("tr").attr(
-					"data-tiActual")); 
-				$("#editSpoil").find("input[name='stQty']").val($(this).closest("tr").attr(
-					"data-stQty")); 
-				$("#editSpoil").find("input[name='tiRemarks']").val($(this).closest("tr").attr(
-					"data-tiRemarks"));
-				$("#editSpoil").find("input[name='tiDate']").val($(this).closest("tr").attr(
-					"data-tiDate"));	
-				$("#editSpoil").find("input[name='stID']").val($(this).closest("tr").attr(
-					"data-stID"));
-				$("#editSpoil").find("input[name='siID']").val($(this).closest("tr").attr(
-					"data-siID"));
-				$("#editSpoil").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
-					"data-tiActual"));
-
-				
+            $(".updateBtn").last().on('click', function () {
+                $("#editSpoil").find("input[name='aoID']").val($(this).closest("tr").attr(
+					"data-aoID"));
+				$("#editSpoil").find("input[name='aosID']").val($(this).closest("tr").attr(
+					"data-aosID"));
+				$("#editSpoil").find("input[name='aosQty']").val($(this).closest("tr").attr(
+					"data-aosQty"));
+				$("#editSpoil").find("input[name='aosDate']").val($(this).closest("tr").attr(
+					"data-aosDate"));
+				$("#editSpoil").find("input[name='aosRemarks']").val($(this).closest("tr").attr(
+					"data-aosRemarks"));
             });
             $(".item_delete").last().on('click', function () {
                 $("#deleteSpoilageId").text(
                     `Delete spoilage code ${$(this).closest("tr").attr("data-spoilname")}`);
-				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
-					"data-tID"));
-				$("#deleteSpoilage").find("input[name='stID']").val($(this).closest("tr").attr(
-					"data-stID"));
-				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
-                    "data-tID"));
+				$("#deleteSpoilage").find("input[name='aoID']").val($(this).closest("tr").attr(
+                    "data-id"));
             });
-			$("#spoilagesTable > tbody").append(accordion);
-		});
+			$("#addonTable > tbody").append(accordion);
+        });
 		$(".accordionBtn").on('click', function(){
             if($(this).closest("tr").next(".accordion").css("display") == 'none'){
                 $(this).closest("tr").next(".accordion").css("display","table-row");
@@ -246,81 +217,46 @@
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
         	});
+
 	}
 	//END OF POPULATING TABLE
 	//-------------------------Function for Edit-------------------------------
-
 	$(document).ready(function() {
     $("#editSpoil form").on('submit', function(event) {
 		event.preventDefault();
-		var tiActual = $(this).find("input[name='tiActual']").val();
-		var stQty = $(this).find("input[name='stQty']").val(); 
-        var tiRemarks = $(this).find("input[name='tiRemarks']").val();
-        var tiDate = $(this).find("input[name='tiDate']").val();
-        var stID = $(this).find("input[name='stID']").val();
-		var siID = $(this).find("input[name='siID']").val();
-		var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
+		var aoID = $(this).find("input[name='aoID']").val();
+		var aosID = $(this).find("input[name='aosID']").val();
+        var aosQty = $(this).find("input[name='aosQty']").val();
+        var aosDate = $(this).find("input[name='aosDate']").val();
+        var aosRemarks = $(this).find("input[name='aosRemarks']").val();
 
-		console.log('tiActual '+ tiActual);
-		console.log('stQty  '+stQty);
-		console.log(' tiRemarks '+tiRemarks);
-		console.log(' tiDate'+tiDate);
-		console.log(' stID'+stID);
-		console.log(' siID'+siID);
-		console.log(' stID'+stID);
+       
         $.ajax({
-            url: "<?= site_url("barista/stock/spoilage/edit")?>",
+            url: "<?= site_url("barista/addons/spoilage/edit")?>",
             method: "post",
             data: {
-				tiActual: tiActual,
-				stQty: stQty,
-				tiRemarks: tiRemarks,
-				tiDate: tiDate,
-				stID: stID,
-				siID: siID,
-				actualQtyUpdate: actualQtyUpdate
+				aoID: aoID,
+				aosID: aosID,
+                aosQty: aosQty,
+                aosDate: aosDate,
+                aosRemarks: aosRemarks
             },
             dataType: "json",
-            success: function(data) {
-                alert('Stock Spoilage Updated');
-				console.log(data);
-            },
             complete: function() {
                 $("#editSpoil").modal("hide");
 				location.reload();
             },
             error: function(error) {
-				console.log(error);
+                console.log(error);
             }
+            
         });
     });
-
+});
 	//--------------------End of Function for Edit-----------------------------
-	// Function for Delete
 	
-	$("#deleteSpoilage form").on('submit', function(event) {
-		event.preventDefault();
-		var delRemarks =$(this).find("input[name='delRemarks']").val();
-		var tID =$(this).find("input[name='tID']").val();
-        $.ajax({
-                url: '<?= site_url('barista/stock/spoilage/delete') ?>',
-                method: 'POST',
-                data: {
-					tID: tID,
-					delRemarks:delRemarks
-                },
-                dataType: 'json',
-                complete: function() {
-                $("#deleteSpoilage").modal("hide");
-				location.reload();
-                }
-            });
-        });
-	});
 
-	//End Function Delete
 
 </script> 
 </body>
-
 </html>

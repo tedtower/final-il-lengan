@@ -163,77 +163,88 @@ function destockitem(){
 }
 //STOCK SPOILAGES
 function viewSpoilagesStockJs(){
-	//if($this->checkIfLoggedIn()){
-		$data= $this->Chefmodel->get_spoilagesstock();
-		echo json_encode($data);
-		
-	// }else{
-	//     redirect('login');
-	// }
-	//}
-
-}
+    if($this->checkIfLoggedIn()){
+        $data= $this->Chefmodel->get_spoilagesstock();
+        echo json_encode($data);
+        
+    }else{
+        redirect('login');
+    }
+    }
 function viewSpoilagesStock(){
-// if($this->checkIfLoggedIn()){
-$data['title'] = "Spoilages - Stock";
-$this->load->view('chef/head', $data);
-$this->load->view('chef/navigation');
-$this->load->view('chef/chefstockspoilages');
-// }else{
-//     redirect('login');
-// }
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('chef/head', $data);
+        $this->load->view('chef/navigation');
+        $this->load->view('chef/chefStockSpoilages');
+    }else{
+        redirect('login');
+    }
+    }
+function viewSpoilagesStockAdd(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('chef/head', $data);
+        $this->load->view('chef/navigation');
+        $data['stocks'] = $this->Chefmodel->get_stocks();
+        $this->load->view('chef/spoilagesstockAdd', $data);
+    }else{
+        redirect('login');
+    }
 }
 
 function editStockSpoil(){
-if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+        $tiActual = $this->input->post('tiActual');
+        $stQty = $this->input->post('stQty');
+        $tiRemarks = $this->input->post('tiRemarks');
+        $tiDate = $this->input->post('tiDate');
+        $stID= $this->input->post('stID');
+        $siID = $this->input->post('siID');
+        $actualQtyUpdate = $this->input->post('actualQtyUpdate');
 
-	// $actualQty = $this->input->post('stQtyUpdate');
-	$tDate = date('Y-m-d', strtotime($tDate));
-	$stID = $this->input->post('stID');
-	$tID = $this->input->post('tID');
-	$date_recorded=date("Y-m-d H:i:s");
-	$account_id = $_SESSION["user_id"];
-	$tRemarks = $this->input->post(tRemarks);
-	$slType = "spoilage";
-	
-	$ssQtyUpdate = $this->input->post('ssQtyUpdate');
-	$curSsQty = $this->input->post('curSsQty');
-	$updateQtyh = $ssQtyUpdate - $curSsQty; 
-	$updateQtyl = $curSsQty - $ssQtyUpdate;
+        $tiType = "spoilage";
+        $date_recorded = date("Y-m-d H:i:s");
+        $user= $_SESSION["user_name"];
+        $account_id= $_SESSION["user_id"];
+        $tiRemainingQty = $stQty - $actualQtyUpdate;
+        $updatedActual = $actualQtyUpdate - $tiActual;
 
-	if ($curSsQty > $ssQtyUpdate){
-		$this->Chefmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-		$this->Chefmodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyl, $ssRemarks);
-		$this->Chefmodel->add_actlog($account_id,$date_recorded, "Chef updated a stockitem spoilage.", "update", $ssRemarks);
-	}
-	if ($curSsQty < $ssQtyUpdate){
-		$this->Chefmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-		$this->Chefmodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $updateQtyh, $ssRemarks);
-		$this->Chefmodel->add_actlog($account_id,$date_recorded, "Chef updated a stockitem spoilage.", "update", $ssRemarks);
+        if($tiActual > $actualQtyUpdate){
+            $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
+            $this->Chefmodel->add_stocktransitems($tiType,$updatedActual,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID);
+            $this->Chefmodel->update_stock($stID, $updateQtyl);
+            $this->Chefmodel->add_activlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                            
+        }else if($tiActual < $actualQtyUpdate){
+                $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
+                $this->Chefmodel->add_stocktransitems($tiType,$updatedActual,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID);
+                $this->Chefmodel->update_stock($stID, $updateQtyh);
+                $this->Chefmodel->add_activlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
 
-	}else{
-		$this->Chefmodel->edit_stockspoilage($ssID,$stID,$ssDate,$ssRemarks,$updateQtyh,$updateQtyl,$curSsQty,$stQty,$ssQtyUpdate,$date_recorded);
-		$this->Chefmodel->add_stockLog($stID,NULL, $slType, $date_recorded, $slDateTime, $ssQty, $ssRemarks);
-		$this->Chefmodel->add_actlog($account_id,$date_recorded, "Chef updated a stockitem spoilage.", "update", $ssRemarks);
-	}
-   
-}else{
-	redirect('login');
-} 
+        }else{
+                $this->Chefmodel->add_stocktransitems($tiType,$updatedActual,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID);
+                $this->Chefmodel->update_stock($stID, $stQty);
+                $this->Chefmodel->add_activlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+        }
+       
+    }else{
+        redirect('login');
+    } 
 }
 function addspoilagesstock(){
-	if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
-		$lastNumget = intval($this->Chefmodel->getLastNum());
-		$date_recorded = date("Y-m-d H:i:s");
-		$stocks = json_decode($this->input->post('stocks'), true);
-		$account_id = $_SESSION["user_id"];
-		
-		$lastNum = $lastNumget + 1;
-	   
-		$this->Chefmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum);
-	}else{
-	redirect('login');
-	}
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'chef'){
+        $date_recorded = date("Y-m-d H:i:s");
+        $stocks = json_decode($this->input->post('items'), true);
+        $date = $this->input->post('date');
+        $remarks = $this->input->post('remarks');
+        $account_id = $_SESSION["user_id"];
+        $user= $_SESSION["user_name"];
+        $this->Chefmodel->add_stockspoil($date_recorded,$stocks,$account_id,$user,$date,$remarks);
+    }else{
+    redirect('login');
+    }
+
 }
 	//------------- C O N S U M P T I O N ----------
 	function viewConsumption() {

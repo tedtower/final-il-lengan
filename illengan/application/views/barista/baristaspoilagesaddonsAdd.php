@@ -2,7 +2,6 @@
     <div class="content">
         <div class="container-fluid">
             <br>
-            <div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Date and Time-->
                     <div style="overflow:auto">
@@ -16,7 +15,7 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Add Spoilage</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/addons/spoilages/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("barista/addons/spoilages/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
@@ -25,7 +24,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input class="form-control form-control-sm" name="tDate" id="tDate" type="date" class="no-border"  data-validate="required" message="Date consumed is required!"  required>
+                                        <input type="date" class="form-control" name="tDate">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -106,7 +105,6 @@
 
                     <!--End of container divs-->
                 </div>
-            </div>
         </div>
     </div>
     <?php include_once('templates/scripts.php');?>
@@ -130,7 +128,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty" required></td>
+                                class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"

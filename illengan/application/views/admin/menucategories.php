@@ -60,7 +60,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm">
+                                                            <input class="form-control" name="ctName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Name should only countain letters" !important>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -104,7 +104,8 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm">
+                                                            <input class="form-control" name="ctName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Name should only countain letters">
+                                                            
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -135,7 +136,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="new_name" id="new_name"class="form-control form-control-sm">
+                                                            <input class="form-control" name="ctName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Name should only countain letters">
                                                         </div>
                                                         <div class="input-group mb-3">
                                                             <div class="input-group-prepend">

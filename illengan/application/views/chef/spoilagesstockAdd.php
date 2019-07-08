@@ -7,50 +7,55 @@
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
-                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/spoilages/menu')?>" data-original-title style="margin:0;width:15%"
-                                            id="addBtn">View Spoiled Menu</a>
                     </div>
                     <!--Card Container-->
                     <div style="overflow:auto">
                         <!--Card-->
                         <div class="card" style="float:left;width:60%">
                             <div class="card-header">
-                                <h6 style="font-size:15px;">Add Menu Spoilage</h6>
+                                <h6 style="font-size:15px;margin:0">Add Stock Spoilage</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("chef/menuspoilage/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("chef/stock/spoilages/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
-                                    <div class="input-group mb-3">
+                                    <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary"
-                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
+                                                style="width:125px;font-size:14px;">
                                                 Date Spoiled</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date" required/>
+                                        <input type="date" id="spoiledDate" class="form-control" name="tDate">
                                     </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border border-secondary"
+                                                style="width:125px;font-size:14px">
+                                                Remarks</span>
+                                        </div>
+                                        <textarea type="text" name="remarks"
+                                            class="form-control" rows="1"></textarea>
+                                    </div>
+                                
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
-                                            <thead style="border-bottom:2px solid #cccccc">
+                                            <thead style="border-bottom:2px solid #cccccc;font-size:14px">
                                                 <tr>
-                                                    <th>Menu Item</th>
-                                                    <th width="10%">Quantity</th>
-                                                    <th width="15%">Orderslip #</th>
-                                                    <th width="20%">Log Remarks</th>
+                                                    <th style="font-weight:500 !important;">Stock Item</th>
+                                                    <th width="17%" style="font-weight:500 !important;">Quantity</th>
+                                                    <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="ic-level-2">
+
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-
-                                <div class="card-footer">
-                                    <div>
-                                        <a href="<?= site_url('chef/spoilages/menu')?>"><button type="button" class="btn btn-danger btn-sm"
-                                            style="margin-left:0" data-dismiss="modal">Cancel</button></a>
-                                        <button class="btn btn-success btn-sm"
-                                            type="submit">Insert</button>
-                                    </div>
+                                <div class="card-footer mb-0" style="overflow:auto">
+                                    <button class="btn btn-success btn-sm" type="submit"
+                                        style="float:right">Insert</button>
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        style="float:right">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -58,7 +63,7 @@
                         <div class="card" id="stockCard" style="float:left;width:37%;margin-left:3%">
                             <div class="card-header" style="overflow:auto">
                                 <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Select
-                                        Menu Items</div>
+                                    Stock Items</div>
                                 <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
                                     <input type="search"
                                         style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
@@ -67,22 +72,23 @@
                             </div>
                             <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
                                 <!--checkboxes-->
-                                <?php if(!empty($menu)){
+                                <?php if(!empty($stocks)){
                             ?>
                                 <table class="table table-borderless">
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
-                                            <th>Menu Item</th>
+                                            <th style="font-weight:500 !important;">Stock Item</th>
+                                            <th style="font-weight:500 !important;">Category</th>
                                         </tr>
                                     </thead>
                                     <tbody class="ic-level-2"><?php
-                                foreach($menu as $m){
+                                foreach($stocks as $stock){
                                 ?>
-                                        <tr class="ic-level-1">
-                                            <td><input type="checkbox" class="mr-2" name="stock"
-                                                   data-name="<?= $m['prName']?>" data-stID="<?= $m['stID']?>" data-qty="<?= $m['prstQty']?>"value="<?= $m['prID']?>" required></td>
-                                            <td class="stock"><?= $m['prName']?></td>
+                                        <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                            <td class="stock"><?= $stock['stName']?></td>
+                                            <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
                                         <?php 
                                 }?>
@@ -91,7 +97,7 @@
                                 <?php
                             }else{
                             ?>
-                                <p>No menu items recorded!</p>
+                                <p>No stock items recorded!</p>
                                 <?php
                             }?>
                             </div>
@@ -100,47 +106,46 @@
 
                     <!--End of container divs-->
                 </div>
+            </div>
         </div>
-    </div>
     <?php include_once('scripts.php');?>
     <script>
     $(function() {
+        
         $("#stockCard .ic-level-1").on("click",function(event){
             if(event.target.type !== "checkbox"){
                 $(this).find("input[name='stock']").trigger("click");
             }
         });
         $("#stockCard input[name='stock']").on("click", function(event) {
+             //---
+            //---
             var id = $(this).val();
             var name = $(this).attr("data-name");
-            var stID = $(this).attr("data-stID");
-            var qty = $(this).attr("data-qty");
-            console.log('prID:',id, name, qty, $(this).is(":checked"));
+            console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
+                    <input name="curQty" id="curQty" type="hidden">
+					<input name="uomID" id="uomID" type="hidden">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control" data-id="${id}" data-stID="${stID}" value="${name}" name="stock" readonly required></td>
-                        <td style="padding:1% !important"><input type="number" value="1" min="1"
-                                class="form-control" name="qty" required/></td>
-                        <td style="padding:1% !important">
-                        <div class="input-group mb-3">
-                            <input list="orderslips" type="number" class="form-control" name="slipNum" >
-                            <datalist id="orderslips">
-                                <option value="">None</option>
-                                <?php foreach($slip as $s){ 
-                            echo '<option value="'.$s['osID'].'">'.$s['osID'].'</option>';
-                                }?>
-                            </datalist>
-                        </td>
+                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
+                        <td style="padding:1% !important"><input type="number" min="1" value="1"
+                                class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
-                                class="form-control" name="cRemarks" rows="1"></textarea>
+                                class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
+                    $('input[name="curQty"]').val($(this).closest("tr").data('curqty'));
+                    $('input[name="uomID"]').val($(this).closest("tr").data('uomid')); 
+                    console.log($(this));
             }else{
                 $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
             }
         });
+
+        
+                    
         $("#stockCard input[name='search']").on("keyup",function(){
             var string = $(this).val();
             $("#stockCard .stock").each(function(index){
@@ -154,41 +159,56 @@
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");
-            var date = $(this).find("input[name='date']").val();
-            var menus = [];
+            var tDate = $(this).find("input[name='tDate']").val();
+            var remarks = $(this).find("textarea[name='remarks']").val();
+            var uomID = $(this).find("input[name='uomID']").val();
+            var curQty = $(this).find("input[name='curQty']").val();
+            var items = [];
             $(this).find(".ic-level-1").each(function(index){
-                menus.push({
-                    prID: $(this).find("input[name='stock']").attr('data-id'),
-                    stID: $(this).find("input[name='stock']").attr('data-stID'),
-                    qty: $(this).find("input[name='qty']").val(),
-                    slip: $(this).find("input[name='slipNum']").val(),
-                    remarks: $(this).find("textarea[name='cRemarks']").val()
+                items.push({
+                    stID: $(this).find("input[name='stock']").attr('data-id'),
+                    actualQty: $(this).find("input[name='actualQty']").val(),
+                    tRemarks: $(this).find("textarea[name='tRemarks']").val(),
+                    uomID: uomID,
+                    curQty: curQty,
                 });
             });
-            console.log(menus);
-            console.log(date);
-            if(menus != null){
+            console.log(items);
             $.ajax({
                 method: "POST",
                 url: url,
                 data: {
-                    date: date,
-                    menus: JSON.stringify(menus)
+                    date: tDate,
+                    remarks: remarks,
+                    items: JSON.stringify(items)
                 },
                 dataType: "JSON",
-                complete: function(data){
-                     location.reload();
-                     alert('Added');
+                succes: function(data){
+                    if(data.sessErr){
+                        location.replace("/login");
+                    }else{
+                        console.log(data);
+                    }
+                },
+                complete: function() {
+                location.reload();
+                alert("Added Spoiled Stocks");
                 },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);
                 }
             });
-            }else{
-                alert('Add stock Item!');
-            }
         });
+    }); 
+
+    $('#conForm').submit(function(event){
+        var spoiledDate = $("#spoiledDate").val();
+        var currentDate = new Date();
+        if(Date.parse(spoiledDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
     });
     </script>
 </body>

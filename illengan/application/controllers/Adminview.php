@@ -15,6 +15,13 @@ class Adminview extends CI_Controller{
         return false;
     }
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
+function inventoryJS(){
+    if($this->checkIfLoggedIn()){
+    echo json_encode($this->baristamodel->get_inventory_consumption());
+}else{
+    redirect('login');
+    }
+}
 
 function viewDashboard(){
     if($this->checkIfLoggedIn()){
@@ -68,8 +75,6 @@ function viewPOFormAdd(){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
-        $data['uom'] = $this->adminmodel->get_uomForStoring();
-        $data['stock'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
         $this->load->view('admin/purchaseOrderAdd', $data);
@@ -117,12 +122,19 @@ function viewReturnFormEdit($id){
         redirect('login');
     }
 }
-function viewPOFormEdit(){
+function viewPOFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit PO";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/purchaseOrderEdit');
+        $data = array(
+            'id' => $id,
+            'supplier' => $this->adminmodel->get_supplier(),
+            'suppmerch' => $this->adminmodel->get_supplierstocks(),
+            'pos' => $this->adminmodel->get_purchaseOrders(),
+            'poitems' => $this->adminmodel->get_purchaseOrderItems()
+        );
+        $this->load->view('admin/purchaseOrderEdit', $data);
     }else{
         redirect('login');
     }
@@ -179,42 +191,7 @@ function getCardValuesForDR(){
         ));
     }
 }
-// function viewORFormAdd(){
-//     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-//         $head['title'] = "Inventory - Add OR";
-//         $this->load->view('admin/templates/head', $head);
-//         $this->load->view('admin/templates/sideNav');
-//         $data['supplier'] = $this->adminmodel->get_supplier();
-//         $data['stocks'] = $this->adminmodel->get_stockItemNames();
-//         $this->load->view('admin/officialReceiptAdd',$data);
-//     }else{
-//         redirect('login');
-//     }
-// }
 
-// function viewORFormEdit(){
-//     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-//         $head['title'] = "Inventory - Edit OR";
-//         $this->load->view('admin/templates/head', $head);
-//         $this->load->view('admin/templates/sideNav');
-//         $data['supplier'] = $this->adminmodel->get_supplier();
-//         $data['stocks'] = $this->adminmodel->get_stockItemNames();
-//         $this->load->view('admin/officialReceiptEdit');
-//     }else{
-//         redirect('login');
-//     }
-// }
-function viewConsumptionFormAdd(){
-    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Inventory - Add Consumption";
-        $this->load->view('admin/templates/head', $head);
-        $this->load->view('admin/templates/sideNav');
-        $data['stocks'] = $this->adminmodel->get_stocks();
-        $this->load->view('admin/consumptionAdd', $data);
-    }else{
-        redirect('login');
-    }
-}
 //-------------end-----------------------
 function viewStockCard($stID){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -833,14 +810,11 @@ function getStockItem(){
             redirect('login');
         }
     }
+    //---CONSUMPTIONS-----------------------------
     function jsonConsumptions() {
         if($this->checkIfLoggedIn()){
-            $data = array(
-                'consumption' => $this->adminmodel->get_consumptions(),
-                'consitems' => $this->adminmodel->get_consumpitems()
-            );
-            header('Content-Type: application/json');
-            echo json_encode($data, JSON_PRETTY_PRINT);
+            $data=$this->adminmodel->get_consumpitems();
+            echo json_encode($data);
         }else{
             redirect('login');
         }
@@ -855,6 +829,18 @@ function getStockItem(){
             redirect('login');
         }
     }
+    function viewConsumptionFormAdd(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $head['title'] = "Inventory - Add Consumption";
+            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/sideNav');
+            $data['stocks'] = $this->adminmodel->get_stocks();
+            $this->load->view('admin/consumptionAdd', $data);
+        }else{
+            redirect('login');
+        }
+    }
+    //---------------------------------------------------------
     function viewActivityLog() {
         if($this->checkIfLoggedIn()){
             $data['title'] = "Activity Logs";

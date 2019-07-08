@@ -29,7 +29,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date">
+                                        <input class="form-control" name="date" id="date" type="date"  data-validate="required" message="Date is required!" required>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="stockitems table table-borderless">
@@ -47,7 +47,7 @@
                                                 <tr class="ic-level-1">
                                                     <td class="stock"><?= $stock['stName']?></td>
                                                     <td><input type="number" name="current" value="<?= $stock['stQty']?>" class="form-control form-control-sm"  readonly="readonly"></td>
-                                                    <td><input type="number" name="actual" value='' class="form-control form-control-sm"></td>
+                                                    <td><input type="number" name="actual" value='' class="form-control form-control-sm" required></td>
                                                     <td><input type="number" name="discrep" value="" class="form-control form-control-sm"  readonly="readonly"></td>
                                                     <td><textarea type="text" name="remarks" value="" class="form-control form-control-sm" rows="1"></textarea></td>
                                                 </tr>
@@ -75,8 +75,8 @@
     <script>
     $(function() {
         $("#physicalCount").find("input[name='actual']").on("change",function(){
-            var discrep = $(this).val()- $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
-            $(this).closest(".stockitems > tbody > tr").find("input[name='discrep']").val(discrep);
+                    var discrep = $(this).val()- $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
+                    $(this).closest(".stockitems > tbody > tr").find("input[name='discrep']").val(discrep);
         });
         $("#stockCard input[name='search']").on("keyup",function(){
             var string = $(this).val();

@@ -1,4 +1,4 @@
-
+<body style="background: white">
     <div class="content">
         <div class="container-fluid">
             <br>
@@ -16,7 +16,7 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Add Consumption</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("admin/consumption/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
@@ -25,7 +25,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" id="dateConsumed" class="form-control" name="date">
+                                        <input type="date" id="spoiledDate" class="form-control" name="tDate" required>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -36,6 +36,7 @@
                                         <textarea type="text" name="remarks"
                                             class="form-control" rows="1"></textarea>
                                     </div>
+                                
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
                                             <thead style="border-bottom:2px solid #cccccc;font-size:14px">
@@ -85,9 +86,8 @@
                                     <tbody class="ic-level-2"><?php
                                 foreach($stocks as $stock){
                                 ?>
-                                        <tr class="ic-level-1">
-                                            <td><input type="checkbox" class="mr-2" name="stock"
-                                                   data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                        <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -113,30 +113,41 @@
     <?php include_once('templates/scripts.php');?>
     <script>
     $(function() {
+        
         $("#stockCard .ic-level-1").on("click",function(event){
             if(event.target.type !== "checkbox"){
                 $(this).find("input[name='stock']").trigger("click");
             }
         });
         $("#stockCard input[name='stock']").on("click", function(event) {
+             //---
+            //---
             var id = $(this).val();
             var name = $(this).attr("data-name");
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
+                    <input name="curQty" id="curQty" type="hidden">
+					<input name="uomID" id="uomID" type="hidden">
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="qty"></td>
+                                class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
-                                class="form-control form-control-sm" name="cRemarks" rows="1"></textarea>
+                                class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
+                    $('input[name="curQty"]').val($(this).closest("tr").data('curqty'));
+                    $('input[name="uomID"]').val($(this).closest("tr").data('uomid')); 
+                    console.log($(this));
             }else{
                 $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
             }
         });
+
+        
+                    
         $("#stockCard input[name='search']").on("keyup",function(){
             var string = $(this).val();
             $("#stockCard .stock").each(function(index){
@@ -150,21 +161,26 @@
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");
-            var date = $(this).find("input[name='date']").val();
+            var tDate = $(this).find("input[name='tDate']").val();
             var remarks = $(this).find("textarea[name='remarks']").val();
+            var uomID = $(this).find("input[name='uomID']").val();
+            var curQty = $(this).find("input[name='curQty']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
-                    stock: $(this).find("input[name='stock']").attr('data-id'),
-                    qty: $(this).find("input[name='qty']").val(),
-                    remarks: $(this).find("textarea[name='cRemarks']").val()
+                    stID: $(this).find("input[name='stock']").attr('data-id'),
+                    actualQty: $(this).find("input[name='actualQty']").val(),
+                    tRemarks: $(this).find("textarea[name='tRemarks']").val(),
+                    uomID: uomID,
+                    curQty: curQty,
                 });
             });
+            console.log(items);
             $.ajax({
                 method: "POST",
                 url: url,
                 data: {
-                    date: date,
+                    date: tDate,
                     remarks: remarks,
                     items: JSON.stringify(items)
                 },
@@ -176,17 +192,21 @@
                         console.log(data);
                     }
                 },
+                complete: function() {
+                location.reload();
+                },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);
                 }
             });
         });
-    });
+    }); 
+
     $('#conForm').submit(function(event){
-        var consumedDate = $("#dateConsumed").val();
+        var spoiledDate = $("#spoiledDate").val();
         var currentDate = new Date();
-        if(Date.parse(consumedDate) > Date.parse(currentDate)){
+        if(Date.parse(spoiledDate) > Date.parse(currentDate)){
             alert('Invalid! Date exceeds current date.');
             return false;
         }

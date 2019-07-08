@@ -813,8 +813,7 @@ $(document).ready(function () {
             } else {
                 stQty = parseInt(row.attr('data-currqty'));
             }
-            
-            var olQty = row.find("input[name='olQty']").val();
+
             ol.push({
                 olID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
                 prID: row.find("input[name='prID']").val(),
@@ -822,13 +821,15 @@ $(document).ready(function () {
                 stQty: stQty,
                 osID: osID,
                 olDesc: row.find("input[name='olDesc']").val(),
-                olQty: olQty,
+                olQty: row.find("input[name='olQty']").val(),
                 olSubtotal: row.find("input[name='subtotal']").val(),
                 olStatus: 'served',
                 olRemarks: ' ',
                 olPrice: row.find("input[name='prPrice']").val(),
                 olDiscount: parseFloat((row.find("select[name='discount']").val()).trim()),
                 deductQty : isNaN((parseInt(row.attr("data-stqty")) * olQty)) ? (null) : (parseInt(row.data("stqty")) * olQty),
+                tiActual: Math.abs((parseInt(oldQty - newQty) * parseInt(row.attr('data-stqty')))),
+                update: (oldQty !== newQty) ? (1) : (0),
                 del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
             });
         }

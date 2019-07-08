@@ -27,7 +27,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Supplier</span>
                                                 </div>
-                                                <select class="spID form-control status-level" name="supplier" data-level="2,3" required>
+                                                <select class="spID form-control status-level" name="supplier" data-level="2,3" require>
                                                     <option value="" selected>Choose</option>
                                                     <?php if(isset($supplier)){
                                                 foreach($supplier as $sup){?>
@@ -40,7 +40,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Source</span>
                                                 </div>
-                                                <input type="text" data-level="1" class="form-control status-level" name="source">
+                                                <input class="form-control status-level" data-level="1" require name="source" type="text" value="" id="source" require pattern="[a-zA-Z][a-zA-Z\s]*" title="Source should only countain letters and white spaces.">
                                             </div>
                                         </div>
 
@@ -50,14 +50,14 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Receipt</span>
                                                 </div>
-                                                <input type="text" data-level="0" class="form-control status-level" name="receipt">
+                                                <input class="form-control status-level" data-level="0" require name="receipt" type="text" value="" id="receipt" require>
                                             </div>
                                             <!--Date-->
                                             <div class="input-group input-group-sm mb-3 col">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" data-level="0" class="form-control status-level" name="date">
+                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is require!" require>
                                             </div>
                                         </div>
                                         <!--Remarks-->
