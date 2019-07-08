@@ -130,7 +130,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" required></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"
