@@ -43,6 +43,7 @@ function addStockItem(){
             $stockMin = $this->input->post('min');
             $stockName = $this->input->post('name');
             $stockQty = $this->input->post('qty');
+            $stockBty = $this->input->post('qty');
             $stockStatus = $this->input->post('status');
             $stockType = $this->input->post('type');
             $stockUom = $this->input->post('uom');
@@ -50,7 +51,7 @@ function addStockItem(){
             $stockID = $this->input->post('id');
             $dbErr = false;
             if($stockID == null){
-                if(!$this->adminmodel->add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, 0, $stockLocation, $stockSize)){
+                if(!$this->adminmodel->add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, $stockBty, $stockLocation, $stockSize)){
                     $dbErr = true;
                 }
             }else{                 

@@ -1,5 +1,4 @@
 <!--End Side Bar-->
-
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
@@ -159,9 +158,6 @@
                 console.log(response.responseText);
             }
         });
-
-
-
         $("#addBtn").on('click', function() {
             setSupplier(supplier);
         });
