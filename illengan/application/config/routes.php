@@ -116,6 +116,7 @@ $route['admin/tables/edit'] = "adminupdate/edittable";
 $route['admin/menu/spoilage/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
 $route['admin/returns/edit'] = "adminupdate/editReturns";
+$route['admin/consumption/edit'] = "adminupdate/editConsumption";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------
