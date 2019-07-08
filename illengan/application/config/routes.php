@@ -93,7 +93,8 @@ $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
 $route['admin/sales/report/add'] = "adminadd/addSalesReport"; 
 $route['admin/returns/add'] = "adminadd/addReturns";
-$route['admin/stocklog/ending/add'] = "adminadd/addBeginningLogs";
+$route['admin/inventory/beginning'] = "adminadd/addBeginningLogs";
+
 //End Admin Add Routes ------------------------------------------
 
 //Admin Update Routes -------------------------------------------

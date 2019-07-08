@@ -1337,23 +1337,23 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
         , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
     }
-    function add_beginningLog($log){
-        $query = "INSERT INTO stocklog(
-            stID,
-            tID,
-            slType,
-            slQty,
-            slRemainingQty,
-            actualQty,
-            discrepancy,
-            slDateTime,
-            dateRecorded,
-            slRemarks
-        )
-        VALUES(?, NULL, 'beginning', ?, ?, ?, ?, ?, ?, ?)";
-        return $this->db->query($query, array($log['stock'], $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
-        , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
-    }
+    // function add_beginningLog($log){
+    //     $query = "INSERT INTO stocklog(
+    //         stID,
+    //         tID,
+    //         slType,
+    //         slQty,
+    //         slRemainingQty,
+    //         actualQty,
+    //         discrepancy,
+    //         slDateTime,
+    //         dateRecorded,
+    //         slRemarks
+    //     )
+    //     VALUES(?, NULL, 'beginning', ?, ?, ?, ?, ?, ?, ?)";
+    //     return $this->db->query($query, array($log['stock'], $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+    //     , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
+    // }
     function add_actlog($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks){
         $query = "INSERT INTO `activitylog`(
             `alID`,
@@ -1732,6 +1732,30 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             }
         }
     }
+
+    function add_beginning($date, $dateTime, $logs){
+        $query = "INSERT INTO reconciliation(reDate, reDateRecorded) VALUES (?,?)";
+        if($this->db->query($query,array($date, $dateTime))){
+            $reID = $this->db->insert_id();
+            if(count($logs) > 0){
+                foreach($logs as $logs) {
+                    $this->add_beginningLog($reID, $logs);
+                    $this->set_stockQtyBeginning($logs);
+                }
+            }
+        }
+    }
+
+    function add_beginningLog($reID, $logs){
+        $query = "INSERT INTO st_recon(reID, reQty, reRemain, reDiscrepancy, reRemarks, stID) VALUES (?,?,?,?,?,?)";
+        $this->db->query($query, array($reID, $logs['current'], $logs['actual'], $logs['discrepancy'], $logs['remarks'], $logs['stock']));
+    }
+
+    function set_stockQtyBeginning($logs){
+        $query = "UPDATE stockitems SET stQty = ?, stBqty = ? WHERE stID = ?";
+        return $this->db->query($query, array($logs['actual'], $logs['actual'], $logs['stock']));
+    }
+
     function edit_purchaseorder($date, $current, $pID){
         $query = "UPDATE purchases SET pDate = ?, pDateRecorded = ? where pID = ?";
         return $this->db->query($query,array($date, $current, $pID));
@@ -2050,6 +2074,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             )";
         return $this->db->query($query, array($id))->result_array();
     }
+
     function get_poItemsBySupplier($id){
         $query = "SELECT
                 tID AS transactionID,

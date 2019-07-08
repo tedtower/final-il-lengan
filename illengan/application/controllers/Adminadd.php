@@ -655,37 +655,12 @@ function addConsumption(){
 //---------------------------------------------------------------------------------------
     function addBeginningLogs(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $dateTime = date("Y-m-d H:i:s");
+            $date = $this->input->post('date');
             $logs = json_decode($this->input->post('items'),true);
-            if(count($logs)> 0){
-                $dateTime = date("Y-m-d H:i:s");
-                foreach($logs as $item){
-                    $qty = $this->adminmodel->get_stockQty($item['stock'])[0]['stQty'];
-                    $log = array(
-                        "stock" => $item['stock'],
-                        "qty" => 0,
-                        "remain" => $qty,
-                        "actual" => $item['qty'],
-                        "discrepancy" => $item['qty'] - $qty,
-                        "dateTime" => $dateTime,
-                        "dateRecorded" => $dateTime,
-                        "remarks" => $item['remarks']
-                    );
-                    $this->adminmodel->add_beginningLog($log);
-                    $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
-                }
-            }
-            echo json_encode(array(
-                "success" => true
-            ));
-        }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
+            $this->adminmodel->add_beginning($date, $dateTime, $logs);
         }
     }
-
-        
-
 }    
 ?>
 
