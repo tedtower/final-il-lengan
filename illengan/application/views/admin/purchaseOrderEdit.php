@@ -63,8 +63,7 @@
                                     </div>
 
                                         <br>
-                                        <span>Total: &#8369;<span class="total">0</span>
-                                            <!--Total of the trans items-->
+                                        <span>Total: &#8369;<span class="total"></span></span>
                                     </div>
                                     <div class="card-footer mb-0" style="overflow:auto">
                                         <button class="btn btn-success btn-sm" type="submit"
@@ -96,6 +95,9 @@
         poitems = poItems.filter(poi => poi.pID == id);
         $("input[name='suppliers']").val(pos[0].supplierName);
         $('input[name="date"]').val(pos[0].transDate);
+        console.log(pos);
+
+        $('.total').text(pos[0].total);
 
         poitems.forEach(function(poi, spm) {
             $("#conForm .ic-level-2").append(`
@@ -122,7 +124,7 @@
         $("select[name='status']").find(`option[value=${poi.piStatus}]`).attr("selected", "selected");
         });
 
-        $(document).on("change","input[name='qty']", function() {
+        $(document).on("change","input[name='qty']", function(pos) {
             var total = 0;
             var subtotal = $(this).val() * $(this).closest(".poitems > tbody > tr").find("input[name='price']").val();
             $(this).closest(".poitems > tbody > tr").find("input[name='subtotal']").val(subtotal);
@@ -159,8 +161,7 @@
                  date: date,
                  tiActual: actualQty,
                  tiSubtotal: subtotal,
-                 piStatus: status,
-                 piType: 'purchase order'
+                 piStatus: status
              }); 
          }); 
 
@@ -174,7 +175,7 @@
                  poitems: JSON.stringify(poitems)
              },
              beforeSend: function() {
-                    console.log(supplier, date, poitems);
+                    console.log(id, date, poitems);
             },
              succes: function(){
                  location.reload();

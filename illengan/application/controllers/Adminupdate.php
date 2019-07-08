@@ -74,9 +74,10 @@ class Adminupdate extends CI_Controller{
             $pID = $this->input->post('id');
             $date = $this->input->post('date');
             $current = date("Y-m-d H:i:s");
-            $type = "purchase order";
             $poitems = json_decode($this->input->post('poitems'),true);
-            $this->adminmodel->edit_purchaseOrder($pID, $supplier, $date, $current, $type, $poitems);
+            $this->adminmodel->edit_purchaseOrder($date, $current, $pID);
+            $this->adminmodel->edit_pItem($poitems);
+            $this->adminmodel->edit_potransitem($poitems);
         }else{
             redirect("login");
         }

@@ -1733,13 +1733,22 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             }
         }
     }
-    function edit_purchaseorder($pID, $supplier, $date, $current, $type, $poitems){
+    function edit_purchaseorder($date, $current, $pID){
         $query = "UPDATE purchases SET pDate = ?, pDateRecorded = ? where pID = ?";
-        if($this->db->query($query,array($date, $current, $pID))){
-            $pID = $this->db->insert_id();
-            if(count($poitems) > 0){
-                $this->add_pItem($pID, $poitems);
-            }
+        return $this->db->query($query,array($date, $current, $pID));
+    }
+    
+    function edit_pItem($poitems){
+        $query = "UPDATE purchase_items SET piStatus = ? WHERE piID = ?";
+        for($in = 0; $in < count($poitems) ; $in++){
+            $this->db->query($query, array($poitems[$in]['piStatus'], $poitems[$in]['piID']));
+        }
+    }
+
+    function edit_potransitem($poitems){
+        $query = "UPDATE transitems SET tiQty = ?, tiDate = ?, tiActual = ?, tiSubtotal = ? where tiID = ?";
+        for($in = 0; $in < count($poitems); $in++){
+            $this->db->query($query, array($poitems[$in]['tiQty'], $poitems[$in]['date'], $poitems[$in]['tiActual'], $poitems[$in]['tiSubtotal'], $poitems[$in]['tiID']));
         }
     }
 
@@ -1785,10 +1794,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             $this->add_potransitem($poitems[$in]["piType"], $poitems[$in]["tiQty"], $poitems[$in]["tiActual"], $poitems[$in]["tiSubtotal"], $poitems[$in]["date"], $poitems[$in]["stID"] ,$poitems[$in]["spmID"], $piID);
         }
     }
-    function edit_pItem($piID, $piStatus){
-        $query = "UPDATE purchase_items SET piStatus WHERE piID = ?";
-        return $this->db->query($query, array($piStatus, $piID));
-    }
+
     function add_purItem($pID, $piID){
         $query = "INSERT INTO pur_items(pID, piID) VALUES(?,?)";
         return $this->db->query($query, array($pID, $piID));
@@ -1884,6 +1890,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
                 ) AS stockname,
                 spmName,
                 spmPrice,
+                spmActual,
                 suppliermerchandise.uomID,
                 uomAbbreviation,
                 piID,
