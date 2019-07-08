@@ -13,8 +13,6 @@
                 <div class="card-content">
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addEditStock" data-original-title
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
-                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#restock" data-original-title
-                        style="margin:0;color:blue" id="rBtn">Restock</a>
                     <a class="btn btn-primary btn-sm" href="<?= site_url('admin/inventory/physicalcount')?>" data-original-title style="margin:0"
                         d="addBtn">Perform Inventory</a>
                     <a class="btn btn-primary btn-sm" style="margin:0;color:blue;float:right" href="<?= site_url('admin/inventorylist')?>"><i class="fal fa-list-ul"></i> Inventory List</a>
@@ -232,8 +230,7 @@
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Stock Name</span>
                                             </div>
-                                            <input type="text" name="stockName" id="stockName"
-                                                class="form-control form-control-sm">
+                                            <input class="form-control form-control-sm" name="stockName" type="textarea" value="" id="stockName" require pattern="[a-zA-Z][a-zA-Z\s]*" title="Stock name should only countain letters and white spaces." required>
                                         </div>
                                         <div class="form-row">
                                             <!--Stock Type-->
@@ -243,7 +240,7 @@
                                                             style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Type</span>
                                                     </div>
-                                                    <select name="stockType" class="form-control">
+                                                    <select name="stockType" class="form-control" required>
                                                         <option value="" selected>Choose</option>
                                                         <option value="liquid">Liquid</option>
                                                         <option value="solid">Solid</option>
@@ -254,7 +251,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Size</span>
                                                 </div>
-                                                <input type="text" name="stockSize" class="form-control">
+                                                <input type="number" class="form-control" name="stockSize" min="0">
                                                 <select class="form-control" name="stockSizeUOM" style="border-left:1px solid whitesmoke">
                                                     <option value="">Choose Unit</option>
                                                 </select>
@@ -266,7 +263,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Stock UOM</span>
                                                 </div>
-                                                <select class="form-control" name="stockUOM" style="border-left:1px solid whitesmoke">
+                                                <select class="form-control" name="stockUOM" style="border-left:1px solid whitesmoke" required>
                                                     <option value="">Choose Unit</option>
                                                 </select>
                                             </div>
@@ -277,7 +274,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Storage</span>
                                                 </div>
-                                                <select name="stockStorage" class="form-control">
+                                                <select name="stockStorage" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                 </select>
                                             </div>
@@ -291,7 +288,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Category</span>
                                                 </div>
-                                                <select name="stockCategory" class="form-control">
+                                                <select name="stockCategory" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                     <option value=""></option>
                                                 </select>
@@ -303,7 +300,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Status</span>
                                                 </div>
-                                                <select name="stockStatus" class="form-control">
+                                                <select name="stockStatus" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                     <option value="available">Available</option>
                                                     <option value="unavailable">Unavailable</option>
@@ -318,7 +315,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Quantity</span>
                                                 </div>
-                                                <input type="number" name="stockQty" class="form-control">
+                                                <input type="number" name="stockQty" class="form-control" required>
                                             </div>
                                             <!--Min Quantity-->
                                             <div class="input-group mb-3 col">
@@ -327,7 +324,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Min Qty</span>
                                                 </div>
-                                                <input type="number" name="stockMinQty" class="form-control">
+                                                <input type="number" name="stockMinQty" class="form-control" required>
                                             </div>
                                         </div>
 
@@ -535,6 +532,7 @@ $(document).ready(function() {
         var qty = $(this).find("input[name='stockQty']").val();
         var uom = $(this).find("select[name='stockUOM']").val();
         var size = $(this).find("input[name='stockSize']").val().concat($(this).find("select[name='stockSizeUOM']").val());
+       
         $.ajax({
             url: crudUrl,
             method: "POST",
@@ -579,6 +577,7 @@ function getEnumVals(url){
         url: url,
         dataType: 'JSON',
         success: function(data){
+            console.log(data);
             $("#addEditStock").find("select[name='stockType']").children().first().siblings().remove();
             $("#addEditStock").find("select[name='stockStatus']").children().first().siblings().remove();
             $("#addEditStock").find("select[name='stockStorage']").children().first().siblings().remove();
@@ -610,6 +609,7 @@ function getEnumVals(url){
             $("#addEditStock").find("select[name='stockCategory']").append(data.categories.map(category=>{
                 return `<option value="${category.ctID}">${category.ctName.toUpperCase()}</option>`;
             }).join(''));
+            
         },
         error: function(response, setting, error) {
             console.log(response.responseText);

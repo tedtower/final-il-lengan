@@ -26,7 +26,7 @@
                                                     style="width:80px;font-size:14px;">
                                                     Supplier</span>
                                             </div>
-                                            <input type="text" name="supplier" data-id="" class="form-control form-control-sm">
+                                            <input type="text" name="supplier" data-id="" class="form-control form-control-sm" title="Select a supplier" required>
 
                                         </div>
                                         <div class="input-group input-group-sm mb-3 col">
@@ -35,7 +35,7 @@
                                                     style="width:80px;font-size:14px">
                                                     Date</span>
                                             </div>
-                                            <input type="date" name="date" class="form-control form-control-sm">
+                                            <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" title="Date is required!" required>
                                         </div>
                                     </div>
 
@@ -146,6 +146,8 @@
             var uom = $(this).data("uom");
             var price = $(this).data("price");
             var actualQty = $(this).data("actual");
+            console.log($(this));
+
             var supplier = $(this).closest("tr").find("td.trans").data("supplier");
             var spID = $(this).closest("tr").find("td.trans").data("spid");
             var spmID = $(this).data("spmid");
@@ -215,6 +217,7 @@
                 var subtotal = parseFloat(tiQty * price);
                 rTotal = parseFloat(rTotal + subtotal);
 
+                console.log($(this).find("input[name='stock']"));
                 returnitems.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
                     spmID: $(this).find("input[name='stock']").attr('data-spmid'),
@@ -239,7 +242,8 @@
                     rTotal: rTotal,
                     items: JSON.stringify(returnitems)
                 },
-                succes: function(){
+                success: function(){
+                    console.log("YEYYEYE");
                     location.reload();
                 },
                 error: function(response, setting, error) {

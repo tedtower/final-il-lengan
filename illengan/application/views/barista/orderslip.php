@@ -58,14 +58,15 @@
             <div class="list" id="${item.orderslips.osID}">
                 <div class="table-container card m-0 p-0" style="max-height:100%">
                     <!--Long Card Header-->
-                    <div class="card-header p-1 m-1">
-                        <div style="overflow:auto;font-size:14px">
-                            <div class="row" style="float:left;text-align:left;width:100%">
-                                <div style="width:25%"><b>Slip No: </b> ${item.orderslips.osID}</div>
-                                <div style="width:35%"><b>Customer: </b>${item.orderslips.custName}</div>
-                                <div style="width:40%"><b> Table No: </b>${item.orderslips.tableCode}<img class="editBtn" data-id="${item.orderslips.osID}" data-tableCode="${item.orderslips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px; float:right; cursor:pointer;" 
-                                data-toggle="modal" data-target="#editTable"></div>
+                    <div class="card-header p-2">
+                        <div class="row" style="text-align:left;font-size:14px">
+                            <div style="width:70%">
+                                <div class="mr-4" style="float:left"><b>Slip No: </b> ${item.orderslips.osID}</div>
+                                <div style="float:left"><b>Customer: </b>${item.orderslips.custName}</div>
                             </div>
+
+                            <div style="float:right;width:30%"><b> Table No: </b>${item.orderslips.tableCode}<img class="editBtn" data-id="${item.orderslips.osID}" data-tableCode="${item.orderslips.tableCode}" src="/assets/media/barista/edit.png" style="width:15px;height:15px;float:right; cursor:pointer;" 
+                            data-toggle="modal" data-target="#editTable"></div>
                         </div>
                     </div>
                     
@@ -101,11 +102,9 @@
                                     <td class="p-2">Remarks:</td>
                                     <td class="p-2" colspan="4">${ol.olRemarks}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Addons:</td>
-                                    <td class="aDoQty${ol.olID}"></td>
-                                    <td colspan="2" class="aDoName${ol.olID}"></td>
-                                    <td class="aDoPrice${ol.olID}"></td>
+                                <tr class="thisAddons${ol.olID}">
+                                <td>Addons:</td>
+                                <td class="aDon${ol.olID}"></td>
                                 </tr>
                                 `
                                 }).join('')} 
@@ -113,13 +112,9 @@
                         </table>
                     </div>
                     <!--Footer-->
-                    <!--<div class="card-footer p-1 m-1 text-muted">
-                            <div style="overflow:auto;">
-                                <div style="float:right;width:25%;float:left;">
-                                    <button class="deleteOS btn btn-warning btn-sm" style="font-size:13px;margin:0" data-toggle="modal" data-target="#deleteModal">Remove Slip</button>
-                            </div>
+                        <div class="card-footer text-muted">
                         </div>
-                    </div> -->
+                    </div>
                 </div>
             </div>
             `;
@@ -290,17 +285,13 @@
         }
 
         function addAddons() {
-            // addons.forEach(ao => {
+            console.log(addons);
             for (var i = 0; i < addons.length; i++) {
                 if ($(".thisAddons" + addons[i].olID) != '') {
                     for (var i = 0; i < addons.length; i++) {
-                        $(".aDoQty" + addons[i].olID).append(`${addons[i].aoQty}<br>`);
-                        $(".aDoName" + addons[i].olID).append(`${addons[i].aoName}<br>`);
-                        $(".aDoPrice" + addons[i].olID).append(`${addons[i].aoTotal}<br>`);
-
+                        $("td.aDon" + addons[i].olID).append(`${addons[i].aoQty}&nbsp;${addons[i].aoName}<br>`);
                     }
                 }
-                //  });
             }
         }
 

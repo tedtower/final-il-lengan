@@ -25,7 +25,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" class="form-control" name="tDate">
+                                        <input class="form-control form-control-sm" name="tDate" id="tDate" type="date" class="no-border"  data-validate="required" message="Date consumed is required!"  required>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -130,7 +130,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" required></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"

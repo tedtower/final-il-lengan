@@ -75,8 +75,6 @@ function viewPOFormAdd(){
         $head['title'] = "Inventory - Add PO";
         $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
-        $data['uom'] = $this->adminmodel->get_uomForStoring();
-        $data['stock'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['suppmerch'] = $this->adminmodel->get_supplierstocks();
         $this->load->view('admin/purchaseOrderAdd', $data);
@@ -124,12 +122,19 @@ function viewReturnFormEdit($id){
         redirect('login');
     }
 }
-function viewPOFormEdit(){
+function viewPOFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit PO";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/purchaseOrderEdit');
+        $data = array(
+            'id' => $id,
+            'supplier' => $this->adminmodel->get_supplier(),
+            'suppmerch' => $this->adminmodel->get_supplierstocks(),
+            'pos' => $this->adminmodel->get_purchaseOrders(),
+            'poitems' => $this->adminmodel->get_purchaseOrderItems()
+        );
+        $this->load->view('admin/purchaseOrderEdit', $data);
     }else{
         redirect('login');
     }
@@ -186,31 +191,6 @@ function getCardValuesForDR(){
         ));
     }
 }
-// function viewORFormAdd(){
-//     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-//         $head['title'] = "Inventory - Add OR";
-//         $this->load->view('admin/templates/head', $head);
-//         $this->load->view('admin/templates/sideNav');
-//         $data['supplier'] = $this->adminmodel->get_supplier();
-//         $data['stocks'] = $this->adminmodel->get_stockItemNames();
-//         $this->load->view('admin/officialReceiptAdd',$data);
-//     }else{
-//         redirect('login');
-//     }
-// }
-
-// function viewORFormEdit(){
-//     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-//         $head['title'] = "Inventory - Edit OR";
-//         $this->load->view('admin/templates/head', $head);
-//         $this->load->view('admin/templates/sideNav');
-//         $data['supplier'] = $this->adminmodel->get_supplier();
-//         $data['stocks'] = $this->adminmodel->get_stockItemNames();
-//         $this->load->view('admin/officialReceiptEdit');
-//     }else{
-//         redirect('login');
-//     }
-// }
 
 //-------------end-----------------------
 function viewStockCard($stID){

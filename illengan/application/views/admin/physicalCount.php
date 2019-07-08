@@ -21,7 +21,7 @@
                                         name="search" placeholder="Search...">
                                 </div>
                             </div>
-                            <form id="physicalCount" action="<?= site_url("")?>" accept-charset="utf-8">
+                            <form id="physicalCount" action="<?= site_url("admin/inventory/beginning")?>" accept-charset="utf-8">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -29,7 +29,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date">
+                                        <input class="form-control" name="date" id="date" type="date"  data-validate="required" message="Date is required!" required>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="stockitems table table-borderless">
@@ -45,10 +45,10 @@
                                             <tbody class="ic-level-2">
                                                 <?php foreach($stocks as $stock){?>
                                                 <tr class="ic-level-1">
-                                                    <td class="stock"><?= $stock['stName']?></td>
+                                                    <td class="stock" data-stock="<?= $stock['stID']?>"><?= $stock['stName']?></td>
                                                     <td><input type="number" name="current" value="<?= $stock['stQty']?>" class="form-control form-control-sm"  readonly="readonly"></td>
                                                     <td><input type="number" name="actual" value='' class="form-control form-control-sm"></td>
-                                                    <td><input type="number" name="discrep" value="" class="form-control form-control-sm"  readonly="readonly"></td>
+                                                    <td><input type="number" name="discrepancy" value='' class="form-control form-control-sm"  readonly="readonly"></td>
                                                     <td><textarea type="text" name="remarks" value="" class="form-control form-control-sm" rows="1"></textarea></td>
                                                 </tr>
                                                 <?php }?>
@@ -75,8 +75,8 @@
     <script>
     $(function() {
         $("#physicalCount").find("input[name='actual']").on("change",function(){
-            var discrep = $(this).val()- $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
-            $(this).closest(".stockitems > tbody > tr").find("input[name='discrep']").val(discrep);
+            var discrep = $(this).val() - $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
+            $(this).closest(".stockitems > tbody > tr").find("input[name='discrepancy']").val(discrep);
         });
         $("#stockCard input[name='search']").on("keyup",function(){
             var string = $(this).val();
@@ -94,13 +94,14 @@
             event.preventDefault();
             var url = $(this).attr("action");
             var date = $(this).find("input[name='date']").val();
-            var remarks = $(this).find("textarea[name='remarks']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
-                    stock: $(this).find("input[name='stock']").attr('data-id'),
-                    qty: $(this).find("input[name='qty']").val(),
-                    remarks: $(this).find("textarea[name='cRemarks']").val()
+                    stock: $(this).find(".stock").attr('data-stock'),
+                    current: $(this).find("input[name='current']").val(),
+                    actual: $(this).find("input[name='actual']").val(),
+                    discrepancy: $(this).find("input[name='discrepancy']").val(),
+                    remarks: $(this).find("textarea[name='remarks']").val()
                 });
             });
             $.ajax({
@@ -108,10 +109,12 @@
                 url: url,
                 data: {
                     date: date,
-                    remarks: remarks,
                     items: JSON.stringify(items)
                 },
                 dataType: "JSON",
+                beforeSend: function() {
+                    console.log(date, items);
+                },
                 succes: function(data){
                     if(data.sessErr){
                         location.replace("/login");
@@ -125,6 +128,15 @@
                 }
             });
         });
+
+        $('#physicalCount').submit(function(event){
+				var countingDate = $("#date").val();
+				var currentDate = new Date();
+				if(Date.parse(countingDate) > Date.parse(currentDate)){
+					alert('Please check the date input!');
+					return false;
+				}
+    		});
     });
     </script>
 </body>

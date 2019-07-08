@@ -1,4 +1,4 @@
-\<body style="background:white">
+<body style="background:white">
 <div class="content">
 	<div class="container-fluid">
 		<br>
@@ -20,7 +20,7 @@
                                     id="addBtn">Add Consumption</a>
 							<!--eND Add Consumption BUTTON-->
 							</div>
-  </div>
+                            </div>
 							<!--eND Add Consumption BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
@@ -169,6 +169,48 @@
                 console.log(response.responseText);
                 console.log(errorThrown);
             }
+            $.ajax({
+                method: 'POST',
+                url: crudUrl,
+                data: {
+                    id: id,
+                    supplier: supplier,
+                    type: type,
+                    receipt: receipt,
+                    date: date,
+                    remarks: remarks,
+                    transitems: JSON.stringify(transitems)
+                },
+                dataType: 'JSON',
+                beforeSend: function(){
+                    console.log(transitems);
+                },
+                success: function(data){
+                    console.log(data);
+                },
+                error: function(response, setting, error) {
+                    console.log(response.responseText);
+                    console.log(error);
+                }
+            });
+        });
+        $("#stockBrochure form").on('submit',function(event){
+            event.preventDefault();
+            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").val($(this).find("input[name='stocks']:checked").attr("data-name"));
+            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("input[name='stID[]']").attr("data-id", $(this).find("input[name='stocks']:checked").val());
+            $("#addEditTransaction").find(".ic-level-1[data-focus='true']").find("select[name='actualUnit[]']").trigger('change');
+            $(this)[0].reset();
+            $("#stockBrochure").modal("hide");
+        });
+        $("#merchandiseBrochure, #stockBrochure").on("hidden.bs.modal", function(){
+            $(this).find(".ic-level-2").empty();
+            $(this).find("form")[0].reset();
+            $(this).find("form").off('submit');
+        });
+        $("#transactionBrochure").on("hidden.bs.modal", function(){
+            $(this).find(".ic-level-4").empty();
+            $(this).find("form")[0].reset();
+            $(this).find("form").off('submit');
         });
 	}
 	});

@@ -60,7 +60,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm">
+                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -89,7 +89,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Main Category</span>
                                                             </div>
-                                                            <select name="subcatID" class="form-control form-control-sm" required>
+                                                            <select name="subcatID" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                                                 <option value="">Choose</option>
                                                             <?php if(isset($maincategory)){
                                                                 foreach($maincategory as $row){
@@ -104,7 +104,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm">
+                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -135,14 +135,14 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="new_name" id="new_name"class="form-control form-control-sm">
+                                                            <input type="text" name="new_name" id="new_name"class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                                         </div>
                                                         <div class="input-group mb-3">
                                                             <div class="input-group-prepend">
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Status</span>
                                                             </div>
-                                                            <select  name="new_status" id="new_status" class="form-control form-control-sm">
+                                                            <select  name="new_status" id="new_status" class="form-control form-control-sm" required>
                                                                 <option value="" selected>Choose</option>
                                                                 <option value="active">Active</option>
                                                                 <option value="archived" hidden="hidden">Archived</option>

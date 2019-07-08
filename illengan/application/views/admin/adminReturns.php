@@ -404,7 +404,74 @@ var suppmerch = [];
             }
         });
 
+        $(".addReturnStock").on('click', function () {
+            var spID = parseInt($(this).closest('.modal').find('.spID').val());
+            setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
+        });
     });
+
+    function setBrochureContent(suppstocks) {
+        $("#list").empty();
+        $("#list").append(`<table class="table"><thead>
+                    <th></th>
+                    <th>Receipt No.</th>
+                    <th>Date</th>
+                    <th>Stock</th>
+                </thead><tbody></tbody></table>`);
+
+        $("#list").find('table > tbody').append(`${suppstocks.map(st => {
+            return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="stockitems" onchange="disableReceipts(this)" 
+            class="${st.receiptNo} receipts stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
+                    <td>${st.receiptNo}</td>
+                    <td>${st.tDate}</td>
+                    <td>${st.spmName}</td></tr>`
+        }).join('')}`);
+
+        disableSelected();
+    }
+
+    function disableReceipts(checkbox) {
+        var receiptNo = $(checkbox).data('receipt');
+        var checkboxes = $("input[name='stockitems']");
+        console.log(receiptNo);
+        if($(checkbox).prop('checked')) {
+            $(checkbox).addClass('checked');
+            for(var i = 0; i <= checkboxes.length - 1; i++) {
+                console.log(!($(checkboxes).eq(i).hasClass(receiptNo)));
+            if($(checkboxes).eq(i).data("receipt") !== receiptNo) {
+                $(checkboxes).eq(i).attr('disabled', "disabled");
+            }
+        }
+        } else {
+           $(checkboxes).removeAttr('disabled');
+           $(checkbox).removeClass('checked');  
+        }
+
+        disableSelected();
+    }
+
+    function disableSelected() {
+    var receiptNo = $("input[name='receiptNo']").eq(0).val();
+    var checkboxes = $("input[name='stockitems']");
+
+    if ($('.returnElements') != 0 || $('.returnElements') != null) {
+        var addedItems = $('.returnElements').find('#spmID');
+        for (var i = 0; i <= addedItems.length - 1; i++) {
+            var id = addedItems[i].value;
+            $('#spmID' + id).attr("disabled", "disabled");
+            $('#spmID' + id).attr("checked", "checked");
+            $('#spmID' + id).removeAttr("class");
+
+        }
+    }
+    if(parseInt(receiptNo) !== 0) {
+        for(var i = 0; i <= checkboxes.length - 1; i++) {
+            if($(checkboxes).eq(i).data("receipt") !== receiptNo) {
+                $(checkboxes).eq(i).attr('disabled', "disabled");
+            }
+    }
+    }
+}
 
     function showTable() {
         returns.forEach(function (item) {
@@ -496,6 +563,21 @@ var suppmerch = [];
             }
         });
 
+        $(".addReturnsbtn").on('click', function () {
+            setSupplier(supplier);
+        });
+
+        $(".editBtn").on("click", function () {
+            $('.resolveItems').remove();
+            $('.returnsTable > tbody').empty();
+            $('#addReturns form')[0].reset();
+            $("#editReturns form")[0].reset();
+            setSupplier(supplier);
+
+            var tID = $(this).closest("tr").attr("data-id");
+            setEditModal($("#editReturns"), returns.filter(item => item.returns.tID === tID)[0]);
+        });
+
         $('.deleteBtn').on('click',function() {
             var id = $(this).attr("data-id");
             console.log(id);
@@ -504,6 +586,551 @@ var suppmerch = [];
            
     });
     }
+
+    function setSupplier(supplier) {
+        $(".spID").empty();
+        $(".spID").append(`${supplier.map(sp => {
+            return `<option value="${sp.spID}">${sp.spName}</option>`
+        }).join('')}`);
+    }
+
+
+    var subPrice = 0;
+    function getSelectedStocks() {
+        $(document).ready(function () {
+            var value = 0;
+            var choices = document.getElementsByClassName('stockitems');
+            var merchChecked, st;
+
+            for (var i = 0; i <= choices.length - 1; i++) {
+                console.log(choices[i].checked);
+                if (choices[i].checked) {
+                    value = choices[i].value;
+                    st = suppmerch.filter(st => st.stID === value);
+                   console.log(st);
+                    merchChecked = `
+                    <tr class="returnElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}"
+                        data-currqty="${st[0].stQty}">
+                        <input type="hidden" name="tiID" id="tiID" value="${st[0].tiID}">                        
+                        <input type="hidden" id="spmID" value="${st[0].spmID}">
+                        <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
+                                value="${st[0].spmName}" readonly="readonly"></td>
+                        <td><input type="number" id="tiQty" onchange="setInputValues()" name="tiQty"
+                                class="tiQty form-control form-control-sm" value="1" required min="1"></td>
+                        <td><input type="text" id="uomID" data-id="${st[0].uomID}" name="uomID"
+                                class="uomID form-control form-control-sm" value="${st[0].uomName}" readonly="readonly">
+                        </td>
+                        <td><input type="number" name="qtyPerItem" class="qtyPerItem form-control form-control-sm"
+                                value="${st[0].spmActualQty}" disabled></td>
+                        <td><img class="delBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"
+                                onclick="removeItem(this)"></td>
+                    </tr>
+
+                    <tr class="subreturnElements">
+                        <td>
+                            <div class="input-group ">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                        Actual Qty</span>
+                                </div>
+                                <input type="number" name="actualQty" class="actualQty form-control form-control-sm"
+                                    value="" readonly="readonly">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group ">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                        Price</span>
+                                </div>
+                                <input type="number" name="tiPrice" class="tiPrice form-control form-control-sm"
+                                    value="${st[0].spmPrice}" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group ">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                        Subtotal</span>
+                                </div>
+                                <input type="number" name="tiSubtotal" class="tiSubtotal form-control form-control-sm"
+                                    value="0" readonly="readonly">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group ">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                        style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                        Status</span>
+                                </div><select class="rStatus form-control" onchange="resolveReturn(this)" style="font-size: 14px;" name="rStatus">
+                                    <option value="pending">pending</option>
+                                    <option value="resolved">resolved</option>
+                                </select>
+                            </div>
+                        </td>
+
+                    </tr>
+                         `;
+
+                    if ($('#addReturns').is(':visible')) {
+                        $('#addReturns .returnsTable > tbody').append(merchChecked);
+                        $('#addReturns').find("input[name='receiptNo']").val(st[0].receiptNo);
+                        $('#addReturns').find("input[name='receiptNo']").attr('disabled','disabled');
+                        setInputValues();
+                    } else {
+                        $('#editReturns .returnsTable > tbody').append(merchChecked);
+                        $('#editReturns').find("input[name='receiptNo']").val(st[0].receiptNo);
+                        $('#editReturns').find("input[name='receiptNo']").attr('disabled','disabled');
+                    }
+                }
+            }
+        });
+    }
+    $("#deleteReturns form").on('submit', function (event) {
+        event.preventDefault();
+        var tID = $("input[name='tID']").val();
+
+        $.ajax({
+            url: "<?= site_url("admin/transaction/delete")?>",
+                method: "post",
+                data: {
+                    tID: tID
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function (response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+
+        });
+    });
+
+    function setInputValues() {
+        var total = 0;
+        for (var i = 0; i <= $('.returnElements').length - 1; i++) {
+            var tiQty = parseInt($('.tiQty').eq(i).val());
+            var qtyPerItem = parseInt($('.qtyPerItem').eq(i).val());
+            var price = parseFloat($('.tiPrice').eq(i).val());
+
+            // Setting item subtotal
+            var subtotal = price * tiQty;
+            var actualqty = tiQty * qtyPerItem;
+            $('.actualQty').eq(i).val(actualqty);
+            $('.tiSubtotal').eq(i).val(subtotal);
+        }
+
+        //Setting items total
+        for (var i = 0; i <= $('.tiSubtotal').length - 1; i++) {
+            total = total + parseFloat($('.tiSubtotal').eq(i).val());
+        }
+
+        if ($('#addReturns').is(':visible')) {
+            $('#total').text(total);
+        } else {
+            $('#total1').text(total);;
+        }
+    }
+
+    function deleteItem(element) {
+        var el = $(element).closest("tr.returnElements");
+        var subEl = $(element).closest("tr.returnElements").next(".subreturnElements");
+
+        $(el).find('.tiQty').val(0);
+        $(subEl).find('.tiSubtotal').val(0);
+        $(el).attr("data-delete", "0");
+        $(el).addClass("deleted");
+        $(el).removeClass("salesElem");
+        $(subEl).attr("data-delete", "0");
+        $(subEl).addClass("deleted");
+        $(subEl).removeClass("salesElem");
+        $(".deleted").find("input").attr("disabled", "disabled");
+        $(".deleted").find("input").removeAttr("class");
+        $(".deleted").find("input").addClass("form-control form-control-sm");
+
+        var deleted = $(".deleted");
+        for (var i = 0; i <= deleted.length - 1; i++) {
+            deleted[i].style.textDecoration = "line-through";
+            deleted[i].style.opacity = "0.6";
+        }
+
+        setInputValues();
+    }
+
+    function removeItem(remove) {
+        $(remove).closest("tr").next("tr").remove();
+        $(remove).closest("tr").remove();
+        
+        setInputValues();
+    }
+
+    // ----------------------- A D D I N G  R E T U R N S --------------------------
+    $(document).ready(function () {
+        $("#addReturns form").on('submit', function (event) {
+            event.preventDefault();
+            var spID = $(this).find("select[name='spID']").val();
+            var spName = $(this).find(".spID option[value='" + spID + "']").text();
+            var receiptNo = $(this).find("input[name='receiptNo']").val();
+            var tiID = $(this).find("input[name='tiID']").val();
+            var tDate = $(this).find("input[name='tDate']").val();
+            var tTotal = $(this).find("span[id='total']").text();
+            var tRemarks = $(this).find("textarea[name='tRemarks']").val();
+
+            var trans = [];
+            for (var index = 0; index < $(this).find(".returnElements").length; index++) {
+                var row = $(this).find(".returnElements").eq(index);
+                var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+                trans.push({
+                    tiID: parseInt(row.find("input[name='tiID']").val()),
+                    uomID: row.find("input[name='uomID']").data("id"),
+                    stID: parseInt(row.attr('data-stockid')),
+                    tiName: row.find("input[name='stName']").val(),
+                    tiPrice: subrow.find("input[name='tiPrice']").val(),
+                    rStatus: subrow.find("select[name='rStatus']").val()
+                });
+            }
+
+            var transitems = [];
+            for (var index = 0; index < $(this).find(".returnElements").length; index++) {
+                var row = $(this).find(".returnElements").eq(index);
+                var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+
+                transitems.push({
+                    tiID: parseInt(row.find("input[name='tiID']").val()),
+                    stID: parseInt(row.attr('data-stockid')),
+                    tiQty: row.find("input[name='tiQty']").val(),
+                    qtyPerItem: row.find("input[name='qtyPerItem']").val(),
+                    actualQty: subrow.find("input[name='actualQty']").val(),
+                    updateQty: -(parseInt(subrow.find("input[name='actualQty']").val())),
+                    tiSubtotal: subrow.find("input[name='tiSubtotal']").val()
+                });
+            }
+
+            $.ajax({
+                url: "<?= site_url("admin/returns/add")?>",
+                method: "post",
+                data: {
+                    spID: spID,
+                    spName: spName,
+                    receiptNo: receiptNo,
+                    tDate: tDate,
+                    tTotal: tTotal,
+                    tRemarks: tRemarks,
+                    trans: JSON.stringify(trans),
+                    ti: JSON.stringify(transitems)
+                },
+                beforeSend: function () {
+                    console.log('spID ' + spID);
+                    console.log('spName ' + spName);
+                    console.log('tDate ' + tDate);
+                    console.log('tTotal ' + tTotal);
+                    console.log('tRemarks ' + tRemarks);
+                    console.log(trans);
+                    console.log(transitems);
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function (response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+            });
+        });
+    });
+    // ----------------------- E N D  O F  A D D I N G  R E T U R N S --------------------------
+
+
+    function setEditModal(modal, returns) {
+        // Setting values for inputs
+        modal.find("select[name='spID']").find(`option[value=${returns.returns.spID}]`).attr("selected", "selected");
+        modal.find("input[name='receiptNo']").val(returns.returns.receiptNo);
+        modal.find("input[name='tDate']").val(returns.returns.tDate);
+        modal.find("textarea[name='tRemarks']").val(returns.returns.tRemarks);
+        modal.find("input[name='trID']").val(returns.returns.tID);
+        
+        returns.returnitems.forEach(rt => {
+            modal.find(".returnsTable > tbody").append(`
+        <tr class="returnElements" data-stockid="${rt.stID}" id="returns${rt.tiID}" data-id="${rt.tiID}">
+                    <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
+                            value="${rt.tiName}" readonly="readonly"></td>
+                    <td><input type="number" id="tiQty" onchange="setInputValues()" data-tiQty="${rt.tiQty}" name="tiQty"
+                            class="tiQty form-control form-control-sm" value="${rt.tiQty}" required min="1"></td>
+                    <td><input type="text" id="uomID" data-id="${rt.uomID}" name="uomID" class="uomID form-control form-control-sm"
+                            value="${rt.uomName}" readonly="readonly"></td>
+                    <td><input type="number" name="qtyPerItem" class="qtyPerItem form-control form-control-sm"
+                            value="${rt.qtyPerItem}" disabled></td>
+                    <td class="resolveSel"><img class="delBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"
+                            onclick="deleteItem(this)"></td>
+                </tr>
+
+                <tr class="subreturnElements">
+                    <td>
+                        <div class="input-group ">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                    Actual Qty</span>
+                            </div>
+                            <input type="number" name="actualQty" data-qty="${rt.actualQty}" class="actualQty form-control form-control-sm"
+                                value="${rt.actualQty}" readonly="readonly">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group ">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                    Price</span>
+                            </div>
+                            <input type="number" name="tiPrice" class="tiPrice form-control form-control-sm" value="${rt.tiPrice}"
+                            disabled>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group ">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                    Subtotal</span>
+                            </div>
+                            <input type="number" name="tiSubtotal" class="tiSubtotal form-control form-control-sm"
+                                value="${rt.tiSubtotal}" readonly="readonly">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group ">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                    Status</span>
+                            </div><select class="rStatus form-control" style="font-size: 14px;"
+                                name="rStatus" id="rStatus${rt.tiID}" onchange="resolveReturn(this,${rt.tiID})">
+                                <option value="pending">pending</option>
+                                <option value="pending">parital</option>
+                                <option value="pending">delivered</option>
+                                <option value="resolved">resolved</option>
+                            </select>
+                        </div>
+                    </td>
+                   
+                </tr>
+                <tr class="accordion" style="display:table-row">
+                <td colspan="6"> <!-- table row ng accordion -->
+                    <div style="overflow:auto;"> <!-- container ng accordion -->
+                        
+                        <div style="width:100%;overflow:auto;padding-right: 5%"> <!-- description, preferences, and addons container -->
+                            
+                            <div class="returnsContent" style="overflow:hidden;margin-top:1%"> <!-- Preferences and addons container-->
+                            <div class="form-row">
+                                                        <div class="input-group mb-3 col">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                    Remarks</span>
+                                                            </div>
+                                                            <textarea name="tRemarks" id="tRemarks"
+                                                                class="form-control form-control-sm">${rt.rRemarks} </textarea>
+                                                        </div>
+                                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>`);
+                modal.find("select[id='rStatus"+rt.tiID+"']").find(`option[value=${rt.rStatus}]`).attr("selected", "selected");
+
+        });
+
+        setInputValues();
+
+    }
+    function getSelectedReceipts() {
+        $(document).ready(function() {
+            var value = 0;
+            var choices = document.getElementsByClassName('receipts');
+            var merchChecked, st;
+            for (var i = 0; i <= choices.length - 1; i++) {
+                if (choices[i].checked) {
+                    value = choices[i].value;
+                    st = suppmerch.filter(st => st.stID === value);
+                   console.log(st);
+                    merchChecked = `
+                    <tr class="resolveElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-tid="${st[0].tID}"
+                        data-currqty="${st[0].stQty}">
+                        <input type="hidden" name="tiID" id="tiID" value="${st[0].tiID}">                        
+                        <input type="hidden" id="spmID" value="${st[0].spmID}">
+                        <td><input type="text" id="stName" name="stName" class="stName form-control form-control-sm"
+                                value=" ${st[0].tiQty} ${st[0].spmName} ${st[0].uomName}" readonly="readonly"></td>
+                        <td><input type="text" id="receiptNo" onchange="setInputValues()" name="receiptNo"
+                                class="tiQty form-control form-control-sm" value="${st[0].receiptNo}" required min="1" readonly="readonly"></td>         
+                        <td><input type="text" id="supplierName" name="supplierName"
+                                class="uomID form-control form-control-sm" value="${st[0].supplierName}" readonly="readonly">
+                        </td>
+                        <td><input type="date" name="tDate" class="tDate form-control form-control-sm"
+                                value="${st[0].tDate}" disabled></td>
+                        <td><img class="delBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"
+                                onclick="removeItem(this)"></td>
+                    </tr>
+                         `;
+
+                    if ($('#editReturns').is(':visible')) {
+                        $('#editReturns').find('tr#returns'+st[0].stID).next('tr').after(merchChecked);
+                        setInputValues();
+                    } 
+                }
+            }
+        });
+    }
+
+
+    // --------------------- E D I T I N G  R E T U R N S ---------------------------------
+    $(document).ready(function () {
+        $("#editReturns form").on('submit', function (event) {
+            event.preventDefault();
+            var tID = $(this).find("input[name='trID']").val();
+            var spID = $(this).find("select[name='spID']").val();
+            var spName = $(this).find(".spID option[value='" + spID + "']").text();
+            var receiptNo = $(this).find("input[name='receiptNo']").val();
+            var tDate = $(this).find("input[name='tDate']").val();
+            var tTotal = $(this).find("span[id='total1']").text();
+            var tRemarks = $(this).find("textarea[name='tRemarks']").val();
+            var rRemarks; 
+
+            var trans = [];
+            for (var index = 0; index < $(this).find(".returnElements").length; index++) {
+                var row = $(this).find(".returnElements").eq(index);
+                var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+                var resolve = $(this).find(".accordion").eq(index);
+                rRemarks = resolve.find("textarea[name='rRemarks']").val();
+                trans.push({
+                    tID: tID,
+                    tiID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
+                    uomID: row.find("input[name='uomID']").data("id"),
+                    stID: parseInt(row.attr('data-stockid')),
+                    tiName: row.find("input[name='stName']").val(),
+                    tiPrice: subrow.find("input[name='tiPrice']").val(),
+                    rStatus: subrow.find("select[name='rStatus']").val(),
+                    rRemark: rRemarks,
+                    del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
+                });
+            }
+            
+            var transitems = [];
+            for (var index = 0; index < $(this).find(".returnElements").length; index++) {
+                var row = $(this).find(".returnElements").eq(index);
+                var subrow = $(this).find(".returnElements").next('.subreturnElements').eq(index);
+                var realQty = parseInt(subrow.find("input[name='actualQty']").data("qty"));
+                var newQty = parseInt(subrow.find("input[name='actualQty']").val());
+
+                transitems.push({
+                    tID: tID,
+                    tiID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
+                    stID: parseInt(row.attr('data-stockid')),
+                    tiQty: row.find("input[name='tiQty']").val(),
+                    qtyPerItem: row.find("input[name='qtyPerItem']").val(),
+                    actualQty: subrow.find("input[name='actualQty']").val(),
+                    tiSubtotal: subrow.find("input[name='tiSubtotal']").val(),
+                    updateQty: parseInt(realQty - newQty),
+                    rRemark: rRemarks,
+                    del: isNaN(parseInt(subrow.attr('data-delete'))) ? (null) : parseInt(subrow.attr('data-delete'))
+                });
+            }
+
+         
+                    console.log('spID ' + spID);
+                    console.log('spName ' + spName);
+                    console.log('tDate ' + tDate);
+                    console.log('tTotal ' + tTotal);
+                    console.log('tRemarks ' + tRemarks);
+                    console.log(trans);
+                    console.log(transitems);
+
+            $.ajax({
+                url: "<?= site_url("admin/returns/edit")?>",
+                method: "post",
+                data: {
+                    tID: tID,
+                    spID: spID,
+                    spName: spName,
+                    receiptNo: receiptNo,
+                    tDate: tDate,
+                    tTotal: tTotal,
+                    tRemarks: tRemarks,
+                    trans: JSON.stringify(trans),
+                    ti: JSON.stringify(transitems)
+                },
+                beforeSend: function() {
+                    console.log('tID '+tID);
+                    console.log('spID ' + spID);
+                    console.log('spName ' + spName);
+                    console.log('tDate ' + tDate);
+                    console.log('tTotal ' + tTotal);
+                    console.log('tRemarks ' + tRemarks);
+                    console.log(trans);
+                    console.log(transitems);
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function (response, setting, errorThrown) {
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
+            });
+        });
+    });
+    // ----------------------- E N D  O F  E D I T I N G  R E T U R N S --------------------------
+
+var menuItem;
+function resolveReturn(item, tiID) {
+    if($(item).val() === "resolved") {
+        $("#resolveModal").modal('show');
+        $('#resolveModal').find('input[name="tiID"]').val(tiID);
+    } 
+
+}
+
+function setRemarks() {
+    var tiID =  $('#resolveModal').find('input[name="tiID"]').val();
+    var tRemarks = $('#resolveModal').find("textarea[name='tRemarks']").val();
+    console.log(tRemarks);
+    
+    merchChecked = `
+    <tr class="accordion" style="display:table-row">
+                <td colspan="6"> <!-- table row ng accordion -->
+                    <div style="overflow:auto;"> <!-- container ng accordion -->
+                        
+                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
+                            
+                            <div class="returnsContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
+                            <div class="input-group " style="padding-right: 20px">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-sm"
+                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                    Remarks</span>
+                            </div>
+                            <textarea name="rRemarks" value="" class="rRemarks form-control form-control-sm"b row="1">${tRemarks}</textarea>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+                         `;
+
+    if ($('#editReturns').is(':visible')) {
+        $('#editReturns').find('tr#returns'+tiID).next('tr').after(merchChecked);
+        setInputValues();
+    }
+    
+    $("#resolveModal").modal("hide");
+}
 
 </script>
 </html>

@@ -65,7 +65,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input type="text" name="aoName" class="form-control form-control-sm">
+                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="aoName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Addon name should only countain letters and white spaces.">
                                 </div>
                                 <!--Price-->
                                 <div class="input-group mb-3">
@@ -73,7 +73,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Price</span>
                                     </div>
-                                    <input type="number" name="aoPrice" class="form-control form-control-sm">
+                                    <input type="number" class="form-control form-control-sm" name="aoprice"  min="0" oninput="validity.valid||(value='');" data-validate="required" max="" required>
                                 </div>   
                                 <!--Category-->                                                                                 
                                 <div class="input-group mb-3">
@@ -81,7 +81,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Category</span>
                                     </div>
-                                    <select class="custom-select" name="aoCategory">
+                                    <select class="custom-select" name="aoCategory" required>
                                         <option value="" selected>Choose</option>
                                         <option value="drinks">Drink</option>
                                         <option value="food">Food</option>
@@ -93,7 +93,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Status</span>
                                     </div>
-                                    <select class="custom-select" name="aoStatus">
+                                    <select class="custom-select" name="aoStatus" required>
                                         <option value="" selected>Choose</option>
                                         <option value="available">Available</option>
                                         <option value="unavailable">Unavailable</option>
@@ -113,7 +113,7 @@
             </div>
 <!--End of Modal "Add Transaction"-->
 
-<!--Start of Modal "Add Menu"-->
+<!--Start of Modal "Edit Menu"-->
             <div class="modal fade bd-example-modal" id="editAddon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -133,7 +133,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input type="text" name="aoName" id="aoName" class="form-control form-control-sm">
+                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="aoName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Addon name should only countain letters and white spaces.">
                                 </div>
                                 <!--Price-->
                                 <div class="input-group mb-3">
@@ -141,7 +141,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Price</span>
                                     </div>
-                                    <input type="number" name="aoPrice" id="aoPrice" class="form-control form-control-sm">
+                                    <input type="number" class="form-control form-control-sm" name="aoprice"  min="0" oninput="validity.valid||(value='');" data-validate="required" max="" required>
                                 </div>   
                                 <!--Category-->                                                                                 
                                 <div class="input-group mb-3">
@@ -149,7 +149,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Category</span>
                                     </div>
-                                    <select class="custom-select" name="aoCategory" id="aoCategory">
+                                    <select class="custom-select" name="aoCategory" id="aoCategory" required>
                                         <option value="" selected>Choose</option>
                                         <option value="drinks">Drink</option>
                                         <option value="food">Food</option>
@@ -161,7 +161,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Status</span>
                                     </div>
-                                    <select class="custom-select" name="aoStatus" id="aoStatus">
+                                    <select class="custom-select" name="aoStatus" id="aoStatus" required>
                                         <option value="" selected>Choose</option>
                                         <option value="available">Available</option>
                                         <option value="unavailable">Unavailable</option>

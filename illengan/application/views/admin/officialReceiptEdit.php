@@ -36,7 +36,7 @@
                                             Transaction Date</span>
                                     </div>
                                     <input type="date" class="form-control  border-left-0"
-                                        name="tDate">
+                                        name="tDate" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -47,7 +47,7 @@
                                             Receipt</span>
                                     </div>
                                     <input type="text" name="receipt"
-                                        class="form-control form-control-sm  border-left-0">
+                                        class="form-control form-control-sm  border-left-0" required>
                                 </div>
                                 <!--Remarks-->
                                 <div class="input-group mb-3 col">
@@ -176,8 +176,8 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                        <!--End of Brochure Modal"-->
+                    </div>
+                    <!--End of Brochure Modal"-->
 
                     <!--Start of Merchandise Brochure Modal"-->
                     <div class="modal fade bd-example-modal-sm" id="merchandiseBrochure" tabindex="-1" role="dialog"
@@ -215,7 +215,7 @@
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">SSelect Merchandise Item</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Select Merchandise Item</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>

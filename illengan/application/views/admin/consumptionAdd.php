@@ -25,7 +25,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" id="spoiledDate" class="form-control" name="tDate">
+                                        <input type="date" id="spoiledDate" class="form-control" name="tDate" required>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -87,7 +87,7 @@
                                 foreach($stocks as $stock){
                                 ?>
                                         <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -201,7 +201,7 @@
         var spoiledDate = $("#spoiledDate").val();
         var currentDate = new Date();
         if(Date.parse(spoiledDate) > Date.parse(currentDate)){
-            alert('Invalid! Date exceeds current date.');
+            alert('Incorrect date input!');
             return false;
         }
     });

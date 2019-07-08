@@ -51,7 +51,7 @@ $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 $route['admin/returns/formadd'] = "adminview/viewReturnFormAdd";
 $route['admin/returns/formedit/(:num)'] = "adminview/viewReturnFormEdit/$1";
 $route['admin/purchaseorder/formadd'] = "adminview/viewPOFormAdd";
-$route['admin/purchaseorder/formedit'] = "adminview/viewPOFormEdit";
+$route['admin/purchaseorder/formedit/(:num)'] = "adminview/viewPOFormEdit/$1";
 $route['admin/deliveryreceipt/formadd'] = "adminview/viewDRFormAdd";
 $route['admin/deliveryreceipt/formedit/(:num)'] = "adminview/viewDRFormEdit/$1";
 $route['admin/officialreceipt/formadd'] = "adminview/viewORFormAdd";
@@ -93,7 +93,8 @@ $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
 $route['admin/sales/report/add'] = "adminadd/addSalesReport"; 
 $route['admin/returns/add'] = "adminadd/addReturns";
-$route['admin/stocklog/ending/add'] = "adminadd/addBeginningLogs";
+$route['admin/inventory/beginning'] = "adminadd/addBeginningLogs";
+
 //End Admin Add Routes ------------------------------------------
 
 //Admin Update Routes -------------------------------------------
@@ -153,7 +154,6 @@ $route['admin/addon/spoilages/viewAddonJS'] ="adminview/viewAddonJS";
 $route['admin/jsonPOrders'] ="adminview/jsonPurchaseOrders";
 $route['admin/jsonSupp'] ="adminview/jsonSuppliers";
 $route['admin/jsonMerchandise'] ="adminview/jsonSuppMerchandise";
-$route['admin/jsonConsumptions'] ="adminview/jsonConsumptions";
 $route['admin/jsonSales'] ="adminview/jsonSales";
 $route['admin/jsonPrefDetails'] ="adminview/jsonPrefDetails";
 $route['admin/inventory/getitem'] = "adminview/getStockDetails";
@@ -269,3 +269,7 @@ $route['chef/consumption/formadd'] = "chef/viewConsumptionFormAdd";
 $route['chef/consumption/add'] = "chef/addConsumption";
 $route['chef/menuspoilage/add'] = "chef/addMenuSpoilage";
 $route['chef/consumption/edit'] = "chef/editConsumption";
+$route['chef/menuspoilage/formadd'] = "chef/viewMenuSpoilageFormAdd";
+$route['chef/stock/spoilage/formadd'] = "chef/viewSpoilagesStockAdd";
+$route['chef/stock/spoilages/add']= "chef/addspoilagesstock";
+$route['chef/stock/spoilage/edit'] = "chef/editStockSpoil";

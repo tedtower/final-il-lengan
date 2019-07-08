@@ -45,7 +45,7 @@ class Adminupdate extends CI_Controller{
             $action = 'update';
 
             $this->adminmodel->edit_sales($osID, $tableCodes, $custName, $osTotal, $payStatus, 
-            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id, $action);
+            $osDateTime, $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $accountID, $action);
         }else{
             redirect('login');
         }
@@ -68,13 +68,24 @@ class Adminupdate extends CI_Controller{
             }else{
                 redirect('login');
             }
-        
+    }
+    function editPurchaseOrder(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $pID = $this->input->post('id');
+            $date = $this->input->post('date');
+            $current = date("Y-m-d H:i:s");
+            $poitems = json_decode($this->input->post('poitems'),true);
+            $this->adminmodel->edit_purchaseOrder($date, $current, $pID);
+            $this->adminmodel->edit_pItem($poitems);
+            $this->adminmodel->edit_potransitem($poitems);
+        }else{
+            redirect("login");
+        }
+
     }
     
     function editStockSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-
-            
             $tiActual = $this->input->post('tiActual');
             $updateTiQty = $this->input->post('updateTiQty');
             $tiQty = $this->input->post('tiQty');

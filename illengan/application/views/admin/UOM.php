@@ -65,7 +65,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input type="text" name="uomName" class="form-control form-control-sm" required>
+                                    <input type="text" name="uomName" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                 </div>
                                 <!--Price-->
                                 <div class="input-group mb-3">
@@ -73,7 +73,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Abbreviation</span>
                                     </div>
-                                    <input type="text" name="uomAbbreviation" class="form-control form-control-sm" required>
+                                    <input type="text" name="uomAbbreviation" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                 </div>   
                                 <!--Category-->                                                                                 
                                 <div class="input-group mb-3">
@@ -93,7 +93,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Store</span>
                                     </div>
-                                    <select class="custom-select" name="uomStore">
+                                    <select class="custom-select" name="uomStore" required>
                                         <option value="" selected>Choose</option>
                                         <option value="set">Set</option>
                                         <option value="single">Single</option>
@@ -133,7 +133,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input type="text" name="uomName" id="uomName" class="form-control form-control-sm" required>
+                                    <input type="text" name="uomName" id="uomName" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                 </div>
                                 <!--Price-->
                                 <div class="input-group mb-3">
@@ -141,7 +141,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Abbreviation</span>
                                     </div>
-                                    <input type="text" name="uomAbbreviation" id="uomAbbreviation" class="form-control form-control-sm" required>
+                                    <input type="text" name="uomAbbreviation" id="uomAbbreviation" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
                                 </div>   
                                 <!--Category-->                                                                                 
                                 <div class="input-group mb-3">
