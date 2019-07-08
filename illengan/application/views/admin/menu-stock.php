@@ -208,14 +208,14 @@
                             $("#brochureMenu").find(".ic-level-2").append(data.preferences.map(pref => {
                                 return `<div class="ic-level-1">
                                         <label><input type="checkbox"
-                                                name="prID" value="${pref.id}" /> ${pref.prefname}
+                                                name="prID" value="${pref.id}"/> ${pref.prefname}
                                         </label>
                                     </div>`;
                             }).join(''));
                             $("#brochureStock").find(".ic-level-2").append(data.stocks.map(stock =>{
                                 return `<div class="ic-level-1">
                                         <label><input type="radio"
-                                                name="stID" value="${stock.stID}" /> ${stock.stName} (${stock.uomAbbreviation})
+                                                name="stID" value="${stock.stID}"/> ${stock.stName} (${stock.uomAbbreviation})
                                         </label>
                                     </div>`;
                             }).join(''));
@@ -233,7 +233,7 @@
                                                 <td><input type="text" name="stID"
                                                         class="form-control form-control-sm"value=""></td>
                                                 <td><input type="number" name="qty"
-                                                        class="form-control form-control-sm" value="0"></td>
+                                                        class="form-control form-control-sm" value="0" min="0" required></td>
                                                 <td><img class="exitBtn1"
                                                         src="/assets/media/admin/error.png"
                                                         style="width:20px;height:20px"></td>

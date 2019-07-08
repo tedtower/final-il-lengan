@@ -71,7 +71,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Account Type</span>
                                                         </div>
-                                                        <select class="custom-select" name="aType" id="aType">
+                                                        <select class="custom-select" name="aType" id="aType" required>
                                                             <option value="admin" selected>Admin</option>
                                                             <option value="barista">Barista</option>
                                                             <option value="chef">Chef</option>

@@ -320,6 +320,15 @@
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
         	});
+
+			$('#formAdd').submit(function(event){
+				var spoiledDate = $("#spoilDate").val();
+				var currentDate = new Date();
+				if(Date.parse(currentDate) < Date.parse(spoiledDate)){
+					alert('Please check the date input!');
+					return false;
+				}
+    		});
 	}
 	//END OF POPULATING TABLE
 	//-------------------------Function for Edit-------------------------------

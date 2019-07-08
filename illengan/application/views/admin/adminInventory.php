@@ -240,7 +240,7 @@
                                                             style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Type</span>
                                                     </div>
-                                                    <select name="stockType" class="form-control">
+                                                    <select name="stockType" class="form-control" required>
                                                         <option value="" selected>Choose</option>
                                                         <option value="liquid">Liquid</option>
                                                         <option value="solid">Solid</option>
@@ -251,7 +251,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Size</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="stockSize" min="0" required>
+                                                <input type="number" class="form-control" name="stockSize" min="0">
                                                 <select class="form-control" name="stockSizeUOM" style="border-left:1px solid whitesmoke">
                                                     <option value="">Choose Unit</option>
                                                 </select>
@@ -263,7 +263,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Stock UOM</span>
                                                 </div>
-                                                <select class="form-control" name="stockUOM" style="border-left:1px solid whitesmoke">
+                                                <select class="form-control" name="stockUOM" style="border-left:1px solid whitesmoke" required>
                                                     <option value="">Choose Unit</option>
                                                 </select>
                                             </div>
@@ -274,7 +274,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Storage</span>
                                                 </div>
-                                                <select name="stockStorage" class="form-control">
+                                                <select name="stockStorage" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                 </select>
                                             </div>
@@ -288,7 +288,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Category</span>
                                                 </div>
-                                                <select name="stockCategory" class="form-control">
+                                                <select name="stockCategory" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                     <option value=""></option>
                                                 </select>
@@ -300,7 +300,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Status</span>
                                                 </div>
-                                                <select name="stockStatus" class="form-control">
+                                                <select name="stockStatus" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                     <option value="available">Available</option>
                                                     <option value="unavailable">Unavailable</option>
@@ -315,7 +315,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Quantity</span>
                                                 </div>
-                                                <input type="number" name="stockQty" class="form-control">
+                                                <input type="number" name="stockQty" class="form-control" required>
                                             </div>
                                             <!--Min Quantity-->
                                             <div class="input-group mb-3 col">
@@ -324,7 +324,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Min Qty</span>
                                                 </div>
-                                                <input type="number" name="stockMinQty" class="form-control">
+                                                <input type="number" name="stockMinQty" class="form-control" required>
                                             </div>
                                         </div>
 

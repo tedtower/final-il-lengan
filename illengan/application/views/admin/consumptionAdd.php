@@ -87,7 +87,7 @@
                                 foreach($stocks as $stock){
                                 ?>
                                         <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -133,7 +133,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" min="0" required></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
@@ -207,7 +207,7 @@
         var spoiledDate = $("#spoiledDate").val();
         var currentDate = new Date();
         if(Date.parse(spoiledDate) > Date.parse(currentDate)){
-            alert('Invalid! Date exceeds current date.');
+            alert('Incorrect date input!');
             return false;
         }
     });

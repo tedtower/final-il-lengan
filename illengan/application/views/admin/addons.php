@@ -81,7 +81,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Category</span>
                                     </div>
-                                    <select class="custom-select" name="aoCategory">
+                                    <select class="custom-select" name="aoCategory" required>
                                         <option value="" selected>Choose</option>
                                         <option value="drinks">Drink</option>
                                         <option value="food">Food</option>
@@ -93,7 +93,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Status</span>
                                     </div>
-                                    <select class="custom-select" name="aoStatus">
+                                    <select class="custom-select" name="aoStatus" required>
                                         <option value="" selected>Choose</option>
                                         <option value="available">Available</option>
                                         <option value="unavailable">Unavailable</option>
@@ -149,7 +149,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Category</span>
                                     </div>
-                                    <select class="custom-select" name="aoCategory" id="aoCategory">
+                                    <select class="custom-select" name="aoCategory" id="aoCategory" required>
                                         <option value="" selected>Choose</option>
                                         <option value="drinks">Drink</option>
                                         <option value="food">Food</option>
@@ -161,7 +161,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Status</span>
                                     </div>
-                                    <select class="custom-select" name="aoStatus" id="aoStatus">
+                                    <select class="custom-select" name="aoStatus" id="aoStatus" required>
                                         <option value="" selected>Choose</option>
                                         <option value="available">Available</option>
                                         <option value="unavailable">Unavailable</option>

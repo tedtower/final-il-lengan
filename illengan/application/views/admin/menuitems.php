@@ -162,7 +162,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
+                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
                                 </div>  
                                 <!--Description-->
                                 <div class="input-group mb-3">
@@ -524,7 +524,7 @@ $(document).ready(function() {
             var preferencesDiv = `
             <div class="preferences" style="width:45%;overflow:auto;float:left;margin-right:3%" > <!-- Preferences table container-->
                 <span><b>Preferences:</b></span><br> <!-- label-->
-                ${item.preferences.length === 0 ? "No prefernces are set for this menu item" : 
+                ${item.preferences.length === 0 ? "No preferences are set for this menu item" : 
                 `
                 <table class="table table-bordered"> <!-- Preferences table-->
                     <thead class="thead-light">
