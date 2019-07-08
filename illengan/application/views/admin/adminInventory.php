@@ -13,8 +13,6 @@
                 <div class="card-content">
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addEditStock" data-original-title
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
-                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#restock" data-original-title
-                        style="margin:0;color:blue" id="rBtn">Restock</a>
                     <a class="btn btn-primary btn-sm" href="<?= site_url('admin/inventory/physicalcount')?>" data-original-title style="margin:0"
                         d="addBtn">Perform Inventory</a>
                     <a class="btn btn-primary btn-sm" style="margin:0;color:blue;float:right" href="<?= site_url('admin/inventorylist')?>"><i class="fal fa-list-ul"></i> Inventory List</a>
@@ -534,6 +532,7 @@ $(document).ready(function() {
         var qty = $(this).find("input[name='stockQty']").val();
         var uom = $(this).find("select[name='stockUOM']").val();
         var size = $(this).find("input[name='stockSize']").val().concat($(this).find("select[name='stockSizeUOM']").val());
+       
         $.ajax({
             url: crudUrl,
             method: "POST",
@@ -578,6 +577,7 @@ function getEnumVals(url){
         url: url,
         dataType: 'JSON',
         success: function(data){
+            console.log(data);
             $("#addEditStock").find("select[name='stockType']").children().first().siblings().remove();
             $("#addEditStock").find("select[name='stockStatus']").children().first().siblings().remove();
             $("#addEditStock").find("select[name='stockStorage']").children().first().siblings().remove();
@@ -609,6 +609,7 @@ function getEnumVals(url){
             $("#addEditStock").find("select[name='stockCategory']").append(data.categories.map(category=>{
                 return `<option value="${category.ctID}">${category.ctName.toUpperCase()}</option>`;
             }).join(''));
+            
         },
         error: function(response, setting, error) {
             console.log(response.responseText);
