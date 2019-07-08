@@ -682,7 +682,6 @@ function get_transitems(){
             stockitems USING (ctID)
         WHERE
             ctType = 'inventory'
-                AND supcatID IS NOT NULL
         GROUP BY ctID
         ORDER BY ctName ASC;";
         return $this->db->query($query)->result_array();
