@@ -49,7 +49,7 @@
 															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 																Spoilage Date</span>
 														</div>
-														<input type="date" name="spoilDate" id="spoilDate" class="form-control form-control-sm" required>
+														<input class="form-control form-control-sm" name="spoilDate" id="spoilDate" type="date" class="no-border"  data-validate="required" message="Spoilage Date is required!"  required>
 													</div>
 												</div>
 												<!--Add Menu Item-->
@@ -155,7 +155,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Quantity</span>
                                                         </div>
-                                                        <input type="number" min="1" name="msQty" id="msQty" class="form-control form-control-sm" required>
+														<input type="number" class="form-control form-control-sm" name="msQty" id="msQty" min="1" oninput="validity.valid||(value='');" data-validate="required" max="" required>
                                                         <span class="text-danger"><?php echo form_error("msQty"); ?></span>
                                                     </div>
                                                     <!--Date Spoiled-->
@@ -164,7 +164,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required>
+														<input class="form-control form-control-sm" name="msDate" id="msDate" type="date" class="no-border"  data-validate="required" message="Spoilage Date is required!"  required>
                                                         <span class="text-danger"><?php echo form_error("msDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">

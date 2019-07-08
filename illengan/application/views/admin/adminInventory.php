@@ -232,8 +232,7 @@
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Stock Name</span>
                                             </div>
-                                            <input type="text" name="stockName" id="stockName"
-                                                class="form-control form-control-sm" required>
+                                            <input class="form-control form-control-sm" name="stockName" type="textarea" value="" id="stockName" require pattern="[a-zA-Z][a-zA-Z\s]*" title="Stock name should only countain letters and white spaces." required>
                                         </div>
                                         <div class="form-row">
                                             <!--Stock Type-->
@@ -254,7 +253,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Size</span>
                                                 </div>
-                                                <input type="text" name="stockSize" class="form-control">
+                                                <input type="number" class="form-control" name="stockSize" min="0" required>
                                                 <select class="form-control" name="stockSizeUOM" style="border-left:1px solid whitesmoke">
                                                     <option value="">Choose Unit</option>
                                                 </select>

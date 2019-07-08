@@ -20,7 +20,7 @@
                                     id="addBtn">Add Spoilage</a>
 							<!--eND Add Stock Spoilage BUTTON-->
 							</div>
-  </div>
+						</div>
 							<!--eND Add Stock Spoilage BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">

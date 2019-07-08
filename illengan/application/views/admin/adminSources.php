@@ -50,7 +50,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Supplier</span>
                                                         </div>
-                                                        <input type="text" name="supplierName" id="supplierName" class="form-control form-control-sm" required>
+                                                        <input type="text" name="supplierName" id="supplierName" class="form-control form-control-sm" require title="Supplier name can contain alphanumeric characters" required>
                                                     </div>
                                                     <!--Contact Number-->
                                                     <div class="input-group mb-3 col">
@@ -69,7 +69,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Email</span>
                                                         </div>
-                                                        <input type="text" name="email" id="email" class="form-control form-control-sm">
+                                                        <input class="form-control form-control-sm" name="email" type="textarea" id="email" require pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" require title="You have entered an invalid E-mail address. Please try again." required>
                                                     </div>
                                                     <!--Status-->
                                                     <div class="input-group mb-3 col">
@@ -89,7 +89,7 @@
                                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Address</span>
                                                     </div>
-                                                    <input type="text" name="supplierAddress" id="supplierAddress" class="form-control form-control-sm">
+                                                    <input type="text" name="supplierAddress" id="supplierAddress" class="form-control form-control-sm" required>
                                                 </div>
                                                 <!--Merchandise-->
                                                 <a class="addMerchandise btn btn-primary btn-sm" style="color:blue;margin:0">Add Merchandise Item</a>
@@ -142,7 +142,7 @@
                                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Supplier</span>
                                                     </div>
-                                                    <input type="text" name="supplierName" id="supplierName" class="form-control form-control-sm" required>
+                                                    <input type="text" name="supplierName" id="supplierName" class="form-control form-control-sm" require title="Supplier name can contain alphanumeric characters">
                                                 </div>
                                                 <!--Contact Number-->
                                                 <div class="input-group mb-3 col">
@@ -161,7 +161,7 @@
                                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Email</span>
                                                     </div>
-                                                    <input type="text" name="email" id="email" class="form-control form-control-sm">
+                                                    <input class="form-control form-control-sm" name="email" type="textarea" id="email" require pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" require title="You have entered an invalid E-mail address. Please try again.">
                                                 </div>
                                                 <!--Status-->
                                                 <div class="input-group mb-3 col">
@@ -169,7 +169,7 @@
                                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Status</span>
                                                     </div>
-                                                    <select name="status" id="status" class="form-control form-control-sm" required>
+                                                    <select name="status" id="status" class="form-control form-control-sm" require>
                                                         <option value="">Choose</option>
                                                         <option value="active">Active</option>
                                                         <option value="inactive">Inactive</option>
@@ -267,9 +267,9 @@
         $(".addMerchandise").on('click', function() {
             var row = `
         <tr data-id="">
-            <td><input type="text" name="merchName[]" class="form-control form-control-sm" required></td>
+            <td><input type="text" name="merchName[]" class="form-control form-control-sm" require></td>
             <td>
-                <select class="form-control" name="merchUnit[]" required>
+                <select class="form-control" name="merchUnit[]" require>
                     <option value="">Choose</option>
                         ${supplier.uom.map(uom => {
                             return `
@@ -277,10 +277,10 @@
                         }).join('')}
                 </select>   
             </td>
-            <td><input type="number" name="merchActualQty[]" class="form-control form-control-sm" required></td>
-            <td><input type="number" name="merchPrice[]" class="form-control form-control-sm" required></td>
+            <td><input type="number" name="merchActualQty[]" class="form-control form-control-sm" require></td>
+            <td><input type="number" name="merchPrice[]" class="form-control form-control-sm" require></td>
             <td>
-                <select class="form-control" name="variance[]" required>
+                <select class="form-control" name="variance[]" require>
                 <option value="">Choose</option>
                     ${supplier.stocks.map(stock => {
                         return `
@@ -514,9 +514,9 @@
         merchandises.forEach(merchandise => {
             modal.find(".merchandisetable > tbody").append(`
         <tr class="supplierElem" data-id="${merchandise.spmID}">
-            <td><input type="text" name="merchName[]" value="${merchandise.spmName}" class="form-control form-control-sm" required></td>
+            <td><input type="text" name="merchName[]" value="${merchandise.spmName}" class="form-control form-control-sm" require></td>
             <td>
-                <select class="form-control" name="merchUnit[]" required>
+                <select class="form-control" name="merchUnit[]" require>
                     <option value="">Choose</option>
                     ${supplier.uom.map(uom => {
                         return `
@@ -524,10 +524,10 @@
                     }).join('')}
                 </select>
             </td>
-            <td><input type="number" name="merchActualQty[]" value="${merchandise.spmActualQty}" class="form-control form-control-sm" required></td>
-            <td><input type="number" name="merchPrice[]" value="${merchandise.spmPrice}" class="form-control form-control-sm" required></td>
+            <td><input type="number" name="merchActualQty[]" value="${merchandise.spmActualQty}" class="form-control form-control-sm" require></td>
+            <td><input type="number" name="merchPrice[]" value="${merchandise.spmPrice}" class="form-control form-control-sm" require></td>
             <td>
-            <select class="form-control" name="variance[]" required>
+            <select class="form-control" name="variance[]" require>
                 ${supplier.stocks.map(stock => {
                         return `
                         <option value="${stock.stID}">${stock.stName}</option>`

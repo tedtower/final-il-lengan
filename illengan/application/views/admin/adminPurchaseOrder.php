@@ -61,12 +61,9 @@
                                                             <tr>
                                                                 <th>Name</th>
                                                                 <th>Qty</th>
-                                                                <!-- <th>Equivalent</th> -->
                                                                 <th>Actual Qty</th>
                                                                 <th>Price</th>
-                                                                <!-- <th>Discount</th> -->
                                                                 <th>Subtotal</th>
-                                                                <!-- <th>Payment Status</th> -->
                                                                 <th>Delivery Status</th>
                                                             </tr>
                                                         </thead>
@@ -76,11 +73,8 @@
                                                                 <td><?= $poitem['spmName']?></td>
                                                                 <td><?= $poitem['qty']?></td>
                                                                 <td><?= $poitem['actual']?></td>
-                                                                <td><?= $poitem['spmPrice']?></td>
-                                                                <!-- <td><?= $poitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?>
-                                                                </td> -->
-                                                                <td><?= $poitem['subtotal']?></td>
-                                                                <!-- <td><?= $poitem['paymentstatus']?></td> -->
+                                                                <td>&#8369; <?= $poitem['spmPrice']?></td>
+                                                                <td>&#8369; <?= $poitem['subtotal']?></td>
                                                                 <td><?= $poitem['piStatus']?></td>
                                                             </tr>
                                                             <?php }
