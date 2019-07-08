@@ -51,8 +51,7 @@
                                                     style="width:105px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Promo Name</span>
                                             </div>
-                                            <input type="text" name="pmName" id="pmName"
-                                                class="form-control form-control-sm">
+                                            <input class="form-control form-control-sm border border-secondary border-left-0" required name="pmName" type="textarea" value="" id="pmName" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Promo name should only countain letters and white spaces.">
                                         </div>
                                         <!--Description-->
                                         <div class="input-group mb-3">
@@ -61,15 +60,13 @@
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Start Date</span>
                                             </div>
-                                            <input type="date" name="pmStartDate" id="pmStartDate"
-                                                class="form-control form-control-sm">
+                                            <input class="form-control form-control-sm" name="pmStartDate" id="pmStartDate" type="date" class="no-border"  data-validate="required" message="Start Date is required!"  required>
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="inputGroup-sizing-sm"
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;margin-left: 10px;">
                                                     End Date</span>
                                             </div>
-                                            <input type="date" name="pmEndDate" id="pmEndDate"
-                                                class="form-control form-control-sm">
+                                            <input class="form-control form-control-sm" name="pmEndDate" id="pmEndDate" type="date" class="no-border"  data-validate="required" message="End Date is required!"  required>
                                         </div>
 
  
@@ -95,8 +92,9 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td><input type="text" name="dcName" id="dcName"
-                                                            class="form-control form-control-sm"></td>
+                                                    <td>
+                                                    <input type="number" class="form-control form-control-sm" name="dcName" id="dcName"  min="0" oninput="validity.valid||(value='');" data-validate="required" max="" required>
+                                                    </td>
                                                     <td><a class="btn btn-warning btn-sm" style="color:orange">Add
                                                             Discount Item</a></td>
                                                 </tr>
@@ -115,8 +113,9 @@
                                                     <td><select class="form-control promoOpt" name="dc_item"
                                                             id="dc_item">
                                                         </select></td>
-                                                    <td><input type="number" name="pcQty" min="0" id="pcQty"
-                                                            class="form-control form-control-sm"></td>
+                                                    <td>
+                                                        <input type="number" class="form-control form-control-sm" name="pcQty" id="pcQty"  min="0" oninput="validity.valid||(value='');" data-validate="required" max="" required>
+                                                    </td>
                                                 </tr>
                                         </table>
 
@@ -491,7 +490,7 @@ $(document).ready(function() {
             </thead>
             <tbody>
                 <tr class="freebiesmain">
-                    <td><input type="text" name="fbName" id="fbName" placeholder="(e.g. Buy One Take One)" class="form-control form-control-sm" required></td>
+                    <td><input class="form-control form-control-sm" required name="fbName" type="textarea" value="" id="fbName" placeholder="(e.g. Buy One Take One)" pattern="[a-zA-Z][a-zA-Z\s]*" title="Freebie name should only countain letters and white spaces."></td>
                     <td><select class="isElective form-control" name="isElective" id="isElective">
                             <option value="0" selected>Self Freebie</option>
                             <option value="1">Freebie Selection</option>
@@ -549,8 +548,10 @@ $(document).ready(function() {
             </thead>
             <tbody>
                 <tr class="discounts">
-                    <td><input type="text" name="dcName" id="dcName"
+                    <td><input type="number" name="dcName" id="dcName"
                             class="dcName form-control form-control-sm" placeholder="(e.g. 20)" required></td>
+                            
+                        
                     <td><a class="addDiscountItems btn btn-primary btn-sm" data-toggle="modal" data-target="#menuItems"
                     data-original-title style="margin:0" style="color:blue">Add Items</a></td>
                     <td><img class="delBtn" src="/assets/media/admin/error.png" style="width:20px;height:20px"
