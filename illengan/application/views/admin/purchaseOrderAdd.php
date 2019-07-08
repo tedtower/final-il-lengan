@@ -93,7 +93,7 @@
                                     </div>
                                 </div>
                                 <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                                <select class="suppliers form-control form-control-sm" name="suppliers">
+                                <select class="suppliers form-control form-control-sm" name="suppliers" required>
                                     <option value="" selected>Select Supplier</option>
                                     <?php
                                 foreach($supplier as $supp){
@@ -170,9 +170,9 @@ function showMerchandise() {
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="qty"></td>
+                                class="form-control form-control-sm" name="qty" required></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="qty"></td>
+                                class="form-control form-control-sm" name="qty" required></td>
                         <td style="padding:1% !important"><input type="number"
                                 class="form-control form-control-sm" value="${spmPrice}" name="price" readonly></td>
                         <td style="padding:1% !important"><input type="number"

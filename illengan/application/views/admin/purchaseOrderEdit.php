@@ -33,7 +33,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" class="form-control" name="date" required>
+                                                <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" message="End Date is required!"  required>
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -103,7 +103,7 @@
                     <td style="padding:1% !important"><input type="text"
                             class="form-control form-control-sm" data-id="${poi.spmid}" data-actual="${poi.spmActual}" data-stid="${poi.stID}" value="${poi.spmName}" name="spm" readonly></td>
                     <td style="padding:1% !important"><input type="number"
-                            class="form-control form-control-sm" value='${poi.qty}' name="qty"></td>
+                            class="form-control form-control-sm" value='${poi.qty}' name="qty" required></td>
                     <td style="padding:1% !important"><input type="text"
                             class="form-control form-control-sm" data-uom="${poi.uomID}" value="${poi.uomAbbreviation}" name="unit" readonly></td>
                     <td style="padding:1% !important"><input type="number"
