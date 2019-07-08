@@ -398,11 +398,11 @@ function showTable(){
         });
 
         $('#addnewPromo').submit(function(event){
-        var startDate = $("#pmStartDate").val();
-        var endDate = $("#pmEndDate").val();
-        if(Date.parse(endDate) < Date.parse(startDate)){
-            alert('Incorrect Date Range!');
-            return false;
+            var startDate = $("#pmStartDate").val();
+            var endDate = $("#pmEndDate").val();
+            if(Date.parse(endDate) < Date.parse(startDate)){
+                alert('Incorrect Date Range!');
+                return false;
         }
     });
 

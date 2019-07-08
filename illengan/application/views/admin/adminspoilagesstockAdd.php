@@ -87,7 +87,7 @@
                                 foreach($stocks as $stock){
                                 ?>
                                         <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
