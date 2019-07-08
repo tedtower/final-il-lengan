@@ -125,7 +125,7 @@
                                 class="form-control" name="qty" required/></td>
                         <td style="padding:1% !important">
                         <div class="input-group mb-3">
-                            <input list="orderslips" class="form-control" name="slipNum" >
+                            <input list="orderslips" type="number" class="form-control" name="slipNum" >
                             <datalist id="orderslips">
                                 <option value="">None</option>
                                 <?php foreach($slip as $s){ 
