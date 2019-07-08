@@ -253,7 +253,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Size</span>
                                                 </div>
-                                                <input type="number" class="form-control" name="stockSize" min="0" required>
+                                                <input type="number" class="form-control" name="stockSize" min="0">
                                                 <select class="form-control" name="stockSizeUOM" style="border-left:1px solid whitesmoke">
                                                     <option value="">Choose Unit</option>
                                                 </select>
@@ -265,7 +265,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">Stock UOM</span>
                                                 </div>
-                                                <select class="form-control" name="stockUOM" style="border-left:1px solid whitesmoke">
+                                                <select class="form-control" name="stockUOM" style="border-left:1px solid whitesmoke" required>
                                                     <option value="">Choose Unit</option>
                                                 </select>
                                             </div>
@@ -290,7 +290,7 @@
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                         Category</span>
                                                 </div>
-                                                <select name="stockCategory" class="form-control">
+                                                <select name="stockCategory" class="form-control" required>
                                                     <option value="" selected>Choose</option>
                                                     <option value=""></option>
                                                 </select>

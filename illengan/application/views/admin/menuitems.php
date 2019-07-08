@@ -162,7 +162,7 @@
                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                         Name</span>
                                     </div>
-                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
+                                    <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
                                 </div>  
                                 <!--Description-->
                                 <div class="input-group mb-3">

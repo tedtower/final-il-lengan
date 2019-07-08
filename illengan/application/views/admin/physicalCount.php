@@ -125,6 +125,15 @@
                 }
             });
         });
+
+        $('#physicalCount').submit(function(event){
+				var countingDate = $("#date").val();
+				var currentDate = new Date();
+				if(Date.parse(countingDate) > Date.parse(currentDate)){
+					alert('Please check the date input!');
+					return false;
+				}
+    		});
     });
     </script>
 </body>
