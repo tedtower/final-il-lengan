@@ -41,6 +41,7 @@
 </body>
 <script>
 var orders = [];
+var addons = [];
  $(function () {
         $.ajax({
             url: '/chef/orders',
@@ -54,15 +55,7 @@ var orders = [];
                     orders[index].addons = data.addons.filter(ao => ao.olID == items.olID);
                    
                 });
-               
-                $.each(data.orderlists, function (index, items) {
-                    orders.push({
-                        "orders": items
-                    });
-                    orders[index].addons = data.addons.filter(ao => ao.olID == items.olID);
-                   
-                });
-               
+                addons = data.addons;
                 showTable();
                 console.log(orders);
             },
@@ -102,15 +95,10 @@ var orders = [];
                         </tr>
                     </thead>
                     <tbody>
-                    ${item.addons.map(ao => {
-                        return `
-                        <tr>
+                    <tr>
                         <div>
-                            <div style="margin-left:5%">> (${ao.aoQty}) ${ao.aoName}</div>
-                            <div style="margin-left:5%">> (${ao.aoQty}) ${ao.aoName}</div>
+                        <div style="margin-left:5%" class="aDoQty${item.orders.olID}"></div>
                         </div>
-                        `;
-                    }).join('')}
                     </tbody>
                 </table>
                 `}
@@ -157,8 +145,19 @@ var orders = [];
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
         });
+        addAddons();
 
     }
+    function addAddons() {
+            // addons.forEach(ao => {
+            for (var i = 0; i < addons.length; i++) {
+                if ($(".thisAddons" + addons[i].olID) != '') {
+                    for (var i = 0; i < addons.length; i++) {
+                        $(".aDoQty" + addons[i].olID).append(`${addons[i].aoQty}&nbsp;${addons[i].aoName}`);
+                    }
+                }
+            }
+        }
 
 
 
