@@ -145,14 +145,19 @@ class Customermodel extends CI_Model {
             $query = $this->db->get_where('menu', array('ctID' => '12'));
             return $query->result();
         }
-        function orderInsert($total, $tableCode, $orderlist, $customer, $dateTime){//insert in table orderslip
+       function orderInsert($total, $tableCode, $orderlist, $customer, $dateTime){//insert in table orderslip
             $query1 = "Insert into orderslips(tableCode, custName, osTotal, payStatus, osDateTime, osPayDateTime, osDateRecorded) values (?,?,?,?,?,?,?)";
 			$this->db->query($query1, array( $tableCode, $customer, $total, 'unpaid', $dateTime,'', $dateTime)); 
 			$order_id= $this->db->insert_id();
 			$bool = false;
-	    foreach($orderlist as $items){
+	foreach($orderlist as $items){
+        $prID = $items['id'];
+        $sql="SELECT CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ',CONCAT(' ',mTemp))) as prName 
+        from preferences INNER JOIN menu USING (mID) where prID = '$prID'";
+        $rest = $this->db->query($sql)->result_array();
+        foreach($rest as $r){
 		$query2 = "Insert into orderlists (olID, osID, prID, olDesc, olQty, olSubtotal, olStatus, olRemarks, olPrice, olDiscount) values (?,?,?,?,?,?,?,?,?,?)";
-                 $this->db->query($query2, array(NULL,$order_id, $items['id'],'',$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
+                 $this->db->query($query2, array(NULL,$order_id, $items['id'],$r['prName'],$items['qty'], $total, 'pending', $items['remarks'], $items['subtotal'], ''));
                 $olID = $this->db->insert_id(); 
 
                 $addOns = $items['addons'];
@@ -174,9 +179,9 @@ class Customermodel extends CI_Model {
                }
               }
             }
+        }
             return true;
         }
-
         // function add_consumedItems($pref, $olID) {
         //     $query = "SELECT * FROM orderlists left join prefstock using (prID) left join stockitems using (stID) where prefstock.prID = ? and olID = ?";
         //     $array = $this->db->query($query, array($pref, $olID));
