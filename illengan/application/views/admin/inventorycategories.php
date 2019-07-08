@@ -60,7 +60,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm">
+                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm" required>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -104,7 +104,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm">
+                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm" required>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
