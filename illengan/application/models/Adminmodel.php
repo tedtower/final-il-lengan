@@ -2479,29 +2479,29 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
 // );
 
 // SELECT
-//     CONCAT(
-//         stName,
-//         COALESCE(stSize, CONCAT(' ', stSize))
-//     ),
-//     tiActual AS qty,
-//     tiType,
-//     reQty,
-//     remainingQty,
-//     IFNULL(tiDate, reDate) AS logDate,
-//     reDiscrepancy,
-//     reRemarks,
-//     reID,
-//     COALESCE(rID, pcID, cID, sID) AS tID
+// CONCAT(
+//     stName,
+//     COALESCE(stSize, CONCAT(' ', stSize))
+// ),
+// ifNull(suppTrans.tiActual, stTrans.tiActual) AS qty,
+// ifNUll(suppTrans.tiType, stTrans.tiType) as type,
+// reQty,
+// ifnull(suppTrans.remainingQty, stTrans.remainingQty) as remain,
+// COALESCE(suppTrans.tiDate, stTrans.tiDate, reDate) AS logDate,
+// reDiscrepancy,
+// reRemarks,
+// reID,
+// COALESCE(rID, pcID, cID, sID) AS tID
 // FROM
-//     stockitems
-//     RIGHT JOIN transitems USING(stID)
-//     RIGHT JOIN(
-//             suppliermerchandise
-//         RIGHT JOIN transitems USING(spmID)
-//         ) USING(stID)
+// stockitems
+// RIGHT JOIN transitems as stTrans on (stTrans.stID = stockitems.stID)
 // RIGHT JOIN(
-//         st_recon
-//     RIGHT JOIN reconciliation USING(reID)
-//     ) USING(stID)
+//         suppliermerchandise
+//     RIGHT JOIN transitems as suppTrans USING(spmID)
+//     ) on (suppliermerchandise.stID = stockitems.stID)
+// RIGHT JOIN(
+//     st_recon
+// RIGHT JOIN reconciliation USING(reID)
+// ) on (st_recon.stID = stockitems.stID)
 }
 ?>
