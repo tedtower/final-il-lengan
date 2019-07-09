@@ -47,6 +47,7 @@ $route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
 $route['admin/return'] = "adminview/viewReturn";
 $route['admin/inventory/physicalcount'] = "adminview/performPhysicalCount";
 $route['admin/consumption'] = "adminview/viewConsumptions";
+$route['admin/jsonConsumptions'] = "adminview/jsonConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 $route['admin/returns/formadd'] = "adminview/viewReturnFormAdd";
 $route['admin/returns/formedit/(:num)'] = "adminview/viewReturnFormEdit/$1";
@@ -93,7 +94,8 @@ $route['admin/consumption/add'] = "adminadd/addConsumption";
 $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
 $route['admin/sales/report/add'] = "adminadd/addSalesReport"; 
 $route['admin/returns/add'] = "adminadd/addReturns";
-$route['admin/stocklog/ending/add'] = "adminadd/addBeginningLogs";
+$route['admin/inventory/beginning'] = "adminadd/addBeginningLogs";
+
 //End Admin Add Routes ------------------------------------------
 
 //Admin Update Routes -------------------------------------------
@@ -116,6 +118,7 @@ $route['admin/tables/edit'] = "adminupdate/edittable";
 $route['admin/menu/spoilage/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
 $route['admin/returns/edit'] = "adminupdate/editReturns";
+$route['admin/consumption/edit'] = "adminupdate/editConsumption";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------

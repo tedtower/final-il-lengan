@@ -43,6 +43,7 @@
                                                 <tr>
                                                     <th style="font-weight:500 !important;">Stock Item</th>
                                                     <th width="17%" style="font-weight:500 !important;">Quantity</th>
+                                                    <th width="17%" style="font-weight:500 !important;">Actual Quantity</th>
                                                     <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
                                             </thead>
@@ -55,8 +56,7 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        style="float:right">Cancel</button>
+                                        <a class="btn btn-danger btn-sm" type= "button" href="<?= site_url('admin/stock/spoilages')?>" data-original-title  style="float:right">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -87,7 +87,7 @@
                                 foreach($stocks as $stock){
                                 ?>
                                         <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>"></td>
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -120,8 +120,7 @@
             }
         });
         $("#stockCard input[name='stock']").on("click", function(event) {
-             //---
-            //---
+           
             var id = $(this).val();
             var name = $(this).attr("data-name");
             console.log(id, name, $(this).is(":checked"));
@@ -133,7 +132,9 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty" min="0" required></td>
+                                class="form-control form-control-sm" name="tiQty"></td>
+                        <td style="padding:1% !important"><input type="number"
+                                class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
@@ -169,6 +170,7 @@
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
+                    tiQty: $(this).find("input[name='tiQty']").val(),
                     actualQty: $(this).find("input[name='actualQty']").val(),
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                     uomID: uomID,

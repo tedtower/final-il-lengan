@@ -42,7 +42,7 @@
                                     </button>
                                 </div>
                                 <form action="<?php echo base_url()?>admin/promo/add" method="get"
-                                    accept-charset="utf-8">
+                                    accept-charset="utf-8" id="addNewPromo">
                                     <div class="modal-body">
                                         <!--Menu Name-->
                                         <div class="input-group mb-3">
@@ -111,7 +111,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td><select class="form-control promoOpt" name="dc_item"
-                                                            id="dc_item">
+                                                            id="dc_item" required>
                                                         </select></td>
                                                     <td>
                                                         <input type="number" class="form-control form-control-sm" name="pcQty" id="pcQty"  min="0" oninput="validity.valid||(value='');" data-validate="required" max="" required>
@@ -396,6 +396,16 @@ function showTable(){
             var menuID = $(this).closest("tr").attr("data-menuID");
             //set Modal contents;
         });
+
+        $('#addnewPromo').submit(function(event){
+            var startDate = $("#pmStartDate").val();
+            var endDate = $("#pmEndDate").val();
+            if(Date.parse(endDate) < Date.parse(startDate)){
+                alert('Incorrect Date Range!');
+                return false;
+        }
+    });
+
 }
 var btn;
 function getSelectedMenu() {

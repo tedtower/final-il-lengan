@@ -143,7 +143,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Status</span>
                                                             </div>
-                                                            <select  name="new_status" id="new_status" class="form-control form-control-sm">
+                                                            <select  name="new_status" id="new_status" class="form-control form-control-sm" required>
                                                                 <option value="" selected>Choose</option>
                                                                 <option value="active">Active</option>
                                                                 <option value="archived" hidden="hidden">Archived</option>
@@ -175,7 +175,7 @@
                                                     <p>Are you sure you want to archive this category?</p>
                                                     <input type="text" name="categoryID" hidden="hidden">
                                                     <div>
-                                                        Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
+                                                        Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">

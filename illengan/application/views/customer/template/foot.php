@@ -9,6 +9,12 @@
     <script src="<?php echo cmjs_url(); ?>accordion.js"></script>
     <?php /*script src="<?php echo cmjs_url(); ?>discountdisp.js"></script*/ ?>
     <script src="<?php echo cmjs_url(); ?>filtersearch.js"></script>
+    <script type="text/javascript">
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.go(1);
+    };
+    </script>
 </body>
 
 </html> 
