@@ -411,6 +411,16 @@ class Barista extends CI_Controller{
             redirect('login');
         }
         }
+    function viewSpoilagesStock(){
+            if($this->checkIfLoggedIn()){
+                $data['title'] = "Spoilages - Stock";
+                $this->load->view('barista/templates/head', $data);
+                $this->load->view('barista/templates/navigation');
+                $this->load->view('barista/baristastockspoilages');
+            }else{
+                redirect('login');
+        }
+    }
         function viewSpoilagesStockAdd(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Spoilages - Stock";
@@ -422,50 +432,49 @@ class Barista extends CI_Controller{
             redirect('login');
         }
         }
-        function viewSpoilagesStock(){
-            if($this->checkIfLoggedIn()){
-                $data['title'] = "Spoilages - Stock";
-                $this->load->view('barista/templates/head', $data);
-                $this->load->view('barista/templates/navigation');
-                $this->load->view('barista/baristastockspoilages');
-            }else{
-                redirect('login');
-            }
-            }
             function editStockSpoil(){
                 if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
         
                     
                     $tiActual = $this->input->post('tiActual');
+                    $actualQtyUpdate = $this->input->post('actualQtyUpdate');
+                    $updateTiQty = $this->input->post('updateTiQty');
+                    $tiQty = $this->input->post('tiQty');
                     $stQty = $this->input->post('stQty');
                     $tiRemarks = $this->input->post('tiRemarks');
                     $tiDate = $this->input->post('tiDate');
                     $stID= $this->input->post('stID');
                     $siID = $this->input->post('siID');
-                    $actualQtyUpdate = $this->input->post('actualQtyUpdate');
         
                     $tiType = "spoilage";
                     $date_recorded = date("Y-m-d H:i:s");
                     $user= $_SESSION["user_name"];
                     $account_id= $_SESSION["user_id"];
                     $updatedActual = $actualQtyUpdate - $tiActual;
+                    $updatedQty = $updateTiQty - $tiQty;
         
                     if($tiActual > $actualQtyUpdate){
                         $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                        $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $siID);
+                        $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $siID);
                         $this->baristamodel->update_stock($stID, $updateQtyl);
-                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                                         
-                    }else if($tiActual < $actualQtyUpdate){
+                    }else if($tiActual < $actualQtyUpdate) {
                             $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                            $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $siID);
+                            $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $siID);
                             $this->baristamodel->update_stock($stID, $updateQtyh);
-                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
         
                     }else{
-                            $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$stQty,$tiRemarks,$tiDate, $stID, $siID);
+                        if($tiQty == $updateTiQty){
+                            $this->baristamodel->add_stocktransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
                             $this->baristamodel->update_stock($stID, $stQty);
-                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                        }else{
+                            $this->baristamodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
+                            $this->baristamodel->update_stock($stID, $stQty);
+                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                        }
                     }
                    
                 }else{
@@ -480,12 +489,12 @@ class Barista extends CI_Controller{
                     $remarks = $this->input->post('remarks');
                     $account_id = $_SESSION["user_id"];
                     $user= $_SESSION["user_name"];
+            
                     $this->baristamodel->add_stockspoil($date_recorded,$stocks,$account_id,$user,$date,$remarks);
                 }else{
                 redirect('login');
                 }
             }
-            
         function deleteStockSpoil(){
             $tID = $this->input->post('tID');
             $delRemarks = $this->input->post('delRemarks');
@@ -690,7 +699,15 @@ class Barista extends CI_Controller{
             ));
         }
     }
-    //-------------------------------CONSUMPTION
+    //-----------------------------CONSUMPTION---------------------
+    function jsonConsumptions() {
+        if($this->checkIfLoggedIn()){
+            $data=$this->baristamodel->get_consumpitems();
+            echo json_encode($data);
+        }else{
+            redirect('login');
+        }
+    }
     function viewConsumptions(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Consumption";
@@ -712,86 +729,72 @@ class Barista extends CI_Controller{
             redirect('login');
         }
     }
-    function addConsumption(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-            $items = json_decode($this->input->post('items'),true);
-            echo json_encode($items);
-            if(count($items)> 0){
-                $currentDate = date("Y-m-d H:i:s");
-                $transDate = $this->input->post('date');
-                $con = array(
-                    "date" => $transDate,
-                    "dateRecorded" => $currentDate,
-                    "type" => "consumption",
-                    "remarks" => $this->input->post('remarks')
-                );
-                $conID = $this->baristamodel->add_consumption($con);
-                foreach($items as $item){
-                    $qty = $this->baristamodel->get_stockQty($item['stock'])[0]['stQty'];
-                    $itemID = $this->baristamodel->add_consumedItem($item['stock']);
-                    $conItem = array(
-                        "id" => $itemID,
-                        "qty" => $item['qty'],
-                        "remarks" => $item['remarks'],
-                        "type" => "consumed",
-                        "date" => $transDate,
-                        "dateRecorded" => $currentDate,
-                        "remain" => $qty - $item['qty'],
-                        "stock" => $item['stock']
-                    );
-                    $this->baristamodel->add_consumptionQty($conID, $conItem);
-                    $this->baristamodel->add_consumptionLog($conID, $conItem);
-                    $this->baristamodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
-                }
-            }
-            echo json_encode(array(
-                "success" => true
-            ));
-        }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
-        }
+    
+function addConsumption(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+       
+        $date_recorded = date("Y-m-d H:i:s");
+        $stocks = json_decode($this->input->post('items'), true);
+        $date = $this->input->post('date');
+        $remarks = $this->input->post('remarks');
+        $account_id = $_SESSION["user_id"];
+        $user= $_SESSION["user_name"];
+        
+        $this->baristamodel->add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks);
+    }else{
+    redirect('login');
     }
-    function editConsumption(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-            $items = json_decode($this->input->post('items'),true);
-            if(count($items)> 0){
-                $currentDate = date("Y-m-d H:i:s");
-                $transDate = $this->input->post('date');
-                $con = array(
-                    "date" => $transDate,
-                    "dateRecorded" => $currentDate,
-                    "remarks" => $this->input->post('remarks')
-                );
-                $conID = $this->baristamodel->edit_consumption($con);
-                foreach($items as $item){
-                    $qty = $this->baristamodel->get_stockQty($item['stock'])[0]['stQty'];
-                    $itemID = $this->baristamodel->add_consumedItem($item['stock']);
-                    $conItem = array(
-                        "id" => $itemID,
-                        "qty" => $item['qty'],
-                        "remarks" => $item['remarks'],
-                        "type" => "consumption",
-                        "date" => $transDate,
-                        "dateRecorded" => $currentDate,
-                        "remain" => $qty - $item['qty'],
-                        "stock" => $item['stock']
-                    );
-                    $this->baristamodel->add_consumptionQty($conID, $conItem);
-                    $this->baristamodel->add_consumptionLog($conID, $conItem);
-                    $this->baristamodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
-                }
-            }
-            echo json_encode(array(
-                "success" => true
-            ));
+}
+function editConsumption(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+
+        
+        $tiActual = $this->input->post('tiActual');
+        $actualQtyUpdate = $this->input->post('actualQtyUpdate');
+        $updateTiQty = $this->input->post('updateTiQty');
+        $tiQty = $this->input->post('tiQty');
+        $stQty = $this->input->post('stQty');
+        $tiRemarks = $this->input->post('tiRemarks');
+        $tiDate = $this->input->post('tiDate');
+        $stID= $this->input->post('stID');
+        $ciID = $this->input->post('ciID');
+
+        $tiType = "consumed";
+        $date_recorded = date("Y-m-d H:i:s");
+        $user= $_SESSION["user_name"];
+        $account_id= $_SESSION["user_id"];
+        $updatedActual = $actualQtyUpdate - $tiActual;
+        $updatedQty = $updateTiQty - $tiQty;
+
+        if($tiActual > $actualQtyUpdate){
+            $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
+            $this->baristamodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
+            $this->baristamodel->update_stock($stID, $updateQtyl);
+            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                            
+        }else if($tiActual < $actualQtyUpdate) {
+                $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
+                $this->baristamodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->baristamodel->update_stock($stID, $updateQtyh);
+                $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+
         }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
+            if($tiQty == $updateTiQty){
+                $this->baristamodel->add_consumptiontransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->baristamodel->update_stock($stID, $stQty);
+                $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+            }else{
+                $this->baristamodel->add_consumptiontransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->baristamodel->update_stock($stID, $stQty);
+                $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+            }
         }
-    }
+       
+    }else{
+        redirect('login');
+    } 
+}
+//---------------------------------------------------------------------------------------
 
 }
 ?>

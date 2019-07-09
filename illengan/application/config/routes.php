@@ -234,8 +234,11 @@ $route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
 //-----------------------------------------
+$route['barista/consumption'] = "barista/viewConsumptions";
+$route['barista/jsonConsumptions'] = "barista/jsonConsumptions";
 $route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
 $route['barista/consumption/add'] = "barista/addConsumption";
+$route['barista/consumption/edit'] = "barista/editConsumption";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";

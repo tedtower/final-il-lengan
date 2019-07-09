@@ -19,7 +19,7 @@
                                     id="addBtn">Add Spoilage</a>
 							<!--eND Add Stock Spoilage BUTTON-->
 							</div>
-  </div>
+						</div>
 							<!--eND Add Stock Spoilage BUTTON-->
 							<br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
@@ -28,8 +28,8 @@
 									<th>TRANSACTION #</th>
 									<th>STOCK ITEM</th>
 									<th>QUANTITY</th>
+									<th>ACTUAL QUANTITY</th>
 									<th>DATE SPOILED</th>
-									<!-- <th>DATE RECORDED</th> -->
 									<th>OPERATION</th>
 								
 								</thead>
@@ -84,11 +84,19 @@
                                             </div>
                                             <form id="formEdit"  action="<?= site_url('barista/stock/spoilage/edit')?>" accept-charset="utf-8" > 
 												<div class="modal-body">
-                                                    <!-- Quantity-->
-                                                    <div class="input-group mb-3">
+                                                     <!-- Quantity-->
+													<div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                Quantity</span>
+                                                            Quantity</span>
+                                                        </div>
+                                                        <input type="number" min="1" name="updateTiQty" id="updateTiQty" class="form-control form-control-sm" required>
+                                                        <span class="text-danger"><?php echo form_error("updateTiQty"); ?></span>
+                                                    </div>
+													<div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                               Actual Quantity</span>
                                                         </div>
                                                         <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("actualQtyUpdate"); ?></span>
@@ -111,6 +119,7 @@
                                                         <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
                                                     </div>
 													<input name="tiActual" id="tiActual" hidden="hidden">
+													<input name="tiQty" id="tiQty" hidden="hidden">
 													<input name="stQty" id="stQty" hidden="hidden">
 													<input name="stID" id="stID" hidden="hidden">
 													<input name="siID" id="siID" hidden="hidden">
@@ -130,7 +139,7 @@
 						</div>
 					</div>
 				</div>
-		</div>
+			</div>
 	</div>
 </div>
 <!--End Table Content-->
@@ -166,10 +175,11 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr" data-tiActual="${table.tiActual}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
+			<tr class="spoilagesTabletr" data-tiActual="${table.tiActual}" data-tiQty="${table.tiQty}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/barista/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
 				<td>${table.tiID}</td>
 				<td>${table.stName}</td>
+				<td>${table.tiQty}</td>
 				<td>${table.tiActual}</td>
 				<td>${table.tiDate}</td>
                 <td>
@@ -221,6 +231,10 @@
 					"data-siID"));
 				$("#editSpoil").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
 					"data-tiActual"));
+				$("#editSpoil").find("input[name='updateTiQty']").val($(this).closest("tr").attr(
+					"data-tiQty"));
+				$("#editSpoil").find("input[name='tiQty']").val($(this).closest("tr").attr(
+					"data-tiQty"));
 
 				
             });
@@ -254,25 +268,26 @@
     $("#editSpoil form").on('submit', function(event) {
 		event.preventDefault();
 		var tiActual = $(this).find("input[name='tiActual']").val();
+		var updateTiQty = $(this).find("input[name='updateTiQty']").val();
+		var tiQty = $(this).find("input[name='tiQty']").val();
 		var stQty = $(this).find("input[name='stQty']").val(); 
         var tiRemarks = $(this).find("input[name='tiRemarks']").val();
         var tiDate = $(this).find("input[name='tiDate']").val();
         var stID = $(this).find("input[name='stID']").val();
 		var siID = $(this).find("input[name='siID']").val();
 		var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
+		console.log(tiQty);
+		console.log(updateTiQty);
+		console.log(tiActual);
+		console.log(actualQtyUpdate);
 
-		console.log('tiActual '+ tiActual);
-		console.log('stQty  '+stQty);
-		console.log(' tiRemarks '+tiRemarks);
-		console.log(' tiDate'+tiDate);
-		console.log(' stID'+stID);
-		console.log(' siID'+siID);
-		console.log(' stID'+stID);
         $.ajax({
             url: "<?= site_url("barista/stock/spoilage/edit")?>",
             method: "post",
             data: {
 				tiActual: tiActual,
+				tiQty:tiQty,
+				updateTiQty:updateTiQty,
 				stQty: stQty,
 				tiRemarks: tiRemarks,
 				tiDate: tiDate,
