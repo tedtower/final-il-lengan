@@ -57,7 +57,7 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
+                                    <button type="button" id="cancel" class="btn btn-danger btn-sm"
                                         style="float:right">Cancel</button>
                                 </div>
                             </form>
@@ -199,6 +199,11 @@
             });
 
         });
+        
+        $("#cancel").on("click", function() {
+            window.location= "/admin/return";
+        });
+
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");

@@ -213,7 +213,7 @@
                                                             Order Date</span>
                                                     </div>
                                                     <input type="datetime-local" name="osDateTime" id="osDateTime"
-                                                        class="form-control form-control-sm" required>
+                                                        class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                 </div>
                                             </div>
                                             <!-- Customer Name -->

@@ -107,7 +107,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="tiDate" id="tiDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="tiDate" id="tiDate" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                         <span class="text-danger"><?php echo form_error("tDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
@@ -115,7 +115,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Remarks</span>
                                                         </div>
-                                                        <input type="text" name="tiRemarks" id="tiRemarks" class="form-control form-control-sm" required>
+                                                        <input type="text" name="tiRemarks" id="tiRemarks" class="form-control form-control-sm">
                                                         <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
                                                     </div>
 													<input name="tiActual" id="tiActual" hidden="hidden">

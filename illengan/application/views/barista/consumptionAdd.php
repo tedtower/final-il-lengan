@@ -203,6 +203,15 @@
             return false;
         }
     });
+
+    $('#conForm').submit(function(event){
+        var consumedDate = $("#date").val();
+        var currentDate = new Date();
+        if(Date.parse(consumedDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
+    });
     </script>
 </body>
 

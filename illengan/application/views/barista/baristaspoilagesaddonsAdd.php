@@ -24,7 +24,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" class="form-control" name="tDate">
+                                        <input type="date" id="aosDate" class="form-control" name="tDate" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -128,7 +128,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" min="1" required></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"
@@ -193,6 +193,15 @@
                 }
             });
         });
+    });
+
+    $('#conForm').submit(function(event){
+        var spoilDate = $("#aosDate").val();
+        var currentDate = new Date();
+        if(Date.parse(currentDate) < Date.parse(spoilDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
     });
     			//-----------------------Populate Dropdown----------------------------------------
 				// 		$.ajax({

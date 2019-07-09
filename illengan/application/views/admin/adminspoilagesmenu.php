@@ -39,7 +39,7 @@
 												<span aria-hidden="true">&times;</span>
 											</button>
 										</div>
-										<form id="formAdd" action="<?= site_url('admin/menu/spoilages/add')?>" accept-charset="utf-8">
+										<form id="formAdd1" action="<?= site_url('admin/menu/spoilages/add')?>" accept-charset="utf-8">
 											<div class="modal-body">
 												<div class="form-row">
 													<!--Container of Menu Spoilage Date-->
@@ -49,7 +49,7 @@
 															<span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 																Spoilage Date</span>
 														</div>
-														<input class="form-control form-control-sm" name="spoilDate" id="spoilDate" type="date" class="no-border"  data-validate="required" message="Spoilage Date is required!"  required>
+														<input class="form-control form-control-sm" name="spoilDate" id="spoilDate" type="date" class="no-border"  data-validate="required" message="Spoilage Date is required!"  required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
 													</div>
 												</div>
 												<!--Add Menu Item-->
@@ -321,14 +321,7 @@
             }
         	});
 
-			$('#formAdd').submit(function(event){
-				var spoiledDate = $("#spoilDate").val();
-				var currentDate = new Date();
-				if(Date.parse(currentDate) < Date.parse(spoiledDate)){
-					alert('Please check the date input!');
-					return false;
-				}
-    		});
+		
 	}
 	//END OF POPULATING TABLE
 	//-------------------------Function for Edit-------------------------------
@@ -362,6 +355,15 @@
             
         });
     });
+
+	$('#formAdd1').submit(function(event){
+				var spoiledDate = $("#spoilDate").val();
+				var currentDate = new Date();
+				if(Date.parse(currentDate) < Date.parse(spoiledDate)){
+					alert('Please check the date input!');
+					return false;
+				}
+    		});
 });
 	
 </script> 

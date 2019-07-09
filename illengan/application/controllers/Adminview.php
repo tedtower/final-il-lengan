@@ -142,7 +142,7 @@ function viewPOFormEdit($id){
 function viewDRFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Delivery";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
@@ -937,7 +937,8 @@ function getStockItem(){
     function getUOMs(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
-                'uom' => $this->adminmodel->get_uomForStoring()
+                'uom' => $this->adminmodel->get_uomForStoring(),
+                'stocks' => $this->adminmodel->get_stocks()
             ));
         }else{
             echo json_encode(array(
