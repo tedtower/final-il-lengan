@@ -1760,7 +1760,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
         $query = "INSERT INTO st_recon (reID, stID, reQty, reRemain, reDiscrepancy, reRemarks) VALUES (?, ?, ?, ?, ?, ?)";
         return $this->db->query($query,array($rei["reID"], $rei["stock"], $rei["qty"], $rei["remain"], $rei["discrepancy"], $rei["remarks"]));
     }
-    function add_purchase($){
+    function add_purchase($co){
         $query = "INSERT INTO `purchases`( spID, receiptNo pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
         return $this->db->query($query, array($p["supplier"], $p["receipt"], 
         $p["type"], $p["date"], $p["current"], $p["alt"]));
