@@ -682,6 +682,7 @@ function get_transitems(){
             stockitems USING (ctID)
         WHERE
             ctType = 'inventory'
+                AND supcatID IS NOT NULL
         GROUP BY ctID
         ORDER BY ctName ASC;";
         return $this->db->query($query)->result_array();
@@ -2482,25 +2483,56 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
 //         stName,
 //         COALESCE(stSize, CONCAT(' ', stSize))
 //     ),
-//     tiActual AS qty,
-//     tiType,
+//     tiActual AS actual,
+//     tiType AS type,
 //     reQty,
-//     remainingQty,
-//     IFNULL(tiDate, reDate) AS logDate,
+//     transitems.remainingQty AS remain,
+//     DATE_FORMAT(
+//         COALESCE(tiDate, reDate),
+//         '%b %d, %Y %r'
+//     ) AS logDate,
 //     reDiscrepancy,
 //     reRemarks,
 //     reID,
-//     COALESCE(rID, pcID, cID, sID) AS tID
+//     COALESCE(rID, pID, cID, sID) AS tID,
+//     spmID
 // FROM
 //     stockitems
-//     RIGHT JOIN transitems USING(stID)
-//     RIGHT JOIN(
-//             suppliermerchandise
-//         RIGHT JOIN transitems USING(spmID)
-//         ) USING(stID)
+// RIGHT JOIN(
+//         transitems
+//     LEFT JOIN suppliermerchandise USING(spmID)
+//     LEFT JOIN(
+//             return_items
+//         LEFT JOIN RETURNS USING(rID)
+//         ) USING(riID)
+//     LEFT JOIN(
+//             (
+//                 purchase_items
+//             LEFT JOIN pur_items USING(piID)
+//             )
+//         LEFT JOIN purchases USING(pID)
+//         ) USING(piID)
+//     LEFT JOIN(
+//             consumed_items
+//         LEFT JOIN consumptions USING(cID)
+//         ) USING(ciID)
+//     LEFT JOIN(
+//             spoiledstock
+//         LEFT JOIN stockspoil USING(sID)
+//         ) USING(siID)
+//     )
+// ON
+//     stockitems.stID = COALESCE(
+//         suppliermerchandise.stID,
+//         transitems.stID
+//     )
 // RIGHT JOIN(
 //         st_recon
 //     RIGHT JOIN reconciliation USING(reID)
-//     ) USING(stID)
+//     )
+// ON
+//     (
+//         st_recon.stID = stockitems.stID
+//     )
 }
 ?>
