@@ -53,7 +53,7 @@
                                 </div>
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit" style="float:right">Update</button>
-                                    <button type="button" class="btn btn-danger btn-sm" style="float:right">Cancel</button>
+                                    <button type="button" id="cancel" class="btn btn-danger btn-sm" style="float:right">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -117,6 +117,9 @@
         $("select[name='riStatus']").find(`option[value=${ri.riStatus}]`).attr("selected", "selected");
         });
 
+        $("#cancel").on("click", function() {
+            window.location= "/admin/return";
+        });
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");
@@ -163,7 +166,7 @@
                     rTotal: rTotal,
                     items: JSON.stringify(returnitems)
                 },
-                succes: function(){
+                success: function(){
                     location.reload();
                 },
                 error: function(response, setting, error) {

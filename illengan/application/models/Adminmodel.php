@@ -1742,23 +1742,8 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
         $query = "INSERT INTO st_recon (reID, stID, reQty, reRemain, reDiscrepancy, reRemarks) VALUES (?, ?, ?, ?, ?, ?)";
         return $this->db->query($query,array($rei["reID"], $rei["stock"], $rei["qty"], $rei["remain"], $rei["discrepancy"], $rei["remarks"]));
     }
-    function add_purchase($p){
-        $query = "INSERT INTO `purchases`(
-                spID,
-                receiptNo
-                pType,
-                pDate,
-                pDateRecorded,
-                spAltName
-            )
-            VALUES(
-                ?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?
-            );";
+    function add_purchase($){
+        $query = "INSERT INTO `purchases`( spID, receiptNo pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
         return $this->db->query($query, array($p["supplier"], $p["receipt"], 
         $p["type"], $p["date"], $p["current"], $p["alt"]));
     }
@@ -1889,6 +1874,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
     function get_deliveryReceipts(){
         $query = "SELECT
             pID AS id,
+            purchase_items.piID,
             receiptNo as receipt,
             spID AS supplier,
             spName AS supplierName,
@@ -1898,8 +1884,8 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             SUM(tiSubtotal) AS total
         FROM
             (
-                purchases
-            LEFT JOIN purchase_items USING(pID)
+            purchases LEFT JOIN pur_items USING (pID)
+            LEFT JOIN purchase_items USING (piID)
             )
         LEFT JOIN transitems USING(piID)
         LEFT JOIN supplier USING(spID)
@@ -1910,6 +1896,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
     function get_deliveryReceiptItems(){
         $query = "SELECT
                 tiID,
+                tiDiscount,
                 tiType as type,
                 SUM(tiQty) AS qty,
                 SUM(tiActual) AS actual,
@@ -1923,6 +1910,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
                     '')
                 ) AS stockname,
                 spmName,
+                spmPrice,
                 piID,
                 piStatus
             FROM
