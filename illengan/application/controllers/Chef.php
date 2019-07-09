@@ -5,9 +5,11 @@ class Chef extends CI_Controller {
 
 	function __construct(){
 		parent::__construct();
-		$this->load->database();
+		$this->load->helper('url');
+        $this->load->database();
+        $this->load->library('pagination');
         $this->load->model('Chefmodel');
-	date_default_timezone_set('Asia/Manila'); 
+	date_default_timezone_set('Asia/Manila');
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d H:i:s")
 	}
@@ -28,6 +30,31 @@ class Chef extends CI_Controller {
         }else{
             redirect('login');
         } 
+	}
+	 function loadData($record=0) {
+		$recordPerPage = 3;
+		if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+		}      	
+      	$recordCount = $this->Chefmodel->getRecordCount();
+        $ordRecord = $this->Chefmodel->get_orders($record,$recordPerPage);
+        $config['base_url'] = base_url().'chef/orders/loadData';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+		$config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+		$config['total_rows'] = $recordCount;
+		$config['per_page'] = $recordPerPage;
+		$this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['addons'] = $this->Chefmodel->get_addons();
+		$data['orders'] = $ordRecord;
+		echo json_encode($data);		
 	}
 
 // --------------- M E N U  S P O I L A G E S ----------------- 
