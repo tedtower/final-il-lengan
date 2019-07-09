@@ -277,3 +277,4 @@ $route['chef/menuspoilage/formadd'] = "chef/viewMenuSpoilageFormAdd";
 $route['chef/stock/spoilage/formadd'] = "chef/viewSpoilagesStockAdd";
 $route['chef/stock/spoilages/add']= "chef/addspoilagesstock";
 $route['chef/stock/spoilage/edit'] = "chef/editStockSpoil";
+$route['chef/orders/loadData/(:num)']="chef/loadData/$1";
