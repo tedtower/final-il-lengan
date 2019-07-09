@@ -24,7 +24,7 @@
                                                 style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date">
+                                        <input type="date" class="form-control" id="date" name="date" required>
                                     </div>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
@@ -128,7 +128,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control" name="qty"></td>
+                                class="form-control" name="qty" min="0" required></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control" name="cRemarks" rows="1"></textarea>
                         </td>
@@ -182,6 +182,15 @@
                 }
             });
         });
+    });
+
+    $('#conForm').submit(function(event){
+        var consumedDate = $("#date").val();
+        var currentDate = new Date();
+        if(Date.parse(consumedDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
     });
     </script>
 </body>

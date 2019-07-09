@@ -24,7 +24,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Spoiled</span>
                                         </div>
-                                        <input type="date" id="spoiledDate" class="form-control" name="tDate">
+                                        <input type="date" id="spoiledDate" class="form-control" name="tDate" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -131,7 +131,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number" min="1" value="1"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" required></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>

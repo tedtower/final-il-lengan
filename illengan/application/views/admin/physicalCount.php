@@ -29,7 +29,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date</span>
                                         </div>
-                                        <input class="form-control" name="date" id="date" type="date"  data-validate="required" message="Date is required!" required>
+                                        <input class="form-control" name="date" id="date" type="date"  data-validate="required" message="Date is required!" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="stockitems table table-borderless">

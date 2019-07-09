@@ -57,7 +57,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is required!" required>
+                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is required!" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                             </div>
                                         </div>
                                         <!--Remarks-->
