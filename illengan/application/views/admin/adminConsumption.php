@@ -303,10 +303,10 @@
                 alert('Consumption Updated');
 				console.log(data);
             },
-            // complete: function() {
-            //     $("#editSpoil").modal("hide");
-			// 	location.reload();
-            // },
+            complete: function() {
+                $("#editSpoil").modal("hide");
+				location.reload();
+            },
             error: function(error) {
 				console.log(error);
             }

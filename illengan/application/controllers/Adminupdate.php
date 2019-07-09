@@ -86,7 +86,10 @@ class Adminupdate extends CI_Controller{
     
     function editStockSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+
+            
             $tiActual = $this->input->post('tiActual');
+            $actualQtyUpdate = $this->input->post('actualQtyUpdate');
             $updateTiQty = $this->input->post('updateTiQty');
             $tiQty = $this->input->post('tiQty');
             $stQty = $this->input->post('stQty');
@@ -94,7 +97,6 @@ class Adminupdate extends CI_Controller{
             $tiDate = $this->input->post('tiDate');
             $stID= $this->input->post('stID');
             $siID = $this->input->post('siID');
-            $actualQtyUpdate = $this->input->post('actualQtyUpdate');
 
             $tiType = "spoilage";
             $date_recorded = date("Y-m-d H:i:s");
@@ -107,18 +109,24 @@ class Adminupdate extends CI_Controller{
                 $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
                 $this->adminmodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $siID);
                 $this->adminmodel->update_stock($stID, $updateQtyl);
-                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                                 
-            }else if($tiActual < $actualQtyUpdate){
+            }else if($tiActual < $actualQtyUpdate) {
                     $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
                     $this->adminmodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $siID);
                     $this->adminmodel->update_stock($stID, $updateQtyh);
-                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
 
             }else{
+                if($tiQty == $updateTiQty){
                     $this->adminmodel->add_stocktransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
                     $this->adminmodel->update_stock($stID, $stQty);
-                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                }else{
+                    $this->adminmodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
+                    $this->adminmodel->update_stock($stID, $stQty);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                }
             }
            
         }else{
@@ -157,7 +165,6 @@ class Adminupdate extends CI_Controller{
             redirect('login');
         } 
     }
-    //Problem with tiQty updatee!!!!!!
     function editConsumption(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
 
