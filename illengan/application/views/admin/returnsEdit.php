@@ -31,7 +31,7 @@
                                                 <span class="input-group-text border border-secondary" style="width:90px;font-size:14px">
                                                     Return Date</span>
                                             </div>
-                                            <input type="date" name="date" class="form-control form-control-sm">
+                                            <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" title="Return date is required!" required>
                                         </div>
                                     </div>
                                     <div class="ic-level-3">

@@ -26,7 +26,7 @@
                                                 style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date" required/>
+                                        <input type="date" class="form-control" id="consumedDate" name="date" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
@@ -176,6 +176,15 @@
                 alert('Add stock Item!');
             }
         });
+    });
+
+    $('#conForm').submit(function(event){
+        var consDate = $("#consumedDate").val();
+        var currentDate = new Date();
+        if(Date.parse(consDate) > Date.parse(currentDate)){
+            alert('Incorrect date input!');
+            return false;
+        }
     });
     </script>
 </body>

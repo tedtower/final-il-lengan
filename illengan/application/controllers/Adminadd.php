@@ -43,6 +43,7 @@ function addStockItem(){
             $stockMin = $this->input->post('min');
             $stockName = $this->input->post('name');
             $stockQty = $this->input->post('qty');
+            $stockBty = $this->input->post('qty');
             $stockStatus = $this->input->post('status');
             $stockType = $this->input->post('type');
             $stockUom = $this->input->post('uom');
@@ -50,7 +51,7 @@ function addStockItem(){
             $stockID = $this->input->post('id');
             $dbErr = false;
             if($stockID == null){
-                if(!$this->adminmodel->add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, 0, $stockLocation, $stockSize)){
+                if(!$this->adminmodel->add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, $stockBty, $stockLocation, $stockSize)){
                     $dbErr = true;
                 }
             }else{                 
@@ -153,15 +154,13 @@ function addspoilagesmenu(){
 }
 function addspoilagesstock(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        //$lastNumget = intval($this->adminmodel->getLastNum());
         $date_recorded = date("Y-m-d H:i:s");
         $stocks = json_decode($this->input->post('items'), true);
         $date = $this->input->post('date');
         $remarks = $this->input->post('remarks');
         $account_id = $_SESSION["user_id"];
         $user= $_SESSION["user_name"];
-        //$lastNum = $lastNumget + 1;
-        //$this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
+
         $this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$user,$date,$remarks);
     }else{
     redirect('login');
@@ -574,37 +573,12 @@ function addConsumption(){
 //---------------------------------------------------------------------------------------
     function addBeginningLogs(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $dateTime = date("Y-m-d H:i:s");
+            $date = $this->input->post('date');
             $logs = json_decode($this->input->post('items'),true);
-            if(count($logs)> 0){
-                $dateTime = date("Y-m-d H:i:s");
-                foreach($logs as $item){
-                    $qty = $this->adminmodel->get_stockQty($item['stock'])[0]['stQty'];
-                    $log = array(
-                        "stock" => $item['stock'],
-                        "qty" => 0,
-                        "remain" => $qty,
-                        "actual" => $item['qty'],
-                        "discrepancy" => $item['qty'] - $qty,
-                        "dateTime" => $dateTime,
-                        "dateRecorded" => $dateTime,
-                        "remarks" => $item['remarks']
-                    );
-                    $this->adminmodel->add_beginningLog($log);
-                    $this->adminmodel->set_stockQty($log['stock'], $log['actual']);
-                }
-            }
-            echo json_encode(array(
-                "success" => true
-            ));
-        }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
+            $this->adminmodel->add_beginning($date, $dateTime, $logs);
         }
     }
-
-        
-
 }    
 ?>
 

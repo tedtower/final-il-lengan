@@ -448,23 +448,22 @@ class Barista extends CI_Controller{
                     $date_recorded = date("Y-m-d H:i:s");
                     $user= $_SESSION["user_name"];
                     $account_id= $_SESSION["user_id"];
-                    $tiRemainingQty = $stQty - $actualQtyUpdate;
                     $updatedActual = $actualQtyUpdate - $tiActual;
         
                     if($tiActual > $actualQtyUpdate){
                         $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                        $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID);
+                        $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $siID);
                         $this->baristamodel->update_stock($stID, $updateQtyl);
                         $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
                                         
                     }else if($tiActual < $actualQtyUpdate){
                             $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                            $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID);
+                            $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $siID);
                             $this->baristamodel->update_stock($stID, $updateQtyh);
                             $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
         
                     }else{
-                            $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID);
+                            $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$stQty,$tiRemarks,$tiDate, $stID, $siID);
                             $this->baristamodel->update_stock($stID, $stQty);
                             $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a stockitem spoilage.", "update", $tiRemarks);
                     }

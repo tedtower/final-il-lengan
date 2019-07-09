@@ -40,7 +40,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Source</span>
                                                 </div>
-                                                <input type="text" data-level="1" class="form-control status-level" name="source">
+                                                <input class="form-control status-level" data-level="1" require name="source" type="text" value="" id="source" required pattern="[a-zA-Z][a-zA-Z\s]*" title="Source should only countain letters and white spaces.">
                                             </div>
                                         </div>
 
@@ -50,14 +50,14 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Receipt</span>
                                                 </div>
-                                                <input type="text" data-level="0" class="form-control status-level" name="receipt">
+                                                <input class="form-control status-level" data-level="0" name="receipt" type="text" value="" id="receipt">
                                             </div>
                                             <!--Date-->
                                             <div class="input-group input-group-sm mb-3 col">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" data-level="0" class="form-control status-level" name="date">
+                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is required!" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -71,7 +71,7 @@
 
                                         <!--Radio Buttons-->
                                         <div class="form-check form-check-inline mb-3"
-                                            style="font-size:14px;width:100%;margin:0">
+                                            style="font-size:14px;width:100%;margin:0" required>
                                             <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
                                                     type="radio" data-trigger-level="3" name="inlineRadioOptions" value="3">W/ PO Ref</label>
                                             <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
@@ -176,7 +176,7 @@
                                     <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
                                         <!--checkboxes-->
                                         <div class="mt-1 mb-1">
-                                            <select class="form-control form-control-sm">
+                                            <select class="form-control form-control-sm" required>
                                                 <option value="" selected>Choose PO</option>
                                             </select>
                                         </div>
@@ -191,7 +191,7 @@
                                             <tbody class="ic-level-2">
                                                 <tr class="ic-level-1">
                                                     <td><input type="checkbox" class="mr-2" name="stock"
-                                                        data-name="" value=""></td>
+                                                        data-name="" value="" required></td>
                                                     <td class=""></td>
                                                     <td class=""></td>
                                                 </tr>
@@ -219,7 +219,7 @@
                                 <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
                                     <!--checkboxes-->
                                     <div class="mt-1 mb-1">
-                                        <select class="form-control form-control-sm">
+                                        <select class="form-control form-control-sm" required>
                                             <option value="" selected>Choose Return</option>
                                         </select>
                                     </div>
@@ -234,7 +234,7 @@
                                         <tbody class="ic-level-2">
                                             <tr class="ic-level-1">
                                                 <td><input type="checkbox" class="mr-2" name="stock"
-                                                    data-name="" value=""></td>
+                                                    data-name="" value="" required></td>
                                                 <td class=""></td>
                                                 <td class=""></td>
                                             </tr>
@@ -266,7 +266,7 @@
                                         <tbody class="ic-level-2">
                                             <tr class="ic-level-1">
                                                 <td><input type="checkbox" class="mr-2" name="stock"
-                                                    data-name="" value=""></td>
+                                                    data-name="" value="" required></td>
                                                 <td class=""></td>
                                             </tr>
                                         </tbody>

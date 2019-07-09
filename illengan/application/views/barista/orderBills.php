@@ -424,10 +424,11 @@ function getSelectedSlips() {
                                     class="form-control form-control-sm"  value="` + data[i].olQty + `" readonly="readonly" required></td>
                             <td><input type="text" id="olPrice` + i + `" name="olPrice"
                                     class="form-control form-control-sm"  value="` + data[i].olPrice + `" readonly="readonly" required></td>
-                            <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
-                                    class="olSubtotal form-control form-control-sm" value="` + data[i].olSubtotal + `" readonly="readonly" required></td>
                             <td><input type="text" id="aoTotal` + i + `" name="aoTotal"
                                     class="aoTotal form-control form-control-sm" value="` + data[i].aoTotal + `" readonly="readonly" required></td>
+                            <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
+                                    class="olSubtotal form-control form-control-sm" value="` + data[i].olSubtotal + `" readonly="readonly" required></td>
+                            
                             <td></td>
                             </tr>`;
                     $('.orderitemsTable > tbody').append(stockChecked);

@@ -26,7 +26,7 @@
                                                 style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                                 Date Spoiled</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date" required/>
+                                        <input type="date" class="form-control" name="date" id="date" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
@@ -125,7 +125,7 @@
                                 class="form-control" name="qty" required/></td>
                         <td style="padding:1% !important">
                         <div class="input-group mb-3">
-                            <input list="orderslips" class="form-control" name="slipNum" >
+                            <input list="orderslips" type="number" class="form-control" name="slipNum" >
                             <datalist id="orderslips">
                                 <option value="">None</option>
                                 <?php foreach($slip as $s){ 
@@ -189,6 +189,15 @@
                 alert('Add stock Item!');
             }
         });
+
+        $('#conForm').submit(function(event){
+        var spoiledDate = $("#date").val();
+        var currentDate = new Date();
+        if(Date.parse(spoiledDate) > Date.parse(currentDate)){
+            alert('Incorrect date input!');
+            return false;
+        }
+    });
     });
     </script>
 </body>

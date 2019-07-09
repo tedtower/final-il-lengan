@@ -54,7 +54,7 @@
 										style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 										Restock Date</span>
 								</div>
-								<input type="date" name="restock_date" id="restock_date" class="form-control form-control-sm" required>
+								<input type="date" name="restock_date" id="restock_date" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
 								<span class="text-danger"><?php echo form_error("restock_date"); ?></span>
 							</div>
 							<div class="d-flex justify-content-center">
@@ -142,7 +142,7 @@
 											style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
 											Destock Date</span>
 									</div>
-									<input type="date" name="destock_date" id="destock_date" class="form-control form-control-sm" required>
+									<input type="date" name="destock_date" id="destock_date" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
 									<span class="text-danger"><?php echo form_error("destock_date"); ?></span>
 								</div>
 								</div>

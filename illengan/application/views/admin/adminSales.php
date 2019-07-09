@@ -213,7 +213,7 @@
                                                             Order Date</span>
                                                     </div>
                                                     <input type="datetime-local" name="osDateTime" id="osDateTime"
-                                                        class="form-control form-control-sm" required>
+                                                        class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                 </div>
                                             </div>
                                             <!-- Customer Name -->
@@ -879,11 +879,11 @@ $(document).ready(function () {
         var eDate = $("#eDate").val();
         var currentDate = new Date();
         if(Date.parse(eDate) <= Date.parse(sDate)){
-            alert('Invalid Date Range!');
+            alert('Please check the date range entered!');
             return false;
         }
         if(Date.parse(eDate) > Date.parse(currentDate)){
-            alert('Invalid! Date exceeds current date.');
+            alert('Please check the entered date.');
             return false;
         }
     });
@@ -891,8 +891,8 @@ $(document).ready(function () {
     $('#formAdd').submit(function(event){
         var payDate = $("#osPayDateTime").val();
         var orderDate = $("#osDateTime").val();
-        if(Date.parse(payDate) <= Date.parse(orderDate)){
-            alert('Invalid Date!');
+        if(Date.parse(payDate) != Date.parse(orderDate)){
+            alert('Please check date entered!');
             return false;
         }
     });

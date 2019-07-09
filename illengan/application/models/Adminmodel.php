@@ -721,7 +721,7 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
     function get_deliveries() {
-        $query = "SELECT tiID, spmID, pur.spID, ti.stID, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, tiActual, 
+        $query = "SELECT tiID, spmID, pur.spID, ti.stID, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, 
         CONCAT(receiptNo,' - ', DATE_FORMAT(pDate, '%b %d, %Y')) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
         FROM `transitems` ti LEFT JOIN purchase_items USING (piID) LEFT JOIN pur_items USING (piID) LEFT JOIN purchases pur USING (pID) LEFT JOIN stockitems st USING (stID) 
         LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) WHERE pur.ptype = 'delivery' AND ti.tiType = 'restock'";
@@ -1618,7 +1618,6 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
     function update_changedAddon($aoID, $oldaoID, $olID) {
         $query = "UPDATE orderaddons SET aoID = ? WHERE orderaddons.aoID = ? AND orderaddons.olID = ?;";
         $this->db->query($query, array($aoID, $oldaoID, $olID));
-
     }
 
 
@@ -1734,6 +1733,25 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             }
         }
     }
+    function edit_purchaseorder($date, $current, $pID){
+        $query = "UPDATE purchases SET pDate = ?, pDateRecorded = ? where pID = ?";
+        return $this->db->query($query,array($date, $current, $pID));
+    }
+    
+    function edit_pItem($poitems){
+        $query = "UPDATE purchase_items SET piStatus = ? WHERE piID = ?";
+        for($in = 0; $in < count($poitems) ; $in++){
+            $this->db->query($query, array($poitems[$in]['piStatus'], $poitems[$in]['piID']));
+        }
+    }
+
+    function edit_potransitem($poitems){
+        $query = "UPDATE transitems SET tiQty = ?, tiDate = ?, tiActual = ?, tiSubtotal = ? where tiID = ?";
+        for($in = 0; $in < count($poitems); $in++){
+            $this->db->query($query, array($poitems[$in]['tiQty'], $poitems[$in]['date'], $poitems[$in]['tiActual'], $poitems[$in]['tiSubtotal'], $poitems[$in]['tiID']));
+        }
+    }
+
     function add_reconciliation($re){
         $query = "INSERT INTO reconciliation (reDate, reDateRecorded) VALUES (?, ?)";
         return $this->db->query($query, array($re["date"], $re["current"]));
@@ -1761,10 +1779,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             $this->add_potransitem($poitems[$in]["piType"], $poitems[$in]["tiQty"], $poitems[$in]["tiActual"], $poitems[$in]["tiSubtotal"], $poitems[$in]["date"], $poitems[$in]["stID"] ,$poitems[$in]["spmID"], $piID);
         }
     }
-    function edit_pItem($piID, $piStatus){
-        $query = "UPDATE purchase_items SET piStatus WHERE piID = ?";
-        return $this->db->query($query, array($piStatus, $piID));
-    }
+
     function add_purItem($pID, $piID){
         $query = "INSERT INTO pur_items(pID, piID) VALUES(?,?)";
         return $this->db->query($query, array($pID, $piID));
@@ -1825,7 +1840,7 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             pID AS id,
             spID AS supplier,
             spName AS supplierName,
-            DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
+            pDate AS transDate,
             DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
             SUM(tiSubtotal) AS total
         FROM
@@ -1860,6 +1875,9 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
                 ) AS stockname,
                 spmName,
                 spmPrice,
+                spmActual,
+                suppliermerchandise.uomID,
+                uomAbbreviation,
                 piID,
                 pID,
                 piStatus
@@ -1868,7 +1886,8 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
             LEFT JOIN purchase_items USING(piID))
             LEFT JOIN pur_items using (piID)
             LEFT JOIN stockitems USING(stID)
-            LEFT JOIN suppliermerchandise USING(spmID) GROUP BY piID";
+            LEFT JOIN suppliermerchandise USING(spmID)
+            LEFT JOIN uom ON (suppliermerchandise.uomID = uom.uomID) GROUP BY piID";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryReceipts(){
@@ -2446,5 +2465,62 @@ function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$
 //     ?,
 //     ?
 // );
- }
+
+// SELECT
+//     CONCAT(
+//         stName,
+//         COALESCE(stSize, CONCAT(' ', stSize))
+//     ),
+//     tiActual AS actual,
+//     tiType AS type,
+//     reQty,
+//     transitems.remainingQty AS remain,
+//     DATE_FORMAT(
+//         COALESCE(tiDate, reDate),
+//         '%b %d, %Y %r'
+//     ) AS logDate,
+//     reDiscrepancy,
+//     reRemarks,
+//     reID,
+//     COALESCE(rID, pID, cID, sID) AS tID,
+//     spmID
+// FROM
+//     stockitems
+// RIGHT JOIN(
+//         transitems
+//     LEFT JOIN suppliermerchandise USING(spmID)
+//     LEFT JOIN(
+//             return_items
+//         LEFT JOIN RETURNS USING(rID)
+//         ) USING(riID)
+//     LEFT JOIN(
+//             (
+//                 purchase_items
+//             LEFT JOIN pur_items USING(piID)
+//             )
+//         LEFT JOIN purchases USING(pID)
+//         ) USING(piID)
+//     LEFT JOIN(
+//             consumed_items
+//         LEFT JOIN consumptions USING(cID)
+//         ) USING(ciID)
+//     LEFT JOIN(
+//             spoiledstock
+//         LEFT JOIN stockspoil USING(sID)
+//         ) USING(siID)
+//     )
+// ON
+//     stockitems.stID = COALESCE(
+//         suppliermerchandise.stID,
+//         transitems.stID
+//     )
+// RIGHT JOIN(
+//         st_recon
+//     RIGHT JOIN reconciliation USING(reID)
+//     )
+// ON
+//     (
+//         st_recon.stID = stockitems.stID
+//     )
+}
 ?>

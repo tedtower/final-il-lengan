@@ -53,7 +53,7 @@
                                                             Spoilage Date</span>
                                                     </div>
                                                     <input type="date" name="spoilDate" id="spoilDate" style="width: 70%;";
-                                                        class="form-control form-control-sm" required>
+                                                        class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                 </div>
 												</div>
 												<!--Add Menu Item-->
@@ -127,7 +127,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 New Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                         <span class="text-danger"><?php echo form_error("msDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
@@ -135,7 +135,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Orderslip No.</span>
                                                         </div>
-                                                        <input list="orderslips" name="osID" id="osID"/>
+                                                        <input list="orderslips" type="number" name="osID" id="osID"/>
                                                         <datalist id="orderslips">
                                                             <option value="">None</option>
                                                             <?php foreach($slip as $s){ 
@@ -148,7 +148,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Remarks</span>
                                                         </div>
-                                                        <input type="text" name="msRemarks" id="msRemarks" class="form-control form-control-sm" required>
+                                                        <input type="text" name="msRemarks" id="msRemarks" class="form-control form-control-sm">
                                                         <span class="text-danger"><?php echo form_error("msRemarks"); ?></span>
                                                     </div>
 													<input name="msID" id="msID" hidden="hidden">
@@ -461,6 +461,16 @@ $(document).ready(function() {
             
         });
     });
+
+    
+    $('#formAdd').submit(function(event){
+        var spoilDate = $("#spoilDate").val();
+        var currentDate = new Date();
+        if(Date.parse(currentDate) < Date.parse(spoilDate)){
+            alert('Incorrect date input!');
+            return false;
+        }
+    });
 });
 	//--------------------End of Function for Edit-----------------------------
 	
@@ -581,16 +591,16 @@ $(document).ready(function() {
                             <div class="input-group mb-1">
                                 <input type="text" name="itemName[]"
                                     class="form-control form-control-sm"
-                                    placeholder="Item Name" style="width:24%">
+                                    placeholder="Item Name" style="width:24%" required>
                                 <input name="stID[]" type="text"
                                     class="form-control border-right-0"
                                     placeholder="Stock" style="width:15%">
                                 <input type="number" name="itemQty[]"
                                     class="form-control form-control-sm"
-                                    placeholder="Quantity">
+                                    placeholder="Quantity" min="1" required>
                                 <input type="number" name="actualQty[]"
                                     class="form-control form-control-sm"
-                                    placeholder="Actual Qty">
+                                    placeholder="Actual Qty" required>
 
                             </div>
                             <div class="input-group">

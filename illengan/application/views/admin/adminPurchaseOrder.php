@@ -1,5 +1,4 @@
 <!--End Side Bar-->
-
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
@@ -41,7 +40,7 @@
                                             <td>&#8369; <?=$po['total']?></td>
                                             <td>
                                                 <a class="editBtn btn btn-sm btn-secondary"
-                                                    href="<?= site_url('admin/purchaseorder/formedit')?>">Edit</a>
+                                                    href="<?= site_url('admin/purchaseorder/formedit/')?><?= $po['id']?>">Edit</a>
                                                 <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
                                                     data-target="#deletePO">Archive</button>
                                             </td>
@@ -61,12 +60,9 @@
                                                             <tr>
                                                                 <th>Name</th>
                                                                 <th>Qty</th>
-                                                                <!-- <th>Equivalent</th> -->
                                                                 <th>Actual Qty</th>
                                                                 <th>Price</th>
-                                                                <!-- <th>Discount</th> -->
                                                                 <th>Subtotal</th>
-                                                                <!-- <th>Payment Status</th> -->
                                                                 <th>Delivery Status</th>
                                                             </tr>
                                                         </thead>
@@ -76,11 +72,8 @@
                                                                 <td><?= $poitem['spmName']?></td>
                                                                 <td><?= $poitem['qty']?></td>
                                                                 <td><?= $poitem['actual']?></td>
-                                                                <td><?= $poitem['spmPrice']?></td>
-                                                                <!-- <td><?= $poitem['discount'] == null ||  $transitem['discount'] == 0 ? "N/A" : $transitem['discount']?>
-                                                                </td> -->
-                                                                <td><?= $poitem['subtotal']?></td>
-                                                                <!-- <td><?= $poitem['paymentstatus']?></td> -->
+                                                                <td>&#8369; <?= $poitem['spmPrice']?></td>
+                                                                <td>&#8369; <?= $poitem['subtotal']?></td>
                                                                 <td><?= $poitem['piStatus']?></td>
                                                             </tr>
                                                             <?php }
@@ -165,9 +158,6 @@
                 console.log(response.responseText);
             }
         });
-
-
-
         $("#addBtn").on('click', function() {
             setSupplier(supplier);
         });
