@@ -185,22 +185,22 @@ class Adminupdate extends CI_Controller{
             $updatedQty = $updateTiQty - $tiQty;
             if($tiActual > $actualQtyUpdate){
                 $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                $this->adminmodel->add_consumptionitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
                 $this->adminmodel->update_stock($stID, $updateQtyl);
                 $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                                 
             }else if($tiActual < $actualQtyUpdate) {
                     $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                    $this->adminmodel->add_consumptionitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
+                    $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
                     $this->adminmodel->update_stock($stID, $updateQtyh);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
             }else{
                 if($tiQty == $updateTiQty){
-                    $this->adminmodel->add_consumptionitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
+                    $this->adminmodel->add_consumptiontransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
                     $this->adminmodel->update_stock($stID, $stQty);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                 }else{
-                    $this->adminmodel->add_consumptionitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
+                    $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
                     $this->adminmodel->update_stock($stID, $stQty);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                 }

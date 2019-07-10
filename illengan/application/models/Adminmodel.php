@@ -704,7 +704,7 @@ function get_transitems(){
     }
 //--------------CONSUMPTIONS--------------------
 function get_consumpitems(){
-    $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`siID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'consumed' GROUP BY `ciID`,`stID`";
+    $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`ciID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'consumed' GROUP BY `ciID`,`stID`";
     return  $this->db->query($query)->result_array();
 }
     //--------------------------------
@@ -988,6 +988,10 @@ function add_table($tableCode){
 }
 
 //UPDATE FUNCTIONS----------------------------------------------------------------
+function add_consumptiontransitems($tiType,$tiQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID){
+    $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiQty`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
+    return $this->db->query($query, array($tiType,$tiQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID));
+}
 function add_stocktransitems($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID){
     $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
     return $this->db->query($query, array($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID));
@@ -1781,25 +1785,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         return $this->db->query($query,array($type, $qty, $actualQty, $subtotal, $date, $stID, $spmID, $piID));
     }
     function get_purchaseOrders(){
-        $query = "SELECT
-            pID AS id,
-            spID AS supplier,
-            spName AS supplierName,
-            pDate AS transDate,
-            DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-            SUM(tiSubtotal) AS total
-        FROM
-            (
-                (
-                    purchases
-                LEFT JOIN pur_items USING(pID)
-                )
-            LEFT JOIN purchase_items USING(piID)
-            )
-        LEFT JOIN transitems USING(piID)
-        LEFT JOIN supplier USING(spID)
-        WHERE pType = 'purchase order'
-        GROUP BY pID ORDER BY transDate DESC, pID DESC";
+        $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, pDate AS transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC";
         return $this->db->query($query)->result_array();
     }
     

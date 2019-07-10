@@ -276,7 +276,7 @@
         var stID = $(this).find("input[name='stID']").val();
 		var ciID = $(this).find("input[name='ciID']").val();
 		var actualQtyUpdate = $(this).find("input[name='actualQtyUpdate']").val();
-		
+		console.log(ciID);
 
         $.ajax({
             url: "<?= site_url("admin/consumption/edit")?>",
