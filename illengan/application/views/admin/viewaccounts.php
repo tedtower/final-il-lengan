@@ -34,7 +34,7 @@
                                 <br>
                                 <!-- Search form -->
                                 <form class="form-inline active-box">
-                                    <input class="form-control form-control-sm mr-2 w-40" type="text" placeholder="Search" aria-label="Search">
+                                    <input class="form-control form-control-sm mr-2 w-40" type="text" id="search_text" placeholder="Search" aria-label="Search">
                                     <i class="fas fa-search" aria-hidden="true"></i>
                                 </form>
                                 <br><br>
@@ -294,26 +294,26 @@
                         }
                         accounts.forEach(table => {
                             $("#accountsTable> tbody").append(`
-            <tr data-id="${table.aID}" data-aUsername="${table.aUsername}">
-                <td>${table.aID}</td>
-                <td>${table.aType}</td>
-                <td>${table.aUsername}</td>
-                <td>${table.aIsOnline == 0 ? "Offline" : "Online"}</td>
-                <td>
-                        <!--Action Buttons-->
-                        <div class="onoffswitch">
-                            <!--Change Pass button-->
-                            <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
-                            data-original-title" >Change Password</button>
-                            <!--Edit button-->
-                            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
-                                data-target="#editAccount">Edit</button>
-                            <!--Delete button-->
-                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteAccount">Archived</button>                   
-                        </div>
-                    </td>
-                </tr>`);
+                            <tr data-id="${table.aID}" data-aUsername="${table.aUsername}">
+                                <td>${table.aID}</td>
+                                <td>${table.aType}</td>
+                                <td>${table.aUsername}</td>
+                                <td>${table.aIsOnline == 0 ? "Offline" : "Online"}</td>
+                                <td>
+                                        <!--Action Buttons-->
+                                        <div class="onoffswitch">
+                                            <!--Change Pass button-->
+                                            <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
+                                            data-original-title" >Change Password</button>
+                                            <!--Edit button-->
+                                            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                                                data-target="#editAccount">Edit</button>
+                                            <!--Delete button-->
+                                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                                            data-target="#deleteAccount">Archived</button>                   
+                                        </div>
+                                    </td>
+                                </tr>`);
                             $(".updateBtn").last().on('click', function() {
                                 $("#editAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
                                     "data-id"));
@@ -371,27 +371,28 @@
                     //SEARCH FUNCTION
                     $(document).ready(function() {
 
-                        load_data();
-
                         function load_data(query) {
                             $.ajax({
-                                url: "<?php echo base_url(); ?>ajaxsearch/fetch",
+                                url: "<?php echo base_url(); ?>admin/search",
                                 method: "POST",
                                 data: {
                                     query: query
                                 },
                                 success: function(data) {
-                                    $('#result').html(data);
+                                    $('#show_data').html(data);
+                                    console.log("search");
+                                    console.log(data);
                                 }
                             })
                         }
 
-                        $('#search_text').keyup(function() {
+                        $('#search_text').on("keyup", function() {
+                            console.log($(this));
                             var search = $(this).val();
                             if (search != '') {
                                 load_data(search);
                             } else {
-                                load_data();
+                                setAccountData();
                             }
                         });
                     });

@@ -14,7 +14,57 @@ class Adminview extends CI_Controller{
         }
         return false;
     }
+    
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
+function searchData()
+{
+    $output = '';
+    $query = '';
+    $query = $this->input->post('query');
+
+    $data = $this->adminmodel->fetch_searchdata($query);
+    
+    if ($data->num_rows() > 0) {
+        foreach ($data->result() as $row) {
+           if($row->aIsOnline == 0) {
+                $status = 'Offline';
+            } else {
+                $status = 'Online';
+            }
+
+            $output .= '
+            <tr data-id="' . $row->aID . '" data-aUsername="' . $row->aUsername . '">
+            <td>' . $row->aID . '</td>
+            <td>' . $row->aType . '</td>
+            <td>' . $row->aUsername . '</td>
+            <td>' . $status . '</td>
+            <td>
+                    <!--Action Buttons-->
+                    <div class="onoffswitch">
+                        <!--Change Pass button-->
+                        <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
+                        data-original-title" >Change Password</button>
+                        <!--Edit button-->
+                        <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                            data-target="#editAccount">Edit</button>
+                        <!--Delete button-->
+                        <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                        data-target="#deleteAccount">Archived</button>                   
+                    </div>
+                </td>
+            </tr>
+                ';
+        }
+    } else {
+        $output .= '<tr>
+        <td colspan="5">No Data Found</td>
+        </tr>';
+    }
+    
+    $output .= '</table>';
+    echo $output;
+}
+
 function inventoryJS(){
     if($this->checkIfLoggedIn()){
     echo json_encode($this->adminmodel->get_inventory_consumption());
