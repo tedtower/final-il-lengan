@@ -30,7 +30,7 @@ class Barista extends CI_Controller{
     //BARISTA ORDER FUNCTIONS
     function pendingOrders(){
         if($this->checkIfLoggedIn()){
-        $this->load->view('barista/templates/navigation');
+        $this->load->view('barista/templates/sideNav');
         $this->load->view('barista/pendingOrders'); 
     }else{
         redirect('login');
@@ -45,7 +45,7 @@ class Barista extends CI_Controller{
     }
     function servedOrders(){
         if($this->checkIfLoggedIn()){
-        $this->load->view('barista/templates/navigation');
+        $this->load->view('barista/templates/sideNav');
         $this->load->view('barista/servedOrders');  
     }else{
         redirect('login');
@@ -94,7 +94,7 @@ class Barista extends CI_Controller{
     function getOrderBills(){
         if($this->checkIfLoggedIn()){
         $this->load->view('barista/templates/head');
-        $this->load->view('barista/templates/navigation');
+        $this->load->view('barista/templates/sideNav');
         $this->load->view('barista/orderBills');
     }else{
         redirect('login');
@@ -201,7 +201,7 @@ class Barista extends CI_Controller{
         function viewinventory(){
             if($this->checkIfLoggedIn()){
             $this->load->view('barista/templates/head');
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $this->load->view('barista/baristaConsumptions'); 
         }else{
             redirect('login');
@@ -338,7 +338,7 @@ class Barista extends CI_Controller{
         if($this->checkIfLoggedIn()){
             $data['title'] = "Spoilages - Addons";
             $this->load->view('barista/templates/head', $data);
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $this->load->view('barista/baristaspoilagesaddons');
             // $this->load->view('barista/templates/scripts');
         }else{
@@ -355,7 +355,7 @@ class Barista extends CI_Controller{
         if($this->checkIfLoggedIn()){
             $data['title'] = "Spoilages - Addons";
             $this->load->view('barista/templates/head', $data);
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['addons'] = $this->baristamodel->get_addons();
             $this->load->view('barista/baristaspoilagesaddonsAdd', $data);
         }else{
@@ -415,7 +415,7 @@ class Barista extends CI_Controller{
             if($this->checkIfLoggedIn()){
                 $data['title'] = "Spoilages - Stock";
                 $this->load->view('barista/templates/head', $data);
-                $this->load->view('barista/templates/navigation');
+                $this->load->view('barista/templates/sideNav');
                 $this->load->view('barista/baristastockspoilages');
             }else{
                 redirect('login');
@@ -425,14 +425,14 @@ class Barista extends CI_Controller{
         if($this->checkIfLoggedIn()){
             $data['title'] = "Spoilages - Stock";
             $this->load->view('barista/templates/head', $data);
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['stocks'] = $this->baristamodel->get_stocks();
             $this->load->view('barista/baristaspoilagesstockAdd', $data);
         }else{
             redirect('login');
         }
         }
-            function editStockSpoil(){
+        function editStockSpoil(){
                 if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
         
                     
@@ -511,7 +511,7 @@ class Barista extends CI_Controller{
     function viewDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $this->load->view('barista/templates/head');
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['drs'] = $this->baristamodel->get_deliveryReceipts();
             $data['drItems'] = $this->baristamodel->get_deliveryReceiptItems();
             $this->load->view('barista/deliveryReceipt', $data);
@@ -523,7 +523,7 @@ class Barista extends CI_Controller{
     function viewDRFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $this->load->view('barista/templates/head');
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['uom'] = $this->baristamodel->get_uomForStoring();
             $data['stocks'] = $this->baristamodel->get_stockitems();
             $data['supplier'] = $this->baristamodel->get_supplier();
@@ -539,7 +539,7 @@ class Barista extends CI_Controller{
     function viewORFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $this->load->view('barista/templates/head');
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['supplier'] = $this->baristamodel->get_supplier();
             $data['stocks'] = $this->baristamodel->get_stockItemNames();
             $this->load->view('barista/officialReceiptAdd',$data);
@@ -551,7 +551,7 @@ class Barista extends CI_Controller{
     function viewOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $this->load->view('barista/templates/head');
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['ors'] = $this->baristamodel->get_officialReceipts();
             $data['orItems'] = $this->baristamodel->get_officialReceiptItems();
             $this->load->view('barista/officialReceipt', $data);
@@ -712,7 +712,7 @@ class Barista extends CI_Controller{
         if($this->checkIfLoggedIn()){
             $data['title'] = "Consumption";
             $this->load->view('barista/templates/head', $data);
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $this->load->view('barista/baristaConsumptions');
         }else{
             redirect('login');
@@ -722,7 +722,7 @@ class Barista extends CI_Controller{
         if($this->checkIfLoggedIn()){
             $head['title'] = "Inventory - Add Consumption";
             $this->load->view('barista/templates/head', $head);
-            $this->load->view('barista/templates/navigation');
+            $this->load->view('barista/templates/sideNav');
             $data['stocks'] = $this->baristamodel->get_stocks();
             $this->load->view('barista/consumptionAdd', $data);
         }else{

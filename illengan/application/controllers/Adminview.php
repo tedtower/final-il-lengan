@@ -17,7 +17,7 @@ class Adminview extends CI_Controller{
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
 function inventoryJS(){
     if($this->checkIfLoggedIn()){
-    echo json_encode($this->baristamodel->get_inventory_consumption());
+    echo json_encode($this->adminmodel->get_inventory_consumption());
 }else{
     redirect('login');
     }
@@ -502,16 +502,16 @@ if($this->checkIfLoggedIn()){
 }
 }
 function viewSpoilagesStockAdd(){
-if($this->checkIfLoggedIn()){
-    $data['title'] = "Spoilages - Stock";
-    $this->load->view('admin/templates/head2', $data);
-    $this->load->view('admin/templates/sideNav');
-    $data['stocks'] = $this->adminmodel->get_stocks();
-    $this->load->view('admin/adminspoilagesstockAdd', $data);
-}else{
-    redirect('login');
-}
-}
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['stocks'] = $this->adminmodel->get_stocks();
+        $this->load->view('admin/adminspoilagesstockAdd', $data);
+    }else{
+        redirect('login');
+    }
+    }
 function viewSpoilagesStock(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Stock";

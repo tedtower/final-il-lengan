@@ -2,6 +2,7 @@
     <div class="content">
         <div class="container-fluid">
             <br>
+            <div div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Date and Time-->
                     <div style="overflow:auto">
@@ -85,8 +86,8 @@
                                     <tbody class="ic-level-2"><?php
                                 foreach($stocks as $stock){
                                 ?>
-                                        <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
+                                        <tr class="ic-level-1"  >
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-curQty="<?= $stock['stQty']?>" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -107,6 +108,7 @@
                     <!--End of container divs-->
                 </div>
             </div>
+        </div>
     </div>
     <?php include_once('templates/scripts.php');?>
     <script>
@@ -121,24 +123,22 @@
            
             var id = $(this).val();
             var name = $(this).attr("data-name");
+            var curQty = $(this).attr("data-curQty");
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
-                    <input name="curQty" id="curQty" type="hidden">
-					<input name="uomID" id="uomID" type="hidden">
+                    <input name="curQty" id="curQty" type="hidden" data-curQty="${curQty}" >
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
-                        <td style="padding:1% !important"><input type="number"
+                        <td style="padding:1% !important"><input type="number" min= "1"
                                 class="form-control form-control-sm" name="tiQty"></td>
-                        <td style="padding:1% !important"><input type="number"
+                        <td style="padding:1% !important"><input type="number" min= "1"
                                 class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
-                    $('input[name="curQty"]').val($(this).closest("tr").data('curqty'));
-                    $('input[name="uomID"]').val($(this).closest("tr").data('uomid')); 
                     console.log($(this));
             }else{
                 $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
@@ -162,8 +162,6 @@
             var url = $(this).attr("action");
             var tDate = $(this).find("input[name='tDate']").val();
             var remarks = $(this).find("textarea[name='remarks']").val();
-            var uomID = $(this).find("input[name='uomID']").val();
-            var curQty = $(this).find("input[name='curQty']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
@@ -171,8 +169,7 @@
                     tiQty: $(this).find("input[name='tiQty']").val(),
                     actualQty: $(this).find("input[name='actualQty']").val(),
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
-                    uomID: uomID,
-                    curQty: curQty,
+                    curQty: $(this).find("input[name='curQty']").attr('data-curQty')
                 });
             });
             console.log(items);
@@ -216,7 +213,7 @@
     $('#conForm').submit(function(event){
             var spDate = $("#tDate").val();
             var currentDate= new Date();
-            if(Date.parse(currentDate) < Date.parse(spDate)){
+            if(Date.parse(currentDate) <= Date.parse(spDate)){
                 alert('Please check the date entered!');
                 return false;
         }

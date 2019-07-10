@@ -305,16 +305,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         function add_spoileditems($sID,$stocks,$remarks,$date,$account_id,$date_recorded,$user){
             $query = "INSERT INTO `spoiledstock`(`siID`, `sID`) VALUES (NULL,?)";
             if($this->db->query($query,array($sID))){
-                $this->add_spoiltransitems($this->db->insert_id(),$stocks,$remarks,$date,$account_id,$date_recorded,$user);
+                $this->add_spoiltransitems($this->db->insert_id(),$stocks,$date);
+                $this->add_actlog($account_id,$date_recorded, "$user added a stock spoilage.", "add", $remarks);
             }
         }
-        function add_spoiltransitems($siID,$stocks,$remarks,$date,$account_id,$date_recorded,$user){
+        function add_spoiltransitems($siID,$stocks,$date){
             $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiQty`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
             if(count($stocks) > 0){
                 for($in = 0; $in < count($stocks) ; $in++){
                     $this->db->query($query,array("spoilage",$stocks[$in]['tiQty'],$stocks[$in]['actualQty'],$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$siID));
                     $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
-                    $this->add_actlog($account_id,$date_recorded, "$user added a stock spoilage.", "add", $stocks[$in]['remarks']);
                 }
             }
         }
@@ -339,11 +339,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query, array($stQty, $stID));
         }
         function destockvarItems($stID,$curQty,$actualQty){
-            $query = "UPDATE stockitems 
-            SET 
-                stQty = ? - ?
-            WHERE
-                stID = ?;";
+            $query = "UPDATE stockitems SET stQty = ? - ? WHERE stID = ?;";
             return $this->db->query($query,array($curQty,$actualQty,$stID));
            
         }

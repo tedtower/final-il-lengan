@@ -166,9 +166,7 @@ function addspoilagesstock(){
     redirect('login');
     }
 }
-
-
-    function addaccounts(){
+function addaccounts(){
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[50]');
         // $this->form_validation->set_rules('confirm_password', 'Confirm password', 'trim|required|min_length[5]|max_length[50]|matches[password]');
         $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
@@ -424,7 +422,7 @@ function addspoilagesstock(){
            
             $this->adminmodel->add_purchase();
     }
-
+    }
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
@@ -516,15 +514,13 @@ function addspoilagesstock(){
 //-----------------------------CONSUMPTION---------------------
 function addConsumption(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        //$lastNumget = intval($this->adminmodel->getLastNum());
         $date_recorded = date("Y-m-d H:i:s");
         $stocks = json_decode($this->input->post('items'), true);
         $date = $this->input->post('date');
         $remarks = $this->input->post('remarks');
         $account_id = $_SESSION["user_id"];
         $user= $_SESSION["user_name"];
-        //$lastNum = $lastNumget + 1;
-        //$this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
+
         $this->adminmodel->add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks);
     }else{
     redirect('login');
@@ -541,5 +537,6 @@ function addConsumption(){
         }
     }
 }    
+
 ?>
 
