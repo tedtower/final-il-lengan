@@ -280,7 +280,7 @@ function addspoilagesstock(){
 		$this->load->view('chef/navigation');
 		$this->load->view('chef/scripts');
         $this->load->view('chef/chefConsumption');
-		
+	}
 	function loadDataConsump($record=0) {
 		$recordPerPage = 3;
 		if($record != 0){
@@ -305,7 +305,7 @@ function addspoilagesstock(){
 		$data['consumed'] = $consRecord;
 		echo json_encode($data);		
     }
-	}
+	
 	function viewConsumptionFormAdd(){
         if($this->checkIfLoggedIn()){
             $head['title'] = "Inventory - Add Consumption";
