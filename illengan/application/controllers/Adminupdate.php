@@ -107,25 +107,25 @@ class Adminupdate extends CI_Controller{
 
             if($tiActual > $actualQtyUpdate){
                 $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                $this->adminmodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $siID);
+                $this->adminmodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiDate,$tiRemarks, $stID, $siID);
                 $this->adminmodel->update_stock($stID, $updateQtyl);
-                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
                                 
             }else if($tiActual < $actualQtyUpdate) {
                     $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                    $this->adminmodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $siID);
+                    $this->adminmodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiDate,$tiRemarks,$stID, $siID);
                     $this->adminmodel->update_stock($stID, $updateQtyh);
-                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
 
             }else{
                 if($tiQty == $updateTiQty){
-                    $this->adminmodel->add_stocktransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
+                    $this->adminmodel->add_stocktransitems($tiType,0,0,$stQty,$tiDate,$tiRemarks, $stID, $siID);
                     $this->adminmodel->update_stock($stID, $stQty);
-                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
                 }else{
-                    $this->adminmodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
+                    $this->adminmodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiDate,$tiRemarks, $stID, $siID);
                     $this->adminmodel->update_stock($stID, $stQty);
-                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
                 }
             }
            
@@ -167,7 +167,6 @@ class Adminupdate extends CI_Controller{
     }
     function editConsumption(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-
             
             $tiActual = $this->input->post('tiActual');
             $actualQtyUpdate = $this->input->post('actualQtyUpdate');
@@ -178,14 +177,12 @@ class Adminupdate extends CI_Controller{
             $tiDate = $this->input->post('tiDate');
             $stID= $this->input->post('stID');
             $ciID = $this->input->post('ciID');
-
             $tiType = "consumed";
             $date_recorded = date("Y-m-d H:i:s");
             $user= $_SESSION["user_name"];
             $account_id= $_SESSION["user_id"];
             $updatedActual = $actualQtyUpdate - $tiActual;
             $updatedQty = $updateTiQty - $tiQty;
-
             if($tiActual > $actualQtyUpdate){
                 $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
                 $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
@@ -197,7 +194,6 @@ class Adminupdate extends CI_Controller{
                     $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
                     $this->adminmodel->update_stock($stID, $updateQtyh);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-
             }else{
                 if($tiQty == $updateTiQty){
                     $this->adminmodel->add_consumptiontransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
