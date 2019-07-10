@@ -39,10 +39,20 @@
 
 
     // --------------- I N V E N T O R Y ---------------
-     function get_inventory(){
-        $query = "SELECT tiID,stockitems.stID as stID,transitems.ciID as ciID,stName,tiQty,tiDate,cDateRecorded,tiRemarks FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
-        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID WHERE tiType = 'consumed'";
+     //consumption
+     function get_consumption($rowno,$rowperpage){
+        $query = "SELECT consumptions.cDate,consumptions.cID,tiID,stockitems.stID as stID,transitems.ciID as ciID,stName,tiQty,tiDate,cDateRecorded,tiRemarks FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
+        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID 
+        WHERE tiType = 'consumed' LIMIT $rowno, $rowperpage";
         return $this->db->query($query)->result_array();
+    }
+    function getCountRecConsump() {
+        $query = "SELECT count(transitems.ciID) as allcount
+        FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
+        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID 
+        WHERE tiType = 'consumed'";
+        $result= $this->db->query($query)->result_array();      
+        return $result[0]['allcount'];
     }
         function restock($stocks){
             $query = "Update stockitems set stQty = ? + ? where stID = ?";
