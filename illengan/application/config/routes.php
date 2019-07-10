@@ -234,8 +234,11 @@ $route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
 //-----------------------------------------
+$route['barista/consumption'] = "barista/viewConsumptions";
+$route['barista/jsonConsumptions'] = "barista/jsonConsumptions";
 $route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
 $route['barista/consumption/add'] = "barista/addConsumption";
+$route['barista/consumption/edit'] = "barista/editConsumption";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
@@ -274,3 +277,5 @@ $route['chef/menuspoilage/formadd'] = "chef/viewMenuSpoilageFormAdd";
 $route['chef/stock/spoilage/formadd'] = "chef/viewSpoilagesStockAdd";
 $route['chef/stock/spoilages/add']= "chef/addspoilagesstock";
 $route['chef/stock/spoilage/edit'] = "chef/editStockSpoil";
+$route['chef/orders/loadData/(:num)']="chef/loadData/$1";
+$route['chef/consumed/loadDataConsump/(:num)']="chef/loadDataConsump/$1";

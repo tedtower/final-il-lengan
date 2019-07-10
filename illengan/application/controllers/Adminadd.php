@@ -166,9 +166,7 @@ function addspoilagesstock(){
     redirect('login');
     }
 }
-
-
-    function addaccounts(){
+function addaccounts(){
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[50]');
         // $this->form_validation->set_rules('confirm_password', 'Confirm password', 'trim|required|min_length[5]|max_length[50]|matches[password]');
         $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
@@ -424,7 +422,7 @@ function addspoilagesstock(){
            
             $this->adminmodel->add_purchase();
     }
-
+    }
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
@@ -516,60 +514,19 @@ function addspoilagesstock(){
 //-----------------------------CONSUMPTION---------------------
 function addConsumption(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        //$lastNumget = intval($this->adminmodel->getLastNum());
         $date_recorded = date("Y-m-d H:i:s");
         $stocks = json_decode($this->input->post('items'), true);
         $date = $this->input->post('date');
         $remarks = $this->input->post('remarks');
         $account_id = $_SESSION["user_id"];
         $user= $_SESSION["user_name"];
-        //$lastNum = $lastNumget + 1;
-        //$this->adminmodel->add_stockspoil($date_recorded,$stocks,$account_id,$lastNum,$user);
+
         $this->adminmodel->add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks);
     }else{
     redirect('login');
     }
 }
 
-    function editConsumption(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $items = json_decode($this->input->post('items'),true);
-            if(count($items)> 0){
-                $currentDate = date("Y-m-d H:i:s");
-                $transDate = $this->input->post('date');
-                $con = array(
-                    "date" => $transDate,
-                    "dateRecorded" => $currentDate,
-                    "remarks" => $this->input->post('remarks')
-                );
-                $conID = $this->adminmodel->edit_consumption($con);
-                foreach($items as $item){
-                    $qty = $this->adminmodel->get_stockQty($item['stock'])[0]['stQty'];
-                    $itemID = $this->adminmodel->add_consumedItem($item['stock']);
-                    $conItem = array(
-                        "id" => $itemID,
-                        "qty" => $item['qty'],
-                        "remarks" => $item['remarks'],
-                        "type" => "consumption",
-                        "date" => $transDate,
-                        "dateRecorded" => $currentDate,
-                        "remain" => $qty - $item['qty'],
-                        "stock" => $item['stock']
-                    );
-                    $this->adminmodel->add_consumptionQty($conID, $conItem);
-                    $this->adminmodel->add_consumptionLog($conID, $conItem);
-                    $this->adminmodel->deduct_stockQty($conItem['qty'], $conItem['stock']);
-                }
-            }
-            echo json_encode(array(
-                "success" => true
-            ));
-        }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
-        }
-    }
 //---------------------------------------------------------------------------------------
     function addBeginningLogs(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -580,5 +537,6 @@ function addConsumption(){
         }
     }
 }    
+
 ?>
 
