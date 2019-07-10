@@ -138,7 +138,7 @@
         $("#listDeliver .ic-level-1").on("click",function(event){
             if(event.target.type !== "checkbox"){
                 $(this).find("input[name='delivery']").trigger("click");
-            } console.log("eyeyeye");
+            }
         });
         $(document).on("click", "#listDeliver input[name='delivery']", function(event) {
             var id = $(this).val();

@@ -287,6 +287,7 @@
     </div>
             <?php include_once('templates/scripts.php') ?>
             <script>
+            
             $(function() {
                 var uom;
                 var stockitems;
@@ -301,6 +302,7 @@
                     }
                 });
                 $("#drForm .radio-level").on("change",function(){
+                    resetForm();
                     var level = $(this).attr("data-trigger-level");
                     $("#drForm .status-level").each(function(index){
                         !$(this).attr("data-level").includes(level) && $(this).attr("data-level") != 0 ? $(this).prop("disabled",true) : $(this).prop("disabled",false);
@@ -424,7 +426,7 @@
                     var newItems = [], merchItems = [], purItems = [], retItems = [];
               
                     var params = {
-                        url: 'admin/deliveryreceipt/add',
+                        url: '/admin/deliveryreceipt/add',
                         type: "POST",
                         success: function() {
                             console.log("yehey");
@@ -436,7 +438,9 @@
                             $("#drForm .ic-level-1").each(function (index) {
                                 newItems.push({
                                     stID: $(this).find("select[name='stID[]']").val(),
-                                    qty: $(this).find("input[name='actualQty[]']").val()
+                                    qty: $(this).find("input[name='actualQty[]']").val(),
+                                    piStatus: 'delivered',
+                                    date: date
                                 });
                             });
 
@@ -457,7 +461,7 @@
                             break;
                     }
 
-                    //$.ajax(params);
+                    $.ajax(params);
                     console.log(params);
                    
                     // var url = $(this).attr("action");
@@ -646,6 +650,27 @@
                     });
                 });
                 $("#merchandiseBrochure").modal("hide");
+            }
+            var returns = <?= json_encode($returns) ?>;
+
+            function setReturnsBrochure() {
+                $("tbody.deliveries").empty();
+                deliveries.forEach(function (del) {
+                    $("tbody.deliveries").append(`
+                    <tr class="ic-level-1">
+                    <td><input type="checkbox" class="mr-2" name="delivery"
+                            data-name="${del.stName}" data-uom="${del.uomName}" 
+                            data-stid="${del.stID}"  data-actual="${del.spmActual}" 
+                            data-price="${del.spmPrice}"  data-spmid="${del.spmID}"
+                             value="${del.stID}"></td>
+                    <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spAltName}' 
+                    data-spid="${del.spID}">${del.trans}</td>
+                    <td class="item" data-stid='${del.stID}'>${del.item}</td>
+                </tr>`);
+                });
+            }
+            function resetForm() {
+                $("#drForm .ic-level-2").empty();
             }
 
             </script>
