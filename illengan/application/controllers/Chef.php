@@ -280,7 +280,31 @@ function addspoilagesstock(){
 		$this->load->view('chef/navigation');
 		$this->load->view('chef/scripts');
         $this->load->view('chef/chefConsumption');
-
+		
+	function loadDataConsump($record=0) {
+		$recordPerPage = 3;
+		if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+		}      	
+      	$recordCount = $this->Chefmodel->getCountRecConsump();
+        $consRecord = $this->Chefmodel->get_consumption($record,$recordPerPage);
+        $config['base_url'] = base_url().'chef/consumed/loadDataConsump';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+		$config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+		$config['total_rows'] = $recordCount;
+		$config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+		$data['consumed'] = $consRecord;
+		echo json_encode($data);		
+    }
 	}
 	function viewConsumptionFormAdd(){
         if($this->checkIfLoggedIn()){
