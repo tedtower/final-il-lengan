@@ -4,7 +4,9 @@ class Adminview extends CI_Controller{
     function __construct(){
         parent:: __construct();
         $this->load->model('adminmodel'); 
-        date_default_timezone_set('Asia/Manila');  
+        date_default_timezone_set('Asia/Manila');
+	    $this->load->helper('url');
+        $this->load->library('pagination');
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d 2H:i:s")
     }
@@ -97,7 +99,6 @@ function viewInventory($error = null){
         $this->load->view('admin/templates/head', $data);
         $this->load->view('admin/templates/sideNav');
         $data['inventory'] = array(
-            "stocks" => $this->adminmodel->get_stocks(),
             "categories" => $this->adminmodel->get_stockSubCategories()
         );
         $data['category'] = $this->adminmodel->get_stockcategories();
@@ -105,6 +106,30 @@ function viewInventory($error = null){
     }else{
         redirect('login');
     }
+}
+function loadDataStocks($record=0) {
+    $recordPerPage = 10;
+    if($record != 0){
+        $record = ($record-1) * $recordPerPage;
+    }      	
+    $recordCount = $this->adminmodel->record_count();
+    $stkRecord = $this->adminmodel->get_invstocks($record,$recordPerPage);
+    $config['base_url'] = base_url().'admin/stocks/loadDataStocks';
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '<ul>';
+    $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;<li>';
+    $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+    $config['cur_tag_close'] = '</li>';
+    $config['use_page_numbers'] = TRUE;
+    $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+    $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+    $config['total_rows'] = $recordCount;
+    $config['per_page'] = $recordPerPage;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    $data['invstocks'] = $stkRecord;
+    echo json_encode($data);		
 }
 
 function performPhysicalCount($error = null){
@@ -251,6 +276,7 @@ function viewStockCard($stID){
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['logs'] = $this->adminmodel->get_stockCard($stID);
+        $data['recons'] = $this->adminmodel->get_stockCard($stID)[0];
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         // $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
         $this->load->view('admin/stockcard', $data);
@@ -910,12 +936,37 @@ function getStockItem(){
             $data['title'] = "Inventory - Categories";
             $this->load->view('admin/templates/head',$data);
             $this->load->view('admin/templates/sideNav');
+	    $this->load->view('admin/templates/scripts');
             $data['category'] = $this->adminmodel->get_stockcategories();
             $data['maincategory'] = $this->adminmodel->get_maincatStock();
             $this->load->view('admin/inventorycategories',$data);
         }else{
             redirect('login');
         }
+    }
+	function loadDataCategories($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countCat();
+        $catRecord = $this->adminmodel->get_stkcat($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/menu/loadDataCategories';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['category'] = $catRecord;
+        echo json_encode($data);		
     }
     function getStocksForBeginningBrochure(){
         if($this->checkIfLoggedIn()){

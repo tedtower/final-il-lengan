@@ -68,7 +68,7 @@ $(document).ready(function(){
                     <span class="aoSub mt-2 ml-1"></span>
                     <div class="rem_add mt-2">
                         <!--Delete Button-->
-                        <a href="javascript:void(0)" class="text-danger ml-1 px-2"><i class="fal fa-times"></i></a>
+                        <a href="javascript:void(0)" onclick="$(this).parent().parent().parent().remove()" class="text-danger ml-1 px-2"><i class="fal fa-times"></i></a>
                     </div>
                 </div>
             </div>`;

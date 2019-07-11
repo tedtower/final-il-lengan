@@ -165,11 +165,11 @@
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
-                var checked = $("#conForm input:checked").length > 0;
-                if (!checked){
-                    alert("Please check at least one checkbox!");
-                    return false;
-                }
+                // var checked = $("#conForm input:checked").length > 0;
+                // if (!checked){
+                //     alert("Please check at least one checkbox!");
+                //     return false;
+                // }
             console.log(menus);
             console.log(date);
             if(menus != null){

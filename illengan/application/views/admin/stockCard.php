@@ -59,6 +59,7 @@
                                         break;
                                 }
                         ?>
+                            
                             <tr>
                                 <td><img src="/assets/media/admin/<?= $icon?>.png" style="height:18px;width:18px"/></td>
                                 <td><?= ucwords($log['type'])?></td>
@@ -67,19 +68,23 @@
                                 <td><?= $log['actual']?></td>
                                 <td><?= $log['remain']?></td>
                             </tr>
+                            <?php
+                            if($log['reDate'] > date("Y-m-d",strtotime($log['logDate']))) {
+                                
+                        ?>
                             <!--table row when an inventory check was performed-->
-                            <!-- <tr style="background:whitesmoke">
-                                <td><img src="/assets/media/admin/check.png" style="height:18px;width:18px"/></td>
+                            <tr style="background:#fcfcfc">
+                                <td><img src="/assets/media/admin/check.png" style="height:18px;width:18px;"/></td>
                                 <td>Inventory Check</td>
-                                <td><b>Date:</b> </td>
-                                <td><b>Physical Count:</b> </td>
-                                <td><b>Discrepancy:</b> </td>
-                                <td><b>Remarks:</b> </td>
-                            </tr> -->
+                                <td>DATE: <?= $log['reDate']?></td>
+                                <td>PHYSICAL COUNT: <?= $log['reQty']?></td>
+                                <td><i>Discrepancy:</i> <?= $log['reDiscrepancy']?></td>
+                                <td><i>Remarks:</i> <?= $log['reRemarks']?></td>
+                            </tr>
                         <?php
                             }
+                            }
                         }?>
-
 
                         </tbody>
                     </table>
