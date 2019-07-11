@@ -68,14 +68,14 @@
                                 <td><?= $log['remain']?></td>
                             </tr>
                             <!--table row when an inventory check was performed-->
-                            <tr style="background:whitesmoke">
+                            <!-- <tr style="background:whitesmoke">
                                 <td><img src="/assets/media/admin/check.png" style="height:18px;width:18px"/></td>
                                 <td>Inventory Check</td>
                                 <td><b>Date:</b> </td>
                                 <td><b>Physical Count:</b> </td>
                                 <td><b>Discrepancy:</b> </td>
                                 <td><b>Remarks:</b> </td>
-                            </tr>
+                            </tr> -->
                         <?php
                             }
                         }?>
