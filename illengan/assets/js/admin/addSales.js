@@ -163,10 +163,13 @@ function setSubtotal() {
             if(discount === 0 || discount === null) {
                 $('.prPrice').eq(i).val($('.prPrice').eq(i).attr('data-orPrice'));
                 prPrice = parseFloat(document.getElementsByClassName('prPrice')[i].value);
+                console.log(prPrice);
             } else {
                 orPrice = parseFloat($('.prPrice').eq(i).attr('data-orPrice'));
                 document.getElementsByClassName('prPrice')[i].value = parseFloat(orPrice - discount);
                 prPrice = parseFloat(document.getElementsByClassName('prPrice')[i].value);
+                console.log(prPrice);
+
             }
             
             olQty = parseInt(document.getElementsByClassName('olQty')[i].value);

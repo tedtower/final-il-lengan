@@ -189,9 +189,11 @@
             }
         });
         $("#listDeliver input[name='search']").on("keyup",function(){
-            var string = $(this).val();
-            $("#listDeliver .item").each(function(index){
-                if(!$(this).text().includes(string)){
+            var string = $(this).val().toLowerCase();
+
+            $("#listDeliver .ic-level-1").each(function(index){
+                var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm,' ')
+                if(!text.includes(string)){
                     $(this).closest(".ic-level-1").hide();
                 }else{
                     $(this).closest(".ic-level-1").show();
