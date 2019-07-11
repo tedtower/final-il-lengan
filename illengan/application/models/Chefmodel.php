@@ -87,12 +87,17 @@
         }
 
     // --------------- S P O I L A G E S ---------------
-        function get_spoilagesmenu(){
-            $query = "Select osID,msID,prID,sID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
-            AS msDateRecorded,msRemarks from stockspoil left join menuspoil using (msID) inner join spoiledmenu using (msID) inner join preferences using (prID) 
-            inner join menu using (mID)";
-            return  $this->db->query($query)->result_array();
-        }
+       function get_spoilagesmenu($rowno,$rowperpage){
+        $query = "Select osID,menuspoil.msID as msID,prID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
+        AS msDateRecorded,msRemarks, CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ',CONCAT(' ',mTemp))) as prName from menuspoil inner join spoiledmenu on menuspoil.msID=spoiledmenu.msID inner join preferences using (prID) 
+        inner join menu using (mID) LIMIT $rowno, $rowperpage";
+        return  $this->db->query($query)->result_array();
+    }
+    function getCountRecMenuSpoil() {
+        $query = "SELECT count(msID) as allcount FROM spoiledmenu";
+        $result= $this->db->query($query)->result_array();      
+        return $result[0]['allcount'];
+    }
         function get_spoilagesstock(){
             $query = "SELECT * FROM transitems inner join stockitems using (stID) where siID != 'NULL'";
             return  $this->db->query($query)->result_array();
