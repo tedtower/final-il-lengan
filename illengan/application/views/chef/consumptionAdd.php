@@ -7,7 +7,7 @@
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
-                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption')?>" data-original-title style="margin:0;width:15%"
+                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption')?>" data-original-title style="margin:0;width:20%"
                                             id="addBtn">View Consumption</a>
                     </div>
                     <!--Card Container-->
@@ -152,6 +152,11 @@
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
+                var checked = $("#conForm input:checked").length > 0;
+                if (!checked){
+                    alert("Please check at least one checkbox!");
+                    return false;
+                }
             console.log(items);
             console.log(date);
             if(items != null){
