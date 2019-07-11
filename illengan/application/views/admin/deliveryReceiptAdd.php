@@ -57,7 +57,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is required!" required>
+                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is required!" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -73,26 +73,26 @@
                                         <div class="form-check form-check-inline mb-3"
                                             style="font-size:14px;width:100%;margin:0" required>
                                             <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
-                                                    type="radio" data-trigger-level="3" name="inlineRadioOptions">W/ PO Ref</label>
+                                                    type="radio" data-trigger-level="3" name="inlineRadioOptions" value="3">W/ PO Ref</label>
                                             <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
-                                                    type="radio" data-trigger-level="2" name="inlineRadioOptions">W/O PO Ref</label>
+                                                    type="radio" data-trigger-level="2" name="inlineRadioOptions" value="2">W/O PO Ref</label>
                                             <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
-                                                    type="radio" data-trigger-level="1" name="inlineRadioOptions">No Official Supplier</label>
+                                                    type="radio" data-trigger-level="1" name="inlineRadioOptions" value="1">No Official Supplier</label>
                                         </div>
                                         <!--Buttons-->
                                         <button id="addNewBtn" data-level="1" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button">New Item</button>
+                                            type="button" disabled>New Item</button>
                                         <button id="addMBtn" data-level="2" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button">Add Merchandise</button>
+                                            type="button" disabled>Add Merchandise</button>
                                         <button id="addPOBtn" data-level="3" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button">PO Item</button>
+                                            type="button" disabled>PO Item</button>
                                         <button id="addRBtn" data-level="3" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button">Return Item</button>
+                                            type="button" disabled>Return Item</button>
                                         <br><br>
 
                                         <!--input fields in adding trans items w/PO and w/supplier -->
                                         <div class="ic-level-2">
-                                            <!-- <div style="overflow:auto" class="ic-level-1">
+                                            <div style="overflow:auto" class="ic-level-1">
                                                 <div style="float:left;width:96%;overflow:auto;">
                                                     <div class="input-group mb-1">
                                                         <input type="text" name="name[]"
@@ -115,25 +115,11 @@
                                                     <img class="exitBtn" src="/assets/media/admin/error.png"
                                                         style="width:15px;height:15px;float:right;">
                                                 </div>
-                                            </div> -->
-                                            <!-- <div style="overflow:auto" class="ic-level-1">
-                                                <div style="float:left;width:96%;overflow:auto;">
-                                                    <div class="input-group mb-1">
-                                                        <input name="stID[]" type="text"
-                                                            class="form-control form-control-sm" placeholder="Stock">
-                                                        <input name="actualQty[]" type="number"
-                                                            class="form-control form-control-sm" placeholder="Actual Qty">
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2" style="float:left:width:3%;overflow:auto">
-                                                    <img class="exitBtn" src="/assets/media/admin/error.png"
-                                                        style="width:15px;height:15px;float:right;">
-                                                </div>
-                                            </div> -->
+                                            </div>
                                         </div>
 
-                                        <!--input fields in adding trans items w/o Supplier -->
-                                        <!-- <div class="ic-level-2">
+                                        <!-- input fields in adding trans items w/o Supplier -->
+                                        <div class="ic-level-2">
                                             <div style="overflow:auto" class="ic-level-1">
                                                 <div style="float:left;width:96%;overflow:auto;">
                                                     <div class="input-group mb-1">
@@ -148,7 +134,7 @@
                                                         style="width:15px;height:15px;float:right;">
                                                 </div>
                                             </div>
-                                        </div> -->
+                                        </div>
                                         <br>
                                         <span>Total: &#8369;<span class="total">0</span></span>
                                         <!--Total of the trans items-->
@@ -207,7 +193,7 @@
                             <!--End of PO sidenav-->
 
                             <!--Start of Return sidenav-->
-                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card" id="returnCard" style="float:left;width:35%;margin-left:3%">
                                 <div class="card-header" style="overflow:auto">
                                     <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Return</div>
                                     <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
@@ -232,12 +218,6 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ic-level-2">
-                                            <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="stock"
-                                                    data-name="" value="" required></td>
-                                                <td class=""></td>
-                                                <td class=""></td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -287,17 +267,21 @@
     </div>
             <?php include_once('templates/scripts.php') ?>
             <script>
+            
             $(function() {
                 var uom;
+                var stockitems;
                 $.ajax({
                     method: "GET",
                     url: "/admin/getUOMs",
                     dataType: "JSON",
                     success: function(data) {
                         uom = data.uom;
+                        stockitems = data.stocks;
                     }
                 });
                 $("#drForm .radio-level").on("change",function(){
+                    resetForm();
                     var level = $(this).attr("data-trigger-level");
                     $("#drForm .status-level").each(function(index){
                         !$(this).attr("data-level").includes(level) && $(this).attr("data-level") != 0 ? $(this).prop("disabled",true) : $(this).prop("disabled",false);
@@ -308,8 +292,8 @@
                         <div style="overflow:auto" class="ic-level-1">
                             <div style="float:left;width:96%;overflow:auto;">
                                 <div class="input-group mb-1">
-                                    <input name="stID[]" type="text"
-                                        class="form-control form-control-sm" placeholder="Stock">
+                                    <select name="stID[]" 
+                                        class="form-control form-control-sm" placeholder="Stock"></select>
                                     <input name="actualQty[]" type="number"
                                         class="form-control form-control-sm" placeholder="Actual Qty">
                                 </div>
@@ -320,6 +304,12 @@
                             </div>
                         </div>`);
                     setIL1FormEvents();
+
+                    stockitems.forEach(function(item) {
+                        $("select[name='stID[]']").append(
+                            `<option value="${item.stID}">${item.stName}</option>`
+                        );
+                    })
                 });
                 $("#addMBtn").on("click", function() {
                     var url = $(this).attr("data-url");
@@ -407,43 +397,89 @@
                 });
                 $("#drForm").on("submit", function(event) {
                     event.preventDefault();
-                    var url = $(this).attr("action");
-                    var supplier = $("#drForm select[name='spID']").val();
-                    var date = $("#drForm input[name='tDate']").val();
-                    var receipt = $("#drForm input[name='receipt']").val();
-                    var remarks = $("#drForm textarea[name='tRemarks']").val();
-                    var orItems = [];
-                    $("#drForm .ic-level-1").each(function(index) {
-                        orItems.push({
-                            tiID: $(this).attr("data-id"),
-                            name: $(this).find("input[name='itemName[]']").val(),
-                            qty: $(this).find("input[name='itemQty[]']").val(),
-                            uomID: $(this).find("select[name='itemUnit[]']").val(),
-                            price: $(this).find("input[name='itemPrice[]']").val(),
-                            discount: $(this).find("input[name='discount[]']").val(),
-                            stID: $(this).find("input[name='stID[]']").attr("data-id"),
-                            actualQty: $(this).find("input[name='actualQty[]']").val()
-                        });
-                    });
-                    $.ajax({
-                        method: "POST",
-                        url: url,
-                        data: {
-                            supplier: supplier,
-                            date: date,
-                            receipt: receipt,
-                            remarks: remarks,
-                            items: JSON.stringify(orItems)
-                        },
-                        dataType: "JSON",
-                        success: function(data) {
-                            console.log(data);
-                        },
-                        error: function(response, setting, error) {
-                            console.log(error);
-                            console.log(response.responseText);
+                    var supplier = $(this).find("select[name='spID']").val();
+                    var source = $(this).find("input[name='source']").val();
+                    var date = $(this).find("input[name='date']").val();
+                    var receipt = $(this).find("input[name='receipt']").val();
+                    var remarks = $(this).find("textarea[name='remarks']").val();
+                    var newItems = [], merchItems = [], purItems = [], retItems = [];
+              
+                    var params = {
+                        url: '/admin/deliveryreceipt/add',
+                        type: "POST",
+                        success: function() {
+                            console.log("yehey");
                         }
-                    });
+                    };
+
+                    switch (parseInt($("input[name='inlineRadioOptions']:checked").val())) {
+                        case 1:
+                            $("#drForm .ic-level-1").each(function (index) {
+                                newItems.push({
+                                    stID: $(this).find("select[name='stID[]']").val(),
+                                    qty: $(this).find("input[name='actualQty[]']").val(),
+                                    piStatus: 'delivered',
+                                    date: date
+                                });
+                            });
+
+                            params.data = {
+                                spAltName: source,
+                                date: date,
+                                receipt: receipt,
+                                remarks: remarks,
+                                addtype: 1,
+                                items: JSON.stringify(newItems)
+                            }
+                            break;
+                        case 2:
+                            console.log("2");
+                            break;
+                        case 3:
+                            console.log("3");
+                            break;
+                    }
+
+                    $.ajax(params);
+                    console.log(params);
+                   
+                    // var url = $(this).attr("action");
+                    // var supplier = $("#drForm select[name='spID']").val();
+                    // var date = $("#drForm input[name='tDate']").val();
+                    // var receipt = $("#drForm input[name='receipt']").val();
+                    // var remarks = $("#drForm textarea[name='tRemarks']").val();
+                    // var orItems = [];
+                    // $("#drForm .ic-level-1").each(function(index) {
+                    //     orItems.push({
+                    //         tiID: $(this).attr("data-id"),
+                    //         name: $(this).find("input[name='itemName[]']").val(),
+                    //         qty: $(this).find("input[name='itemQty[]']").val(),
+                    //         uomID: $(this).find("select[name='itemUnit[]']").val(),
+                    //         price: $(this).find("input[name='itemPrice[]']").val(),
+                    //         discount: $(this).find("input[name='discount[]']").val(),
+                    //         stID: $(this).find("input[name='stID[]']").attr("data-id"),
+                    //         actualQty: $(this).find("input[name='actualQty[]']").val()
+                    //     });
+                    // });
+                    // $.ajax({
+                    //     method: "POST",
+                    //     url: url,
+                    //     data: {
+                    //         supplier: supplier,
+                    //         date: date,
+                    //         receipt: receipt,
+                    //         remarks: remarks,
+                    //         items: JSON.stringify(orItems)
+                    //     },
+                    //     dataType: "JSON",
+                    //     success: function(data) {
+                    //         console.log(data);
+                    //     },
+                    //     error: function(response, setting, error) {
+                    //         console.log(error);
+                    //         console.log(response.responseText);
+                    //     }
+                    // });
                 });
             });
 
@@ -594,6 +630,37 @@
                 });
                 $("#merchandiseBrochure").modal("hide");
             }
+            var returns = <?= json_encode($returns) ?>;
+
+            function setReturnsBrochure() {
+                $("#returnCard tbody").empty();
+                returns.forEach(function (del) {
+                    $("#returnCard tbody").append(`
+                    <div style="overflow:auto" class="ic-level-1">
+                                                <div style="float:left;width:96%;overflow:auto;">
+                                                    <div class="input-group mb-1">
+                                                        <input type="text" name="name[]"
+                                                            class="form-control form-control-sm" placeholder="Item Name"
+                                                            style="width:17%">
+                                                        <input type="number" name="qty[]"
+                                                            class="form-control form-control-sm" placeholder="Qty">
+                                                        <input type="text" name="unit[]"
+                                                            class="form-control form-control-sm" placeholder="Unit">
+                                                        <input type="number" name="price[]"
+                                                            class="form-control form-control-sm" placeholder="Price">
+                                                        <input type="number" name="discount[]"
+                                                            class="form-control form-control-sm" placeholder="Discount">
+                                                        <input type="number" name="subtotal[]"
+                                                            class="form-control form-control-sm" placeholder="Subtotal"
+                                                            readonly>
+                                                    </div>
+                                                </div>`);
+                });
+            }
+            function resetForm() {
+                $("#drForm .ic-level-2").empty();
+            }
+
             </script>
 
             </html>

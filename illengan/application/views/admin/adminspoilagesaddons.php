@@ -80,7 +80,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Quantity</span>
                                                         </div>
-                                                        <input type="number" min="1" name="aosQty" id="aosQty" class="form-control form-control-sm">
+                                                        <input type="number" min="1" name="aosQty" id="aosQty" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("aosQty"); ?></span>
                                                     </div>
                                                     <!--Date Spoiled-->

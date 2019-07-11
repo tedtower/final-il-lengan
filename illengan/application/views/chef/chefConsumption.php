@@ -8,9 +8,11 @@
                 <!-- Real Time Date & Time -->
                 <?php echo date("M j, Y -l"); ?>
             </p>
-            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption/formadd')?>" data-original-title style="margin:0; width:15%;"
+            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption/formadd')?>" data-original-title style="margin:0; width:20%;"
                                                 id="addBtn">Add Consumption</a>
             </div>
+            <br>
+            <div id="pagination"></div>
                 <div class="container-fluid">
                     <div class="content">
                         <div class="container-fluid">
@@ -20,7 +22,7 @@
                                     width="100%">
                                     <thead class="thead-dark">
                                         <th></th>
-                                        <th><b class="pull-left">Transaction #</b></th>
+                                        <th><b class="pull-left">Consumption #</b></th>
                                         <th><b class="pull-left">Stock Name</b></th>
                                         <th><b class="pull-left">Qty Consumed</b></th>
                                         <th><b class="pull-left">Date Consumed</b></th>
@@ -72,6 +74,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:170px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 New Date Consumed</span>
                                                         </div>
+                                                        <input type="hidden" name="currentDate" id="currentDate" value="<?php echo date('Y-m-d')?>"/>
                                                         <input type="date" name="cDate" id="cDate" class="form-control form-control-sm" required>
                                                         <span class="text-danger"><?php echo form_error("cDate"); ?></span>
                                                     </div>
@@ -366,77 +369,68 @@
         </div>
     </div>
     </div>
-	<?php include_once('scripts.php') ?>
     <script>
-        $(function () {
-        viewInventoryJs()
-        });
-    // var getEnumValsUrl = '< ?= site_url('chef/transactions/getEnumVals')?>';
-    // var crudUrl = '< ?= site_url('barista/transactions/add')?>';
-    // var getTransUrl = '< ?= site_url('barista/transactions/getTransaction')?>';
-    // var loginUrl = '< ?= site_url('login')?>';
-    // var getPOsUrl = '< ?= site_url('barista/transactions/getPOs')?>';
-    // var getDRsUrl = '< ?= site_url('barista/transactions/getDRs')?>';
-    // var getSPMsUrl = '< ?= site_url('barista/transactions/getSPMs')?>';
 //POPULATE TABLE
-    var inventoryitems = [];
-	var table = $('#inventoryTable');
-
-function viewInventoryJs() {
-	$.ajax({
-		url: "<?= site_url('chef/inventoryJS') ?>",
-		method: "post",
-		dataType: "json",
-		success: function (data) {
-			inventoryitems = data;
-			setInventoryData(inventoryitems);
-			console.log('Success');
-		},
-		error: function (response, setting, errorThrown) {
-			console.log(response.responseText);
-			console.log(errorThrown);
-		}
+$(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum2 = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum2);
 	});
-}
-
-function setInventoryData() {
-	if ($("#inventoryTable > tbody").children().length > 0) {
-		$("#inventoryTable > tbody").empty();
+	function createPagination(pageNum2){
+		$.ajax({
+			url: '<?=base_url()?>chef/consumed/loadDataConsump/'+pageNum2,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                inventoryitems = data.consumed;
+                setConsumptionData(inventoryitems);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
 	}
-	inventoryitems.forEach(table => {
-		$("#inventoryTable > tbody").append(`
-		<tr data-tiID="${table.tiID}" data-stID="${table.stID}" data-ciID="${table.ciID}">
-        <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-			<td>${table.tiID}</td>
-			<td>${table.stName}</td>
-			<td>${table.tiQty}</td>
-			<td>${table.tiDate}</td>
-			<td>${table.cDateRecorded}</td>
-            <td>
-            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
-                                data-target="#editConsump">Edit</button>
-                            <!--Delete button-->
-            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteSpoilage">Archived</button>
-            </td>
-		</tr>`);
-    var accordion = `
-            <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="6"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-					<div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-							<b style="float:left;">Remarks: </b><!-- label-->
-								<p style="float:left;margin-left:2%">
-								${table.tiRemarks == null || table.tiRemarks == '' ? "No remarks." : table.tiRemarks}
-                                </p>
-                            </div> 
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            `;
+        
+   });
+
+function setConsumptionData(data) {
+		$("#inventoryTable > tbody").empty();
+        for(cons in data){
+            var row1 = `<tr data-tiID="`+data[cons].tiID+`" data-stID="`+data[cons].stID+`" data-ciID="`+data[cons].ciID+`">`;
+                row1 += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>`;
+                row1 += `<td>`+data[cons].cID+`</td>`;
+                row1 += `<td>`+data[cons].stName+`</td>`;
+                row1 += `<td>`+data[cons].tiQty+`</td>`;
+                row1 += `<td>`+data[cons].cDate+`</td>`;
+                row1 += `<td>`+data[cons].cDateRecorded+`</td>`;
+                row1 += `<td>
+                <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                                    data-target="#editConsump">Edit</button>
+                                <!--Delete button-->
+                <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                                data-target="#deleteSpoilage">Archived</button>
+                </td></tr>`;
+            var accord = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+                accord += ` <td colspan="6">`;
+                accord += `<div style="overflow:auto;display:none">`;
+                accord += `<div style="overflow:auto;">`;
+                accord += `<div style="margin:0 46px;overflow:auto;">`;
+                accord += `<b style="float:left;">Remarks: </b>`;
+                accord += `<p style="float:left;margin-left:2%">`;
+                    if(data[cons].tiRemarks  == null || data[cons].tiRemarks == '' ){
+                        accord += `No Remarks`;
+                        accord += `</p>`;
+                    }else{
+                        accord += data[cons].tiRemarks;
+                        accord += `</p>`;
+                    }
+            $("#inventoryTable  tbody").append(row1);
+            $("#inventoryTable  tbody").append(accord);
+        
         $(".updateBtn").last().on('click', function () {
 				$("#editConsump").find("input[name='tiID']").val($(this).closest("tr").attr(
                     "data-tiID"));
@@ -446,26 +440,40 @@ function setInventoryData() {
                     "data-ciID"));
 				$("#editConsump").find("input[name='cQty']").val($(this).closest("tr").attr(
                     "data-cQty"));
-				$("#editConsump").find("input[name='coldQty']").val(table.tiQty);
-				$("#editConsump").find("input[name='coldDate']").val(table.tiDate);
+				$("#editConsump").find("input[name='coldQty']").val(data[cons].tiQty);
+				$("#editConsump").find("input[name='coldDate']").val(data[cons].tiDate);
 				$("#editConsump").find("input[name='cDate']").val($(this).closest("tr").attr(
 					"data-cDate"));
 				$("#editConsump").find("input[name='cRemarks']").val($(this).closest("tr").attr(
 					"data-cRemarks"));
             });
-            $("#inventoryTable > tbody").append(accordion);
-	});
-    $(".accordionBtn").on('click', function(){
-            if($(this).closest("tr").next(".accordion").css("display") == 'none'){
-                $(this).closest("tr").next(".accordion").css("display","table-row");
-				$(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
-			
-            }else{
-                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
-                $(this).closest("tr").next(".accordion").hide("slow");
-            }
-        	});
+        }
+        $(".accordionBtn").on('click', function(){
+                if($(this).closest("tr").next(".accordion").css("display") == 'none'){
+                    $(this).closest("tr").next(".accordion").css("display","table-row");
+                    $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+                
+                }else{
+                    $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                    $(this).closest("tr").next(".accordion").hide("slow");
+                }
+        });
+    
 }
+$("#editConsump input[name='cDate']").on('change',function(){
+            var date = $(this).val();
+            var output = $("#editConsump input[name='currentDate']").val();
+            var endate = new Date(date);
+            var curdate = new Date(output);
+            if(endate > curdate)
+            {
+                alert("Invalid Date");
+                $(this).val('');
+            }else{
+                $(this).val(date);
+            }
+
+});
 //END OF POPULATING TABLE
 //-------------------------Function for Edit-------------------------------
 $(document).ready(function() {

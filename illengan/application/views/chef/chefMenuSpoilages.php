@@ -8,9 +8,11 @@
                 <!-- Real Time Date & Time -->
                 <?php echo date("M j, Y -l"); ?>
             </p>
-            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/menuspoilage/formadd')?>" data-original-title style="margin:0; width:15%;"
+            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/menuspoilage/formadd')?>" data-original-title style="margin:0; width:20%;"
                                                 id="addBtn">Add Menu Spoilage</a>
             </div>
+            <br>
+            <div id="pagination"></div>
                 <div class="container-fluid">
                     <div class="content">
                         <div class="container-fluid">
@@ -53,7 +55,7 @@
                                                             Spoilage Date</span>
                                                     </div>
                                                     <input type="date" name="spoilDate" id="spoilDate" style="width: 70%;";
-                                                        class="form-control form-control-sm" required>
+                                                        class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                 </div>
 												</div>
 												<!--Add Menu Item-->
@@ -127,7 +129,8 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 New Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required>
+                                                        <input type="hidden" name="currentDate" id="currentDate" value="<?php echo date('Y-m-d')?>"/>
+                                                        <input type="date" name="msDate" id="msDate" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                         <span class="text-danger"><?php echo form_error("msDate"); ?></span>
                                                     </div>
 													<div class="input-group mb-3">
@@ -148,7 +151,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Remarks</span>
                                                         </div>
-                                                        <input type="text" name="msRemarks" id="msRemarks" class="form-control form-control-sm" required>
+                                                        <input type="text" name="msRemarks" id="msRemarks" class="form-control form-control-sm">
                                                         <span class="text-danger"><?php echo form_error("msRemarks"); ?></span>
                                                     </div>
 													<input name="msID" id="msID" hidden="hidden">
@@ -322,98 +325,89 @@
     </div>
 	<?php include_once('scripts.php') ?>
     <script>
-        $(function () {
-        viewInventoryJs()
-        });
-    // var getEnumValsUrl = '< ?= site_url('chef/transactions/getEnumVals')?>';
-    // var crudUrl = '< ?= site_url('barista/transactions/add')?>';
-    // var getTransUrl = '< ?= site_url('barista/transactions/getTransaction')?>';
-    // var loginUrl = '< ?= site_url('login')?>';
-    // var getPOsUrl = '< ?= site_url('barista/transactions/getPOs')?>';
-    // var getDRsUrl = '< ?= site_url('barista/transactions/getDRs')?>';
-    // var getSPMsUrl = '< ?= site_url('barista/transactions/getSPMs')?>';
-//POPULATE TABLE
-    var inventoryitems = [];
-	var table = $('#inventoryTable');
-
-function viewInventoryJs() {
-	$.ajax({
-		url: "<?= site_url('chef/spoilagesmenujson') ?>",
-		method: "post",
-		dataType: "json",
-		success: function (data) {
-			inventoryitems = data;
-			setInventoryData(inventoryitems);
-			console.log('Success');
-		},
-		error: function (response, setting, errorThrown) {
-			console.log(response.responseText);
-			console.log(errorThrown);
-		}
+       $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
 	});
-}
-
-function setInventoryData() {
-	if ($("#inventoryTable > tbody").children().length > 0) {
-		$("#inventoryTable > tbody").empty();
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>chef/menuspoilage/loadDataMenuSpoil/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var menuitems = data.menuspoiled;
+                setMenuSpoilData(menuitems);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
 	}
-	inventoryitems.forEach(table => {
-        var osID;
-        if(table.osID == null){
-            osID = '';
-        }else{
-            osID = table.osID;
-        }
-		$("#inventoryTable > tbody").append(`
-		<tr data-msID="${table.msID}" data-prID="${table.prID} data-sID="${table.sID}">
-        <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-            <td>${osID}</td>
-			<td>${table.mName}</td>
-			<td>${table.msQty}</td>
-			<td>${table.msDate}</td>
-			<td>${table.msDateRecorded}</td>
-            <td>
-            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+        
+   });
+
+function setMenuSpoilData(data) {
+    $("#inventoryTable > tbody").empty();
+        for(mesp in data){
+            var osID;
+                if(data[mesp].osID == null){
+                    osID = '';
+                }else{
+                    osID = data[mesp].osID;
+                }
+            var row1 = `<tr data-msID="`+data[mesp].msID+`" data-prID="`+data[mesp].prID+`" data-sID="`+data[mesp].sID+`">`;
+                row1 += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>`;
+                row1 += `<td>`+osID+`</td>`;
+                row1 += `<td>`+data[mesp].prName+`</td>`;
+                row1 += `<td>`+data[mesp].msQty+`</td>`;
+                row1 += `<td>`+data[mesp].msDate+`</td>`;
+                row1 += `<td>`+data[mesp].msDateRecorded+`</td>`;
+                row1 += `<td>
+                <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
                                 data-target="#editSpoil">Edit</button>
                             <!--Delete button-->
-            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
                             data-target="#deleteSpoilage">Archived</button>
-            </td>
-        </tr>`);
-        var accordion = `
-            <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="6"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-					<div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-							<b style="float:left;">Remarks: </b><!-- label-->
-								<p style="float:left;margin-left:2%">
-								${table.msRemarks == null || table.msRemarks == '' ? "No remarks." : table.msRemarks}
-                                </p>
-                            </div> 
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            `;
-        $(".updateBtn").last().on('click', function () {
+                </td></tr>`;
+            var accord = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+                accord += ` <td colspan="6">`;
+                accord += `<div style="overflow:auto;display:none">`;
+                accord += `<div style="overflow:auto;">`;
+                accord += `<div style="margin:0 46px;overflow:auto;">`;
+                accord += `<b style="float:left;">Remarks: </b>`;
+                accord += `<p style="float:left;margin-left:2%">`;
+                    if(data[mesp].msRemarks  == null || data[mesp].msRemarks == '' ){
+                        accord += `No Remarks`;
+                        accord += `</p>`;
+                    }else{
+                        accord += data[mesp].msRemarks;
+                        accord += `</p>`;
+                    }
+            $("#inventoryTable  tbody").append(row1);
+            $("#inventoryTable  tbody").append(accord);
+        
+            $(".updateBtn").last().on('click', function () {
 				$("#editSpoil").find("input[name='prID']").val($(this).closest("tr").attr(
                     "data-prID"));
                 $("#editSpoil").find("input[name='msID']").val($(this).closest("tr").attr(
                     "data-msID"));
 				$("#editSpoil").find("input[name='msQty']").val($(this).closest("tr").attr(
                     "data-msQty"));
-				$("#editSpoil").find("input[name='msoldQty']").val(table.msQty);
-				$("#editSpoil").find("input[name='msoldDate']").val(table.msDate);
+				$("#editSpoil").find("input[name='msoldQty']").val(data[mesp].msQty);
+				$("#editSpoil").find("input[name='msoldDate']").val(data[mesp].msDate);
 				$("#editSpoil").find("input[name='msDate']").val($(this).closest("tr").attr(
-					"data-msDate"));
+                    "data-msDate"));
 				$("#editSpoil").find("input[name='msRemarks']").val($(this).closest("tr").attr(
 					"data-msRemarks"));
+                    
             });
-            $("#inventoryTable > tbody").append(accordion);
-	});
-    $(".accordionBtn").on('click', function(){
+        }
+        $(".accordionBtn").on('click', function(){
             if($(this).closest("tr").next(".accordion").css("display") == 'none'){
                 $(this).closest("tr").next(".accordion").css("display","table-row");
 				$(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
@@ -422,8 +416,22 @@ function setInventoryData() {
                 $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
-        	});
+            });
 }
+$("#editSpoil input[name='msDate']").on('change',function(){
+            var date = $(this).val();
+            var output = $("#editSpoil input[name='currentDate']").val();
+            var endate = new Date(date);
+            var curdate = new Date(output);
+            if(endate > curdate)
+            {
+                alert("Invalid Date");
+                $(this).val('');
+            }else{
+                $(this).val(date);
+            }
+
+});
 //END OF POPULATING TABLE
 //-------------------------Function for Edit-------------------------------
 $(document).ready(function() {
@@ -460,6 +468,16 @@ $(document).ready(function() {
             }
             
         });
+    });
+
+    
+    $('#formAdd').submit(function(event){
+        var spoilDate = $("#spoilDate").val();
+        var currentDate = new Date();
+        if(Date.parse(currentDate) < Date.parse(spoilDate)){
+            alert('Incorrect date input!');
+            return false;
+        }
     });
 });
 	//--------------------End of Function for Edit-----------------------------
@@ -581,16 +599,16 @@ $(document).ready(function() {
                             <div class="input-group mb-1">
                                 <input type="text" name="itemName[]"
                                     class="form-control form-control-sm"
-                                    placeholder="Item Name" style="width:24%">
+                                    placeholder="Item Name" style="width:24%" required>
                                 <input name="stID[]" type="text"
                                     class="form-control border-right-0"
                                     placeholder="Stock" style="width:15%">
                                 <input type="number" name="itemQty[]"
                                     class="form-control form-control-sm"
-                                    placeholder="Quantity">
+                                    placeholder="Quantity" min="1" required>
                                 <input type="number" name="actualQty[]"
                                     class="form-control form-control-sm"
-                                    placeholder="Actual Qty">
+                                    placeholder="Actual Qty" required>
 
                             </div>
                             <div class="input-group">

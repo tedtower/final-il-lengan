@@ -7,7 +7,7 @@
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
-                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption')?>" data-original-title style="margin:0;width:15%"
+                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption')?>" data-original-title style="margin:0;width:20%"
                                             id="addBtn">View Consumption</a>
                     </div>
                     <!--Card Container-->
@@ -26,7 +26,7 @@
                                                 style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date" required/>
+                                        <input type="date" class="form-control" id="consumedDate" name="date" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
                                     </div>
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
@@ -152,6 +152,11 @@
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
+                // var checked = $("#conForm input:checked").length > 0;
+                // if (!checked){
+                //     alert("Please check at least one checkbox!");
+                //     return false;
+                // }
             console.log(items);
             console.log(date);
             if(items != null){
@@ -176,6 +181,15 @@
                 alert('Add stock Item!');
             }
         });
+    });
+
+    $('#conForm').submit(function(event){
+        var consDate = $("#consumedDate").val();
+        var currentDate = new Date();
+        if(Date.parse(consDate) > Date.parse(currentDate)){
+            alert('Incorrect date input!');
+            return false;
+        }
     });
     </script>
 </body>

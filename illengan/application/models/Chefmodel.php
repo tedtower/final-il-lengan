@@ -5,13 +5,21 @@
             date_default_timezone_set('Asia/Manila'); 
         }
         
-        function get_orders() {
+        function get_orders($rowno,$rowperpage) {
             $this->load->database();
             $query = "SELECT os.osID, os.tableCode, os.custName, os.osDateTime, ol.olID, ol.olDesc, ol.olQty, ol.olRemarks
             FROM orderlists ol INNER JOIN orderslips os USING (osID) INNER JOIN preferences USING (prID) 
             INNER JOIN menu USING (mID) INNER JOIN categories cat USING (ctID) 
-            WHERE cat.supcatID = '1' AND ol.olStatus='pending'";
+            WHERE cat.supcatID = '1' AND ol.olStatus='pending' LIMIT $rowno, $rowperpage";
             return $this->db->query($query)->result_array();
+        }
+        function getRecordCount() {
+            $query = "SELECT count(ol.olID) as allcount
+            FROM orderlists ol INNER JOIN orderslips os USING (osID) INNER JOIN preferences USING (prID) 
+            INNER JOIN menu USING (mID) INNER JOIN categories cat USING (ctID) 
+            WHERE supcatID = '1' AND olStatus='pending'";
+            $result= $this->db->query($query)->result_array();      
+              return $result[0]['allcount'];
         }
         function getSlipNum(){
             $query="SELECT osID FROM  orderslips";
@@ -31,10 +39,20 @@
 
 
     // --------------- I N V E N T O R Y ---------------
-     function get_inventory(){
-        $query = "SELECT tiID,stockitems.stID as stID,transitems.ciID as ciID,stName,tiQty,tiDate,cDateRecorded,tiRemarks FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
-        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID WHERE tiType = 'consumed'";
+     //consumption
+     function get_consumption($rowno,$rowperpage){
+        $query = "SELECT consumptions.cDate,consumptions.cID,tiID,stockitems.stID as stID,transitems.ciID as ciID,stName,tiQty,tiDate,cDateRecorded,tiRemarks FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
+        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID 
+        WHERE tiType = 'consumed' LIMIT $rowno, $rowperpage";
         return $this->db->query($query)->result_array();
+    }
+    function getCountRecConsump() {
+        $query = "SELECT count(transitems.ciID) as allcount
+        FROM consumptions inner join consumed_items on  consumptions.cID=consumed_items.cID inner join
+        transitems on consumed_items.ciID=transitems.ciID inner join stockitems on transitems.stID=stockitems.stID 
+        WHERE tiType = 'consumed'";
+        $result= $this->db->query($query)->result_array();      
+        return $result[0]['allcount'];
     }
         function restock($stocks){
             $query = "Update stockitems set stQty = ? + ? where stID = ?";
@@ -69,12 +87,17 @@
         }
 
     // --------------- S P O I L A G E S ---------------
-        function get_spoilagesmenu(){
-            $query = "Select osID,msID,prID,sID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
-            AS msDateRecorded,msRemarks from stockspoil left join menuspoil using (msID) inner join spoiledmenu using (msID) inner join preferences using (prID) 
-            inner join menu using (mID)";
-            return  $this->db->query($query)->result_array();
-        }
+       function get_spoilagesmenu($rowno,$rowperpage){
+        $query = "Select osID,menuspoil.msID as msID,prID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
+        AS msDateRecorded,msRemarks, CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ',CONCAT(' ',mTemp))) as prName from menuspoil inner join spoiledmenu on menuspoil.msID=spoiledmenu.msID inner join preferences using (prID) 
+        inner join menu using (mID) LIMIT $rowno, $rowperpage";
+        return  $this->db->query($query)->result_array();
+    }
+    function getCountRecMenuSpoil() {
+        $query = "SELECT count(msID) as allcount FROM spoiledmenu";
+        $result= $this->db->query($query)->result_array();      
+        return $result[0]['allcount'];
+    }
         function get_spoilagesstock(){
             $query = "SELECT * FROM transitems inner join stockitems using (stID) where siID != 'NULL'";
             return  $this->db->query($query)->result_array();

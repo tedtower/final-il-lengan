@@ -14,10 +14,60 @@ class Adminview extends CI_Controller{
         }
         return false;
     }
+    
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
+function searchData()
+{
+    $output = '';
+    $query = '';
+    $query = $this->input->post('query');
+
+    $data = $this->adminmodel->fetch_searchdata($query);
+    
+    if ($data->num_rows() > 0) {
+        foreach ($data->result() as $row) {
+           if($row->aIsOnline == 0) {
+                $status = 'Offline';
+            } else {
+                $status = 'Online';
+            }
+
+            $output .= '
+            <tr data-id="' . $row->aID . '" data-aUsername="' . $row->aUsername . '">
+            <td>' . $row->aID . '</td>
+            <td>' . $row->aType . '</td>
+            <td>' . $row->aUsername . '</td>
+            <td>' . $status . '</td>
+            <td>
+                    <!--Action Buttons-->
+                    <div class="onoffswitch">
+                        <!--Change Pass button-->
+                        <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
+                        data-original-title" >Change Password</button>
+                        <!--Edit button-->
+                        <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                            data-target="#editAccount">Edit</button>
+                        <!--Delete button-->
+                        <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                        data-target="#deleteAccount">Archived</button>                   
+                    </div>
+                </td>
+            </tr>
+                ';
+        }
+    } else {
+        $output .= '<tr>
+        <td colspan="5">No Data Found</td>
+        </tr>';
+    }
+    
+    $output .= '</table>';
+    echo $output;
+}
+
 function inventoryJS(){
     if($this->checkIfLoggedIn()){
-    echo json_encode($this->baristamodel->get_inventory_consumption());
+    echo json_encode($this->adminmodel->get_inventory_consumption());
 }else{
     redirect('login');
     }
@@ -142,10 +192,11 @@ function viewPOFormEdit($id){
 function viewDRFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Add Delivery";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['returns'] = $this->adminmodel->get_supplier();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
@@ -160,6 +211,7 @@ function viewDRFormEdit($id){
             $this->load->view('admin/templates/sideNav');
             $data['dr'] = $this->adminmodel->get_receiptTransaction($id);
             $data['stocks'] = $this->adminmodel->get_stocks();
+            $data['returns'] = $this->adminmodel->get_retItems();
             $this->load->view('admin/deliveryReceiptEdit',$data);
         }else{
             redirect('admin/deliveryreceipt');
@@ -198,9 +250,9 @@ function viewStockCard($stID){
         $head['title'] = "Admin - Stock Card";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $data['logs'] = $this->adminmodel->get_stockLog($stID);
+        $data['logs'] = $this->adminmodel->get_stockCard($stID);
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
-        $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
+        // $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
         $this->load->view('admin/stockcard', $data);
     }else{
         redirect('login');
@@ -502,16 +554,16 @@ if($this->checkIfLoggedIn()){
 }
 }
 function viewSpoilagesStockAdd(){
-if($this->checkIfLoggedIn()){
-    $data['title'] = "Spoilages - Stock";
-    $this->load->view('admin/templates/head2', $data);
-    $this->load->view('admin/templates/sideNav');
-    $data['stocks'] = $this->adminmodel->get_stocks();
-    $this->load->view('admin/adminspoilagesstockAdd', $data);
-}else{
-    redirect('login');
-}
-}
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Stock";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['stocks'] = $this->adminmodel->get_stocks();
+        $this->load->view('admin/adminspoilagesstockAdd', $data);
+    }else{
+        redirect('login');
+    }
+    }
 function viewSpoilagesStock(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Stock";
@@ -937,7 +989,8 @@ function getStockItem(){
     function getUOMs(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
-                'uom' => $this->adminmodel->get_uomForStoring()
+                'uom' => $this->adminmodel->get_uomForStoring(),
+                'stocks' => $this->adminmodel->get_stocks()
             ));
         }else{
             echo json_encode(array(

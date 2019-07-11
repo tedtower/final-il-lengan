@@ -12,7 +12,7 @@
         <button class="btn btn-success" style="padding-right:100px;font-size:15px;" onClick="window.location.href='<?php echo base_url(); ?>customer/checkin';return false;"><i class="far fa-plus"></i> Add Order</button>
     </div>
     <!--End Top Nav-->
-    <div class="container-fluid">
+    <div class="container-fluid" >
         <section class="lists-container">
 
         </section>
@@ -102,11 +102,9 @@
                                     <td class="p-2">Remarks:</td>
                                     <td class="p-2" colspan="4">${ol.olRemarks}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Addons:</td>
-                                    <td class="aDoQty${ol.olID}"></td>
-                                    <td colspan="2" class="aDoName${ol.olID}"></td>
-                                    <td class="aDoPrice${ol.olID}"></td>
+                                <tr class="thisAddons${ol.olID}">
+                                <td>Addons:</td>
+                                <td class="aDon${ol.olID}"></td>
                                 </tr>
                                 `
                                 }).join('')} 
@@ -287,17 +285,13 @@
         }
 
         function addAddons() {
-            // addons.forEach(ao => {
+            console.log(addons);
             for (var i = 0; i < addons.length; i++) {
                 if ($(".thisAddons" + addons[i].olID) != '') {
                     for (var i = 0; i < addons.length; i++) {
-                        $(".aDoQty" + addons[i].olID).append(`${addons[i].aoQty}<br>`);
-                        $(".aDoName" + addons[i].olID).append(`${addons[i].aoName}<br>`);
-                        $(".aDoPrice" + addons[i].olID).append(`${addons[i].aoTotal}<br>`);
-
+                        $("td.aDon" + addons[i].olID).append(`${addons[i].aoQty}&nbsp;${addons[i].aoName}<br>`);
                     }
                 }
-                //  });
             }
         }
 

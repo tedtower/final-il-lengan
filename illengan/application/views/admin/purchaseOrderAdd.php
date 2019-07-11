@@ -170,7 +170,7 @@ function showMerchandise() {
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${spmid}" data-actual="${spmActual}" data-stid="${stID}" value="${spmName}" name="spm" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" value='0' name="qty"></td>
+                                class="form-control form-control-sm" value='0' min="0" name="qty"></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-uom="${uomID}" value="${uomAbbreviation}" name="unit" readonly></td>
                         <td style="padding:1% !important"><input type="number"
@@ -237,6 +237,12 @@ function showMerchandise() {
                  piType: 'purchase order'
              }); 
          }); 
+
+            // var checked = $("#conForm input:checked").length > 0;
+            //     if (!checked){
+            //         alert("Please check at least one checkbox!");
+            //         return false;
+            //     }
 
          $.ajax({
              method: "POST",

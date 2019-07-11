@@ -130,7 +130,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty" required></td>
+                                class="form-control form-control-sm" name="actualQty" min="0" required></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"
@@ -195,6 +195,15 @@
                 }
             });
         });
+    });
+
+    $('#conForm').submit(function(event){
+        var spoilageDate = $("#tDate").val();
+        var currentDate = new Date();
+        if(Date.parse(spoilageDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
+            return false;
+        }
     });
     			//-----------------------Populate Dropdown----------------------------------------
 				// 		$.ajax({

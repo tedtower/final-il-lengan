@@ -1,6 +1,17 @@
 <!doctype html>
 <html lang="en">
 </head>
+<style>
+    .form-inline {
+        display: inline-block;
+        float: right;
+    }
+
+    .active-box input[type=text]:focus:not([readonly]) {
+        border: 1px solid #4dd0e1;
+        box-shadow: 0 0 0 1px #4dd0e1;
+    }
+</style>
 
 <body style="background:white">
 
@@ -20,7 +31,12 @@
                             <div class="card-content">
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewAccounts" data-original-title style="margin: 0;">Add New
                                     Account</button>
-
+                                <br>
+                                <!-- Search form -->
+                                <form class="form-inline active-box">
+                                    <input class="form-control form-control-sm mr-2 w-40" type="text" id="search_text" placeholder="Search" aria-label="Search">
+                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                </form>
                                 <br><br>
                                 <table id="accountsTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                                     <thead class="thead-dark">
@@ -204,156 +220,183 @@
                 </div>
 
 
-<?php include_once('templates/scripts.php') ?>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/admin/jquery.validate.min.js'?>"></script>
-<script type="text/javascript" src="<?php echo base_url().'assets/js/admin/jquery.validate.js'?>"></script>
-<script>
-    var accounts = [];
-    $(function() {
-        viewAccountsJs();
+                <?php include_once('templates/scripts.php') ?>
+                <script type="text/javascript" src="<?php echo base_url() . 'assets/js/admin/jquery.validate.min.js' ?>"></script>
+                <script type="text/javascript" src="<?php echo base_url() . 'assets/js/admin/jquery.validate.js' ?>"></script>
+                <script>
+                    var accounts = [];
+                    $(function() {
+                        viewAccountsJs();
 
-        // Delete Account Function====================================
+                        // Delete Account Function====================================
 
-    $("#confirmDelete").on('submit', function(event) {
-        event.preventDefault();
-        var accountId = $(this).find("input").val();
-        $.ajax({
-                url: '<?= site_url('admin/accounts/delete') ?>',
-                method: 'POST',
-                data: {
-                    accountId: accountId
-                },
-                dataType: 'json',
-                success: function(data) {
-                    accounts = data;
-                    setAccountData();
+                        $("#confirmDelete").on('submit', function(event) {
+                            event.preventDefault();
+                            var accountId = $(this).find("input").val();
+                            $.ajax({
+                                url: '<?= site_url('admin/accounts/delete') ?>',
+                                method: 'POST',
+                                data: {
+                                    accountId: accountId
+                                },
+                                dataType: 'json',
+                                success: function(data) {
+                                    accounts = data;
+                                    setAccountData();
 
-                },
-                complete: function() {
-                $("#deleteAccount").modal("hide");
-				location.reload();
-                }
-            });
-        });
-    });
+                                },
+                                complete: function() {
+                                    $("#deleteAccount").modal("hide");
+                                    location.reload();
+                                }
+                            });
+                        });
+                    });
 
-    // Edit Account Info Function====================================
-    var tuples = ((document.getElementById('accountsTable')).getElementsByTagName('tbody'))[0]
-        .getElementsByTagName('tr');
-    var tupleNo = tuples.length;
-    var editButtons = document.getElementsByName('editAccount');
-    var editModal = document.getElementById('editAccount');
-    for (var x = 0; x < tupleNo; x++) {
-        editButtons[x].addEventListener("click", showEditModal);
-    }
+                    // Edit Account Info Function====================================
+                    var tuples = ((document.getElementById('accountsTable')).getElementsByTagName('tbody'))[0]
+                        .getElementsByTagName('tr');
+                    var tupleNo = tuples.length;
+                    var editButtons = document.getElementsByName('editAccount');
+                    var editModal = document.getElementById('editAccount');
+                    for (var x = 0; x < tupleNo; x++) {
+                        editButtons[x].addEventListener("click", showEditModal);
+                    }
 
-    function showEditModal(event) {
-        var row = event.target.parentElement.parentElement.parentElement;
-        document.getElementById('aID').value = parseInt(row.firstElementChild.innerHTML);
-        document.getElementById('new_aUsername').value = row.firstElementChild.nextElementSibling.nextElementSibling.innerHTML;
-        document.getElementById('aType').value = capitalizeFirstLetter((row.firstElementChild
-            .nextElementSibling.nextElementSibling.nextElementSibling.innerHTML).trim());
-    }
+                    function showEditModal(event) {
+                        var row = event.target.parentElement.parentElement.parentElement;
+                        document.getElementById('aID').value = parseInt(row.firstElementChild.innerHTML);
+                        document.getElementById('new_aUsername').value = row.firstElementChild.nextElementSibling.nextElementSibling.innerHTML;
+                        document.getElementById('aType').value = capitalizeFirstLetter((row.firstElementChild
+                            .nextElementSibling.nextElementSibling.nextElementSibling.innerHTML).trim());
+                    }
 
-    //-----------------Populate Table--------------------
-    function viewAccountsJs() {
-        $.ajax({
-            url: "<?= site_url('admin/accounts/viewAccountsJs') ?>",
-            method: "post",
-            dataType: "json",
-            success: function(data) {
-                accounts = data;
-                setAccountData(accounts);
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(response.responseText);
-                console.log(errorThrown);
-            }
-        });
-    }
+                    //-----------------Populate Table--------------------
+                    function viewAccountsJs() {
+                        $.ajax({
+                            url: "<?= site_url('admin/accounts/viewAccountsJs') ?>",
+                            method: "post",
+                            dataType: "json",
+                            success: function(data) {
+                                accounts = data;
+                                setAccountData(accounts);
+                            },
+                            error: function(response, setting, errorThrown) {
+                                console.log(response.responseText);
+                                console.log(errorThrown);
+                            }
+                        });
+                    }
 
-    function setAccountData() {
-        if ($("#accountsTable> tbody").children().length > 0) {
-            $("#accountsTable> tbody").empty();
-        }
-        accounts.forEach(table => {
-            $("#accountsTable> tbody").append(`
-            <tr data-id="${table.aID}" data-aUsername="${table.aUsername}">
-                <td>${table.aID}</td>
-                <td>${table.aType}</td>
-                <td>${table.aUsername}</td>
-                <td>${table.aIsOnline == 0 ? "Offline" : "Online"}</td>
-                <td>
-                        <!--Action Buttons-->
-                        <div class="onoffswitch">
-                            <!--Change Pass button-->
-                            <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
-                            data-original-title" >Change Password</button>
-                            <!--Edit button-->
-                            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
-                                data-target="#editAccount">Edit</button>
-                            <!--Delete button-->
-                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteAccount">Archived</button>                   
-                        </div>
-                    </td>
-                </tr>`);
-            $(".updateBtn").last().on('click', function() {
-                $("#editAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
-                    "data-id"));
-                $("#editAccount").find("input[name='new_aUsername']").val($(this).closest("tr").attr(
-                    "data-aUsername"));
-            });
-            $(".updatePassBtn").last().on('click', function() {
-                $("#editPassword").find("input[name='accountId']").val($(this).closest("tr").attr(
-                    "data-id"));
-                $("#editPassword").find("input[name='aUsername']").val($(this).closest("tr").attr(
-                    "data-aUsername"));
+                    function setAccountData() {
+                        if ($("#accountsTable> tbody").children().length > 0) {
+                            $("#accountsTable> tbody").empty();
+                        }
+                        accounts.forEach(table => {
+                            $("#accountsTable> tbody").append(`
+                            <tr data-id="${table.aID}" data-aUsername="${table.aUsername}">
+                                <td>${table.aID}</td>
+                                <td>${table.aType}</td>
+                                <td>${table.aUsername}</td>
+                                <td>${table.aIsOnline == 0 ? "Offline" : "Online"}</td>
+                                <td>
+                                        <!--Action Buttons-->
+                                        <div class="onoffswitch">
+                                            <!--Change Pass button-->
+                                            <button class="updatePassBtn btn btn-info btn-sm" data-toggle="modal" data-target="#editPassword"
+                                            data-original-title" >Change Password</button>
+                                            <!--Edit button-->
+                                            <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                                                data-target="#editAccount">Edit</button>
+                                            <!--Delete button-->
+                                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                                            data-target="#deleteAccount">Archived</button>                   
+                                        </div>
+                                    </td>
+                                </tr>`);
+                            $(".updateBtn").last().on('click', function() {
+                                $("#editAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
+                                    "data-id"));
+                                $("#editAccount").find("input[name='new_aUsername']").val($(this).closest("tr").attr(
+                                    "data-aUsername"));
+                            });
+                            $(".updatePassBtn").last().on('click', function() {
+                                $("#editPassword").find("input[name='accountId']").val($(this).closest("tr").attr(
+                                    "data-id"));
+                                $("#editPassword").find("input[name='aUsername']").val($(this).closest("tr").attr(
+                                    "data-aUsername"));
 
-            });
-            $(".item_delete").last().on('click', function() {
-                $("#deleteAccountId").text(
-                    `Account code: ${$(this).closest("tr").attr("data-id")}`);
-                $("#deleteAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
-                    "data-id"));
-            });
-        });
-    }
-      // Edit Account Password===========================================
-    $(document).ready(function() {
-    $("#editPassword form").on('submit', function(event) {
-		event.preventDefault();
-		var aID = $(this).find("input[name='accountId']").val();
-        var new_password = $(this).find("input[name='new_password']").val();
-        var aUsername = $(this).find("input[name='aUsername']").val();
-        console.log(aUsername);
-        $.ajax({
-            url: "<?= site_url("admin/accounts/changepassword")?>",
-            method: "post",
-            data: {
-				aID: aID,
-                new_password : new_password,
-                aUsername: aUsername
-            },
-            dataType: "json",
-            success: function(data) {
-                alert('Account Password Updated');
-				console.log(data);
-            },
-            complete: function() {
-                $("#editAccount").modal("hide");
-				location.reload();
-            },
-            error: function(error) {
-                console.log(error);
-            }
-            
-        });
-    });
-});
+                            });
+                            $(".item_delete").last().on('click', function() {
+                                $("#deleteAccountId").text(
+                                    `Account code: ${$(this).closest("tr").attr("data-id")}`);
+                                $("#deleteAccount").find("input[name='accountId']").val($(this).closest("tr").attr(
+                                    "data-id"));
+                            });
+                        });
+                    }
+                    // Edit Account Password===========================================
+                    $(document).ready(function() {
+                        $("#editPassword form").on('submit', function(event) {
+                            event.preventDefault();
+                            var aID = $(this).find("input[name='accountId']").val();
+                            var new_password = $(this).find("input[name='new_password']").val();
+                            var aUsername = $(this).find("input[name='aUsername']").val();
+                            console.log(aUsername);
+                            $.ajax({
+                                url: "<?= site_url("admin/accounts/changepassword") ?>",
+                                method: "post",
+                                data: {
+                                    aID: aID,
+                                    new_password: new_password,
+                                    aUsername: aUsername
+                                },
+                                dataType: "json",
+                                success: function(data) {
+                                    alert('Account Password Updated');
+                                    console.log(data);
+                                },
+                                complete: function() {
+                                    $("#editAccount").modal("hide");
+                                    location.reload();
+                                },
+                                error: function(error) {
+                                    console.log(error);
+                                }
 
+                            });
+                        });
+                    });
 
+                    //SEARCH FUNCTION
+                    $(document).ready(function() {
 
-</script>
+                        function load_data(query) {
+                            $.ajax({
+                                url: "<?php echo base_url(); ?>admin/search",
+                                method: "POST",
+                                data: {
+                                    query: query
+                                },
+                                success: function(data) {
+                                    $('#show_data').html(data);
+                                    console.log("search");
+                                    console.log(data);
+                                }
+                            })
+                        }
+
+                        $('#search_text').on("keyup", function() {
+                            console.log($(this));
+                            var search = $(this).val();
+                            if (search != '') {
+                                load_data(search);
+                            } else {
+                                setAccountData();
+                            }
+                        });
+                    });
+                </script>
 </body>
+
 </html>

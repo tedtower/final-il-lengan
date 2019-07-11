@@ -6,7 +6,7 @@ $route['translate_uri_dashes'] = FALSE;
 $route['login'] = 'login/viewlogin';
 $route['logout'] = 'login/logout';
 $route['verify'] = 'login/check_cred';
-
+$route['admin/search'] = "adminview/searchData";
 //Viewing Routes -----------------------------------------------
 $route['admin/menu'] = "adminview/viewmenu";
 $route['admin/menu/getDetails'] = "adminview/menuGetDetails";
@@ -47,6 +47,7 @@ $route['admin/officialreceipt'] = "adminview/viewOfficialReceipt";
 $route['admin/return'] = "adminview/viewReturn";
 $route['admin/inventory/physicalcount'] = "adminview/performPhysicalCount";
 $route['admin/consumption'] = "adminview/viewConsumptions";
+$route['admin/jsonConsumptions'] = "adminview/jsonConsumptions";
 $route['admin/stock/spoilages'] = "adminview/viewSpoilagesstock";
 $route['admin/returns/formadd'] = "adminview/viewReturnFormAdd";
 $route['admin/returns/formedit/(:num)'] = "adminview/viewReturnFormEdit/$1";
@@ -117,6 +118,7 @@ $route['admin/tables/edit'] = "adminupdate/edittable";
 $route['admin/menu/spoilage/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
 $route['admin/returns/edit'] = "adminupdate/editReturns";
+$route['admin/consumption/edit'] = "adminupdate/editConsumption";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------
@@ -233,8 +235,11 @@ $route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
 //-----------------------------------------
+$route['barista/consumption'] = "barista/viewConsumptions";
+$route['barista/jsonConsumptions'] = "barista/jsonConsumptions";
 $route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
 $route['barista/consumption/add'] = "barista/addConsumption";
+$route['barista/consumption/edit'] = "barista/editConsumption";
 
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
@@ -273,3 +278,5 @@ $route['chef/menuspoilage/formadd'] = "chef/viewMenuSpoilageFormAdd";
 $route['chef/stock/spoilage/formadd'] = "chef/viewSpoilagesStockAdd";
 $route['chef/stock/spoilages/add']= "chef/addspoilagesstock";
 $route['chef/stock/spoilage/edit'] = "chef/editStockSpoil";
+$route['chef/orders/loadData/(:num)']="chef/loadData/$1";
+$route['chef/consumed/loadDataConsump/(:num)']="chef/loadDataConsump/$1";

@@ -60,13 +60,13 @@
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                     Start Date</span>
                                             </div>
-                                            <input class="form-control form-control-sm" name="pmStartDate" id="pmStartDate" type="date" class="no-border"  data-validate="required" message="Start Date is required!"  required>
+                                            <input class="form-control form-control-sm" name="pmStartDate" id="pmStartDate" type="date" class="no-border"  data-validate="required" message="Start Date is required!"  required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="inputGroup-sizing-sm"
                                                     style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;margin-left: 10px;">
                                                     End Date</span>
                                             </div>
-                                            <input class="form-control form-control-sm" name="pmEndDate" id="pmEndDate" type="date" class="no-border"  data-validate="required" message="End Date is required!"  required>
+                                            <input class="form-control form-control-sm" name="pmEndDate" id="pmEndDate" type="date" class="no-border"  data-validate="required" message="End Date is required!"  required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                         </div>
 
  
@@ -397,7 +397,7 @@ function showTable(){
             //set Modal contents;
         });
 
-        $('#addnewPromo').submit(function(event){
+        $('#addNewPromo').submit(function(event){
             var startDate = $("#pmStartDate").val();
             var endDate = $("#pmEndDate").val();
             if(Date.parse(endDate) < Date.parse(startDate)){
