@@ -279,6 +279,16 @@ function get_transitems(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) where ctType = 'inventory' and supcatID is null group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
     }
+     function get_stkCat($s,$l){
+        $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems 
+        using (ctID) where ctType = 'inventory' group by ctID order by ctName asc limit $s,$l";
+        return $this->db->query($query)->result_array();
+    }
+    function countCat(){
+        $query = 'SELECT count("ctID") as allcount from categories left join stockitems using (ctID) where ctType = "inventory" group by ctID';
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_menuprices(){
         $query = "select mID, prName, prPrice from sizes";
         return $this->db->query($query)->result_array();
@@ -590,6 +600,44 @@ function get_transitems(){
         stID order by ctName, stName asc";
         return $this->db->query($query)->result_array();
     }
+     function record_count() {
+        $query = 'SELECT count("stID") as allcount from stockitems';
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
+    function get_invstocks($start, $limit){
+        $query = "SELECT
+        stockitems.stID,
+        CONCAT(
+            stName,
+            IF(
+                stSize IS NULL,
+                '',
+                CONCAT(' ', stSize)
+            )
+        ) AS stName,
+        stMin,
+        stQty,
+        uomID,
+        uomAbbreviation,
+        uomStore,
+        stBqty,
+        UPPER(stStatus) AS stStatus,
+        stType,
+        UPPER(stLocation) AS stLocation,
+        ctName,
+        ctID
+    FROM
+        (
+            stockitems
+        LEFT JOIN uom USING(uomID)
+        )
+    LEFT JOIN categories USING(ctID)
+    GROUP BY
+        stID order by ctName, stName asc
+    LIMIT $start, $limit";
+        return $this->db->query($query)->result_array();
+    }
 
     function get_stockDetails($id){
         $query = "SELECT 
@@ -804,10 +852,10 @@ function get_consumpitems(){
 
     }
     function get_retItems() {
-        $query = "SELECT tiID, spmID, ret.spID, ti.stID, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, 
-        CONCAT(receiptNo,' - ', DATE_FORMAT(pDate, '%b %d, %Y')) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
-        FROM `transitems` ti LEFT JOIN return_items ri USING (piID) LEFT JOIN returns ret USING (pID) LEFT JOIN stockitems st USING (stID) 
-        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) WHERE ri.riStatus = 'pending' AND ti.tiType = 'return'";
+        $query = "SELECT tiID, ri.riID, spmID, ret.spID, ti.stID, spmPrice, spmActual, spAltName, stName, u.uomName, tiQty, tiActual,  CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
+        FROM `transitems` ti LEFT JOIN return_items ri USING (riID) LEFT JOIN returns ret USING (rID) LEFT JOIN stockitems st USING (stID) 
+        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) INNER JOIN (SELECT max(tiID) as tiID 
+        FROM transitems LEFT JOIN return_items USING (riID) GROUP BY riID) AS maxNew USING (tiID) WHERE ri.riStatus = 'pending' AND ti.tiType = 'return'";
         return $this->db->query($query)->result_array();
 
     }
@@ -1840,7 +1888,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty) + intval($tiActual); 
 
         $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, 
-        tiDate, stID, spmID, riID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)";
+        tiDate, stID, spmID, piID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($query, array($tiType, $tiQty, $tiActualQty, $tiSubtotal, $remainingQty, $tiRemarks,
         $tiDate, $stID, $spmID, $piID));
 

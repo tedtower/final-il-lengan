@@ -193,7 +193,7 @@
                             <!--End of PO sidenav-->
 
                             <!--Start of Return sidenav-->
-                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card" id="returnCard" style="float:left;width:35%;margin-left:3%">
                                 <div class="card-header" style="overflow:auto">
                                     <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Return</div>
                                     <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
@@ -218,12 +218,6 @@
                                             </tr>
                                         </thead>
                                         <tbody class="ic-level-2">
-                                            <tr class="ic-level-1">
-                                                <td><input type="checkbox" class="mr-2" name="stock"
-                                                    data-name="" value="" required></td>
-                                                <td class=""></td>
-                                                <td class=""></td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -284,7 +278,6 @@
                     success: function(data) {
                         uom = data.uom;
                         stockitems = data.stocks;
-                        console.log(stockitems);
                     }
                 });
                 $("#drForm .radio-level").on("change",function(){
@@ -637,7 +630,33 @@
                 });
                 $("#merchandiseBrochure").modal("hide");
             }
-          
+            var returns = <?= json_encode($returns) ?>;
+
+            function setReturnsBrochure() {
+                $("#returnCard tbody").empty();
+                returns.forEach(function (del) {
+                    $("#returnCard tbody").append(`
+                    <div style="overflow:auto" class="ic-level-1">
+                                                <div style="float:left;width:96%;overflow:auto;">
+                                                    <div class="input-group mb-1">
+                                                        <input type="text" name="name[]"
+                                                            class="form-control form-control-sm" placeholder="Item Name"
+                                                            style="width:17%">
+                                                        <input type="number" name="qty[]"
+                                                            class="form-control form-control-sm" placeholder="Qty">
+                                                        <input type="text" name="unit[]"
+                                                            class="form-control form-control-sm" placeholder="Unit">
+                                                        <input type="number" name="price[]"
+                                                            class="form-control form-control-sm" placeholder="Price">
+                                                        <input type="number" name="discount[]"
+                                                            class="form-control form-control-sm" placeholder="Discount">
+                                                        <input type="number" name="subtotal[]"
+                                                            class="form-control form-control-sm" placeholder="Subtotal"
+                                                            readonly>
+                                                    </div>
+                                                </div>`);
+                });
+            }
             function resetForm() {
                 $("#drForm .ic-level-2").empty();
             }

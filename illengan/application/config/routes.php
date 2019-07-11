@@ -60,7 +60,8 @@ $route['admin/officialreceipt/formedit'] = "adminview/viewORFormEdit";
 $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
 $route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
 $route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
-
+$route['admin/stocks/loadDataStocks/(:num)'] = "adminview/loadDataStocks/$1";
+$route['admin/menu/loadDataCategories/(:num)'] = "adminview/loadDataCategories/$1";
 //End Viewing Routes
 
 //Not Sure Routes
@@ -196,6 +197,7 @@ $route['customer/menu'] = "customer/view";
 $route['customer/json'] = "customer/json";
 $route['customer/menu/removeOrder'] = "customer/removeOrder";
 $route['customer/menu/editOrder'] = "customer/editOrder";
+$route['customer/logout'] = "login/logout";
 
 // BARISTA ROUTES
 $route['barista/orderslip'] = "barista/vieworderslip";
