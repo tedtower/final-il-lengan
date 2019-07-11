@@ -20,7 +20,7 @@
                                 <div id="addonTable" style="width:25%; float:right; border-radius:5px">
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                 </div>
-                                <br>
+                                <br><br>
                                 <!--Table Body-->
                                 <table id="addonTable" class="table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
                                     <thead class="thead-dark">
@@ -32,7 +32,7 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="ic-level-1">
+                                    <tbody class="addonTable ic-level-1">
                                         <?php
                                         if (isset($addon)) {
                                             foreach ($addon as $addon) {

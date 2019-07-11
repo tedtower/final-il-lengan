@@ -18,7 +18,6 @@
                                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newSCategory" data-original-title style="margin:0" id="addCategroy">Add Subcategory</button>
                                     <br>
                                     <div id="pagination"></div>
-                                    <br>
                                     <!--Search-->
                                     <div id="categTable" style="width:25%; float:right; border-radius:5px">
                                         <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
