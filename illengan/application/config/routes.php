@@ -6,7 +6,7 @@ $route['translate_uri_dashes'] = FALSE;
 $route['login'] = 'login/viewlogin';
 $route['logout'] = 'login/logout';
 $route['verify'] = 'login/check_cred';
-
+$route['admin/search'] = "adminview/searchData";
 //Viewing Routes -----------------------------------------------
 $route['admin/menu'] = "adminview/viewmenu";
 $route['admin/menu/getDetails'] = "adminview/menuGetDetails";
