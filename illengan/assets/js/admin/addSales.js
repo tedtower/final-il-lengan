@@ -158,18 +158,16 @@ function setSubtotal() {
         var discount = 0;
       
         for (var i = 0; i <= elements.length - 1; i++) {
-            discount = parseInt(document.getElementsByClassName('discount')[i].value);
+            discount = $('.discount').eq(i).val();
 
-            if(discount === 0 || discount === null) {
+
+            if(discount == '0' || discount == null) {
                 $('.prPrice').eq(i).val($('.prPrice').eq(i).attr('data-orPrice'));
                 prPrice = parseFloat(document.getElementsByClassName('prPrice')[i].value);
-                console.log(prPrice);
             } else {
                 orPrice = parseFloat($('.prPrice').eq(i).attr('data-orPrice'));
                 document.getElementsByClassName('prPrice')[i].value = parseFloat(orPrice - discount);
                 prPrice = parseFloat(document.getElementsByClassName('prPrice')[i].value);
-                console.log(prPrice);
-
             }
             
             olQty = parseInt(document.getElementsByClassName('olQty')[i].value);
