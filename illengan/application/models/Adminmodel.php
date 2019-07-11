@@ -741,10 +741,10 @@ function get_consumpitems(){
 
     }
     function get_retItems() {
-        $query = "SELECT tiID, spmID, ret.spID, ti.stID, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, 
-        CONCAT(receiptNo,' - ', DATE_FORMAT(pDate, '%b %d, %Y')) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
-        FROM `transitems` ti LEFT JOIN return_items ri USING (piID) LEFT JOIN returns ret USING (pID) LEFT JOIN stockitems st USING (stID) 
-        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) WHERE ri.riStatus = 'pending' AND ti.tiType = 'return'";
+        $query = "SELECT tiID, ri.riID, spmID, ret.spID, ti.stID, spmPrice, spmActual, spAltName, stName, u.uomName, tiQty, tiActual,  CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
+        FROM `transitems` ti LEFT JOIN return_items ri USING (riID) LEFT JOIN returns ret USING (rID) LEFT JOIN stockitems st USING (stID) 
+        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) INNER JOIN (SELECT max(tiID) as tiID 
+        FROM transitems LEFT JOIN return_items USING (riID) GROUP BY riID) AS maxNew USING (tiID) WHERE ri.riStatus = 'pending' AND ti.tiType = 'return'";
         return $this->db->query($query)->result_array();
 
     }
@@ -1771,7 +1771,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty) + intval($tiActual); 
 
         $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, 
-        tiDate, stID, spmID, riID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)";
+        tiDate, stID, spmID, piID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($query, array($tiType, $tiQty, $tiActualQty, $tiSubtotal, $remainingQty, $tiRemarks,
         $tiDate, $stID, $spmID, $piID));
 
