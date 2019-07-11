@@ -5,7 +5,7 @@
 			<!-- Real Time Date & Time -->
 			<?php echo date("M j, Y -l"); ?>
 		</p>
-		<a class="btn btn-primary btn-sm" href="<?= site_url('chef/stock/spoilage/formadd')?>" data-original-title style="margin:0;width:15%"
+		<a class="btn btn-primary btn-sm" href="<?= site_url('chef/stock/spoilage/formadd')?>" data-original-title style="margin:0;width:18%"
                                     id="addBtn">Add Stock Spoilage</a>
 </div>
 			<div class="container-fluid">
