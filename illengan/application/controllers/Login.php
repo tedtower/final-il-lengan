@@ -48,7 +48,7 @@ class Login extends CI_Controller{
         }
     }
 
-    function logout() {
+    public function logout() {
 		if($this->session->userdata('user_id') && $this->session->userdata('user_type')){
 			$this->session->sess_destroy();
 		}

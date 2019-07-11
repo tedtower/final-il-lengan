@@ -194,6 +194,7 @@ $route['customer/menu'] = "customer/view";
 $route['customer/json'] = "customer/json";
 $route['customer/menu/removeOrder'] = "customer/removeOrder";
 $route['customer/menu/editOrder'] = "customer/editOrder";
+$route['customer/logout'] = "login/logout";
 
 // BARISTA ROUTES
 $route['barista/orderslip'] = "barista/vieworderslip";
