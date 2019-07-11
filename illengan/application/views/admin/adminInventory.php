@@ -9,16 +9,21 @@
         </p>
         <div class="content" style="margin-left:250px">
                 <!--Table-->
-                <div class="container-fluid">
-                <div class="card-content">
+                <div class="container-fluid" id="stockTable">
+                <div class="card-content" class="stockTable">
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addEditStock" data-original-title
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
                     <a class="btn btn-primary btn-sm" href="<?= site_url('admin/inventory/physicalcount')?>" data-original-title style="margin:0"
                         d="addBtn">Perform Inventory</a>
                     <a class="btn btn-primary btn-sm" style="margin:0;color:blue;float:right" href="<?= site_url('admin/inventorylist')?>"><i class="fal fa-list-ul"></i> Inventory List</a>
-                   <br>
-                    <br>
+                   <br><br>
                     <div id="pagination"></div>
+                    <!--Search-->
+                    <div id="stockTable" style="width:25%; float:right; border-radius:5px">
+                        <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                    </div>
+                    <br><br>
+                    <!--Table Body-->
                     <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
                         <thead class="thead-dark">
                             <tr>
@@ -33,7 +38,7 @@
                             </tr>
 
                         </thead>
-                        <tbody>
+                        <tbody class="stockTable ic-level-1">
                         </tbody>
                     </table>
                     <p id="note"></p>
@@ -413,7 +418,7 @@ $(document).ready(function() {
     function setStocksData(data) {
 		$("table#stockTable > tbody").empty();
         for(stk in data){
-            var row1 = ` <tr data-id="`+data[stk].stID+`">`;
+            var row1 = ` <tr class="stockTable ic-level-1" data-id="`+data[stk].stID+`">`;
                 row1 += ` <td>`+data[stk].stName+`</td>`;
                 row1 += `<td>`+data[stk].ctName+`</td>`;
                 row1 += `<td>`+data[stk].stQty+`</td>`;
@@ -736,5 +741,21 @@ function setBrochureForBeginning(){
         }
     });
 }
+
+//Search Function
+//Search Function
+$("#stockTable input[name='search']").on("keyup", function() {
+    var string = $(this).val().toLowerCase();
+
+    $("#stockTable .ic-level-1").each(function(index) {
+        var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+        if (!text.includes(string)) {
+            $(this).closest("tr").hide();
+        } else {
+            $(this).closest("tr").show();
+        }
+    });
+
+});
 </script>
 </body>

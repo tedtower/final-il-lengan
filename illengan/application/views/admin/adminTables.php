@@ -275,7 +275,7 @@
                     var string = $(this).val().toLowerCase();
 
                     $("#tablesTable .ic-level-1").each(function(index) {
-                        var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ')
+                        var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
                         if (!text.includes(string)) {
                             $(this).closest("tr").hide();
                         } else {

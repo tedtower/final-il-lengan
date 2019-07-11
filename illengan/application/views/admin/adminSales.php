@@ -9,14 +9,18 @@
             <div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Table-->
-                    <div class="card-content">
+                    <div class="card-content" id="salesTable">
                         <div style="overflow:auto" class="mb-3">
-                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSales"
-                                    data-original-title style="margin:0;" id="addBtn">Add Sales</button>
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addSales" data-original-title style="margin:0;" id="addBtn">Add Sales</button>
                             <button class="btn btn-danger btn-sm m-0" data-toggle="modal" data-target="#addReport" style="background:#cc0000;color:white;font-weight:900;float:right"><i class="fas fa-file-pdf"></i> Export to PDF</button>
                         </div>
-                        <table id="salesTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
-                            width="100%">
+                        <!--Search-->
+                        <div id="salesTable" style="width:25%; float:right; border-radius:5px">
+                            <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                        </div>
+                        <br><br>
+                        <!--Table Body-->
+                        <table id="salesTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                             <thead class="thead-dark">
                                 <tr>
                                     <th><b class="pull-left">Slip No.</b></th>
@@ -26,13 +30,12 @@
                                     <th><b class="pull-left">Actions</b></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="salesTable ic-level-1">
                             </tbody>
                         </table>
 
                         <!--Start of Modal "Add Sales"-->
-                        <div class="modal fade bd-example-modal-lg" id="addSales" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+                        <div class="modal fade bd-example-modal-lg" id="addSales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -42,70 +45,57 @@
                                         </button>
                                     </div>
                                     <!--Modal Content-->
-                                    <form id="formAdd" action="<?= site_url('admin/sales/add')?>" method="post"
-                                        accept-charset="utf-8">
+                                    <form id="formAdd" action="<?= site_url('admin/sales/add') ?>" method="post" accept-charset="utf-8">
                                         <div class="modal-body">
                                             <div class="form-row">
                                                 <!--Pay date-->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Order Paid Date</span>
                                                     </div>
-                                                    <input type="date" name="osPayDateTime" id="osPayDateTime"
-                                                        class="form-control form-control-sm" required>
+                                                    <input type="date" name="osPayDateTime" id="osPayDateTime" class="form-control form-control-sm" required>
                                                 </div>
 
                                                 <!--Order date-->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Order Date</span>
                                                     </div>
-                                                    <input type="date" name="osDateTime" id="osDateTime"
-                                                        class="form-control form-control-sm" required>
+                                                    <input type="date" name="osDateTime" id="osDateTime" class="form-control form-control-sm" required>
                                                 </div>
                                             </div>
                                             <!-- Customer Name -->
                                             <div class="form-row">
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Customer Name</span>
                                                     </div>
-                                                    <input type="text" name="custName" id="custName"
-                                                        class="form-control form-control-sm">
+                                                    <input type="text" name="custName" id="custName" class="form-control form-control-sm">
                                                 </div>
 
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Senior Citizen Discount %</span>
                                                     </div>
-                                                    <input type="number" name="seniorDC" id="seniorDC"
-                                                        onchange="setSubtotal()" class="form-control form-control-sm">
+                                                    <input type="number" name="seniorDC" id="seniorDC" onchange="setSubtotal()" class="form-control form-control-sm">
                                                 </div>
 
                                                 <!-- Table Code -->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Table Code</span>
                                                     </div>
-                                                    <select class="form-control" name="tableCode"
-                                                        id="tableCode"></select>
+                                                    <select class="form-control" name="tableCode" id="tableCode"></select>
                                                 </div>
                                             </div>
 
                                             <!--Button to add row in the table-->
-                                            <a id="addMenuItem" class="addMenuItem btn btn-default btn-sm"
-                                                data-toggle="modal" data-target="#menuItems" data-original-title
-                                                style="margin:0" id="">Add Items</a>
+                                            <a id="addMenuItem" class="addMenuItem btn btn-default btn-sm" data-toggle="modal" data-target="#menuItems" data-original-title style="margin:0" id="">Add Items</a>
                                             <br><br>
                                             <!--Table containing the different input fields in adding PO items -->
                                             <table class="salesTable table table-sm table-borderless">
@@ -129,8 +119,7 @@
                                             <span>Total: &#8369;<span id="total" class="total"> </span></span>
                                             <!--Modal Footer-->
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    data-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
                                                 <button class="btn btn-success btn-sm" type="submit">Add</button>
                                             </div>
                                         </div>
@@ -150,7 +139,7 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <form action="<?php echo base_url()?>admin/sales/report/add" method="post" accept-charset="utf-8" id="formDateReport">
+                                    <form action="<?php echo base_url() ?>admin/sales/report/add" method="post" accept-charset="utf-8" id="formDateReport">
                                         <div class="modal-body">
                                             <p>Please input the date for the following:</p>
                                             <div class="input-group mb-3">
@@ -178,8 +167,7 @@
                         </div>
 
                         <!--Start of Modal "Edit Sales"-->
-                        <div class="modal fade bd-example-modal-lg" id="editSales" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+                        <div class="modal fade bd-example-modal-lg" id="editSales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -189,70 +177,57 @@
                                         </button>
                                     </div>
                                     <!--Modal Content-->
-                                    <form id="formEdit" action="<?= site_url('admin/sales/edit')?>" method="post"
-                                        accept-charset="utf-8">
+                                    <form id="formEdit" action="<?= site_url('admin/sales/edit') ?>" method="post" accept-charset="utf-8">
                                         <div class="modal-body">
                                             <div class="form-row">
                                                 <!--Pay date-->
                                                 <input type="hidden" name="osID" id="osID" value="">
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Order Paid Date</span>
                                                     </div>
-                                                    <input type="datetime-local" name="osPayDateTime" id="osPayDateTime"
-                                                        class="form-control form-control-sm" required>
+                                                    <input type="datetime-local" name="osPayDateTime" id="osPayDateTime" class="form-control form-control-sm" required>
                                                 </div>
 
                                                 <!--Order date-->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Order Date</span>
                                                     </div>
-                                                    <input type="datetime-local" name="osDateTime" id="osDateTime"
-                                                        class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
+                                                    <input type="datetime-local" name="osDateTime" id="osDateTime" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                 </div>
                                             </div>
                                             <!-- Customer Name -->
                                             <div class="form-row">
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Customer Name</span>
                                                     </div>
-                                                    <input type="text" name="custName" id="custName"
-                                                        class="form-control form-control-sm">
+                                                    <input type="text" name="custName" id="custName" class="form-control form-control-sm">
                                                 </div>
 
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Senior Citizen Discount %</span>
                                                     </div>
-                                                    <input type="number" name="seniorDC" id="seniorDC"
-                                                        onchange="setSubtotal()" class="form-control form-control-sm">
+                                                    <input type="number" name="seniorDC" id="seniorDC" onchange="setSubtotal()" class="form-control form-control-sm">
                                                 </div>
                                                 <!-- Table Code -->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Table Code</span>
                                                     </div>
-                                                    <select class="form-control" name="tableCodes" id="tableCodes"
-                                                        required></select>
+                                                    <select class="form-control" name="tableCodes" id="tableCodes" required></select>
                                                 </div>
                                             </div>
 
                                             <!--Button to add row in the table-->
-                                            <a id="addMenuItem" class="addMenuItem btn btn-default btn-sm"
-                                                data-toggle="modal" data-target="#menuItems" data-original-title
-                                                style="margin:0" id="">Add Items</a>
+                                            <a id="addMenuItem" class="addMenuItem btn btn-default btn-sm" data-toggle="modal" data-target="#menuItems" data-original-title style="margin:0" id="">Add Items</a>
                                             <br><br>
                                             <!--Table containing the different input fields in adding PO items -->
                                             <table class="editsalesTable table table-sm table-borderless">
@@ -276,8 +251,7 @@
                                             <span>Total: &#8369;<span id="total1" class="total1"> </span></span>
                                             <!--Modal Footer-->
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    data-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
                                                 <button class="btn btn-success btn-sm" type="submit">Update</button>
                                             </div>
                                         </div>
@@ -288,9 +262,7 @@
                         <!-- END OF EDIT SALES MODAL -->
 
                         <!--Start of Menu Items Modal"-->
-                        <div class="modal fade bd-example-modal" id="menuItems" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true"
-                            style="background:rgba(0, 0, 0, 0.3)">
+                        <div class="modal fade bd-example-modal" id="menuItems" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -303,16 +275,13 @@
                                         <div class="modal-body">
                                             <div style="margin:1% 3%" id="list">
                                                 <!--checkboxes-->
-                                                <label style="width:96%"><input type="checkbox" class="mr-2"
-                                                        value="">Sample
+                                                <label style="width:96%"><input type="checkbox" class="mr-2" value="">Sample
                                                     data 2</label>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-danger btn-sm"
-                                                data-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-success btn-sm" data-dismiss="modal"
-                                                onclick="getSelectedMenu();">Ok</button>
+                                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedMenu();">Ok</button>
                                         </div>
                                     </form>
                                 </div>
@@ -321,8 +290,7 @@
                         <!--End of Menu Items Modal"-->
 
                         <!--Start of Modal "Delete Stock Item"-->
-                        <div class="modal fade" id="deleteStock" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal fade" id="deleteStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -331,29 +299,24 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <form action="<?php echo base_url() ?>admin/sales/add" method="get"
-                                        accept-charset="utf-8">
+                                    <form action="<?php echo base_url() ?>admin/sales/add" method="get" accept-charset="utf-8">
                                         <div class="modal-body">
                                             <div class="form-row">
                                                 <!--Table Number-->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Table No.</span>
                                                     </div>
-                                                    <input type="text" name="tableNum" id="tableNum"
-                                                        class="form-control form-control-sm" required>
+                                                    <input type="text" name="tableNum" id="tableNum" class="form-control form-control-sm" required>
                                                 </div>
                                                 <!--Date-->
                                                 <div class="input-group mb-3 col">
                                                     <div class="input-group-prepend">
-                                                        <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                            style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Date</span>
                                                     </div>
-                                                    <input type="number" name="date" id="date"
-                                                        class="form-control form-control-sm" required>
+                                                    <input type="number" name="date" id="date" class="form-control form-control-sm" required>
                                                 </div>
                                             </div>
                                             <!--Item-->
@@ -376,8 +339,7 @@
                                                 </tbody>
                                             </table>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    data-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
                                                 <button class="btn btn-success btn-sm" type="submit">Insert</button>
                                             </div>
                                     </form>
@@ -388,8 +350,7 @@
                     <!--End of Add Modal-->
 
                     <!--Start of Modal "Delete Stock Item"-->
-                    <div class="modal fade" id="deleteStock" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal fade" id="deleteStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -404,13 +365,11 @@
                                         <p>Are you sure you want to delete this item?</p>
                                         <input type="text" name="" hidden="hidden">
                                         <div>
-                                            Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks"
-                                                class="form-control form-control-sm">
+                                            Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary btn-sm"
-                                            data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                     </div>
                                 </form>
@@ -426,95 +385,95 @@
 
 </body>
 <?php include_once('templates/scripts.php') ?>
-<script src="<?= admin_js().'addSales.js'?>"></script>
+<script src="<?= admin_js() . 'addSales.js' ?>"></script>
 <script>
-var orders = [];
-var orderlists = [];
-var orderslips = [];
-var menuItems = [];
-var tables = [];
-var discounts = <?= json_encode($discounts) ?>;
-var addons = [];
-var mnaddons = <?= json_encode($mnaddons) ?>;
-var sales = [];
-var stocks = [];
+    var orders = [];
+    var orderlists = [];
+    var orderslips = [];
+    var menuItems = [];
+    var tables = [];
+    var discounts = <?= json_encode($discounts) ?>;
+    var addons = [];
+    var mnaddons = <?= json_encode($mnaddons) ?>;
+    var sales = [];
+    var stocks = [];
 
-$(function () {
-    $.ajax({
-        url: '/admin/jsonSales',
-        dataType: 'json',
-        success: function (data) {
-            var poLastIndex = 0;
-            $.each(data.orderlists, function (index, items) {
-                orderlists.push({
-                    "orderlists": items
-                });
-                orderlists[index].addons = data.addons.filter(ao => ao.olID == items.olID);
+    $(function() {
+        $.ajax({
+            url: '/admin/jsonSales',
+            dataType: 'json',
+            success: function(data) {
+                var poLastIndex = 0;
+                $.each(data.orderlists, function(index, items) {
+                    orderlists.push({
+                        "orderlists": items
+                    });
+                    orderlists[index].addons = data.addons.filter(ao => ao.olID == items.olID);
 
-            });
-            $.each(data.orderslips, function (index, item) {
-                orderslips.push({
-                    "orderslips": item
                 });
-                orderslips[index].orders = orderlists.filter(ol => ol.orderlists.osID == item.osID);
-            });
-            sales = data;
-            menuItems = data.menuitems;
-            tables = data.tables;
-            stocks = data.stocks;
-            addons = data.addons;
-            showTable();
-        },
-        error: function (response, setting, errorThrown) {
-            console.log(errorThrown);
-            console.log(response.responseText);
-        }
+                $.each(data.orderslips, function(index, item) {
+                    orderslips.push({
+                        "orderslips": item
+                    });
+                    orderslips[index].orders = orderlists.filter(ol => ol.orderlists.osID == item.osID);
+                });
+                sales = data;
+                menuItems = data.menuitems;
+                tables = data.tables;
+                stocks = data.stocks;
+                addons = data.addons;
+                showTable();
+            },
+            error: function(response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+        });
+
+        $(".addMenuItem").on('click', function() {
+            setBrochureContent(menuItems);
+        });
+
     });
 
-    $(".addMenuItem").on('click', function () {
-        setBrochureContent(menuItems);
-    });
-
-});
-
-function setBrochureContent(menuitems) {
-    $("#list").empty();
-    $("#list").append(`${menuitems.map(menu => {
+    function setBrochureContent(menuitems) {
+        $("#list").empty();
+        $("#list").append(`${menuitems.map(menu => {
             return `<label style="width:96%"><input type="checkbox" id="prID${menu.prID}" name="menuitems[]" class="orderitems mr-2" 
             value="${menu.prID}"> ${menu.prName} - ${parseFloat(menu.prPrice).toFixed(2)}</label>`
         }).join('')}`);
-    disableSelected();
-}
+        disableSelected();
+    }
 
-function disableSelected() {
-    if ($('.salesElem') != 0 || $('.salesElem') != null) {
-        var addedItems = $('.salesElem').find('#prID');
-        for (var i = 0; i <= addedItems.length - 1; i++) {
-            var id = addedItems[i].value;
-            $('#prID' + id).attr("disabled", "disabled");
+    function disableSelected() {
+        if ($('.salesElem') != 0 || $('.salesElem') != null) {
+            var addedItems = $('.salesElem').find('#prID');
+            for (var i = 0; i <= addedItems.length - 1; i++) {
+                var id = addedItems[i].value;
+                $('#prID' + id).attr("disabled", "disabled");
+            }
         }
     }
-}
 
-$('#addBtn').on('click', function () {
-    $('#dcpercent').remove();
-    $("#editSales form")[0].reset();
-    $(".editsalesTable > tbody").empty();
-    $('.salesTable > tbody').empty();
-    $('#addSales form')[0].reset();
-    $('#total').empty();
-    $('#tableCode').empty();
-    $("#tableCode").append(`${tables.map(tab => {
+    $('#addBtn').on('click', function() {
+        $('#dcpercent').remove();
+        $("#editSales form")[0].reset();
+        $(".editsalesTable > tbody").empty();
+        $('.salesTable > tbody').empty();
+        $('#addSales form')[0].reset();
+        $('#total').empty();
+        $('#tableCode').empty();
+        $("#tableCode").append(`${tables.map(tab => {
             return `<option value="${tab.tableCode}">${tab.tableCode}</option>`;
         }).join('')}`);
-    subPrice = 0;
+        subPrice = 0;
 
-});
+    });
 
-function showTable() {
-    orderslips.forEach(function (item) {
-        var tableRow = `
-                <tr class="table_row" data-id="${item.orderslips.osID}">   <!-- table row ng table -->
+    function showTable() {
+        orderslips.forEach(function(item) {
+            var tableRow = `
+                <tr class="table_row salesTable ic-level-1" data-id="${item.orderslips.osID}">   <!-- table row ng table -->
                     <td><a href="javascript:void(0)" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
                     ${item.orderslips.osID}</td>                    
@@ -527,7 +486,7 @@ function showTable() {
                     </td>
                 </tr>
             `;
-        var ordersDiv = `
+            var ordersDiv = `
             <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
                 ${item.orders[0].orderlists.length === 0 ? "No orders" : 
                 `<caption><b>Orders</b></caption>
@@ -559,7 +518,7 @@ function showTable() {
                 `}
             </div>
             `;
-        var accordion = `
+            var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none"> <!-- container ng accordion -->
@@ -575,74 +534,74 @@ function showTable() {
             </tr>
             `;
 
-        $("#salesTable > tbody").append(tableRow);
-        $("#salesTable > tbody").append(accordion);
-        $(".poAccordionContent").last().append(ordersDiv);
+            $("#salesTable > tbody").append(tableRow);
+            $("#salesTable > tbody").append(accordion);
+            $(".poAccordionContent").last().append(ordersDiv);
 
-    });
-    $(".accordionBtn").on('click', function () {
-        if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
-            $(this).closest("tr").next(".accordion").css("display", "table-row");
-            $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
-        } else {
-            $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
-            $(this).closest("tr").next(".accordion").hide("slow");
-        }
-    });
+        });
+        $(".accordionBtn").on('click', function() {
+            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+                $(this).closest("tr").next(".accordion").css("display", "table-row");
+                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+            } else {
+                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                $(this).closest("tr").next(".accordion").hide("slow");
+            }
+        });
 
-    $(".editBtn").on("click", function () {
-        $('#dcpercent').remove();
-        $('.salesTable > tbody').empty();
-        $('#addSales form')[0].reset();
-        $("#editSales form")[0].reset();
-        $(".editsalesTable > tbody").empty();
-        $('#tableCodes').empty();
-        $("#tableCodes").append(`${tables.map(tab => {
+        $(".editBtn").on("click", function() {
+            $('#dcpercent').remove();
+            $('.salesTable > tbody').empty();
+            $('#addSales form')[0].reset();
+            $("#editSales form")[0].reset();
+            $(".editsalesTable > tbody").empty();
+            $('#tableCodes').empty();
+            $("#tableCodes").append(`${tables.map(tab => {
             return `<option value="${tab.tableCode}">${tab.tableCode}</option>`;
         }).join('')}`);
-        subPrice = 0;
-        var osID = $(this).closest("tr").attr("data-id");
-        setEditModal($("#editSales"), sales.orderslips.filter(item => item.osID === osID)[0],
-            sales.orderlists.filter(ol => ol.osID === osID), addons, stocks);
-    });
+            subPrice = 0;
+            var osID = $(this).closest("tr").attr("data-id");
+            setEditModal($("#editSales"), sales.orderslips.filter(item => item.osID === osID)[0],
+                sales.orderlists.filter(ol => ol.osID === osID), addons, stocks);
+        });
 
-    showAddOns();
-}
-
-function showAddOns() {
-    for (var i = 0; i <= addons.length - 1; i++) {
-        var addonsTr = '<tr><td>Add On</td>' +
-            '<td>' + addons[i].aoName + '</td>' +
-            '<td>' + addons[i].aoQty + '</td>' +
-            '<td>' + addons[i].aoPrice + '</td>' +
-            '<td>' + addons[i].aoTotal + '</td></tr>';
-
-        $('#' + addons[i].olID).after(addonsTr);
+        showAddOns();
     }
-}
 
-function setEditModal(modal, saleslist, ol, addons, stocks) {
-    var olAddons = [];
-    var options = [];
+    function showAddOns() {
+        for (var i = 0; i <= addons.length - 1; i++) {
+            var addonsTr = '<tr><td>Add On</td>' +
+                '<td>' + addons[i].aoName + '</td>' +
+                '<td>' + addons[i].aoQty + '</td>' +
+                '<td>' + addons[i].aoPrice + '</td>' +
+                '<td>' + addons[i].aoTotal + '</td></tr>';
 
-    // Conversion of Date to Datetime-local format
-    var osDateTime = new Date(saleslist.osDateTime);
-    var osPayDateTime = new Date(saleslist.osPayDateTime);
-    var stringDT = osDateTime.toISOString();
-    var stringPDT = osPayDateTime.toISOString();
-    osDateTime = stringDT.substr(0, stringDT.length - 1);
-    osPayDateTime = stringPDT.substr(0, stringPDT.length - 1);
+            $('#' + addons[i].olID).after(addonsTr);
+        }
+    }
 
-    // Setting values for inputs
-    modal.find("input[name='osID']").val(saleslist.osID);
-    modal.find("input[name='osPayDateTime']").val(osPayDateTime);
-    modal.find("input[name='osDateTime']").val(osDateTime);
-    modal.find("input[name='custName']").val(saleslist.custName);
-    modal.find("input[name='seniorDC']").val(saleslist.osDiscount);
-    modal.find("select[name='tableCodes']").find(`option[value=${saleslist.tableCode}]`).attr("selected", "selected");
+    function setEditModal(modal, saleslist, ol, addons, stocks) {
+        var olAddons = [];
+        var options = [];
 
-    ol.forEach(ol => {
-        modal.find(".editsalesTable > tbody").append(`
+        // Conversion of Date to Datetime-local format
+        var osDateTime = new Date(saleslist.osDateTime);
+        var osPayDateTime = new Date(saleslist.osPayDateTime);
+        var stringDT = osDateTime.toISOString();
+        var stringPDT = osPayDateTime.toISOString();
+        osDateTime = stringDT.substr(0, stringDT.length - 1);
+        osPayDateTime = stringPDT.substr(0, stringPDT.length - 1);
+
+        // Setting values for inputs
+        modal.find("input[name='osID']").val(saleslist.osID);
+        modal.find("input[name='osPayDateTime']").val(osPayDateTime);
+        modal.find("input[name='osDateTime']").val(osDateTime);
+        modal.find("input[name='custName']").val(saleslist.custName);
+        modal.find("input[name='seniorDC']").val(saleslist.osDiscount);
+        modal.find("select[name='tableCodes']").find(`option[value=${saleslist.tableCode}]`).attr("selected", "selected");
+
+        ol.forEach(ol => {
+            modal.find(".editsalesTable > tbody").append(`
         <tr class="salesElem salesElements" data-id="${ol.olID}" data-stockid="${ol.stID}" data-stqty="${ol.prstQty}"
             data-currqty="${ol.stQty}">
             <input type="hidden" name="prID" id="prID" value="${ol.prID}">
@@ -666,11 +625,11 @@ function setEditModal(modal, saleslist, ol, addons, stocks) {
         </tr>
         `);
 
-        mID = ol.mID;
-        olAddons = addons.filter(ao => ao.olID == ol.olID);
-        var prID = ol.prID;
-        olAddons.forEach(oa => {
-            modal.find(".editsalesTable > tbody").last('tr').append(`
+            mID = ol.mID;
+            olAddons = addons.filter(ao => ao.olID == ol.olID);
+            var prID = ol.prID;
+            olAddons.forEach(oa => {
+                modal.find(".editsalesTable > tbody").last('tr').append(`
             <tr class="addonsTable addonsTables" data-id="${oa.olID}">
                 <input type="hidden" name="aoprID" id="aoprID" value="${prID}">
                 <input type="hidden" name="oldaoID" id="oldaoID" value="${oa.aoID}">
@@ -696,208 +655,222 @@ function setEditModal(modal, saleslist, ol, addons, stocks) {
                         style="width:20px;height:20px"></td>
             </tr>`);
 
-            setAddonOptions(modal, mID, oa.olID, oa.aoID);
+                setAddonOptions(modal, mID, oa.olID, oa.aoID);
 
+            });
+
+            setDiscount();
+            modal.find("select[name='discount']").find(`option[value=${ol.olDiscount}]`).attr("selected", "selected");
+
+            if (parseInt(olAddons.length) > 0) {
+                setAddonTotal();
+            }
         });
 
-        setDiscount();
-        modal.find("select[name='discount']").find(`option[value=${ol.olDiscount}]`).attr("selected", "selected");
+        setSubtotal();
+    }
 
-        if (parseInt(olAddons.length) > 0) {
+    function setAddonOptions(modal, mID, olID, aoID) {
+        mnaddon = mnaddons.filter(item => item.mID === mID);
+
+        mnaddon.forEach(ma => {
+            modal.find("#ao" + olID + aoID).append(`
+                <option value="${ma.aoID}">${ma.aoName}</option>`);
+        });
+
+        modal.find("select[id='ao" + olID + aoID + "']").find(`option[value=${aoID}]`).attr("selected", "selected");
+
+    }
+
+    var input, aoPrice;
+
+    function onchangeAddon(select) {
+        input = $(select);
+        var aoID = $(select).val();
+
+        try {
+            var arr = mnaddons.filter(ao => ao.aoID === aoID);
+            aoPrice = arr[0].aoPrice;
+            $(select).closest('td').nextAll('td').find('#aoPrice')[0].value = aoPrice;
+
+            setAddOnsSubtotal();
+        } catch (error) {
+            aoPrice = 0;
+            $(select).closest('td').nextAll('td').find('#aoPrice')[0].value = 0;
+
+            setAddOnsSubtotal();
+        }
+    }
+
+    function setAddOnsSubtotal() {
+        var aoQty = $(input).closest('td').next('td').find('#aoQty').val();
+        var aoSubtotal = parseFloat(aoPrice * aoQty);
+        $(input).closest('td').nextAll('td').find('#aoSubtotal')[0].value = aoSubtotal;
+
         setAddonTotal();
     }
-    });
 
-    setSubtotal();
-}
+    function onchangeAddonQuantity(quantity) {
+        var aoQty = $(quantity).val();
+        var aoPrice = $(quantity).closest('td').nextAll('td').find('#aoPrice')[0].value;
+        var aoSubtotal = parseFloat(aoPrice * aoQty);
+        $(quantity).closest('td').nextAll('td').find('#aoSubtotal')[0].value = aoSubtotal;
 
-function setAddonOptions(modal, mID, olID, aoID) {
-    mnaddon = mnaddons.filter(item => item.mID === mID);
-
-    mnaddon.forEach(ma => {
-        modal.find("#ao" + olID + aoID).append(`
-                <option value="${ma.aoID}">${ma.aoName}</option>`);
-    });
-
-    modal.find("select[id='ao" + olID + aoID + "']").find(`option[value=${aoID}]`).attr("selected", "selected");
-
-}
-
-var input, aoPrice;
-
-function onchangeAddon(select) {
-    input = $(select);
-    var aoID = $(select).val();
-
-    try {
-        var arr = mnaddons.filter(ao => ao.aoID === aoID);
-        aoPrice = arr[0].aoPrice;
-        $(select).closest('td').nextAll('td').find('#aoPrice')[0].value = aoPrice;
-
-        setAddOnsSubtotal();
-    } catch (error) {
-        aoPrice = 0;
-        $(select).closest('td').nextAll('td').find('#aoPrice')[0].value = 0;
-
-        setAddOnsSubtotal();
-    }
-}
-
-function setAddOnsSubtotal() {
-    var aoQty = $(input).closest('td').next('td').find('#aoQty').val();
-    var aoSubtotal = parseFloat(aoPrice * aoQty);
-    $(input).closest('td').nextAll('td').find('#aoSubtotal')[0].value = aoSubtotal;
-
-    setAddonTotal();
-}
-
-function onchangeAddonQuantity(quantity) {
-    var aoQty = $(quantity).val();
-    var aoPrice = $(quantity).closest('td').nextAll('td').find('#aoPrice')[0].value;
-    var aoSubtotal = parseFloat(aoPrice * aoQty);
-    $(quantity).closest('td').nextAll('td').find('#aoSubtotal')[0].value = aoSubtotal;
-
-    setAddonTotal();
-
-}
-
-function setDiscount() {
-
-    for (var i = 0; i <= $('.discount').length - 1; i++) {
-        var tr = $('.discount').eq(i).closest('tr');
-        $(tr).find('select').empty();
-        var prmID = $('.discount').eq(i).closest('tr').find('#prID').val();
-        var discount = discounts.filter(item => item.prID === prmID);
-
-        if (parseInt(discount.length) == 0) {
-            $(tr).find('select').append(`<option value="0" selected>None</option>`);
-        } else {
-            $(tr).find('select').append(`<option value="0" selected>None</option>`);
-            discount.forEach(dc => {
-                $(tr).find("#discount" + prmID).append(`
-                <option value="${dc.dcAmount}">${dc.dcName}</option>`);
-            });
-        }
+        setAddonTotal();
 
     }
-}
-// --------------------- Editing sales ---------------------------------
-$(document).ready(function () {
-    $("#editSales form").on('submit', function (event) {
-        event.preventDefault();
-        var osID = $(this).find("input[name='osID']").val();
-        var osPayDateTime = $(this).find("input[name='osPayDateTime']").val();
-        var osDateTime = $(this).find("input[name='osDateTime']").val();
-        var osTotal = $(this).find("span[id='total1']").text();
-        var custName = $(this).find("input[name='custName']").val();
-        var osDiscount = $(this).find("input[name='seniorDC']").val();
-        var tableCodes = $(this).find("select[name='tableCodes']").val();
 
-        var ol = [];
-        for (var index = 0; index < $(this).find(".salesElements").length; index++) {
-            var row = $(this).find(".salesElements").eq(index);
-            var stQty;
-            var oldQty = parseInt(row.find("input[name='olQty']").data("qty"));
-            var newQty = parseInt(row.find("input[name='olQty']").val());
+    function setDiscount() {
 
-            if (isNaN(parseInt(row.attr('data-id')))) {
-                stQty = parseInt(row.attr('data-currqty') - (row.find("input[name='olQty']").val() *
-                    row.attr('data-stqty')));
-            } else if (parseInt(row.attr('data-delete')) === 0) {
-                stQty = parseInt(row.attr('data-currqty')) + (parseInt(row.find("input[name='olQty']").data("qty")) *
-                    parseInt(row.attr('data-stqty')));
-            } else if (oldQty !== newQty) {
-                var difference = oldQty - newQty;
-                stQty = parseInt(row.attr('data-currqty')) + (parseInt(difference) *
-                    parseInt(row.attr('data-stqty')));
+        for (var i = 0; i <= $('.discount').length - 1; i++) {
+            var tr = $('.discount').eq(i).closest('tr');
+            $(tr).find('select').empty();
+            var prmID = $('.discount').eq(i).closest('tr').find('#prID').val();
+            var discount = discounts.filter(item => item.prID === prmID);
+
+            if (parseInt(discount.length) == 0) {
+                $(tr).find('select').append(`<option value="0" selected>None</option>`);
             } else {
-                stQty = parseInt(row.attr('data-currqty'));
+                $(tr).find('select').append(`<option value="0" selected>None</option>`);
+                discount.forEach(dc => {
+                    $(tr).find("#discount" + prmID).append(`
+                <option value="${dc.dcAmount}">${dc.dcName}</option>`);
+                });
             }
 
-            ol.push({
-                olID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
-                prID: row.find("input[name='prID']").val(),
-                stID: parseInt(row.attr('data-stockid')),
-                stQty: stQty,
-                osID: osID,
-                olDesc: row.find("input[name='olDesc']").val(),
-                olQty: row.find("input[name='olQty']").val(),
-                olSubtotal: row.find("input[name='subtotal']").val(),
-                olStatus: 'served',
-                olRemarks: ' ',
-                olPrice: row.find("input[name='prPrice']").val(),
-                olDiscount: parseFloat((row.find("select[name='discount']").val()).trim()),
-                deductQty : isNaN((parseInt(row.attr("data-stqty")) * olQty)) ? (null) : (parseInt(row.data("stqty")) * olQty),
-                tiActual: Math.abs((parseInt(oldQty - newQty) * parseInt(row.attr('data-stqty')))),
-                update: (oldQty !== newQty) ? (1) : (0),
-                del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
-            });
         }
+    }
+    // --------------------- Editing sales ---------------------------------
+    $(document).ready(function() {
+        $("#editSales form").on('submit', function(event) {
+            event.preventDefault();
+            var osID = $(this).find("input[name='osID']").val();
+            var osPayDateTime = $(this).find("input[name='osPayDateTime']").val();
+            var osDateTime = $(this).find("input[name='osDateTime']").val();
+            var osTotal = $(this).find("span[id='total1']").text();
+            var custName = $(this).find("input[name='custName']").val();
+            var osDiscount = $(this).find("input[name='seniorDC']").val();
+            var tableCodes = $(this).find("select[name='tableCodes']").val();
 
-        var addons = [];
-        for (var index = 0; index < $(this).find(".addonsTables").length; index++) {
-            var row = $(this).find(".addonsTables").eq(index);
-            addons.push({
-                prID: row.find("input[name='aoprID']").val(),
-                olID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
-                oldaoID: isNaN(parseInt(row.find("input[name='oldaoID']").val())) ? (null) : parseInt(row.find("input[name='oldaoID']").val()),
-                aoID: parseInt((row.find("select[name='aoID']").val()).trim()),
-                aoQty: row.find("input[name='aoQty']").val(),
-                aoTotal: row.find("input[name='aoSubtotal']").val(),
-                del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
+            var ol = [];
+            for (var index = 0; index < $(this).find(".salesElements").length; index++) {
+                var row = $(this).find(".salesElements").eq(index);
+                var stQty;
+                var oldQty = parseInt(row.find("input[name='olQty']").data("qty"));
+                var newQty = parseInt(row.find("input[name='olQty']").val());
+
+                if (isNaN(parseInt(row.attr('data-id')))) {
+                    stQty = parseInt(row.attr('data-currqty') - (row.find("input[name='olQty']").val() *
+                        row.attr('data-stqty')));
+                } else if (parseInt(row.attr('data-delete')) === 0) {
+                    stQty = parseInt(row.attr('data-currqty')) + (parseInt(row.find("input[name='olQty']").data("qty")) *
+                        parseInt(row.attr('data-stqty')));
+                } else if (oldQty !== newQty) {
+                    var difference = oldQty - newQty;
+                    stQty = parseInt(row.attr('data-currqty')) + (parseInt(difference) *
+                        parseInt(row.attr('data-stqty')));
+                } else {
+                    stQty = parseInt(row.attr('data-currqty'));
+                }
+
+                ol.push({
+                    olID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
+                    prID: row.find("input[name='prID']").val(),
+                    stID: parseInt(row.attr('data-stockid')),
+                    stQty: stQty,
+                    osID: osID,
+                    olDesc: row.find("input[name='olDesc']").val(),
+                    olQty: row.find("input[name='olQty']").val(),
+                    olSubtotal: row.find("input[name='subtotal']").val(),
+                    olStatus: 'served',
+                    olRemarks: ' ',
+                    olPrice: row.find("input[name='prPrice']").val(),
+                    olDiscount: parseFloat((row.find("select[name='discount']").val()).trim()),
+                    deductQty: isNaN((parseInt(row.attr("data-stqty")) * olQty)) ? (null) : (parseInt(row.data("stqty")) * olQty),
+                    tiActual: Math.abs((parseInt(oldQty - newQty) * parseInt(row.attr('data-stqty')))),
+                    update: (oldQty !== newQty) ? (1) : (0),
+                    del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
+                });
+            }
+
+            var addons = [];
+            for (var index = 0; index < $(this).find(".addonsTables").length; index++) {
+                var row = $(this).find(".addonsTables").eq(index);
+                addons.push({
+                    prID: row.find("input[name='aoprID']").val(),
+                    olID: isNaN(parseInt(row.attr('data-id'))) ? (null) : parseInt(row.attr('data-id')),
+                    oldaoID: isNaN(parseInt(row.find("input[name='oldaoID']").val())) ? (null) : parseInt(row.find("input[name='oldaoID']").val()),
+                    aoID: parseInt((row.find("select[name='aoID']").val()).trim()),
+                    aoQty: row.find("input[name='aoQty']").val(),
+                    aoTotal: row.find("input[name='aoSubtotal']").val(),
+                    del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
+                });
+            }
+
+            $.ajax({
+                url: "<?= site_url("admin/sales/edit ") ?>",
+                method: "post",
+                data: {
+                    osID: parseInt(osID),
+                    osPayDateTime: osPayDateTime,
+                    osDateTime: osDateTime,
+                    custName: custName,
+                    osDiscount: parseInt(osDiscount),
+                    osTotal: parseInt(osTotal),
+                    payStatus: 'paid',
+                    tableCodes: (tableCodes).trim(),
+                    orderlists: JSON.stringify(ol),
+                    addons: JSON.stringify(addons)
+                },
+                success: function() {
+                    location.reload();
+                },
+                error: function(response, setting, errorThrown) {
+                    alert("There are add on duplicates on an item");
+                    console.log(errorThrown);
+                    console.log(response.responseText);
+                }
             });
-        }
+        });
 
-        $.ajax({
-            url: "<?= site_url("admin/sales/edit ")?>",
-            method: "post",
-            data: {
-                osID: parseInt(osID),
-                osPayDateTime: osPayDateTime,
-                osDateTime: osDateTime,
-                custName: custName,
-                osDiscount: parseInt(osDiscount),
-                osTotal: parseInt(osTotal),
-                payStatus: 'paid',
-                tableCodes: (tableCodes).trim(),
-                orderlists: JSON.stringify(ol),
-                addons: JSON.stringify(addons)
-            },
-            success: function () {
-                location.reload();
-            },
-            error: function (response, setting, errorThrown) {
-                alert("There are add on duplicates on an item");
-                console.log(errorThrown);
-                console.log(response.responseText);
+        $('#formDateReport').submit(function(event) {
+            var sDate = $("#sDate").val();
+            var eDate = $("#eDate").val();
+            var currentDate = new Date();
+            if (Date.parse(eDate) <= Date.parse(sDate)) {
+                alert('Please check the date range entered!');
+                return false;
+            }
+            if (Date.parse(eDate) > Date.parse(currentDate)) {
+                alert('Please check the entered date.');
+                return false;
+            }
+        });
+
+        $('#formAdd').submit(function(event) {
+            var payDate = $("#osPayDateTime").val();
+            var orderDate = $("#osDateTime").val();
+            if (Date.parse(payDate) != Date.parse(orderDate)) {
+                alert('Please check date entered!');
+                return false;
             }
         });
     });
 
-    $('#formDateReport').submit(function(event){
-        var sDate = $("#sDate").val();
-        var eDate = $("#eDate").val();
-        var currentDate = new Date();
-        if(Date.parse(eDate) <= Date.parse(sDate)){
-            alert('Please check the date range entered!');
-            return false;
-        }
-        if(Date.parse(eDate) > Date.parse(currentDate)){
-            alert('Please check the entered date.');
-            return false;
-        }
-    });
+    //Search Function
+		$("#salesTable input[name='search']").on("keyup", function() {
+			var string = $(this).val().toLowerCase();
 
-    $('#formAdd').submit(function(event){
-        var payDate = $("#osPayDateTime").val();
-        var orderDate = $("#osDateTime").val();
-        if(Date.parse(payDate) != Date.parse(orderDate)){
-            alert('Please check date entered!');
-            return false;
-        }
-    });
-});
+			$("#salesTable .ic-level-1").each(function(index) {
+				var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+				if (!text.includes(string)) {
+					$(this).closest("tr").hide();
+				} else {
+					$(this).closest("tr").show();
+				}
+			});
 
-    
+		});
 </script>
+
 </html>
