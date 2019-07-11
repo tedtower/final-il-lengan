@@ -278,6 +278,16 @@ function get_transitems(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) where ctType = 'inventory' and supcatID is null group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
     }
+     function get_stkCat($s,$l){
+        $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems 
+        using (ctID) where ctType = 'inventory' group by ctID order by ctName asc limit $s,$l";
+        return $this->db->query($query)->result_array();
+    }
+    function countCat(){
+        $query = 'SELECT count("ctID") as allcount from categories left join stockitems using (ctID) where ctType = "inventory" group by ctID';
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_menuprices(){
         $query = "select mID, prName, prPrice from sizes";
         return $this->db->query($query)->result_array();
@@ -587,6 +597,44 @@ function get_transitems(){
     LEFT JOIN categories USING(ctID)
     GROUP BY
         stID order by ctName, stName asc";
+        return $this->db->query($query)->result_array();
+    }
+     function record_count() {
+        $query = 'SELECT count("stID") as allcount from stockitems';
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
+    function get_invstocks($start, $limit){
+        $query = "SELECT
+        stockitems.stID,
+        CONCAT(
+            stName,
+            IF(
+                stSize IS NULL,
+                '',
+                CONCAT(' ', stSize)
+            )
+        ) AS stName,
+        stMin,
+        stQty,
+        uomID,
+        uomAbbreviation,
+        uomStore,
+        stBqty,
+        UPPER(stStatus) AS stStatus,
+        stType,
+        UPPER(stLocation) AS stLocation,
+        ctName,
+        ctID
+    FROM
+        (
+            stockitems
+        LEFT JOIN uom USING(uomID)
+        )
+    LEFT JOIN categories USING(ctID)
+    GROUP BY
+        stID order by ctName, stName asc
+    LIMIT $start, $limit";
         return $this->db->query($query)->result_array();
     }
 
