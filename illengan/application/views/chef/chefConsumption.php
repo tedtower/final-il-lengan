@@ -8,7 +8,7 @@
                 <!-- Real Time Date & Time -->
                 <?php echo date("M j, Y -l"); ?>
             </p>
-            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption/formadd')?>" data-original-title style="margin:0; width:15%;"
+            <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/consumption/formadd')?>" data-original-title style="margin:0; width:20%;"
                                                 id="addBtn">Add Consumption</a>
             </div>
             <br>

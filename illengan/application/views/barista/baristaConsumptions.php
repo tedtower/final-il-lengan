@@ -15,7 +15,7 @@
 							<!--Add Consumption BUTTON-->
 							<div class="col-md-4 col-lg-2">
 							<!-- <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Consumption</button><br> -->
-							<a class="btn btn-primary btn-sm" href="<?= site_url('barista/consumption/formadd')?>" data-original-title style="margin:0"
+							<a class="btn btn-primary btn-sm" href="<?= site_url('barista/consumption/formadd')?>" data-original-title style="margin:0; width: 130px"
                                     id="addBtn">Add Consumption</a>
 							<!--eND Add Consumption BUTTON-->
 							</div>
@@ -331,7 +331,9 @@
 				location.reload();
                 }
             });
-        });
+		});
+		
+		
 	});
 
 	//End Function Delete
