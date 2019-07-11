@@ -92,7 +92,7 @@
 
                                         <!--input fields in adding trans items w/PO and w/supplier -->
                                         <div class="ic-level-2">
-                                            <!-- <div style="overflow:auto" class="ic-level-1">
+                                            <div style="overflow:auto" class="ic-level-1">
                                                 <div style="float:left;width:96%;overflow:auto;">
                                                     <div class="input-group mb-1">
                                                         <input type="text" name="name[]"
@@ -115,25 +115,11 @@
                                                     <img class="exitBtn" src="/assets/media/admin/error.png"
                                                         style="width:15px;height:15px;float:right;">
                                                 </div>
-                                            </div> -->
-                                            <!-- <div style="overflow:auto" class="ic-level-1">
-                                                <div style="float:left;width:96%;overflow:auto;">
-                                                    <div class="input-group mb-1">
-                                                        <input name="stID[]" type="text"
-                                                            class="form-control form-control-sm" placeholder="Stock">
-                                                        <input name="actualQty[]" type="number"
-                                                            class="form-control form-control-sm" placeholder="Actual Qty">
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2" style="float:left:width:3%;overflow:auto">
-                                                    <img class="exitBtn" src="/assets/media/admin/error.png"
-                                                        style="width:15px;height:15px;float:right;">
-                                                </div>
-                                            </div> -->
+                                            </div>
                                         </div>
 
-                                        <!--input fields in adding trans items w/o Supplier -->
-                                        <!-- <div class="ic-level-2">
+                                        <!-- input fields in adding trans items w/o Supplier -->
+                                        <div class="ic-level-2">
                                             <div style="overflow:auto" class="ic-level-1">
                                                 <div style="float:left;width:96%;overflow:auto;">
                                                     <div class="input-group mb-1">
@@ -148,7 +134,7 @@
                                                         style="width:15px;height:15px;float:right;">
                                                 </div>
                                             </div>
-                                        </div> -->
+                                        </div>
                                         <br>
                                         <span>Total: &#8369;<span class="total">0</span></span>
                                         <!--Total of the trans items-->
@@ -651,24 +637,7 @@
                 });
                 $("#merchandiseBrochure").modal("hide");
             }
-            var returns = <?= json_encode($returns) ?>;
-
-            function setReturnsBrochure() {
-                $("tbody.deliveries").empty();
-                deliveries.forEach(function (del) {
-                    $("tbody.deliveries").append(`
-                    <tr class="ic-level-1">
-                    <td><input type="checkbox" class="mr-2" name="delivery"
-                            data-name="${del.stName}" data-uom="${del.uomName}" 
-                            data-stid="${del.stID}"  data-actual="${del.spmActual}" 
-                            data-price="${del.spmPrice}"  data-spmid="${del.spmID}"
-                             value="${del.stID}"></td>
-                    <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spAltName}' 
-                    data-spid="${del.spID}">${del.trans}</td>
-                    <td class="item" data-stid='${del.stID}'>${del.item}</td>
-                </tr>`);
-                });
-            }
+          
             function resetForm() {
                 $("#drForm .ic-level-2").empty();
             }

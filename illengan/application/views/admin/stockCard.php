@@ -19,8 +19,8 @@
                         <div style="width:100%;overflow:auto;">
                             <div style="overflow:auto;">
                             <span style="float:left;width:40%;"><b>Stock Item:</b> <?= $stock['stName'] . " " . $stock['stSize']?></span>
-                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $currentInv['maxDate']?></span>
-                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $currentInv['actualQty'] . " " . $stock['uomAbbreviation']?></span>
+                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $logs[0]['logDate']?></span>
+                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $logs[0]['reQty'] . " " . $stock['uomAbbreviation']?></span>
                             </div>
                             
                             <div style="overflow:auto;">
@@ -47,7 +47,7 @@
                         <?php if(!empty($logs)){
                             $icon;
                             foreach($logs as $log){
-                                switch($log['slType']){
+                                switch($log['type']){
                                     case 'restock':
                                         $icon = "plus";
                                         break;
@@ -61,25 +61,26 @@
                         ?>
                             <tr>
                                 <td><img src="/assets/media/admin/<?= $icon?>.png" style="height:18px;width:18px"/></td>
-                                <td><?= ucwords($log['slType'])?></td>
-                                <td><?= $log['tNum'] == NULL ? "N/A" : $log['tNum']?></td>
-                                <td><?= $log['slDateTime']?></td>
-                                <td><?= $log['slQty']?></td>
-                                <td><?= $log['slRemainingQty']?></td>
+                                <td><?= ucwords($log['type'])?></td>
+                                <td><?= $log['tID'] == NULL ? "N/A" : $log['tID']?></td>
+                                <td><?= $log['logDate']?></td>
+                                <td><?= $log['actual']?></td>
+                                <td><?= $log['remain']?></td>
                             </tr>
-                        <?php
-                            }
-                        }?>
-
                             <!--table row when an inventory check was performed-->
-                            <!-- <tr style="background:whitesmoke">
+                            <tr style="background:whitesmoke">
                                 <td><img src="/assets/media/admin/check.png" style="height:18px;width:18px"/></td>
                                 <td>Inventory Check</td>
                                 <td><b>Date:</b> </td>
                                 <td><b>Physical Count:</b> </td>
                                 <td><b>Discrepancy:</b> </td>
                                 <td><b>Remarks:</b> </td>
-                            </tr> -->
+                            </tr>
+                        <?php
+                            }
+                        }?>
+
+
                         </tbody>
                     </table>
 
