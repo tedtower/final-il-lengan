@@ -23,6 +23,68 @@ function fetch_searchdata($query) {
     return $this->db->get();
  }
 //GET FUNCTIONS-------------------------------------------------------------------
+function get_stockCard($stID){
+    $query = "SELECT
+    CONCAT(
+        stName,
+        COALESCE(stSize, CONCAT(' ', stSize))
+    ) as stock,
+    stockitems.stID as stockID,
+    st_recon.stID as reconID,
+    tiActual AS actual,
+    tiType AS type,
+    reQty,
+    transitems.remainingQty AS remain,
+    DATE_FORMAT(
+        COALESCE(tiDate, reDate),
+        '%b %d, %Y %r'
+    ) AS logDate,
+    reDiscrepancy,
+    reRemarks,
+    reID,
+    COALESCE(rID, pID, cID, sID) AS tID,
+    spmID
+FROM
+    stockitems
+RIGHT JOIN(
+        transitems
+    LEFT JOIN suppliermerchandise USING(spmID)
+    LEFT JOIN(
+            return_items
+        LEFT JOIN RETURNS USING(rID)
+        ) USING(riID)
+    LEFT JOIN(
+            (
+                purchase_items
+            LEFT JOIN pur_items USING(piID)
+            )
+        LEFT JOIN purchases USING(pID)
+        ) USING(piID)
+    LEFT JOIN(
+            consumed_items
+        LEFT JOIN consumptions USING(cID)
+        ) USING(ciID)
+    LEFT JOIN(
+            spoiledstock
+        LEFT JOIN stockspoil USING(sID)
+        ) USING(siID)
+    )
+ON
+    stockitems.stID = COALESCE(
+        suppliermerchandise.stID,
+        transitems.stID
+    )
+RIGHT JOIN(
+        st_recon
+    RIGHT JOIN reconciliation USING(reID)
+    )
+ON
+    (
+        st_recon.stID = stockitems.stID
+    )
+   where stockitems.stID = ? and tiType <> 'purchase order'";
+   return $this->db->query($query,array($stID))->result_array();
+}
 //REPORT GENERATION GETTERS
  function getInventoryList(){
      $query = "SELECT ctID, ctName, stID, UPPER(stLocation) AS stLocation, stMin, CONCAT(stName, IF(stSize IS NULL, '', CONCAT(' ', stSize))) AS stockitemname, stQty, UPPER(stStatus) AS stStatus, UPPER(stType) AS stType, uomID, uomName, uomAbbreviation, stBqty FROM(stockitems LEFT JOIN categories USING(ctID)) LEFT JOIN uom USING(uomID) order by ctName, stName asc";
@@ -677,12 +739,12 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
     function get_suppliermerch(){
-        $query = "SELECT stID, CONCAT( stName, IF( stSize IS NULL, '', CONCAT(' ', stSize) ) ) AS stName, suppliermerchandise.uomID, uomAbbreviation,uomName, spmID, spmName, spmPrice, spmActualQty, spID, spName FROM ( stockitems RIGHT JOIN( suppliermerchandise LEFT JOIN supplier USING(spID) ) USING(stID) ) LEFT JOIN uom on (suppliermerchandise.uomID = uom.uomID)
+        $query = "SELECT stID, CONCAT( stName, IF( stSize IS NULL, '', CONCAT(' ', stSize) ) ) AS stName, suppliermerchandise.uomID, uomAbbreviation,uomName, spmID, spmName, spmPrice, spmActual, spID, spName FROM ( stockitems RIGHT JOIN( suppliermerchandise LEFT JOIN supplier USING(spID) ) USING(stID) ) LEFT JOIN uom on (suppliermerchandise.uomID = uom.uomID)
         ";
         return $this->db->query($query)->result_array();
     }
     function get_suppliermerchBySupplier($id){
-        $query = "SELECT stID, CONCAT( stName, IF( stSize IS NULL, '', CONCAT(' ', stSize) ) ) AS stName, suppliermerchandise.uomID, uomAbbreviation,uomName, spmID, spmName, spmPrice, spmActualQty, spID, spName FROM ( stockitems RIGHT JOIN( suppliermerchandise LEFT JOIN supplier USING(spID) ) USING(stID) ) LEFT JOIN uom on (suppliermerchandise.uomID = uom.uomID)
+        $query = "SELECT stID, CONCAT( stName, IF( stSize IS NULL, '', CONCAT(' ', stSize) ) ) AS stName, suppliermerchandise.uomID, uomAbbreviation,uomName, spmID, spmName, spmPrice, spmActual,spID, spName FROM ( stockitems RIGHT JOIN( suppliermerchandise LEFT JOIN supplier USING(spID) ) USING(stID) ) LEFT JOIN uom on (suppliermerchandise.uomID = uom.uomID)
         where spID = ?";
         return $this->db->query($query, array($id))->result_array();
     }
@@ -741,10 +803,10 @@ function get_consumpitems(){
 
     }
     function get_retItems() {
-        $query = "SELECT tiID, spmID, ret.spID, ti.stID, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, 
-        CONCAT(receiptNo,' - ', DATE_FORMAT(pDate, '%b %d, %Y')) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
-        FROM `transitems` ti LEFT JOIN return_items ri USING (piID) LEFT JOIN returns ret USING (pID) LEFT JOIN stockitems st USING (stID) 
-        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) WHERE ri.riStatus = 'pending' AND ti.tiType = 'return'";
+        $query = "SELECT tiID, ri.riID, spmID, ret.spID, ti.stID, spmPrice, spmActual, spAltName, stName, u.uomName, tiQty, tiActual,  CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
+        FROM `transitems` ti LEFT JOIN return_items ri USING (riID) LEFT JOIN returns ret USING (rID) LEFT JOIN stockitems st USING (stID) 
+        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) INNER JOIN (SELECT max(tiID) as tiID 
+        FROM transitems LEFT JOIN return_items USING (riID) GROUP BY riID) AS maxNew USING (tiID) WHERE ri.riStatus = 'pending' AND ti.tiType = 'return'";
         return $this->db->query($query)->result_array();
 
     }
@@ -1362,23 +1424,8 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
         , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
     }
-    function add_beginningLog($log){
-        $query = "INSERT INTO stocklog(
-            stID,
-            tID,
-            slType,
-            slQty,
-            slRemainingQty,
-            actualQty,
-            discrepancy,
-            slDateTime,
-            dateRecorded,
-            slRemarks
-        )
-        VALUES(?, NULL, 'beginning', ?, ?, ?, ?, ?, ?, ?)";
-        return $this->db->query($query, array($log['stock'], $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
-        , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
-    }
+
+
     function add_actlog($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks){
         $query = "INSERT INTO `activitylog`(
             `alID`,
@@ -1396,7 +1443,28 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
         return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
     }
+    function add_beginning($date, $dateTime, $logs){
+        $query = "INSERT INTO reconciliation(reDate, reDateRecorded) VALUES (?,?)";
+        if($this->db->query($query,array($date, $dateTime))){
+            $reID = $this->db->insert_id();
+            if(count($logs) > 0){
+                foreach($logs as $logs) {
+                    $this->add_beginningLog($reID, $logs);
+                    $this->set_stockQtyBeginning($logs);
+                }
+            }
+        }
+    }
 
+    function add_beginningLog($reID, $logs){
+        $query = "INSERT INTO st_recon(reID, reQty, reRemain, reDiscrepancy, reRemarks, stID) VALUES (?,?,?,?,?,?)";
+        $this->db->query($query, array($reID, $logs['current'], $logs['actual'], $logs['discrepancy'], $logs['remarks'], $logs['stock']));
+    }
+
+    function set_stockQtyBeginning($logs){
+        $query = "UPDATE stockitems SET stQty = ?, stBqty = ? WHERE stID = ?";
+        return $this->db->query($query, array($logs['actual'], $logs['actual'], $logs['stock']));
+    }
 
     // ------ Sales Functions ------
    // ------ Sales Functions ------
@@ -1771,7 +1839,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty) + intval($tiActual); 
 
         $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, 
-        tiDate, stID, spmID, riID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)";
+        tiDate, stID, spmID, piID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($query, array($tiType, $tiQty, $tiActualQty, $tiSubtotal, $remainingQty, $tiRemarks,
         $tiDate, $stID, $spmID, $piID));
 

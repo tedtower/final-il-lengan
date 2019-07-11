@@ -196,6 +196,7 @@ function viewDRFormAdd(){
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
+        $data['returns'] = $this->adminmodel->get_supplier();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
@@ -210,6 +211,7 @@ function viewDRFormEdit($id){
             $this->load->view('admin/templates/sideNav');
             $data['dr'] = $this->adminmodel->get_receiptTransaction($id);
             $data['stocks'] = $this->adminmodel->get_stocks();
+            $data['returns'] = $this->adminmodel->get_retItems();
             $this->load->view('admin/deliveryReceiptEdit',$data);
         }else{
             redirect('admin/deliveryreceipt');
@@ -248,9 +250,9 @@ function viewStockCard($stID){
         $head['title'] = "Admin - Stock Card";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $data['logs'] = $this->adminmodel->get_stockLog($stID);
+        $data['logs'] = $this->adminmodel->get_stockCard($stID);
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
-        $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
+        // $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
         $this->load->view('admin/stockcard', $data);
     }else{
         redirect('login');
