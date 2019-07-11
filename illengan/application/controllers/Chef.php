@@ -112,6 +112,30 @@ class Chef extends CI_Controller {
 			redirect('login');
 		}
 	}
+	function loadDataMenuSpoil($record=0) {
+		$recordPerPage = 3;
+		if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+		}      	
+      	$recordCount = $this->Chefmodel->getCountRecMenuSpoil();
+        $msRecord = $this->Chefmodel->get_spoilagesmenu($record,$recordPerPage);
+        $config['base_url'] = base_url().'chef/menuspoilage/loadDataMenuSpoil';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item" style="padding:7px 10px 7px 10px;">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+		$config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+		$config['total_rows'] = $recordCount;
+		$config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+		$data['menuspoiled'] = $msRecord;
+		echo json_encode($data);		
+    }
 
 	function viewMenuSpoilageFormAdd(){
         if($this->checkIfLoggedIn()){

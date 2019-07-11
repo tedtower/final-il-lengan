@@ -92,30 +92,34 @@
 
                                         <!--input fields in adding trans items w/PO and w/supplier -->
                                         <div class="ic-level-2">
-                                            <!-- 
-                                                <div class="mt-2" style="float:left:width:3%;overflow:auto">
-                                                    <img class="exitBtn" src="/assets/media/admin/error.png"
-                                                        style="width:15px;height:15px;float:right;">
-                                                </div>
-                                            </div> -->
-                                            <!-- <div style="overflow:auto" class="ic-level-1">
+                                            <div style="overflow:auto" class="ic-level-1">
                                                 <div style="float:left;width:96%;overflow:auto;">
                                                     <div class="input-group mb-1">
-                                                        <input name="stID[]" type="text"
-                                                            class="form-control form-control-sm" placeholder="Stock">
-                                                        <input name="actualQty[]" type="number"
-                                                            class="form-control form-control-sm" placeholder="Actual Qty">
+                                                        <input type="text" name="name[]"
+                                                            class="form-control form-control-sm" placeholder="Item Name"
+                                                            style="width:17%">
+                                                        <input type="number" name="qty[]"
+                                                            class="form-control form-control-sm" placeholder="Qty">
+                                                        <input type="text" name="unit[]"
+                                                            class="form-control form-control-sm" placeholder="Unit">
+                                                        <input type="number" name="price[]"
+                                                            class="form-control form-control-sm" placeholder="Price">
+                                                        <input type="number" name="discount[]"
+                                                            class="form-control form-control-sm" placeholder="Discount">
+                                                        <input type="number" name="subtotal[]"
+                                                            class="form-control form-control-sm" placeholder="Subtotal"
+                                                            readonly>
                                                     </div>
                                                 </div>
                                                 <div class="mt-2" style="float:left:width:3%;overflow:auto">
                                                     <img class="exitBtn" src="/assets/media/admin/error.png"
                                                         style="width:15px;height:15px;float:right;">
                                                 </div>
-                                            </div> -->
+                                            </div>
                                         </div>
 
-                                        <!--input fields in adding trans items w/o Supplier -->
-                                        <!-- <div class="ic-level-2">
+                                        <!-- input fields in adding trans items w/o Supplier -->
+                                        <div class="ic-level-2">
                                             <div style="overflow:auto" class="ic-level-1">
                                                 <div style="float:left;width:96%;overflow:auto;">
                                                     <div class="input-group mb-1">
@@ -130,7 +134,7 @@
                                                         style="width:15px;height:15px;float:right;">
                                                 </div>
                                             </div>
-                                        </div> -->
+                                        </div>
                                         <br>
                                         <span>Total: &#8369;<span class="total">0</span></span>
                                         <!--Total of the trans items-->
