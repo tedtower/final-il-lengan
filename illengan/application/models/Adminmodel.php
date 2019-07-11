@@ -41,6 +41,7 @@ function get_stockCard($stID){
     ) AS logDate,
     reDiscrepancy,
     reRemarks,
+    reDate,
     reID,
     COALESCE(rID, pID, cID, sID) AS tID,
     spmID

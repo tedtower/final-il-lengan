@@ -249,6 +249,7 @@ function viewStockCard($stID){
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['logs'] = $this->adminmodel->get_stockCard($stID);
+        $data['recons'] = $this->adminmodel->get_stockCard($stID)[0];
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         // $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
         $this->load->view('admin/stockcard', $data);
