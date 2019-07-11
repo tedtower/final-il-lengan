@@ -18,7 +18,7 @@
                             <div class="card-content" id="tablesTable">
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTable" data-original-title style="margin:0;">Add Table</button><br>
                                 <!--Search-->
-                                <div id="tablesTable" style="width:25%; float:right; border-radius:5px">
+                                <div id="tableTable" style="width:25%; float:right; border-radius:5px">
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                 </div>
                                 <br><br>
@@ -244,8 +244,8 @@
                     }
                     tables.forEach(table => {
                         $("#tablesTable > tbody").append(`
-        <tr class="ic-level-1" data-id="${table.tableCode}">
-            <td>${table.tableCode}</td>
+        <tr data-id="${table.tableCode}">
+            <td class="ic-level-1">${table.tableCode}</td>
             <td>
                 <!--Action Buttons-->
                 <div class="onoffswitch">
@@ -271,15 +271,15 @@
                 }
 
                 //Search Function
-                $("#tablesTable input[name='search']").on("keyup", function() {
+                $("#tableTable input[name='search']").on("keyup", function() {
                     var string = $(this).val().toLowerCase();
 
                     $("#tablesTable .ic-level-1").each(function(index) {
                         var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ')
                         if (!text.includes(string)) {
-                            $(this).closest(".ic-level-1").hide();
+                            $(this).closest("tr").hide();
                         } else {
-                            $(this).closest(".ic-level-1").show();
+                            $(this).closest("tr").show();
                         }
                     });
 
