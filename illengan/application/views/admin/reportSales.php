@@ -29,6 +29,7 @@
             <table class="table table-bordered">
                 <thead class="head">
                     <tr>
+                        <th><b>Slip No.</b></th>
                         <th><b>Menu</b></th>
                         <th><b>Date</b></th>
                         <th><b>Quantity</b></th>
@@ -43,6 +44,7 @@
                         foreach($report as $report){
                 ?>
                     <tr>
+                        <td>Slip No. <?php echo $report['osID']?></td>
                         <td><?php echo $report['olDesc']?></td>
                         <td><?php echo $report['osPayDateTime']?></td>
                         <td><?php echo $report['olQty']?></td>
@@ -52,6 +54,7 @@
                     <?php foreach($addons as $addon){
                     if($addon['olID'] == $report['olID']){?>
                     <tr>
+                        <td></td>
                         <td><i class="pl-5"> > <?php echo $addon['aoName']?></i></td>
                         <td><?php echo $report['osPayDateTime']?></td>
                         <td><?php echo $addon['aoQty']?></td>
@@ -68,10 +71,10 @@
             <?php  
                         foreach($total as $total){
                 ?>
-                <div style="border-bottom:2px solid gray;width:24%;float:right;overflow:auto">
+                <div style="border-bottom:2px solid gray;width:12%;float:right;overflow:auto">
                     <div style="padding-bottom:5px">
                         <div style="float:left;">Total:</div> 
-                        <div style="float:left;">&#8369; <?php echo $total['sales']?></div>
+                        <div style="float:left;"><span class="ml-2">&#8369; <?php echo $total['total']?></span></div>
                     </div>
                 </div>
                 <?php }
