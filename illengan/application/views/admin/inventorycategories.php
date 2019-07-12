@@ -17,7 +17,7 @@
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newSCategory" data-original-title style="margin:0" id="addCategroy">Add Subcategory</button>
                                 <br>
                                 <!--Search-->
-							<div id="uomTable" style="width:25%; float:right; border-radius:5px">
+							<div id="categTable" style="width:25%; float:right; border-radius:5px">
 								<input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
 							</div>
                                 <br>
@@ -251,10 +251,10 @@ $(document).ready(function() {
             document.getElementById('ctID').value = event.target.getAttribute('data-id');
         }
     //Search Function
-		$("#uomTable input[name='search']").on("keyup", function() {
+		$("#categTable input[name='search']").on("keyup", function() {
 			var string = $(this).val().toLowerCase();
 
-			$("#uomTable .ic-level-1").each(function(index) {
+			$("#categTable .ic-level-1").each(function(index) {
 				var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
 				if (!text.includes(string)) {
 					$(this).closest("tr").hide();
