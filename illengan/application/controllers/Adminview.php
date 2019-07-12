@@ -183,7 +183,7 @@ function viewReturnFormAdd(){
 function viewReturnFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit Return";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data = array(
             'id' => $id,
@@ -276,7 +276,6 @@ function viewStockCard($stID){
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['logs'] = $this->adminmodel->get_stockCard($stID);
-        $data['recons'] = $this->adminmodel->get_stockCard($stID)[0];
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         // $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
         $this->load->view('admin/stockcard', $data);
@@ -284,12 +283,31 @@ function viewStockCard($stID){
         redirect('login');
     }
 }
-function viewStockCardHistory(){
+function viewStockCardHistory($stID){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Admin - Stock Card";
+        $head['title'] = "Admin - Stock Card History";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/stockcardHistory');
+        $data['logs'] = $this->adminmodel->get_stockCardAll($stID);
+        $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
+        $this->load->view('admin/stockcardHistory', $data);
+    }else{
+        redirect('login');
+    }
+}
+
+function getStocklogHistoryFiltered(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Admin - Stock Card History";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $stID = $this->input->post('stID');
+        $sDate = $this->input->post('sDate');
+        $eDate = $this->input->post('eDate');
+        $this->adminmodel->get_filteredStockCard($sDate, $eDate, $stID);
+        $data['logs'] = $this->adminmodel->get_filteredStockCard($sDate, $eDate, $stID);
+        $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
+        $this->load->view('admin/stockCardHistory', $data);
     }else{
         redirect('login');
     }
@@ -297,15 +315,38 @@ function viewStockCardHistory(){
 function viewTables(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Tables";
-        // $data['table'] = $this->adminmodel->get_tables();
         $this->load->view('admin/templates/head', $data);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/adminTables');
+       // $data['tables'] = $this->adminmodel->get_tables();
+        $this->load->view('admin/adminTables', $data);
     }else{
         redirect('login');
     }
 }
-
+function loadDataTables($record=0){
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countTables();
+        $tabRecord = $this->adminmodel->get_dattables($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/loadDataTables';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['tabs'] = $tabRecord;
+        echo json_encode($data);
+}
 function getEnumValsForStock(){
     if($this->checkIfLoggedIn()){
         preg_match_all("/\w+\'?\w+?(?=')/",$this->adminmodel->get_enumVals('stockitems','stType')[0]['column_type'], $stTypes);
@@ -775,6 +816,33 @@ function getStockItem(){
             redirect('login');
         }
     }
+     function loadDataMenu($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countMenu();
+        $menuRecord = $this->adminmodel->get_menuData($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/loadDataMenu';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['preferences'] = $this->adminmodel->get_preferences();
+        $data['addons'] = $this->adminmodel->get_addons2();
+        $data['categories'] = $this->adminmodel->get_menucategories();
+        $data['menu'] = $menuRecord;
+        echo json_encode($data);		
+    }
     function menuAddons(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Menu - Addons";
@@ -801,6 +869,7 @@ function getStockItem(){
             $data['title'] = "Menu - Categories";
             $this->load->view('admin/templates/head',$data);
             $this->load->view('admin/templates/sideNav');
+            $this->load->view('admin/templates/scripts');
             $data['category'] = $this->adminmodel->get_menucategories();
             $data['maincategory'] = $this->adminmodel->get_maincat();
             $this->load->view('admin/menucategories',$data);
@@ -808,17 +877,67 @@ function getStockItem(){
             redirect('login');
         }
     }
-
+    
+    function loadDataMenuCategories($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countMenCat();
+        $catRecord = $this->adminmodel->get_mencat($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/menu/loadDataMenuCategories';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['category'] = $catRecord;
+        echo json_encode($data);		
+    }
+	
     function viewUOM(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Inventory - Measurements";
             $this->load->view('admin/templates/head',$data);
             $this->load->view('admin/templates/sideNav');
-            $data['measurement'] = $this->adminmodel->get_uom();
+            $this->load->view('admin/templates/scripts.php');
+            // $data['measurement'] = $this->adminmodel->get_uom();
             $this->load->view('admin/UOM',$data);
         }else{
             redirect('login');
         }
+    }
+    function loadDataUnitMeasures($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->rec_countUom();
+        $uomRecord = $this->adminmodel->get_uomData($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/stocks/loadDataUnitMeasures';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['umeasures'] = $uomRecord;
+        echo json_encode($data);		
     }
     
     function viewPurchaseOrder(){
@@ -951,7 +1070,7 @@ function getStockItem(){
         }      	
         $recordCount = $this->adminmodel->countCat();
         $catRecord = $this->adminmodel->get_stkcat($record,$recordPerPage);
-        $config['base_url'] = base_url().'admin/menu/loadDataCategories';
+        $config['base_url'] = base_url().'admin/stocks/loadDataCategories';
         $config['full_tag_open'] = '<ul class="pagination">';
         $config['full_tag_close'] = '<ul>';
         $config['num_tag_open'] = '<li class="page-item">&nbsp;';

@@ -28,16 +28,16 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
+                            <div class="card-content" id="accountsTable">
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewAccounts" data-original-title style="margin: 0;">Add New
                                     Account</button>
                                 <br>
-                                <!-- Search form -->
-                                <form class="form-inline active-box">
-                                    <input class="form-control form-control-sm mr-2 w-40" type="text" id="search_text" placeholder="Search" aria-label="Search">
-                                    <i class="fas fa-search" aria-hidden="true"></i>
-                                </form>
+                                <!--Search-->
+                                <div id="accountsTable" style="width:25%; float:right; border-radius:5px">
+                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                                </div>
                                 <br><br>
+                                <!--Table Body-->
                                 <table id="accountsTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                                     <thead class="thead-dark">
                                         <th><b class="pull-left">Account No.</b></th>
@@ -47,7 +47,7 @@
                                         <th><b class="pull-left">Actions</b></th>
 
                                     </thead>
-                                    <tbody id="show_data">
+                                    <tbody id="show_data" class="accountsTable ic-level-1">
                                     </tbody>
                                 </table>
                                 <!-- Start "Add Account" Modal-->
@@ -294,7 +294,7 @@
                         }
                         accounts.forEach(table => {
                             $("#accountsTable> tbody").append(`
-                            <tr data-id="${table.aID}" data-aUsername="${table.aUsername}">
+                            <tr class="accountsTable ic-level-1" data-id="${table.aID}" data-aUsername="${table.aUsername}">
                                 <td>${table.aID}</td>
                                 <td>${table.aType}</td>
                                 <td>${table.aUsername}</td>
@@ -368,33 +368,19 @@
                         });
                     });
 
-                    //SEARCH FUNCTION
-                    $(document).ready(function() {
+                    //Search Function
+                    $("#accountsTable input[name='search']").on("keyup", function() {
+                        var string = $(this).val().toLowerCase();
 
-                        function load_data(query) {
-                            $.ajax({
-                                url: "<?php echo base_url(); ?>admin/search",
-                                method: "POST",
-                                data: {
-                                    query: query
-                                },
-                                success: function(data) {
-                                    $('#show_data').html(data);
-                                    console.log("search");
-                                    console.log(data);
-                                }
-                            })
-                        }
-
-                        $('#search_text').on("keyup", function() {
-                            console.log($(this));
-                            var search = $(this).val();
-                            if (search != '') {
-                                load_data(search);
+                        $("#accountsTable .ic-level-1").each(function(index) {
+                            var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                            if (!text.includes(string)) {
+                                $(this).closest("tr").hide();
                             } else {
-                                setAccountData();
+                                $(this).closest("tr").show();
                             }
                         });
+
                     });
                 </script>
 </body>

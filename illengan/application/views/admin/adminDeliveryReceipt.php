@@ -1,4 +1,5 @@
 <!--End Side Bar-->
+
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
@@ -12,101 +13,101 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/deliveryreceipt/formadd')?>" data-original-title style="margin:0"
-                                    id="addBtn">Add Delivery Receipt</a>
+                            <div class="card-content" id="transTable">
+                                <a class="btn btn-primary btn-sm" href="<?= site_url('admin/deliveryreceipt/formadd') ?>" data-original-title style="margin:0" id="addBtn">Add Delivery Receipt</a>
                                 <br>
-                                <br>
-                                <?php if(isset($drs[0])){
-                                ?>
-                                <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
-                                    width="100%">
-                                    <thead class="thead-dark">
-                                        <th><b class="pull-left">Transaction #</b></th>
-                                        <th><b class="pull-left">Receipt #</b></th>
-                                        <th><b class="pull-left">Supplier</b></th>
-                                        <th><b class="pull-left">Date</b></th>
-                                        <th><b class="pull-left">Total</b></th>
-                                        <th><b class="pull-left">Actions</b></th>
-                                    </thead>
-                                    <tbody>
-                                    <?php foreach($drs as $dr){
+                                <!--Search-->
+                                <div id="transTable" style="width:25%; float:right; border-radius:5px">
+                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                                </div>
+                                <br><br>
+                                <!--Table Body-->
+                                <?php if (isset($drs[0])) {
                                     ?>
-                                        <tr data-id="<?= $dr['id']?>">
-                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>DEl - <?= $dr['id']?></td>
-                                            <td><?= $dr['receipt']?></td>
-                                            <td><?= $dr['supplierName']?></td>
-                                            <td><?= $dr['transDate']?></td>
-                                            <td><?= $dr['total']?></td>
-                                            <td>
-                                            <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/'.$dr['id'])?>" data-original-title style="margin:0"
-                                                id="editBtn">Edit</a>
-                                            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
-                                            </td>
-                                        </tr>
-                                        <tr class="accordion" style="display:none">
-                                            <td colspan="6">
-                                                <div class="container" style="display:none">
-                                                <div>Date Recorded:<?= $dr['dateRecorded'] == null ? "N/A" : $dr['dateRecorded']?></div>
-                                                <?php foreach($drItems as $drItem){
-                                                        if($drItem['piID'] == $dr['piID']){?>
-                                                <div>Remarks:<?= $drItem['tiRemarks'] == null ? "N/A" : $drItem['tiRemarks']?></div>
+                                    <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                        <thead class="thead-dark">
+                                            <th><b class="pull-left">Transaction #</b></th>
+                                            <th><b class="pull-left">Receipt #</b></th>
+                                            <th><b class="pull-left">Supplier</b></th>
+                                            <th><b class="pull-left">Date</b></th>
+                                            <th><b class="pull-left">Total</b></th>
+                                            <th><b class="pull-left">Actions</b></th>
+                                        </thead>
+                                        <tbody class="transTable ic-level-2">
+                                            <?php foreach ($drs as $dr) {
+                                                ?>
+                                                <tr class="ic-level-1" data-id="<?= $dr['id'] ?>">
+                                                    <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px" /></a>DEl - <?= $dr['id'] ?></td>
+                                                    <td><?= $dr['receipt'] ?></td>
+                                                    <td><?= $dr['supplierName'] ?></td>
+                                                    <td><?= $dr['transDate'] ?></td>
+                                                    <td><?= $dr['total'] ?></td>
+                                                    <td>
+                                                        <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/' . $dr['id']) ?>" data-original-title style="margin:0" id="editBtn">Edit</a>
+                                                        <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
+                                                    </td>
+                                                </tr>
+                                                <tr class="accordion" style="display:none">
+                                                    <td colspan="6">
+                                                        <div class="container" style="display:none">
+                                                            <div>Date Recorded:<?= $dr['dateRecorded'] == null ? "N/A" : $dr['dateRecorded'] ?></div>
+                                                            <?php foreach ($drItems as $drItem) {
+                                                                if ($drItem['piID'] == $dr['piID']) { ?>
+                                                                    <div>Remarks:<?= $drItem['tiRemarks'] == null ? "N/A" : $drItem['tiRemarks'] ?></div>
 
-                                                <table class="table table-bordered">
-                                                    <thead class="thead-light">
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <th>Qty</th>
-                                                            <th>Actual Qty</th>
-                                                            <th>Price</th>
-                                                            <th>Discount</th>
-                                                            <th>Subtotal</th>
-                                                            <th>Delivery Status</th>
+                                                                    <table class="table table-bordered">
+                                                                        <thead class="thead-light">
+                                                                            <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Qty</th>
+                                                                                <th>Actual Qty</th>
+                                                                                <th>Price</th>
+                                                                                <th>Discount</th>
+                                                                                <th>Subtotal</th>
+                                                                                <th>Delivery Status</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+
+
+                                                                            <tr>
+                                                                                <td><?= $drItem['stockname'] ?></td>
+                                                                                <td><?= $drItem['qty'] ?></td>
+                                                                                <td><?= $drItem['actual'] ?></td>
+                                                                                <td><?= $drItem['spmPrice'] ?></td>
+                                                                                <td><?= $drItem['tiDiscount'] == null ||  $drItem['tiDiscount'] == 0 ? "N/A" : $drItem['tiDiscount'] ?></td>
+                                                                                <td><?= ($drItem['qty'] * $drItem['spmPrice']) - $drItem['tiDiscount'] ?></td>
+                                                                                <td><?= $drItem['piStatus'] ?></td>
+                                                                            </tr>
+
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </td>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-
-
-                                                        <tr>
-                                                            <td><?= $drItem['stockname']?></td>
-                                                            <td><?= $drItem['qty']?></td>
-                                                            <td><?= $drItem['actual']?></td>
-                                                            <td><?= $drItem['spmPrice']?></td>
-                                                            <td><?= $drItem['tiDiscount'] == null ||  $drItem['tiDiscount'] == 0 ? "N/A" : $drItem['tiDiscount']?></td>
-                                                            <td><?= ($drItem['qty']*$drItem['spmPrice'])-$drItem['tiDiscount']?></td>
-                                                            <td><?= $drItem['piStatus']?></td>
-                                                        </tr>
-
-                                                    </tbody>
-                                                </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php
-                                    }?>
-                                    </tbody>
-                                </table>
-                                <?php }
-                                                        }?>
+                                                    <?php
+                                                    } ?>
+                                                </tbody>
+                                            </table>
+                                        <?php }
+                                    } ?>
                                 <?php
-                                }else{
-                                ?>
-                                <p>No deliveries recorded!</p>
+                                } else {
+                                    ?>
+                                    <p>No deliveries recorded!</p>
                                 <?php
-                                }?>
+                                } ?>
                                 <!--End Table Content-->
-                                
+
                                 <!--Start of Modal "Delete Stock Item"-->
-                                <div class="modal fade" id="delete" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle">Delete/Archive
                                                     Transaction
                                                 </h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -116,14 +117,12 @@
                                                     <p>Are you sure you want to delete/archive this item?</p>
                                                     <input type="text" name="" hidden="hidden">
                                                     <div>
-                                                        Remarks:<input type="text" name="deleteRemarks"
-                                                            id="deleteRemarks" class="form-control form-control-sm">
+                                                        Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
                                                     </div>
                                                 </div>
 
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm"
-                                                        data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                 </div>
                                             </form>
@@ -141,25 +140,38 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
-    var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals')?>';
-    var crudUrl = '<?= site_url('admin/transactions/add')?>';
-    var getTransUrl = '<?= site_url('admin/transactions/getTransaction')?>';
-    var loginUrl = '<?= site_url('login')?>';
-    var getPOsUrl = '<?= site_url('admin/transactions/getPOs')?>';
-    var getDRsUrl = '<?= site_url('admin/transactions/getDRs')?>';
-    var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs')?>';
-    $(function() {
-        $(".accordionBtn").on('click', function () {
-            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
-                $(this).closest("tr").next(".accordion").css("display", "table-row");
-                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
-            } else {
-                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
-                $(this).closest("tr").next(".accordion").hide("slow");
-            }
+        var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals') ?>';
+        var crudUrl = '<?= site_url('admin/transactions/add') ?>';
+        var getTransUrl = '<?= site_url('admin/transactions/getTransaction') ?>';
+        var loginUrl = '<?= site_url('login') ?>';
+        var getPOsUrl = '<?= site_url('admin/transactions/getPOs') ?>';
+        var getDRsUrl = '<?= site_url('admin/transactions/getDRs') ?>';
+        var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs') ?>';
+        $(function() {
+            $(".accordionBtn").on('click', function() {
+                if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+                    $(this).closest("tr").next(".accordion").css("display", "table-row");
+                    $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+                } else {
+                    $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                    $(this).closest("tr").next(".accordion").hide("slow");
+                }
+            });
         });
-    });
 
-    
-</script>
+        //Search Function
+        $("#transTable input[name='search']").on("keyup", function() {
+            var string = $(this).val().toLowerCase();
+
+            $("#transTable .ic-level-1").each(function(index) {
+                var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                if (!text.includes(string)) {
+                    $(this).closest("tr").hide();
+                } else {
+                    $(this).closest("tr").show();
+                }
+            });
+
+        });
+    </script>
 </body>

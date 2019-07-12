@@ -37,7 +37,7 @@
                         <span style="float:left;"><b>Storage:</b> <?= $stock['stLocation']?></span>
                         <span style="float:left;margin-left:2%"><b>Category:</b> <?= $stock['ctName']?></span>
                         <span style="float:left;margin-left:2%"><b>Status:</b> <?= $stock['stStatus']?></span>
-                        <span style="float:left;margin-left:2%"><b>Beginning Qty:</b> <?= $currentInv['actualQty'] . " " . $stock['uomAbbreviation']?></span>
+                        <span style="float:left;margin-left:2%"><b>Beginning Qty:</b> <?= $report['actual'] . " " . $stock['uomAbbreviation']?></span>
                     </div>
                 </div>
                 </div>
@@ -59,12 +59,12 @@
                 ?> 
                 <tbody>
                     <tr>
-                        <td><?php echo $report['slType']?></td>
-                        <td><?php echo $report['tNum']?></td>
-                        <td><?php echo $report['slDateTime']?></td>
-                        <td><?php echo $report['slQty']?></td>
-                        <td><?php echo $report['slQty']?></td>
-                        <td><?php echo $report['slRemarks']?></td>
+                        <td><?php echo $report['type']?></td>
+                        <td><?php echo $report['tID']?></td>
+                        <td><?php echo $report['logDate']?></td>
+                        <td><?php echo $report['actual']?></td>
+                        <td><?php echo $report['remain']?></td>
+                        <td><?php echo $report['tiRemarks']?></td>
                     </tr>
                 </tbody>
                 <?php }

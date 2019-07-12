@@ -222,7 +222,6 @@ function addaccounts(){
             $this->adminmodel->get_stockItem($id);
             $data['report'] = $this->adminmodel->get_inventoryReport($stID, $sDate, $eDate);
             $data['stock'] = $this->adminmodel->get_stockItem($id)[0];
-            $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
             $this->load->view('admin/reportInventory', $data);
             // redirect('admin/stocklog/report');
         }else{
