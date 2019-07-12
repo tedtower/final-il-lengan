@@ -172,6 +172,11 @@
                     curQty: $(this).find("input[name='curQty']").attr('data-curQty')
                 });
             });
+                if($('input[name="stock"]:checked').length == 0) {
+                        alert('No checkbox is checked');
+                        return false;
+                    }
+
             console.log(items);
             $.ajax({
                 method: "POST",
@@ -201,21 +206,11 @@
     }); 
 
     $('#conForm').submit(function(event){
-        var spoiledDate = $("#spoiledDate").val();
+        var spoiledDate = $("#tDate").val();
         var currentDate = new Date();
         if(Date.parse(spoiledDate) > Date.parse(currentDate)){
             alert('Invalid! Date exceeds current date.');
             return false;
-        }
-    });
-
-    
-    $('#conForm').submit(function(event){
-            var spDate = $("#tDate").val();
-            var currentDate= new Date();
-            if(Date.parse(currentDate) <= Date.parse(spDate)){
-                alert('Please check the date entered!');
-                return false;
         }
     });
     </script>

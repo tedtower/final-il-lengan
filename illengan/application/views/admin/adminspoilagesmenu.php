@@ -43,7 +43,7 @@
 													<span aria-hidden="true">&times;</span>
 												</button>
 											</div>
-											<form id="formAdd1" action="<?= site_url('admin/menu/spoilages/add') ?>" accept-charset="utf-8">
+											<form id="formAdd" action="<?= site_url('admin/menu/spoilages/add') ?>" accept-charset="utf-8">
 												<div class="modal-body">
 													<div class="form-row">
 														<!--Container of Menu Spoilage Date-->
@@ -362,7 +362,7 @@
 				});
 			});
 
-			$('#formAdd1').submit(function(event) {
+			$('#formAdd').submit(function(event) {
 				var spoiledDate = $("#spoilDate").val();
 				var currentDate = new Date();
 				if (Date.parse(currentDate) < Date.parse(spoiledDate)) {

@@ -172,6 +172,11 @@
                     curQty: $(this).find("input[name='curQty']").attr('data-curQty')
                 });
             });
+                if($('input[name="stock"]:checked').length == 0) {
+                        alert('No checkbox is checked');
+                        return false;
+                    }
+
             console.log(items);
             $.ajax({
                 method: "POST",
