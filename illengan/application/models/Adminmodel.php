@@ -320,12 +320,12 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
      function get_stkCat($s,$l){
-        $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems 
-        using (ctID) where ctType = 'inventory' group by ctID order by ctName asc limit $s,$l";
+        $query = "Select ctID, ctName, ctType, ctStatus, COUNT(stID) as stockCount from categories left join stockitems using (ctID) 
+        where ctType = 'inventory' group by ctID order by ctName asc limit $s,$l";
         return $this->db->query($query)->result_array();
     }
     function countCat(){
-        $query = 'SELECT count("ctID") as allcount from categories left join stockitems using (ctID) where ctType = "inventory" group by ctID';
+        $query = 'Select count(ctID) as allcount from categories where ctType = "inventory"';
         $result = $this->db->query($query)->result_array();
         return $result[0]['allcount'];
     }
@@ -337,6 +337,16 @@ function get_transitems(){
     function get_menucategories(){
         $query = "Select ctID, ctName, ctType, ctStatus, COUNT(mID) as menu_no from categories left join menu using (ctID) where ctType = 'menu' group by ctID order by ctName asc";
         return $this->db->query($query)->result_array();
+    }
+    function get_mencat($s, $l){
+        $query = "Select ctID, ctName, ctType, ctStatus, COUNT(mID) as menu_no from categories left join menu using (ctID) 
+        where ctType = 'menu' group by ctID order by ctName asc limit $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countMenCat(){
+        $query = 'Select count(ctID) as allcount from categories where ctType = "menu"';
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
 
     function get_menumaincategories(){
@@ -356,6 +366,15 @@ function get_transitems(){
     function get_uom(){
         $query = "SELECT * from uom";
         return $this->db->query($query)->result_array();
+    }
+    function get_uomData($record,$recordPerPage){
+        $query = "SELECT * from uom limit $record,$recordPerPage";
+        return $this->db->query($query)->result_array();
+    }
+    function rec_countUom(){
+        $query = "SELECT count(uomID) as allcount from uom";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     function get_enumVals($table,$column){
         $query = "SELECT 
@@ -600,6 +619,15 @@ function get_transitems(){
         $query = "Select * from tables";
         return $this->db->query($query)->result_array();
     }
+    function get_dattables($s, $l){
+        $query = "Select * from tables limit $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countTables(){
+        $query = "Select count(tableCode) as allcount from tables";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_stocks(){
         $query = "SELECT
         stockitems.stID,
@@ -749,6 +777,15 @@ function get_transitems(){
     function get_menu(){
         $query = "Select * from menu inner join categories using (ctID) order by ctName asc, mName asc";
         return $this->db->query($query)->result_array();
+    }
+     function get_menuData($s, $l){
+        $query = "Select * from menu inner join categories using (ctID) order by ctName asc, mName asc limit $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countMenu(){
+        $query = "Select count(mID) as allcount from menu inner join categories using (ctID)";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     function get_addons2(){
         $query = "SELECT * from menuaddons inner join addons using (aoID)";
