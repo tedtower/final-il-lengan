@@ -183,7 +183,7 @@ function viewReturnFormAdd(){
 function viewReturnFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $head['title'] = "Inventory - Edit Return";
-        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/head2', $head);
         $this->load->view('admin/templates/sideNav');
         $data = array(
             'id' => $id,
@@ -276,7 +276,6 @@ function viewStockCard($stID){
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
         $data['logs'] = $this->adminmodel->get_stockCard($stID);
-        $data['recons'] = $this->adminmodel->get_stockCard($stID)[0];
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         // $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
         $this->load->view('admin/stockcard', $data);
@@ -284,12 +283,31 @@ function viewStockCard($stID){
         redirect('login');
     }
 }
-function viewStockCardHistory(){
+function viewStockCardHistory($stID){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $head['title'] = "Admin - Stock Card";
+        $head['title'] = "Admin - Stock Card History";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/stockcardHistory');
+        $data['logs'] = $this->adminmodel->get_stockCardAll($stID);
+        $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
+        $this->load->view('admin/stockcardHistory', $data);
+    }else{
+        redirect('login');
+    }
+}
+
+function getStocklogHistoryFiltered(){
+    if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+        $head['title'] = "Admin - Stock Card History";
+        $this->load->view('admin/templates/head', $head);
+        $this->load->view('admin/templates/sideNav');
+        $stID = $this->input->post('stID');
+        $sDate = $this->input->post('sDate');
+        $eDate = $this->input->post('eDate');
+        $this->adminmodel->get_filteredStockCard($sDate, $eDate, $stID);
+        $data['logs'] = $this->adminmodel->get_filteredStockCard($sDate, $eDate, $stID);
+        $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
+        $this->load->view('admin/stockCardHistory', $data);
     }else{
         redirect('login');
     }

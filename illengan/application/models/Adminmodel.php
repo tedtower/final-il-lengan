@@ -22,69 +22,91 @@ function fetch_searchdata($query) {
     $this->db->order_by('aID', 'DESC');
     return $this->db->get();
  }
+
 //GET FUNCTIONS-------------------------------------------------------------------
 function get_stockCard($stID){
     $query = "SELECT
-    CONCAT(
-        stName,
-        COALESCE(stSize, CONCAT(' ', stSize))
-    ) as stock,
-    stockitems.stID as stockID,
-    st_recon.stID as reconID,
-    tiActual AS actual,
-    tiType AS type,
-    reQty,
-    transitems.remainingQty AS remain,
-    DATE_FORMAT(
-        COALESCE(tiDate, reDate),
-        '%b %d, %Y %r'
-    ) AS logDate,
-    reDiscrepancy,
-    reRemarks,
-    reDate,
-    reID,
-    COALESCE(rID, pID, cID, sID) AS tID,
-    spmID
-FROM
-    stockitems
-RIGHT JOIN(
-        transitems
+                tiID,
+                stockitems.stID,
+                tiType as type,
+                DATE_FORMAT(tiDate, '%b %d, %Y %r') AS logDate,
+                tiQty,
+                remainingQty as remain,
+                tiActual as actual,
+                discrepancy,
+                tiRemarks,
+                COALESCE(rID, pID, cID, sID) AS tID,
+                reID,
+                receiptNo as receipt
+            FROM stockitems RIGHT JOIN(
+	transitems
     LEFT JOIN suppliermerchandise USING(spmID)
-    LEFT JOIN(
-            return_items
-        LEFT JOIN RETURNS USING(rID)
-        ) USING(riID)
-    LEFT JOIN(
-            (
-                purchase_items
-            LEFT JOIN pur_items USING(piID)
+    LEFT JOIN(return_items LEFT JOIN RETURNS USING(rID)) USING(riID)
+    LEFT JOIN((purchase_items LEFT JOIN pur_items USING(piID)) LEFT JOIN purchases USING(pID)) USING(piID)
+    LEFT JOIN(consumed_items LEFT JOIN consumptions USING(cID)) USING(ciID)
+    LEFT JOIN( spoiledstock LEFT JOIN stockspoil USING(sID)) USING(siID)
+    )
+ON
+    stockitems.stID = COALESCE(suppliermerchandise.stID, transitems.stID)
+	WHERE stockitems.stID = ? AND tiType <> 'purchase order' AND tiID >= (SELECT MAX(tiID) FROM transitems WHERE tiType = 'beginning' AND 	transitems.stID = ?)
+            order by tiDate desc";
+    return $this->db->query($query, array($stID, $stID))->result_array();
+}
+
+function get_stockCardAll($stID){
+    $query = "SELECT
+                tiID,
+                stockitems.stID,
+                tiType as type,
+                DATE_FORMAT(tiDate, '%b %d, %Y %r') AS logDate,
+                tiQty,
+                remainingQty as remain,
+                tiActual as actual,
+                discrepancy,
+                tiRemarks,
+                COALESCE(rID, pID, cID, sID) AS tID,
+                reID
+            FROM stockitems RIGHT JOIN(
+            transitems
+            LEFT JOIN suppliermerchandise USING(spmID)
+            LEFT JOIN(return_items LEFT JOIN RETURNS USING(rID)) USING(riID)
+            LEFT JOIN((purchase_items LEFT JOIN pur_items USING(piID)) LEFT JOIN purchases USING(pID)) USING(piID)
+            LEFT JOIN(consumed_items LEFT JOIN consumptions USING(cID)) USING(ciID)
+            LEFT JOIN( spoiledstock LEFT JOIN stockspoil USING(sID)) USING(siID)
             )
-        LEFT JOIN purchases USING(pID)
-        ) USING(piID)
-    LEFT JOIN(
-            consumed_items
-        LEFT JOIN consumptions USING(cID)
-        ) USING(ciID)
-    LEFT JOIN(
-            spoiledstock
-        LEFT JOIN stockspoil USING(sID)
-        ) USING(siID)
+            ON
+            stockitems.stID = COALESCE(suppliermerchandise.stID, transitems.stID)
+            WHERE stockitems.stID = ? AND tiType <> 'purchase order'
+            order by tiDate";
+    return $this->db->query($query,array($stID))->result_array();
+}
+
+function get_filteredStockCard($sDate, $eDate, $stID){
+    $query = "SELECT
+    tiID,
+    stockitems.stID,
+    tiType as type,
+    DATE_FORMAT(tiDate, '%b %d, %Y %r') AS logDate,
+    tiQty,
+    remainingQty as remain,
+    tiActual as actual,
+    discrepancy,
+    tiRemarks,
+    COALESCE(rID, pID, cID, sID) AS tID,
+    reID
+    FROM stockitems RIGHT JOIN(
+    transitems
+    LEFT JOIN suppliermerchandise USING(spmID)
+    LEFT JOIN(return_items LEFT JOIN RETURNS USING(rID)) USING(riID)
+    LEFT JOIN((purchase_items LEFT JOIN pur_items USING(piID)) LEFT JOIN purchases USING(pID)) USING(piID)
+    LEFT JOIN(consumed_items LEFT JOIN consumptions USING(cID)) USING(ciID)
+    LEFT JOIN( spoiledstock LEFT JOIN stockspoil USING(sID)) USING(siID)
     )
-ON
-    stockitems.stID = COALESCE(
-        suppliermerchandise.stID,
-        transitems.stID
-    )
-RIGHT JOIN(
-        st_recon
-    RIGHT JOIN reconciliation USING(reID)
-    )
-ON
-    (
-        st_recon.stID = stockitems.stID
-    )
-   where stockitems.stID = ? and tiType <> 'purchase order'";
-   return $this->db->query($query,array($stID))->result_array();
+    ON
+    stockitems.stID = COALESCE(suppliermerchandise.stID, transitems.stID)
+    WHERE stockitems.stID = ? AND tiType <> 'purchase order' and tiDate BETWEEN ? and ?
+    order by tiDate";
+    return $this->db->query($query,array($stID, $sDate, $eDate))->result_array();
 }
 //REPORT GENERATION GETTERS
  function getInventoryList(){
@@ -93,22 +115,40 @@ ON
  }
  function get_inventoryReport($stID, $sDate, $eDate){
     $query = "SELECT
-                slID, stID, uomAbbreviation, slType,
-                DATE_FORMAT(slDateTime, '%b %d, %Y %r') AS slDateTime, 
-                stocklog.dateRecorded, slQty, slRemarks, tNum
-            FROM
-                (
-                    stocklog
-                LEFT JOIN stockitems USING(stID)
-                )
-            LEFT JOIN transactions USING(tID)
-            LEFT JOIN uom USING(uomID) WHERE stID = ? and slDateTime BETWEEN ? and ?";
+    tiID,
+    stockitems.stID,
+    tiType as type,
+    DATE_FORMAT(tiDate, '%b %d, %Y %r') AS logDate,
+    tiQty,
+    remainingQty as remain,
+    tiActual as actual,
+    discrepancy,
+    tiRemarks,
+    COALESCE(rID, pID, cID, sID) AS tID,
+    reID
+    FROM stockitems RIGHT JOIN(
+    transitems
+    LEFT JOIN suppliermerchandise USING(spmID)
+    LEFT JOIN(return_items LEFT JOIN RETURNS USING(rID)) USING(riID)
+    LEFT JOIN((purchase_items LEFT JOIN pur_items USING(piID)) LEFT JOIN purchases USING(pID)) USING(piID)
+    LEFT JOIN(consumed_items LEFT JOIN consumptions USING(cID)) USING(ciID)
+    LEFT JOIN( spoiledstock LEFT JOIN stockspoil USING(sID)) USING(siID)
+    )
+    ON
+    stockitems.stID = COALESCE(suppliermerchandise.stID, transitems.stID)
+    WHERE stockitems.stID = ? AND tiType <> 'purchase order' and tiDate BETWEEN ? and ?
+    order by tiDate";
     return $this->db->query($query, array($stID, $sDate, $eDate))->result_array();
 }
 
-//DASHBOARD GETTERSdate_format
+
 function get_salesReport($sDate, $eDate){
-    $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE osPayDateTime BETWEEN ? and ? order by olDesc ASC";
+    $query = "SELECT * FROM orderslips LEFT JOIN orderlists USING(osID) WHERE payStatus = 'paid' AND osPayDateTime BETWEEN ? and ? order by osID ASC";
+    return $this->db->query($query, array($sDate, $eDate))->result_array();
+}
+
+function get_totalSales($sDate, $eDate){
+    $query = "SELECT SUM(olSubtotal) as total FROM orderslips LEFT JOIN orderlists USING(osID) WHERE payStatus = 'paid' AND osPayDateTime BETWEEN ? and ? order by olDesc ASC";
     return $this->db->query($query, array($sDate, $eDate))->result_array();
 }
 //DASHBOARD GETTERS
@@ -391,6 +431,7 @@ function get_transitems(){
             tID = ?;";
         return $this->db->query($query, array($id))->result_array();
     }
+    
     function get_stockLog($stID){
         $query = "SELECT
                 slID,
@@ -482,15 +523,6 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
 
-    function get_invPeriodStart($stID){
-        return $this->db->query("SELECT
-                    DATE_FORMAT(MAX(slDateTime), '%b %d, %Y %r') AS maxDate, actualQty
-                FROM
-                    stocklog
-                WHERE
-                    slType = 'beginning' AND stID = ?
-            ;",array($stID))->result_array();
-    }
     function get_SPMs($spID){
         $query = "SELECT
             stID,
@@ -806,7 +838,6 @@ function get_transitems(){
             stockitems USING (ctID)
         WHERE
             ctType = 'inventory'
-                AND supcatID IS NOT NULL
         GROUP BY ctID
         ORDER BY ctName ASC;";
         return $this->db->query($query)->result_array();
@@ -1108,12 +1139,18 @@ function add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockM
             NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         );";
     if($this->db->query($query,array($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, $stockBqty, $stockLocation,$stockSize))){
-        if($this->add_stockLog($this->db->insert_id(), NULL, 'beginning', date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $stockQty, $stockQty, "New item")){
+        if($this->add_BeginningNewStock($this->db->insert_id(), NULL, 'beginning', date("Y-m-d H:i:s"), date("Y-m-d H:i:s"), $stockQty, $stockQty, "New item")){
             return true;
         }
     }
     return false;
 }
+
+function add_BeginningNewStock($stID, $tiID, $tiType, $tiDate, $dateRecorded, $tiActual, $remainingQty, $tiRemarks){
+    $query = "INSERT INTO transitems(stID, tiType, tiDate, tiActual, remainingQty, discrepancy, tiRemarks) VALUES(?,?,?,?,?,?,?)";
+    return $this->db->query($query,array($stID, $tiType, $tiDate, $tiActual, $remainingQty, 0, $tiRemarks));
+    
+} 
 function add_table($tableCode){
     $query = "INSERT INTO TABLES(tableCode)
     VALUES(?);";
@@ -1441,38 +1478,38 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC";
         return  $this->db->query($query)->result_array();
     }
-    function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks){
-        $query = "INSERT INTO `stocklog`(
-                `slID`,
-                `stID`,
-                `tID`,
-                `slType`,
-                `slDateTime`,
-                `dateRecorded`,
-                `slQty`,
-                `slRemainingQty`,
-                `slRemarks`
-            )
-            VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?);";
-        return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks));
-    }
-    function add_restockLog($tID, $log){
-        $query = "INSERT INTO stocklog(
-            stID,
-            tID,
-            slType,
-            slQty,
-            slRemainingQty,
-            actualQty,
-            discrepancy,
-            slDateTime,
-            dateRecorded,
-            slRemarks
-        )
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
-        , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
-    }
+    // function add_stockLog($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks){
+    //     $query = "INSERT INTO `stocklog`(
+    //             `slID`,
+    //             `stID`,
+    //             `tID`,
+    //             `slType`,
+    //             `slDateTime`,
+    //             `dateRecorded`,
+    //             `slQty`,
+    //             `slRemainingQty`,
+    //             `slRemarks`
+    //         )
+    //         VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?);";
+    //     return $this->db->query($query, array($stID, $tID, $slType, $slDateTime, $dateRecorded, $actualQty, $slRemainingQty, $slRemarks));
+    // }
+    // function add_restockLog($tID, $log){
+    //     $query = "INSERT INTO stocklog(
+    //         stID,
+    //         tID,
+    //         slType,
+    //         slQty,
+    //         slRemainingQty,
+    //         actualQty,
+    //         discrepancy,
+    //         slDateTime,
+    //         dateRecorded,
+    //         slRemarks
+    //     )
+    //     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    //     $this->db->query($query ,array($log['stock'], $tID, 'restock', $log['qty'], $log['remain'], $log['actual'], $log['discrepancy']
+    //     , $log['dateTime'], $log['dateRecorded'], $log['remarks']));
+    // }
 
 
     function add_actlog($account_id, $alDate, $alDesc, $defaultType, $additionalRemarks){
@@ -1492,6 +1529,7 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         $query = "UPDATE transactions SET tDate = ?, dateRecorded = ?, tRemarks = ? WHERE tID = ?";
         return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
     }
+
     function add_beginning($date, $dateTime, $logs){
         $query = "INSERT INTO reconciliation(reDate, reDateRecorded) VALUES (?,?)";
         if($this->db->query($query,array($date, $dateTime))){
@@ -1506,8 +1544,8 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
     }
 
     function add_beginningLog($reID, $logs){
-        $query = "INSERT INTO st_recon(reID, reQty, reRemain, reDiscrepancy, reRemarks, stID) VALUES (?,?,?,?,?,?)";
-        $this->db->query($query, array($reID, $logs['current'], $logs['actual'], $logs['discrepancy'], $logs['remarks'], $logs['stock']));
+        $query = "INSERT INTO transitems(tiType, tiDate, reID, tiActual, remainingQty, discrepancy, tiRemarks, stID) VALUES (?,?,?,?,?,?,?,?)";
+        $this->db->query($query, array('beginning', $logs['date'], $reID, $logs['actual'],$logs['actual'], $logs['discrepancy'], $logs['remarks'], $logs['stock']));
     }
 
     function set_stockQtyBeginning($logs){

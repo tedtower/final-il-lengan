@@ -25,8 +25,8 @@ $route['admin/supplier/getDetails'] = "adminview/supplierGetDetails";
 $route['admin/accounts'] = "adminview/viewaccounts";
 $route['admin/inventory'] = "adminview/viewinventory";
 $route['admin/inventory/stockcard/(:num)'] = "adminview/viewstockcard/$1";
-$route['admin/inventory/stockcard/history'] = "adminview/viewstockcardhistory";
-$route['admin/purchaseorders'] = "adminview/viewpurchaseorders";
+$route['admin/inventory/stockcard/history/(:num)'] = "adminview/viewstockcardhistory/$1";
+$route['admin/purchaseorders'] = "adminview/viewpurtory/(:nchaseorders";
 $route['admin/spoilages/menu/add'] ="adminview/viewInsertSpoilageMenu";
 $route['admin/spoilages/stock/add'] ="adminview/viewInsertSpoilageStock";
 $route['admin/spoilages/addons/add'] ="adminview/viewInsertSpoilageAo";
@@ -40,6 +40,7 @@ $route['admin/log/activity'] = "adminview/viewActivityLog";
 // $route['admin/transactions/return'] = "adminview/viewreturntransactions";
 // $route['admin/transactions/getReturns'] = "adminview/getReturns";
 $route['admin/stocklog/report'] = "adminview/getInventoryReport";
+$route['admin/stocklog/history/filter'] = "adminview/getStocklogHistoryFiltered";
 $route['admin/inventorylist'] = "adminview/getInventoryList";
 $route['admin/purchaseorder'] = "adminview/viewPurchaseOrder";
 $route['admin/deliveryreceipt'] = "adminview/viewDeliveryReceipt";
@@ -62,7 +63,7 @@ $route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
 $route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
 $route['admin/stocks/loadDataStocks/(:num)'] = "adminview/loadDataStocks/$1";
 $route['admin/menu/loadDataCategories/(:num)'] = "adminview/loadDataCategories/$1";
-//End Viewing Routes
+//End Viewing Routes 
 
 //Not Sure Routes
 $route['admin/menu/datatables'] = "adminview/datatables_menu";
