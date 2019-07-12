@@ -12,7 +12,7 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
+                            <div class="card-content" id="categTable">
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newMCategory" data-original-title style="margin:0" id="addCategroy">Add Category</button>
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newSCategory" data-original-title style="margin:0" id="addCategroy">Add Subcategory</button>
                                 <br>
@@ -20,7 +20,7 @@
                                     <div id="categTable" style="width:25%; float:right; border-radius:5px">
                                         <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                     </div>
-                                <br>
+                                <br><br>
                                 <table id="categTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                                     <thead class="thead-dark">
                                         <th><b class="pull-left">Category Name</b></th>
@@ -217,7 +217,7 @@
     function setCategData(data) {
 		$("table#categTable > tbody").empty();
         for(cat in data){
-            var row1 = ` <tr data-id="`+data[cat].ctID+`">`;
+            var row1 = ` <tr class="ic-level-1" data-id="`+data[cat].ctID+`">`;
                 row1 += ` <td>`+data[cat].ctName+`</td>`;
                 row1 += `<td>`+data[cat].menu_no+`</td>`;
                 row1 += `<td>`+data[cat].ctStatus+`</td>`;
