@@ -473,7 +473,7 @@
     function showTable() {
         orderslips.forEach(function(item) {
             var tableRow = `
-                <tr class="table_row salesTable ic-level-1" data-id="${item.orderslips.osID}">   <!-- table row ng table -->
+                <tr class="salesTable ic-level-1" data-id="${item.orderslips.osID}">   <!-- table row ng table -->
                     <td><a href="javascript:void(0)" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
                     ${item.orderslips.osID}</td>                    
