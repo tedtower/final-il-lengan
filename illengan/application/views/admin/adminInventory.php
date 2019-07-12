@@ -9,14 +9,21 @@
         </p>
         <div class="content" style="margin-left:250px">
                 <!--Table-->
-                <div class="container-fluid">
-                <div class="card-content">
+                <div class="container-fluid" id="stockTable">
+                <div class="card-content" class="stockTable">
                     <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addEditStock" data-original-title
                         style="margin:0;color:blue" id="addBtn">Add Stock Item</a>
                     <a class="btn btn-primary btn-sm" href="<?= site_url('admin/inventory/physicalcount')?>" data-original-title style="margin:0"
                         d="addBtn">Perform Inventory</a>
                     <a class="btn btn-primary btn-sm" style="margin:0;color:blue;float:right" href="<?= site_url('admin/inventorylist')?>"><i class="fal fa-list-ul"></i> Inventory List</a>
+                   <br><br>
+                    
+                    <!--Search-->
+                    <div id="stockTable" style="width:25%; float:right; border-radius:5px">
+                        <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                    </div>
                     <br><br>
+                    <!--Table Body-->
                     <table id="stockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%" >
                         <thead class="thead-dark">
                             <tr>
@@ -31,25 +38,10 @@
                             </tr>
 
                         </thead>
-                        <tbody>
-                            <?php foreach($inventory['stocks'] as $stock){?>
-                            <tr data-id="<?= $stock['stID']?>">
-                                <td><?= $stock['stName']?></td>
-                                <td><?= $stock['ctName']?></td>
-                                <td><?= $stock['stQty']?></td>
-                                <td><?= $stock['stMin']?></td>
-                                <td><?= $stock['uomAbbreviation']?></td>
-                                <td><?= $stock['stStatus']?></td>
-                                <td><?= $stock['stLocation']?></td>
-                                <td>
-                                    <button class="editBtn btn btn-default btn-sm" data-toggle="modal" data-target="#addEditStock">Edit</button>
-                                    <button class="btn btn-warning btn-sm">Archived</button>
-                                    <a href="<?= site_url('admin/inventory/stockcard/'.$stock['stID'])?>" class="btn btn-success btn-sm">Stock Card</a>
-                                </td>
-                                <?php } ?>
-                            </tr>
+                        <tbody class="stockTable ic-level-1">
                         </tbody>
                     </table>
+			 <div id="pagination" style="float:right"></div>
                     <p id="note"></p>
                 <!--Start of Modal "Restock Item"-->
                     <div class="modal fade bd-example-modal-lg" id="restock" tabindex="-1" role="dialog"
@@ -399,6 +391,57 @@ var restockUrl = '<?= site_url('admin/inventory/restock')?>';
 var getStockBrochure = '<?= site_url('admin/inventory/getStockItems')?>';
 var loginUrl = '<?= site_url('login')?>';
 $(document).ready(function() {
+     createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum2 = $(this).attr('data-ci-pagination-page');
+        createPagination(pageNum2);
+	});
+	function createPagination(pageNum2){
+		$.ajax({
+			url: '<?=base_url()?>admin/stocks/loadDataStocks/'+pageNum2,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                stocks = data.invstocks;
+                setStocksData(stocks);
+                console.log('Stock:',stocks);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+    }
+});
+    
+    function setStocksData(data) {
+		$("table#stockTable > tbody").empty();
+        for(stk in data){
+            var row1 = ` <tr class="stockTable ic-level-1" data-id="`+data[stk].stID+`">`;
+                row1 += ` <td>`+data[stk].stName+`</td>`;
+                row1 += `<td>`+data[stk].ctName+`</td>`;
+                row1 += `<td>`+data[stk].stQty+`</td>`;
+                row1 += `<td>`+data[stk].stMin+`</td>`;
+                row1 += `<td>`+data[stk].uomAbbreviation+`</td>`;
+                row1 += `<td>`+data[stk].stStatus+`</td>`;
+                row1 += `<td>`+data[stk].stLocation+`</td>`;
+                row1 += `<td>
+                <button class="editBtn btn btn-default btn-sm" data-toggle="modal" data-target="#addEditStock">Edit</button>
+                <button class="btn btn-warning btn-sm">Archived</button>
+                <a href="<?= site_url()?>admin/inventory/stockcard/`+data[stk].stID+`" class="btn btn-success btn-sm">Stock Card</a>
+                </td></tr>`;
+            $("table#stockTable  tbody").append(row1);
+        }
+        $(".editBtn").on("click", function() {
+        getEnumVals(enumValsUrl);
+        var id = $(this).closest("tr").attr("data-id");
+        console.log(id, getStockUrl);
+        populateModalForm(id, getStockUrl);
+    });
+
+    }
     $("#addBtn").on('click', function() {
         $("#addEditStock form")[0].reset();
         getEnumVals(enumValsUrl);
@@ -513,11 +556,6 @@ $(document).ready(function() {
             }
         });
     });
-    $(".editBtn").on("click", function() {
-        getEnumVals(enumValsUrl);
-        var id = $(this).closest("tr").attr("data-id");
-        populateModalForm(id, getStockUrl);
-    });
     // setTableData();
     $("#addEditStock form").on('submit', function(event) {
         event.preventDefault();
@@ -569,7 +607,6 @@ $(document).ready(function() {
             }
         });
     });
-});
 
 function getEnumVals(url){
     $.ajax({
@@ -705,5 +742,21 @@ function setBrochureForBeginning(){
         }
     });
 }
+
+//Search Function
+//Search Function
+$("#stockTable input[name='search']").on("keyup", function() {
+    var string = $(this).val().toLowerCase();
+
+    $("#stockTable .ic-level-1").each(function(index) {
+        var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+        if (!text.includes(string)) {
+            $(this).closest("tr").hide();
+        } else {
+            $(this).closest("tr").show();
+        }
+    });
+
+});
 </script>
 </body>

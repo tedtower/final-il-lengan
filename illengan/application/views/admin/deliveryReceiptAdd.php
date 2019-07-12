@@ -92,48 +92,6 @@
 
                                         <!--input fields in adding trans items w/PO and w/supplier -->
                                         <div class="ic-level-2">
-                                            <div style="overflow:auto" class="ic-level-1">
-                                                <div style="float:left;width:96%;overflow:auto;">
-                                                    <div class="input-group mb-1">
-                                                        <input type="text" name="name[]"
-                                                            class="form-control form-control-sm" placeholder="Item Name"
-                                                            style="width:17%">
-                                                        <input type="number" name="qty[]"
-                                                            class="form-control form-control-sm" placeholder="Qty">
-                                                        <input type="text" name="unit[]"
-                                                            class="form-control form-control-sm" placeholder="Unit">
-                                                        <input type="number" name="price[]"
-                                                            class="form-control form-control-sm" placeholder="Price">
-                                                        <input type="number" name="discount[]"
-                                                            class="form-control form-control-sm" placeholder="Discount">
-                                                        <input type="number" name="subtotal[]"
-                                                            class="form-control form-control-sm" placeholder="Subtotal"
-                                                            readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2" style="float:left:width:3%;overflow:auto">
-                                                    <img class="exitBtn" src="/assets/media/admin/error.png"
-                                                        style="width:15px;height:15px;float:right;">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- input fields in adding trans items w/o Supplier -->
-                                        <div class="ic-level-2">
-                                            <div style="overflow:auto" class="ic-level-1">
-                                                <div style="float:left;width:96%;overflow:auto;">
-                                                    <div class="input-group mb-1">
-                                                        <input name="stID[]" type="text"
-                                                            class="form-control form-control-sm" placeholder="Stock">
-                                                        <input name="actualQty[]" type="number"
-                                                            class="form-control form-control-sm" placeholder="Actual Qty">
-                                                    </div>
-                                                </div>
-                                                <div class="mt-2" style="float:left:width:3%;overflow:auto">
-                                                    <img class="exitBtn" src="/assets/media/admin/error.png"
-                                                        style="width:15px;height:15px;float:right;">
-                                                </div>
-                                            </div>
                                         </div>
                                         <br>
                                         <span>Total: &#8369;<span class="total">0</span></span>
@@ -149,7 +107,7 @@
                             </div>
 
                         <!--Start of PO sidenav-->
-                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%" hidden>
                                 <div class="status-level" data-show-level="3">
                                     <div class="card-header" style="overflow:auto">
                                         <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Purchase Order</div>
@@ -193,7 +151,7 @@
                             <!--End of PO sidenav-->
 
                             <!--Start of Return sidenav-->
-                            <div class="card" id="returnCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card" id="returnCard" style="float:left;width:35%;margin-left:3%" hidden>
                                 <div class="card-header" style="overflow:auto">
                                     <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Return</div>
                                     <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
@@ -225,7 +183,7 @@
                             <!--End of PO sidenav-->
 
                             <!--Start of Merchandise sidenav-->
-                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%">
+                            <div class="card" id="stockCard" style="float:left;width:35%;margin-left:3%" hidden>
                                 <div class="card-header" style="overflow:auto">
                                     <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Merchandise</div>
                                     <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
@@ -255,10 +213,6 @@
                             </div>
                             <!--End of Merchandise sidenav-->
 
-
-
-
-
                         </div>
                     </div>
                 </div>
@@ -285,7 +239,7 @@
                     var level = $(this).attr("data-trigger-level");
                     $("#drForm .status-level").each(function(index){
                         !$(this).attr("data-level").includes(level) && $(this).attr("data-level") != 0 ? $(this).prop("disabled",true) : $(this).prop("disabled",false);
-                    });
+                    }); 
                 });
                 $("#addNewBtn").on("click", function() {
                     $("#drForm").find(".ic-level-2").append(`
@@ -341,6 +295,7 @@
                         $("#merchandiseBrochure .brochureErrMsg").text("No supplier selected.");
                     }
                 });
+              
                 $("#addPOBtn").on("click", function() {
                     var supplier = $("#drForm select[name='spID']").val();
                     var url = $(this).attr("data-url");
@@ -376,6 +331,7 @@
                         $("#poBrochure .brochureErrMsg").text("No supplier selected.");
                     }
                 });
+            
                 $("#merchandiseBrochure").on("hidden.bs.modal", function() {
                     $(this).find("form")[0].reset();
                     $(this).find("form").off("submit");
@@ -395,15 +351,70 @@
                     $(this).find(".brochureErrMsg").hide();
                     $(this).find("select[name='po'] option:first-child ~ option").remove();
                 });
+
+                // ----------------------- RESOLVING RETURNED ITEMS -----------------------
+                $("#addRBtn").on("click", function () {
+                    $("#returnCard").removeAttr("hidden");
+                    var supplier = $("#drForm select[name='spID']").val();
+                    var url = $(this).attr("data-url");
+                    setReturnsBrochure();
+
+                });
+                $(document).on("click", "#returnCard input[name='returns']", function (event) {
+                    var id = $(this).val();
+                    var name = $(this).attr("data-name");
+                    var uom = $(this).data("uom");
+                    var price = $(this).data("price");
+                    var actualQty = $(this).data("actual");
+                    var tiQty = $(this).data("tiqty");
+                    var supplier = $(this).closest("tr").find("td.trans").data("supplier");
+                    var spID = $(this).closest("tr").find("td.trans").data("spid");
+                    var spmID = $(this).data("spmid");
+                    var receiptNo = $(this).closest("tr").find("td.trans").data("receipt");
+                    var riID = $(this).data("riid");
+                    if ($(this).is(":checked")) {
+                        $("#drForm .ic-level-2").append(`
+                    <tr class="ic-level-1" data-stock="${id}" data-riid="${riID}">
+                        <td style="padding:1% !important"><input type="text" class="form-control form-control-sm"
+                                data-stock="${id}" value="${receiptNo}" data-riid="${riID}" name="receipt" readonly></td>
+                        <td style="padding:1% !important"><input type="text" class="form-control form-control-sm"
+                                data-id="${id}" data-spmid="${spmID}" data-actqty="${actualQty}" data-price="${price}" 
+                                value="${name}" data-tiqty="${tiQty}" name="stock" readonly></td>
+                        <td width="20%" style="padding:1% !important">
+                            <div class="input-group input-group-sm mb-3">
+                                <input type="number" class="form-control form-control-sm" name="qty" value="${tiQty}" min="1">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" style="font-size:14px">
+                                        ${uom} </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding:1% !important"><textarea placeholder="Remarks" type="text" class="form-control form-control-sm"
+                                name="tiRemarks" rows="1"></textarea>
+                        </td>
+                    </tr>`);
+
+                        $("#drForm").find('select[name="supplier"]').find(`option[value=${spID}]`).attr("selected", "selected");
+                        $("#drForm").find('select[name="supplier"]').attr("readonly", true);
+                    } else {
+                        console.log($('#drForm .ic-level-1[data-riID="'+ riID +'"]'));
+                        $('#drForm .ic-level-1[data-riID="'+ riID +'"]').remove();
+                        if (isNaN($("#drForm .ic-level-2 tr").length) || $("#conForm .ic-level-2 tr").length == 0) {
+                            $('#drForm')[0].reset();
+                        }
+
+                    }
+                });
                 $("#drForm").on("submit", function(event) {
                     event.preventDefault();
-                    var supplier = $(this).find("select[name='spID']").val();
+                    var supplier = $(this).find("select[name='supplier']").val();
                     var source = $(this).find("input[name='source']").val();
                     var date = $(this).find("input[name='date']").val();
                     var receipt = $(this).find("input[name='receipt']").val();
                     var remarks = $(this).find("textarea[name='remarks']").val();
                     var newItems = [], merchItems = [], purItems = [], retItems = [];
-              
+                    var rTotal = 0;
+
                     var params = {
                         url: '/admin/deliveryreceipt/add',
                         type: "POST",
@@ -436,7 +447,41 @@
                             console.log("2");
                             break;
                         case 3:
-                            console.log("3");
+
+                        $("#drForm .ic-level-1").each(function (index) {
+                            var oldtiQty = parseInt($(this).find("input[name='stock']").attr('data-tiqty'));
+                            var tiQty = parseInt($(this).find("input[name='qty']").val());
+                            var actqty = parseInt($(this).find("input[name='stock']").attr('data-actqty'));
+                            var price = parseFloat($(this).find("input[name='stock']").attr('data-price'));
+                            var actualQty = tiQty * actqty;
+                            var subtotal = parseFloat(tiQty * price);
+                            rTotal = parseFloat(rTotal + subtotal);
+
+                                retItems.push({
+                                    stID: $(this).find("input[name='stock']").attr('data-id'),
+                                    riID: $(this).find("input[name='receipt']").attr('data-riid'), 
+                                    spmID: $(this).find("input[name='stock']").attr('data-spmid'),
+                                    tiQty: tiQty,
+                                    tiActualQty: actualQty,
+                                    tiActual: actualQty,
+                                    tiSubtotal: subtotal,
+                                    tiRemarks: $(this).find("textarea[name='tiRemarks']").val(),
+                                    tiDate: date,
+                                    receipt: receipt,
+                                    riStatus: (oldtiQty !== tiQty) ? 'pending' : 'replaced',
+                                    piStatus: 'delivered'
+                                });
+                            });
+
+                            params.data = {
+                                spID: supplier,
+                                spAltName: source,
+                                date: date,
+                                receipt: receipt,
+                                remarks: remarks,
+                                addtype: 3,
+                                items: JSON.stringify(retItems)
+                            }
                             break;
                     }
 
@@ -636,31 +681,43 @@
                 $("#returnCard tbody").empty();
                 returns.forEach(function (del) {
                     $("#returnCard tbody").append(`
-                    <div style="overflow:auto" class="ic-level-1">
-                                                <div style="float:left;width:96%;overflow:auto;">
-                                                    <div class="input-group mb-1">
-                                                        <input type="text" name="name[]"
-                                                            class="form-control form-control-sm" placeholder="Item Name"
-                                                            style="width:17%">
-                                                        <input type="number" name="qty[]"
-                                                            class="form-control form-control-sm" placeholder="Qty">
-                                                        <input type="text" name="unit[]"
-                                                            class="form-control form-control-sm" placeholder="Unit">
-                                                        <input type="number" name="price[]"
-                                                            class="form-control form-control-sm" placeholder="Price">
-                                                        <input type="number" name="discount[]"
-                                                            class="form-control form-control-sm" placeholder="Discount">
-                                                        <input type="number" name="subtotal[]"
-                                                            class="form-control form-control-sm" placeholder="Subtotal"
-                                                            readonly>
-                                                    </div>
-                                                </div>`);
+                    <tr class="ic-level-1">
+                    <td><input type="checkbox" class="mr-2" name="returns"
+                            data-name="${del.stName}" data-uom="${del.uomName}" 
+                            data-stid="${del.stID}"  data-actual="${del.spmActual}" 
+                            data-price="${del.spmPrice}"  data-riid="${del.riID}" 
+                            data-tiqty="${del.tiQty}" data-spmid="${del.spmID}"
+                             value="${del.stID}"></td>
+                    <td class="trans"  data-receipt='${del.returnReference}' data-supplier='${del.spAltName}' 
+                    data-spid="${del.spID}">${del.returnReference}</td>
+                    <td class="item" data-stid='${del.stID}'>${del.item}</td>
+                </tr>`);
                 });
             }
+            
             function resetForm() {
                 $("#drForm .ic-level-2").empty();
             }
 
+            // <div style="overflow:auto" class="ic-level-1">
+            //                                     <div style="float:left;width:96%;overflow:auto;">
+            //                                         <div class="input-group mb-1">
+            //                                             <input type="text" name="name[]"
+            //                                                 class="form-control form-control-sm" placeholder="Item Name"
+            //                                                 style="width:17%">
+            //                                             <input type="number" name="qty[]"
+            //                                                 class="form-control form-control-sm" placeholder="Qty">
+            //                                             <input type="text" name="unit[]"
+            //                                                 class="form-control form-control-sm" placeholder="Unit">
+            //                                             <input type="number" name="price[]"
+            //                                                 class="form-control form-control-sm" placeholder="Price">
+            //                                             <input type="number" name="discount[]"
+            //                                                 class="form-control form-control-sm" placeholder="Discount">
+            //                                             <input type="number" name="subtotal[]"
+            //                                                 class="form-control form-control-sm" placeholder="Subtotal"
+            //                                                 readonly>
+            //                                         </div>
+            //                                     </div>
             </script>
 
             </html>

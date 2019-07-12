@@ -101,7 +101,8 @@
                     current: $(this).find("input[name='current']").val(),
                     actual: $(this).find("input[name='actual']").val(),
                     discrepancy: $(this).find("input[name='discrepancy']").val(),
-                    remarks: $(this).find("textarea[name='remarks']").val()
+                    remarks: $(this).find("textarea[name='remarks']").val(),
+                    date: date
                 });
             });
             $.ajax({

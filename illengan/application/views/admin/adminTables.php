@@ -14,18 +14,23 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
+                            <div class="card-content" id="tablesTable">
                         <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTable" data-original-title style="margin:0;">Add Table</button><br>
                         <br>
+                               <!--Search-->
+							<div id="tablesTable" style="width:25%; float:right; border-radius:5px">
+								<input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+							</div>
+                         <br><br>
                         <table id="tablesTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                             <thead class="thead-dark">
                                 <th><b class="pull-left">Table Code</b></th>
                                 <th><b class="pull-left">Actions</b></th>
                             </thead>
                             <tbody>
-                            
                             </tbody>
                         </table>
+                        <div id="pagination" style="float:right"></div>
                         <!--Modals-->
                         <!--Modal for Add New Table-->
                         <div class="modal fade" id="addNewTable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
@@ -148,9 +153,8 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
 <script>
-    var tables = [];
+    //var tables = < ?= json_encode($tables)?>;
     $(function() {
-        getTables();
         $("#confirmDelete").on('submit', function(event) {
             event.preventDefault();
             var tableCode = $(this).find("input").val();
@@ -163,7 +167,7 @@
                 dataType: 'json',
                 success: function(data) {
                     tables = data;
-                    setTableData();
+                    setTableData(tables);
                 },
                 error: function(response, setting, errorThrown) {
                     console.log(response.responseText);
@@ -185,8 +189,8 @@
                 },
                 dataType: 'json',
                 success: function(data) {
-                    tables = data;
-                    setTableData();
+                    $("#formEdit").modal('hide');
+                    location.reload();
                 },
                 error: function(response, setting, errorThrown) {
                     console.log(response.responseText);
@@ -205,8 +209,8 @@
                 },
                 dataType: 'json',
                 success: function(data) {
-                    tables = data;
-                    setTableData();
+                    $("#formAdd").modal('hide');
+                    location.reload();
                 },
                 error: function(response, setting, errorThrown) {
                     console.log(response.responseText);
@@ -215,43 +219,45 @@
             });
         });
     });
-
-    function getTables() {
-        $.ajax({
-            url: "<?= site_url('admin/tables/getTables') ?>",
-            method: "post",
-            dataType: "json",
-            success: function(data) {
-                tables = data;
-                setTableData(tables);
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(response.responseText);
+$(document).ready(function() {
+    createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+        createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadDataTables/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var tab = data.tabs;
+                setTableData(tab);
+			},
+            error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
+                console.log(response.responseText);
             }
-        });
+		});
     }
+});
 
-    function setTableData() {
-        if ($("#tablesTable > tbody").children().length > 0) {
-            $("#tablesTable > tbody").empty();
-        }
-        tables.forEach(table => {
-            $("#tablesTable > tbody").append(`
-        <tr data-id="${table.tableCode}">
-            <td>${table.tableCode}</td>
-            <td>
-                <!--Action Buttons-->
-                <div class="onoffswitch">
-                    <!--Edit button-->
-                    <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+    function setTableData(table) {
+        $("table#tablesTable > tbody").empty();
+        for(t in table){
+            var tab1 =`<tr data-id="`+table[t].tableCode+`">`;
+                tab1 += ` <td class="ic-level-1">`+table[t].tableCode+`</td>`;
+                tab1 += `<td>`;
+                tab1 += ` <div class="onoffswitch">`;
+                tab1 +=` <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
                         data-target="#editTable">Edit</button>
-                    <!--Delete button-->
                     <button class="deleteBtn btn btn-warning btn-sm" data-toggle="modal"
-                        data-target="#deleteTable">Archived</button>
-                </div>
-            </td>
-        </tr>`);
+                        data-target="#deleteTable">Archived</button>`;
+                tab1 += `</div></td></tr>`;
+            $("table#tablesTable > tbody").append(tab1);
+        
             $(".updateBtn").last().on('click', function() {
                 $("input[name='prevTableCode']").val($(this).closest("tr").attr("data-id"));
                 $("#editTable").find("input[name='tableCode']").val($(this).closest("tr").attr("data-id"));
@@ -261,8 +267,22 @@
                 $("#deleteTableCode").text(`Table code: ${$(this).closest("tr").attr("data-id")}`);
                 $("#deleteTable").find("input[name='tableCode']").val($(this).closest("tr").attr("data-id"));
             });
-        });
-    }
+            }
+        }
+    //Search Function
+		$("#tablesTable input[name='search']").on("keyup", function() {
+			var string = $(this).val().toLowerCase();
+
+			$("#tablesTable .ic-level-1").each(function(index) {
+				var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+				if (!text.includes(string)) {
+					$(this).closest("tr").hide();
+				} else {
+					$(this).closest("tr").show();
+				}
+			});
+
+		});
     // $('table tbody tr  td').on('click', function() {
     //     $("#myModal").modal("show");
     //     $("#txtfname").val($(this).closest('tr').children()[0].textContent);

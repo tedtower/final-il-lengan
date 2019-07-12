@@ -146,8 +146,6 @@
             var uom = $(this).data("uom");
             var price = $(this).data("price");
             var actualQty = $(this).data("actual");
-            console.log($(this));
-
             var supplier = $(this).closest("tr").find("td.trans").data("supplier");
             var spID = $(this).closest("tr").find("td.trans").data("spid");
             var spmID = $(this).data("spmid");
@@ -189,9 +187,11 @@
             }
         });
         $("#listDeliver input[name='search']").on("keyup",function(){
-            var string = $(this).val();
-            $("#listDeliver .item").each(function(index){
-                if(!$(this).text().includes(string)){
+            var string = $(this).val().toLowerCase();
+
+            $("#listDeliver .ic-level-1").each(function(index){
+                var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm,' ')
+                if(!text.includes(string)){
                     $(this).closest(".ic-level-1").hide();
                 }else{
                     $(this).closest(".ic-level-1").show();
@@ -213,7 +213,7 @@
             console.log(date);
             var returnitems = [];
             var rTotal = 0;
-            console.log(spAltName);
+           
             $(this).find(".ic-level-1").each(function(index){
                 var tiQty = parseInt($(this).find("input[name='qty']").val());
                 var actqty = parseInt($(this).find("input[name='stock']").attr('data-actqty'));
@@ -222,7 +222,6 @@
                 var subtotal = parseFloat(tiQty * price);
                 rTotal = parseFloat(rTotal + subtotal);
 
-                console.log($(this).find("input[name='stock']"));
                 returnitems.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
                     spmID: $(this).find("input[name='stock']").attr('data-spmid'),

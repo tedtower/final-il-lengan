@@ -222,7 +222,6 @@ function addaccounts(){
             $this->adminmodel->get_stockItem($id);
             $data['report'] = $this->adminmodel->get_inventoryReport($stID, $sDate, $eDate);
             $data['stock'] = $this->adminmodel->get_stockItem($id)[0];
-            $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
             $this->load->view('admin/reportInventory', $data);
             // redirect('admin/stocklog/report');
         }else{
@@ -426,6 +425,9 @@ function addaccounts(){
             switch($addtype) {
                 case 1:
                 $this->adminmodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);
+                break;
+                case 3:
+                $this->adminmodel->add_purchase($supplier, $receipt, "delivery", $date, $dateTime, NULL, $drItems, $addtype, $account_id);
                 break;
             }
             echo 'HHAHAHAA';
