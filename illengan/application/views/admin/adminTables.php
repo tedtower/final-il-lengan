@@ -14,14 +14,14 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
+                            <div class="card-content" id="tablesTable">
                         <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTable" data-original-title style="margin:0;">Add Table</button><br>
                         <br>
                                <!--Search-->
 							<div id="tablesTable" style="width:25%; float:right; border-radius:5px">
 								<input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
 							</div>
-                         <br>
+                         <br><br>
                         <table id="tablesTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                             <thead class="thead-dark">
                                 <th><b class="pull-left">Table Code</b></th>
@@ -248,7 +248,7 @@ $(document).ready(function() {
         $("table#tablesTable > tbody").empty();
         for(t in table){
             var tab1 =`<tr data-id="`+table[t].tableCode+`">`;
-                tab1 += ` <td>`+table[t].tableCode+`</td>`;
+                tab1 += ` <td class="ic-level-1">`+table[t].tableCode+`</td>`;
                 tab1 += `<td>`;
                 tab1 += ` <div class="onoffswitch">`;
                 tab1 +=` <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
