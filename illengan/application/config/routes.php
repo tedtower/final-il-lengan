@@ -62,7 +62,11 @@ $route['admin/consumption/formadd'] = "adminview/viewConsumptionFormAdd";
 $route['admin/stock/spoilage/formadd'] = "adminview/viewSpoilagesStockAdd";
 $route['admin/addons/spoilage/formadd'] = "adminview/viewSpoilagesAddonAdd";
 $route['admin/stocks/loadDataStocks/(:num)'] = "adminview/loadDataStocks/$1";
-$route['admin/menu/loadDataCategories/(:num)'] = "adminview/loadDataCategories/$1";
+$route['admin/stocks/loadDataCategories/(:num)'] = "adminview/loadDataCategories/$1";
+$route['admin/stocks/loadDataUnitMeasures/(:num)'] = "adminview/loadDataUnitMeasures/$1";
+$route['admin/loadDataMenu/(:num)'] = "adminview/loadDataMenu/$1";
+$route['admin/menu/loadDataMenuCategories/(:num)'] = "adminview/loadDataMenuCategories/$1";
+$route['admin/loadDataTables/(:num)'] = "adminview/loadDataTables/$1";
 //End Viewing Routes 
 
 //Not Sure Routes
@@ -97,6 +101,7 @@ $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
 $route['admin/sales/report/add'] = "adminadd/addSalesReport"; 
 $route['admin/returns/add'] = "adminadd/addReturns";
 $route['admin/inventory/beginning'] = "adminadd/addBeginningLogs";
+
 
 //End Admin Add Routes ------------------------------------------
 
