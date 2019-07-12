@@ -41,7 +41,7 @@
                         <tbody class="stockTable ic-level-1">
                         </tbody>
                     </table>
-			<div id="pagination"></div>
+			 <div id="pagination" style="float:right"></div>
                     <p id="note"></p>
                 <!--Start of Modal "Restock Item"-->
                     <div class="modal fade bd-example-modal-lg" id="restock" tabindex="-1" role="dialog"
