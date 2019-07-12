@@ -17,7 +17,7 @@
                         d="addBtn">Perform Inventory</a>
                     <a class="btn btn-primary btn-sm" style="margin:0;color:blue;float:right" href="<?= site_url('admin/inventorylist')?>"><i class="fal fa-list-ul"></i> Inventory List</a>
                    <br><br>
-                    <div id="pagination"></div>
+                    
                     <!--Search-->
                     <div id="stockTable" style="width:25%; float:right; border-radius:5px">
                         <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
@@ -41,6 +41,7 @@
                         <tbody class="stockTable ic-level-1">
                         </tbody>
                     </table>
+			<div id="pagination"></div>
                     <p id="note"></p>
                 <!--Start of Modal "Restock Item"-->
                     <div class="modal fade bd-example-modal-lg" id="restock" tabindex="-1" role="dialog"
