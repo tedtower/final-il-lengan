@@ -105,7 +105,7 @@
               <span class="text-danger"><?php echo form_error("change"); ?></span>
             </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount" id="discount">Senior Citizen Discount
+              <input type="checkbox" class="form-control-sm" name="discount" id="discount">Senior Citizen Discount(20%)
             </div>
             <input type="hidden" class="form-control" name="osID" id="osID" readonly> 
             <!--Footer-->
@@ -180,7 +180,7 @@
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
+              <input type="checkbox" class="form-control-sm" name="discount2" id="discount2"  > Senior Citizen Discount(20%)
             </div>
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
@@ -382,25 +382,35 @@
       if(cash < payable){
         $("#Modal_Pay").find("input[name='change']").val("Insufficient Amount");
         document.getElementById("updtbutton").disabled = true;
-      }else{
+      }
+      else{
         var change = parseFloat(cash - payable);
         $("#Modal_Pay").find("input[name='change']").val(change);
         document.getElementById("updtbutton").disabled = false;
       }
+
     });
 //-----------------------For the Payment Modal Single Payment-------------------------
 document.getElementById("updtbutton2").disabled = true;
     $("#cash2").on('change', function () {
       var payable = parseFloat(document.getElementById('amount_payable2').value);
       var cash = parseFloat(document.getElementById('cash2').value);
-      if(cash < payable){
+      var seniorDiscount = parseFloat(payable * 0.20);
+
+      if(document.getElementById("discount2").checked){
+        var change = parseFloat(cash - (parseFloat(payable - seniorDiscount)));
+        $("#Modal_Pay2").find("input[name='change2']").val(change);
+        document.getElementById("updtbutton2").disabled = false;
+      }
+      else if(cash < payable){
         $("#Modal_Pay2").find("input[name='change2']").val("Insufficient Amount");
         document.getElementById("updtbutton2").disabled = true;
-      }else{
+      }else {
         var change = parseFloat(cash - payable);
         $("#Modal_Pay2").find("input[name='change2']").val(change);
         document.getElementById("updtbutton2").disabled = false;
       }
+
     });
 //------------------------Stocks Get Brochure Function-----------------------------------
 function getSelectedSlips() {

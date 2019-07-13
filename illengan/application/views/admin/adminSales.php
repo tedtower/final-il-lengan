@@ -214,7 +214,7 @@
                                                         <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                             Senior Citizen Discount %</span>
                                                     </div>
-                                                    <input type="number" name="seniorDC" id="seniorDC" onchange="setSubtotal()" class="form-control form-control-sm">
+                                                    <input type="number" min="0" name="seniorDC" id="seniorDC" onchange="setSubtotal()" class="form-control form-control-sm">
                                                 </div>
                                                 <!-- Table Code -->
                                                 <div class="input-group mb-3 col">
@@ -842,7 +842,7 @@
                 return false;
             }
             if (Date.parse(eDate) > Date.parse(currentDate)) {
-                alert('Please check the entered date.');
+                alert('Please check the entered date!');
                 return false;
             }
         });
