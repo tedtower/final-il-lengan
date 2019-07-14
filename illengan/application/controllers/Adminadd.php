@@ -420,7 +420,7 @@ function addaccounts(){
             $dateTime = date("Y-m-d H:i:s");
             $drItems = json_decode($this->input->post('items'),true);
            
-            $this->adminmodel->add_purchase();
+            $this->adminmodel->add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems);
     }
     }
     function addOfficialReceipt(){
