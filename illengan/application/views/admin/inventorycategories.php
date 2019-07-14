@@ -17,13 +17,11 @@
                                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newMCategory" data-original-title style="margin:0" id="addCategroy">Add Category</button>
                                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newSCategory" data-original-title style="margin:0" id="addCategroy">Add Subcategory</button>
                                     <br>
-                                    <div id="pagination"></div>
                                     <!--Search-->
                                     <div id="categTable" style="width:25%; float:right; border-radius:5px">
                                         <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                     </div>
                                     <br><br>
-                                    <!--Table Body-->
                                     <table id="categTable" class="table table-bordered dt-responsive text-center nowrap" cellspacing="0" width="100%">
                                         <thead class="thead-dark">
                                             <th><b class="pull-left">Category Name</b></th>
@@ -31,24 +29,10 @@
                                             <th><b class="pull-left">Status</b></th>
                                             <th><b class="pull-left">Actions</b></th>
                                         </thead>
-                                        <tbody class="categTable ic-level-2">
-                                            <?php
-                                            if (isset($category)) {
-                                                foreach ($category as $category) {
-                                                    ?>
-                                                    <tr data-id="<?= $category['ctID']; ?>">
-                                                        <td><?php echo $category['ctName'] ?></td>
-                                                        <td><?php echo $category['stockCount'] ?></td>
-                                                        <td><?php echo $category['ctStatus'] ?></td>
-                                                        <td>
-                                                            <button class="btn btn-secondary btn-sm" name="editCategory" data-toggle="modal" data-target="#editCategory" data-id="<?php echo $category['ctID'] ?>">Edit</button>
-                                                            <button class="deleteBtn btn btn-warning btn-sm" data-toggle="modal" data-target="#deleteCategory" id="<?php echo $category['ctID']; ?>" data-name="<?php echo $category['ctName']; ?>">Archive</button>
-                                                        </td>
-                                                    </tr>
-                                                <?php }
-                                            } ?>
+                                        <tbody>
                                         </tbody>
                                     </table>
+                                    <div id="pagination" style="float:right"></div>
                                     <!--End Table Content-->
 
                                     <!--Start of Modal "Add Transaction"-->
@@ -215,7 +199,7 @@
 
                 function createPagination(pageNum) {
                     $.ajax({
-                        url: '<?= base_url() ?>admin/menu/loadDataCategories/' + pageNum,
+                        url: '<?= base_url() ?>admin/stocks/loadDataCategories/' + pageNum,
                         type: 'get',
                         dataType: 'json',
                         success: function(data) {
@@ -235,8 +219,8 @@
             function setCategData(data) {
                 $("table#categTable > tbody").empty();
                 for (cat in data) {
-                    var row1 = `<tr class="ic-level-1" data-id="` + data[cat].ctID + `">`;
-                    row1 += `<td>` + data[cat].ctName + `</td>`;
+                    var row1 = ` <tr class="ic-level-1" data-id="` + data[cat].ctID + `">`;
+                    row1 += ` <td>` + data[cat].ctName + `</td>`;
                     row1 += `<td>` + data[cat].stockCount + `</td>`;
                     row1 += `<td>` + data[cat].ctStatus + `</td>`;
                     row1 += `<td>
@@ -244,6 +228,7 @@
                 <button class="deleteBtn btn btn-warning btn-sm" data-toggle="modal" data-target="#deleteCategory" id="` + data[cat].ctID + `" data-name="` + data[cat].ctName + `">Archive</button>
                 </td></tr>`;
                     $("table#categTable  tbody").append(row1);
+
                 }
                 $('.deleteBtn').click(function() {
                     var id = $(this).attr("id");
@@ -254,13 +239,13 @@
                         window.location = "<?php echo base_url(); ?>/admin/stockcategories/delete/" + id;
                     });
                 });
-                var tuples = ((document.getElementById('categTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
-                var tupleNo = tuples.length;
-                var editButtons = document.getElementsByName('editCategory');
-                var editModal = document.getElementById('editCategory');
-                for (var x = 0; x < tupleNo; x++) {
-                    editButtons[x].addEventListener("click", showEditModal);
-                }
+            }
+            var tuples = ((document.getElementById('categTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
+            var tupleNo = tuples.length;
+            var editButtons = document.getElementsByName('editCategory');
+            var editModal = document.getElementById('editCategory');
+            for (var x = 0; x < tupleNo; x++) {
+                editButtons[x].addEventListener("click", showEditModal);
             }
 
             function showEditModal(event) {
@@ -269,7 +254,6 @@
                 document.getElementById('new_status').value = row.firstElementChild.nextElementSibling.nextElementSibling.innerHTML;
                 document.getElementById('ctID').value = event.target.getAttribute('data-id');
             }
-
             //Search Function
             $("#categTable input[name='search']").on("keyup", function() {
                 var string = $(this).val().toLowerCase();

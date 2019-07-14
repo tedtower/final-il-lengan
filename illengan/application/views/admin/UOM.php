@@ -15,13 +15,12 @@
                             <!--Table-->
                             <div class="card-content" id="uomTable">
                                 <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newUOM" data-original-title style="margin:0;">Add UOM</button>
-                                <br>
+                                <br><br>
                                 <!--Search-->
-							<div id="uomTable" style="width:25%; float:right; border-radius:5px">
-								<input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
-							</div>
-							<br><br>
-							<!--Table Body-->
+                                <div id="uomTable" style="width:25%; float:right; border-radius:5px">
+                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                                </div>
+                                <br><br>
                                 <table id="uomTable" class="table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
                                     <thead class="thead-dark">
                                         <tr class="text-center">
@@ -33,24 +32,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php
-                                        if (isset($measurement)) {
-                                            foreach ($measurement as $uom) {
-                                                ?>
-                                                <tr class="uomTable ic-level-1" data-id="<?php echo $uom['uomID']; ?>" class="text-center">
-                                                    <td class="text-left pl-3"><?php echo $uom['uomName'] ?></td>
-                                                    <td><?php echo $uom['uomAbbreviation'] ?></td>
-                                                    <td><?php echo $uom['uomVariant'] ?></td>
-                                                    <td><?php echo $uom['uomStore'] ?></td>
-                                                    <td>
-                                                        <button class="btn btn-default btn-sm" name="editUOM" data-toggle="modal" data-target="#editUOM" data-id="<?php echo $uom['uomID'] ?>">Edit</button>
-                                                        <button class="deleteBtn btn btn-warning btn-sm" data-toggle="modal" data-target="#deleteUOM" id="<?php echo $uom['uomID']; ?>" data-name="<?php echo $uom['uomName']; ?>">Archive</button>
-                                                    </td>
-                                                </tr>
-                                            <?php }
-                                        } ?>
                                     </tbody>
                                 </table>
+                                <div id="pagination" style="float:right"></div>
                                 <!--Start of Modal "Add Menu"-->
                                 <div class="modal fade bd-example-modal" id="newUOM" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -216,10 +200,57 @@
             </div>
         </div>
     </div>
-
-    <?php include_once('templates/scripts.php') ?>
     <script>
         $(document).ready(function() {
+            createPagination(0);
+            $('#pagination').on('click', 'a', function(e) {
+                e.preventDefault();
+                var pageNum = $(this).attr('data-ci-pagination-page');
+                createPagination(pageNum);
+            });
+
+            function createPagination(pageNum) {
+                $.ajax({
+                    url: '<?= base_url() ?>admin/stocks/loadDataUnitMeasures/' + pageNum,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#pagination').html(data.pagination);
+                        var uom = data.umeasures;
+                        setMeasuresData(uom);
+                        console.log('uom:', uom);
+                    },
+                    error: function(response, setting, errorThrown) {
+                        console.log(errorThrown);
+                        console.log(response.responseText);
+                    }
+                });
+            }
+        });
+
+        function setMeasuresData(data) {
+            $("table#uomTable > tbody").empty();
+            for (uom in data) {
+                var row1 = ` <tr class="ic-level-1" data-id="` + data[uom].uomID + `" class="text-center">`;
+                row1 += ` <td  class="text-left pl-3">` + data[uom].uomName + `</td>`;
+                row1 += `<td>` + data[uom].uomAbbreviation + `</td>`;
+                if (data[uom].uomVariant == null) {
+                    row1 += `<td></td>`;
+                } else {
+                    row1 += `<td>` + data[uom].uomVariant + `</td>`;
+                }
+                if (data[uom].uomStore == null) {
+                    row1 += `<td></td>`;
+                } else {
+                    row1 += `<td>` + data[uom].uomStore + `</td>`;
+                }
+                row1 += `<td>
+                        <button class="btn btn-default btn-sm" name="editUOM" data-toggle="modal" data-target="#editUOM" data-id="` + data[uom].uomID + `">Edit</button>
+                        <button class="deleteBtn btn btn-warning btn-sm" data-toggle="modal" data-target="#deleteUOM" id="` + data[uom].uomID + `" data-name="` + data[uom].uomName + `">Archive</button>
+                        </td></tr>`;
+                $("table#uomTable  tbody").append(row1);
+            }
+
             $('.deleteBtn').click(function() {
                 var id = $(this).attr("id");
                 $("#deleteAddonItem").text(`delete ${$(this).attr("data-name")}`);
@@ -229,15 +260,16 @@
                     window.location = "<?php echo base_url(); ?>/admin/measurement/delete/" + id;
                 });
             });
-        });
 
-        var tuples = ((document.getElementById('uomTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
-        var tupleNo = tuples.length;
-        var editButtons = document.getElementsByName('editUOM');
-        var editModal = document.getElementById('editUOM');
-        for (var x = 0; x < tupleNo; x++) {
-            editButtons[x].addEventListener("click", showEditModal);
-        }
+
+            var tuples = ((document.getElementById('uomTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
+            var tupleNo = tuples.length;
+            var editButtons = document.getElementsByName('editUOM');
+            var editModal = document.getElementById('editUOM');
+            for (var x = 0; x < tupleNo; x++) {
+                editButtons[x].addEventListener("click", showEditModal);
+            }
+        };
 
         function showEditModal(event) {
             var row = event.target.parentElement.parentElement;
@@ -247,20 +279,19 @@
             document.getElementById('uomStore').value = row.firstElementChild.nextElementSibling.nextElementSibling.nextElementSibling.innerHTML;
             document.getElementById('uomID').value = event.target.getAttribute('data-id');
         }
-
         //Search Function
-		$("#uomTable input[name='search']").on("keyup", function() {
-			var string = $(this).val().toLowerCase();
+        $("#uomTable input[name='search']").on("keyup", function() {
+            var string = $(this).val().toLowerCase();
 
-			$("#uomTable .ic-level-1").each(function(index) {
-				var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
-				if (!text.includes(string)) {
-					$(this).closest("tr").hide();
-				} else {
-					$(this).closest("tr").show();
-				}
-			});
+            $("#uomTable .ic-level-1").each(function(index) {
+                var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                if (!text.includes(string)) {
+                    $(this).closest("tr").hide();
+                } else {
+                    $(this).closest("tr").show();
+                }
+            });
 
-		});
+        });
     </script>
 </body>

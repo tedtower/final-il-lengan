@@ -12,16 +12,14 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content" id="menuStockTable">
-                                <button id="addMenuStock" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addEditMenuStock" data-original-title style="margin:0;">Add
-                                    Item</button>
+                            <a  class="btn btn-primary btn-sm" href="<?= site_url('admin/menustock/formadd')?>" data-original-title style="margin:0; width:20%;"
+                                                id="addBtn">Add Menu-Stock Item</a><br>
                                 <br>
                                 <!--Search-->
                                 <div id="menuStockTable" style="width:25%; float:right; border-radius:5px">
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                 </div>
                                 <br><br>
-                                <?php if (!empty($menuStock)) {
-                                    ?>
                                     <table id="menuStockTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                         <thead class="thead-dark">
                                             <tr>
@@ -32,26 +30,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php foreach ($menuStock as $item) {
-                                                ?>
-                                                <tr class="menuStockTable ic-level-1" data-id1="<?= $item['prID'] ?>" data-id2="<?= $item['stockitem'] ?>">
-                                                    <td><?= $item['prefname'] ?></td>
-                                                    <td><?= $item['stockitemname'] ?></td>
-                                                    <td><?= $item['qty'] ?></td>
-                                                    <td>
-                                                        <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editMS">Edit</button>
-                                                        <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteMS">Delete</button>
-                                                    </td>
-                                                </tr>
-                                            <?php
-                                            } ?>
                                         </tbody>
                                     </table>
-                                <?php
-                                } else { ?>
-                                    <p>No items recorded!</p>
-                                <?php
-                                } ?>
+                                    <div id="pagination" style="float:right"></div>
                                 <!--Start of Modal "Add Stock Spoilages"-->
                                 <div class="modal fade bd-example-modal-lg" id="addEditMenuStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                                     <div class="modal-dialog modal-lg" role="document">
@@ -149,124 +130,51 @@
                 </div>
             </div>
             <?php include_once('templates/scripts.php') ?>
-            <script>
-                var getModalDataUrl = "<?= site_url('admin/menu/getMenuStockModalData') ?>";
-                var addMenuStockUrl = "<?= site_url('admin/menu/addMenuStock') ?>";
-                $(function() {
-                    $("#addMenuStock").on('click', function() {
-                        $("#addEditMenuStock form").on("submit", function(event) {
-                            event.preventDefault();
-                            var menuStock = [];
-                            $(this).find(".ic-level-1").each(function(index) {
-                                menuStock.push({
-                                    prID: $(this).attr("data-id1"),
-                                    stID: $(this).attr("data-id2"),
-                                    prstQty: $(this).find("input[name='qty']").val()
-                                });
-                            });
-                            $.ajax({
-                                method: "POST",
-                                url: addMenuStockUrl,
-                                data: {
-                                    items: JSON.stringify(menuStock)
-                                },
-                                dataType: "JSON",
-                                success: function(data) {
-                                    if (data.inputErr) {
-                                        console.log(menuStock);
-                                    } else {
-                                        location.reload();
-                                    }
-                                },
-                                error: function(response, setting, error) {
-                                    console.log(response.responseText);
-                                    console.log(error);
-                                }
-                            });
-                        });
-                        $.ajax({
-                            method: 'POST',
-                            url: getModalDataUrl,
-                            dataType: 'JSON',
-                            success: function(data) {
-                                console.log(data);
-                                $("#brochureMenu").find(".ic-level-2").append(data.preferences.map(pref => {
-                                    return `<div class="ic-level-1">
-                                        <label><input type="checkbox"
-                                                name="prID" value="${pref.id}"/> ${pref.prefname}
-                                        </label>
-                                    </div>`;
-                                }).join(''));
-                                $("#brochureStock").find(".ic-level-2").append(data.stocks.map(stock => {
-                                    return `<div class="ic-level-1">
-                                        <label><input type="radio"
-                                                name="stID" value="${stock.stID}"/> ${stock.stName} (${stock.uomAbbreviation})
-                                        </label>
-                                    </div>`;
-                                }).join(''));
-                                $("#addEditMenuStock").find(".addItemBtn").on("click", function() {
-                                    console.log($("#addEditMenuStock").find(".addItemBtn"));
-                                    $("#brochureMenu form").on("submit", function(event) {
-                                        event.preventDefault();
-                                        var item;
-                                        $(this).find("input[name='prID']:checked").each(function(index) {
-                                            item = data.preferences.filter(pref => pref.id == $(this).val())[0];
-                                            $("#addEditMenuStock").find(".ic-level-2").append(`
-                                            <tr class="ic-level-1" data-id1="${item.id}" data-id2="">
-                                                <td><input type="text" name="prefID"
-                                                        class="form-control form-control-sm"value="${item.prefname}" readonly="readonly"></td>
-                                                <td><input type="text" name="stID"
-                                                        class="form-control form-control-sm"value=""></td>
-                                                <td><input type="number" name="qty"
-                                                        class="form-control form-control-sm" value="0" min="0" required></td>
-                                                <td><img class="exitBtn1"
-                                                        src="/assets/media/admin/error.png"
-                                                        style="width:20px;height:20px"></td>
-                                            </tr>`);
-                                            $("#addEditMenuStock").find(".ic-level-1").last().find("*").on("focus", function() {
-                                                if (!$(this).closest(".ic-level-1").attr("data-focus")) {
-                                                    $("#addEditMenuStock").find(".ic-level-1").removeAttr("data-focus");
-                                                    $(this).closest(".ic-level-1").attr("data-focus", true);
-                                                }
-                                            });
-                                            $("#addEditMenuStock").find("input[name='stID']").last().on("focus", function() {
-                                                $("#brochureStock").modal("show");
-                                                $("#brochureStock form").on("submit", function(event) {
-                                                    event.preventDefault();
-                                                    var stID = $(this).find("input[name='stID']:checked").val();
-                                                    $("#addEditMenuStock").find(".ic-level-1[data-focus='true']").attr("data-id2", stID);
-                                                    $("#addEditMenuStock").find(".ic-level-1[data-focus='true']").find("input[name='stID']").val(data.stocks.filter(stock => stock.stID == stID)[0].stName)
-                                                    $(this)[0].reset();
-                                                    $("#brochureStock").modal("hide");
-                                                });
-                                            });
-                                        });
-                                        $("#brochureMenu").modal("hide");
-                                    });
-                                });
-
-                            },
-                            error: function(response, setting, error) {
-                                console.log(response.responseText);
-                                console.log(error);
-                            }
-                        });
-                    });
-                    $("#brochureMenu").on("hidden.bs.modal", function() {
-                        $(this).find("form")[0].reset();
-                        $(this).find("form").off("submit");
-                    });
-                    $("#brochureStock").on("hidden.bs.modal", function() {
-                        $(this).find("form")[0].reset();
-                        $(this).find("form").off("submit");
-                    });
-                    $("#addEditMenuStock").on("hidden.bs.modal", function() {
-                        $(this).find("form")[0].reset();
-                        $(this).find(".ic-level-2").empty();
-                        $(this).find("form").off("submit");
-                    });
-
-                });
+<script>
+    $(document).ready(function() {
+    createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+        createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/menustock/loadDataMenuStock/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var pref = data.prefstocks;
+                setPrefStockData(pref);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+    }
+    });
+    function setPrefStockData(item){
+        $('#menuStockTable > tbody').empty();
+        for(p in item){
+            if(item.length == null){
+                var text = `<p>No items recorded!</p>`;
+                $('#menuStockTable > tbody').append(text);
+            }else{
+            var row = `<tr class="menuStockTable ic-level-1" data-id1="`+item[p].prID+`" data-id2="`+item[p].stockitem+`">`;
+            row += ` <td>`+item[p].prefname+`</td>`;
+            row += ` <td>`+item[p].stockitemname+`</td>`;
+            row += ` <td>`+item[p].qty+`</td>`;
+            row += ` <td>
+            <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editMS">Edit</button>
+            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteMS">Delete</button>
+            </td>
+            </tr>`;
+            $('#menuStockTable > tbody').append(row);
+        }
+    }
+    }
 
                 //Search Function
                 $("#menuStockTable input[name='search']").on("keyup", function() {
@@ -280,7 +188,6 @@
                                     $(this).closest("tr").show();
                                 }
                             });
-                        });
+                });
             </script>
 </body>
-</html>

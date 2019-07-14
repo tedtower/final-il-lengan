@@ -2,12 +2,13 @@
     <div class="content">
         <div class="container-fluid">
             <br>
+            <div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Date and Time-->
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
-                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/spoilages/menu')?>" data-original-title style="margin:0;width:20%"
+                        <a  class="btn btn-primary btn-sm" href="<?= site_url('admin/menu/spoilages')?>" data-original-title style="margin:0;width:20%"
                                             id="addBtn">View Spoiled Menu</a>
                     </div>
                     <!--Card Container-->
@@ -15,42 +16,51 @@
                         <!--Card-->
                         <div class="card" style="float:left;width:60%">
                             <div class="card-header">
-                                <h6 style="font-size:15px; width: 20%;">Add Menu Spoilage</h6>
+                                <h6 style="font-size:15px;margin:0">Add Spoilage</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("chef/menuspoilage/add")?>" accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("admin/menuspoilage/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
-                                    <div class="input-group mb-3">
+                                    <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary"
-                                                style="width:125px;background:#8c8c8c;color:white;font-size:14px;font-weight:600">
+                                                style="width:125px;font-size:14px;">
                                                 Date Spoiled</span>
                                         </div>
-                                        <input type="date" class="form-control" name="date" id="date" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}"/>
+                                        <input class="form-control form-control-sm" name="date" id="date" type="date" class="no-border"  data-validate="required" message="Date consumed is required!"  required>
                                     </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border border-secondary"
+                                                style="width:125px;font-size:14px">
+                                                Remarks</span>
+                                        </div>
+                                        <textarea type="text" name="remarks"
+                                            class="form-control" rows="1"></textarea>
+                                    </div>
+                                
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
-                                            <thead style="border-bottom:2px solid #cccccc">
+                                            <thead style="border-bottom:2px solid #cccccc;font-size:14px">
                                                 <tr>
-                                                    <th>Menu Item</th>
-                                                    <th width="10%">Quantity</th>
-                                                    <th width="15%">Orderslip #</th>
-                                                    <th width="20%">Log Remarks</th>
+                                                    <th style="font-weight:500 !important;">Stock Item</th>
+                                                    <th width="17%" style="font-weight:500 !important;">Quantity</th>
+                                                    <th width="17%" style="font-weight:500 !important;">Orderslip</th>
+                                                    <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="ic-level-2">
+
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-
-                                <div class="card-footer">
-                                    <div>
-                                        <a href="<?= site_url('chef/spoilages/menu')?>"><button type="button" class="btn btn-danger btn-sm"
-                                            style="margin-left:0" data-dismiss="modal">Cancel</button></a>
-                                        <button class="btn btn-success btn-sm"
-                                            type="submit">Insert</button>
-                                    </div>
+                                <div class="card-footer mb-0" style="overflow:auto">
+                                    <button class="btn btn-success btn-sm" type="submit"
+                                        style="float:right">Insert</button>
+                                    <a  class="btn btn-danger btn-sm" href="<?= site_url('admin/menu/spoilages')?>" style="float:right">Cancel</a>
+                                    <!-- <button type="button" class="btn btn-danger btn-sm"
+                                        style="float:right">Cancel</button> -->
                                 </div>
                             </form>
                         </div>
@@ -100,9 +110,10 @@
 
                     <!--End of container divs-->
                 </div>
+            </div>
         </div>
     </div>
-    <?php include_once('scripts.php');?>
+    <?php include_once('templates/scripts.php');?>
     <script>
     $(function() {
         $("#stockCard .ic-level-1").on("click",function(event){
@@ -115,7 +126,7 @@
             var name = $(this).attr("data-name");
             var stID = $(this).attr("data-stID");
             var qty = $(this).attr("data-qty");
-            console.log('prID:',id, name, qty, $(this).is(":checked"));
+            console.log('prID:',id,stID, name, qty, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
@@ -124,7 +135,6 @@
                         <td style="padding:1% !important"><input type="number" value="1" min="1"
                                 class="form-control" name="qty" required/></td>
                         <td style="padding:1% !important">
-                        <div class="input-group mb-3">
                             <input list="orderslips" type="number" class="form-control" name="slipNum" >
                             <datalist id="orderslips">
                                 <option value="">None</option>
@@ -165,10 +175,11 @@
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
-                if($('input[name="stock"]:checked').length == 0) {
-                    alert('No checkbox is checked');
-                    return false;
-                }
+                // var checked = $("#conForm input:checked").length > 0;
+                // if (!checked){
+                //     alert("Please check at least one checkbox!");
+                //     return false;
+                // }
             console.log(menus);
             console.log(date);
             if(menus != null){
