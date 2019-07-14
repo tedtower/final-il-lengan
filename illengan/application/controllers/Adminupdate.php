@@ -133,22 +133,24 @@ class Adminupdate extends CI_Controller{
             redirect('login');
         } 
     }
-    function editMenuSpoil(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+     function editMenuSpoil(){
+		if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $msID = $this->input->post('msID');
             $prID = $this->input->post('prID');
             $msQty = $this->input->post('msQty');
+	    	$oldQty = $this->input->post('oldQty');
             $msDate = $this->input->post('msDate');
             $msRemarks = $this->input->post('msRemarks');
-            $date_recorded = date("Y-m-d H:i:s");
+			$date_recorded = date("Y-m-d H:i:s");
+            $osID = $this->input->post('osID');
             $account_id = $_SESSION["user_id"];
-
-            $this->adminmodel->edit_menuspoilage($msID,$prID,$msQty,$msDate,$msRemarks,$date_recorded);
+			
+            $this->adminmodel->editmenuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded,$osID);
             $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a menu spoilage.", "update", $msRemarks);
         }else{
             redirect('login');
         } 
-    }
+	}
     function editAoSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $aoID = $this->input->post('aoID');

@@ -152,11 +152,12 @@
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
-                // var checked = $("#conForm input:checked").length > 0;
-                // if (!checked){
-                //     alert("Please check at least one checkbox!");
-                //     return false;
-                // }
+
+            if($('input[name="stock"]:checked').length == 0) {
+                alert('No checkbox is checked');
+                return false;
+            }
+               
             console.log(items);
             console.log(date);
             if(items != null){

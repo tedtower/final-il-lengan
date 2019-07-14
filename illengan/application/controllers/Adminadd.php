@@ -139,16 +139,16 @@ function addspoilagesaddons(){
         redirect('login');
     }
 }
-function addspoilagesmenu(){
+function addMenuSpoilage(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $this->load->model('adminmodel');
         $date_recorded = date("Y-m-d H:i:s");
+        $date = $this->input->post('date');
         $menus = json_decode($this->input->post('menus'), true);
         $account_id = $_SESSION["user_id"];
+        $tiType = "spoilage";
 
         echo json_encode($menus, true);
-        $this->adminmodel->add_menuspoil($date_recorded,$menus,$account_id);
-       
+        $this->adminmodel->add_menuspoil($date, $date_recorded,$account_id, $menus, $tiType);
     }else{
         redirect('login');
     }
@@ -222,7 +222,6 @@ function addaccounts(){
             $this->adminmodel->get_stockItem($id);
             $data['report'] = $this->adminmodel->get_inventoryReport($stID, $sDate, $eDate);
             $data['stock'] = $this->adminmodel->get_stockItem($id)[0];
-            $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
             $this->load->view('admin/reportInventory', $data);
             // redirect('admin/stocklog/report');
         }else{
@@ -340,10 +339,9 @@ function addaccounts(){
     function addImage(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $config = array(
-                'upload_path' => "./uploads/",
+                'upload_path' => "./assets/media/customer/menu",
                 'allowed_types' => "gif|jpg|png|jpeg|pdf",
-                'overwrite' => TRUE,
-                'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
+                'overwrite' => TRUE
                 );
             $this->load->library('upload', $config);
             if ( ! $this->upload->do_upload('mImage')){
@@ -412,7 +410,7 @@ function addaccounts(){
 
     function addDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $supplier = $this->input->post("supplier");
+            $supplier = $this->input->post("spID");
             $remarks = $this->input->post("remarks");
             $receipt = $this->input->post("receipt");
             $date = $this->input->post("date");
@@ -423,9 +421,14 @@ function addaccounts(){
             $account_id = $_SESSION["user_id"];
 
            
+            $this->adminmodel->add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems);
+    }
             switch($addtype) {
                 case 1:
                 $this->adminmodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);
+                break;
+                case 3:
+                $this->adminmodel->add_purchase($supplier, $receipt, "delivery", $date, $dateTime, NULL, $drItems, $addtype, $account_id);
                 break;
             }
             echo 'HHAHAHAA';

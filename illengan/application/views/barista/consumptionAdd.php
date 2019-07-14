@@ -16,7 +16,7 @@
                                 <h6 style="font-size:15px;margin:0">Add Consumption</h6>
                             </div>
                             <form id="conForm" action="<?= site_url("barista/consumption/add")?>"  accept-charset="utf-8"
-                                class="form" onclick="validate();">
+                                class="form">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -74,7 +74,7 @@
                                 <!--checkboxes-->
                                 <?php if(!empty($stocks)){
                             ?>
-                                <table class="table table-borderless">
+                                <table class="table table-borderless" >
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
@@ -144,9 +144,6 @@
             else{
                 $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
             }
-            // if($(this).is(":not(:checked")){
-            //         alert('Please select from the checkbox!');
-            // }
         });
 
         
@@ -179,6 +176,13 @@
                     curQty: curQty,
                 });
             });
+            if($('input[name="stock"]:checked').length == 0) {
+                alert('No checkbox is checked');
+                return false;
+            }
+           
+            
+
             // var checked = $("#conForm input:checked").length > 0;
             // if (!checked){
             //     alert("Please check at least one checkbox!");
@@ -198,7 +202,7 @@
                 location.reload();
                 },
                 error: function(response, setting, error) {
-                    console.error("No item/s selected!");
+                    console.log(error);
                     console.log(response.responseText);
                 }
             });

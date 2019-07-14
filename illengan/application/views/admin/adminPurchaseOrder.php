@@ -12,11 +12,16 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
+                            <div class="card-content" id="transTable">
                                 <a class="btn btn-primary btn-sm" href="<?= site_url('admin/purchaseorder/formadd')?>"
                                     data-original-title style="margin:0" id="addBtn">Add Purchase Order</a>
                                 <br>
-                                <br>
+                                <!--Search-->
+                                <div id="transTable" style="width:25%; float:right; border-radius:5px">
+                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                                </div>
+                                <br><br>
+                                <!--Table Body-->
                                 <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
                                     width="100%">
                                     <thead class="thead-dark">
@@ -26,11 +31,11 @@
                                         <th><b class="pull-left">Total</b></th>
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="transTable ic-level-2">
                                         <?php if(isset($pos[0])){
                                         foreach($pos as $po){
                                     ?>
-                                        <tr data-id="<?= $po['id']?>">
+                                        <tr class="ic-level-1" data-id="<?= $po['id']?>">
                                             <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn"
                                                         src="/assets/media/admin/down-arrow%20(1).png"
                                                         style="height:15px;width: 15px" /></a><?=  $po['id'];?>
@@ -180,5 +185,20 @@
             $(this).closest("tr").next(".accordion").hide("slow");
         }
     });
+
+    //Search Function
+    $("#transTable input[name='search']").on("keyup", function() {
+                    var string = $(this).val().toLowerCase();
+
+                    $("#transTable .ic-level-1").each(function(index) {
+                        var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                        if (!text.includes(string)) {
+                            $(this).closest("tr").hide();
+                        } else {
+                            $(this).closest("tr").show();
+                        }
+                    });
+
+                });
     </script>
 </body>
