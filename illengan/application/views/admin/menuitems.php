@@ -53,7 +53,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Name</span>
                                                         </div>
-                                                        <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
+                                                        <input class="form-control form-control-sm" required name="mName" type="text" value="">
                                                     </div>
                                                     <!--Description-->
                                                     <div class="input-group mb-3">
@@ -155,7 +155,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Name</span>
                                                         </div>
-                                                        <input class="form-control form-control-sm border border-secondary border-left-0" required name="mName" type="textarea" value="" id="example-number-input" required pattern="[a-zA-Z][a-zA-Z\s]*" title="Menu should only countain letters and white spaces.">
+                                                        <input class="form-control form-control-sm" required name="mName" type="textarea" value="">
                                                     </div>
                                                     <!--Description-->
                                                     <div class="input-group mb-3">
@@ -348,7 +348,7 @@
             $(".addPreference").on('click', function() {
                 var row = `
         <tr data-id="">
-            <td><input class="form-control form-control-sm" required name="prName[]" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Preferences should only countain letters and white spaces."></td>
+            <td><input class="form-control form-control-sm" name="prName[]" value=""></td>
             <td>
                 <select class="form-control" name="mTemp[]">
                     <option value="" selected>Choose</option>
@@ -552,7 +552,7 @@
                 <td colspan="5"> <!-- table row ng accordion -->
                     <div style="overflow:auto;display:none;"> <!-- container ng accordion -->
                         <div style="width:278px;overflow:auto;float:left;margin-right:3%;background:#bcbcbc"> <!-- image container -->
-                            <img src="<?= site_url('uploads/'); ?>${item.menu.mImage == null ? 'no_image.jpg' : item.menu.mImage}" alt="Missing Image" style="width:278px;height:178px;border-bottom:2px solid white">
+                            <img src="<?= site_url('assets/media/customer/menu/'); ?>${item.menu.mImage == null ? 'no_image.jpg' : item.menu.mImage}" alt="Missing Image" style="width:278px;height:178px;border-bottom:2px solid white">
                             <div style="margin:auto;width:90%">
                                 <div style="margin:4% 0;font-size:14px;">
                                     <a class="addMenuImage" href="javascript:void(0)" data-toggle="modal" data-target="#addImage" style="overflow:auto;margin:0 30%"><img src="/assets/media/admin/add image.png" style="height:20px;width:20px;"/> Add Image</a>
@@ -658,7 +658,7 @@
             preference.forEach(preference => {
                 modal.find(".preferencetable > tbody").append(`
             <tr class="menuElem" data-id="${preference.prID}">
-               <td><input class="form-control form-control-sm" required name="prName[]" type="textarea" value="${preference.prName}" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Preferences should only countain letters and white spaces."></td>
+               <td><input class="form-control form-control-sm" name="prName[]" type="textarea" value="${preference.prName}"></td>
                 <td>
                     <select class="form-control" name="mTemp[]" value="${preference.mTemp}">
                         <option value="" selected>Choose</option>
