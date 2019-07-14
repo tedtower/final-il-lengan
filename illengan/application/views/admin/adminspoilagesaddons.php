@@ -35,6 +35,7 @@
                                     <tbody id="addon_data" class="addonTable ic-level-1">
                                     </tbody>
                                 </table>
+                                <div id="pagination" style="float:right"></div>
                                 <!--End Table Content-->
 
                                 <!--Delete Confirmation Box-->
@@ -51,7 +52,7 @@
                                                 <div class="modal-body">
                                                     <h6 id="deleteTableCode"></h6>
                                                     <p>Are you sure you want to delete the selected addon spoilages?</p>
-                                                    <input type="text" name="tableCode" hidden="hidden">
+                                                    <input type="text" name="aoID" hidden="hidden"/>
                                                     <div>
                                                         Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm" required>
                                                     </div>
@@ -126,43 +127,41 @@
     <!--End Table Content-->
     <?php include_once('templates/scripts.php') ?>
     <script>
-        var spoilages = [];
-        $(function() {
-            viewSpoilagesJs();
-
-            var table = $('#addonTable');
-
-            function viewSpoilagesJs() {
-                $.ajax({
-                    url: "<?= site_url('admin/spoilagesaddonsjson') ?>",
-                    method: "post",
-                    dataType: "json",
-                    success: function(data) {
-                        spoilages = data;
-                        setSpoilagesData(spoilages);
-                        console.log(spoilages);
-                    },
-                    error: function(response, setting, errorThrown) {
-                        console.log(response.responseText);
-                        console.log(errorThrown);
-                    }
-                });
+    $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/addonspoilage/loadDataAddsSpoil/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var adds = data.addspoiled;
+                setSpoilagesData(adds);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
             }
-        });
-
-        function setSpoilagesData() {
-            if ($("#addonTable> tbody").children().length > 0) {
+		});
+	}
+        
+   });
+        function setSpoilagesData(adds) {
                 $("#addonTable> tbody").empty();
-            }
-            spoilages.forEach(table => {
-                $("#addonTable> tbody").append(`
-			<tr class="addonTable ic-level-1" data-aoID="${table.aoID}" data-aosID="${table.aosID}" data-aosQty="${table.aosQty}"  data-aosDate="${table.aosDate}"  data-aosRemarks="${table.aosRemarks}"  >
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${table.aoName}</td>
-                <td>${table.aoCategory}</td>
-                <td>${table.aosQty}</td>
-				<td>${table.aosDate}</td>
-				<td>${table.aosDateRecorded}</td>
-                <td>
+                for(ao in adds){
+                    var row1 = `<tr class="addonTable ic-level-1" data-aoID="`+adds[ao].aoID+`" data-aosID="`+adds[ao].aosID+`" data-aosQty="`+adds[ao].aosQty+`"  data-aosDate="`+adds[ao].aosDate+`"  data-aosRemarks="`+adds[ao].aosRemarks+`" data-spoilname="`+adds[ao].aoName+`"  >`;
+                    row1 += `	<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
+                    row1 += `<td>`+adds[ao].aoCategory+`</td>`;
+                    row1 += `<td>`+adds[ao].aosQty+`</td>`;
+                    row1 += `<td>`+adds[ao].aosDate+`</td>`;
+                    row1 += `<td>`+adds[ao].aosDateRecorded+`</td>`;
+                    row1 += ` <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
 
@@ -174,25 +173,29 @@
                             data-target="#deleteSpoilage">Archived</button>                      
                         </div>
                     </td>
-                </tr>`);
+                </tr>`;
+                var accord = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+                    accord += ` <td colspan="6">`;
+                    accord += `<div style="overflow:auto;display:none">`;
+                    accord += `<div style="overflow:auto;">`;
+                    accord += `<div style="margin:0 46px;overflow:auto;">`;
+                    accord += `<b style="float:left;">Remarks: </b>`;
+                    accord += `<p style="float:left;margin-left:2%">`;
+                        if(adds[ao].aosRemarks  == null || adds[ao].aosRemarks == '' ){
+                            accord += `No Remarks`;
+                            accord += `</p>`;
+                        }else{
+                            accord += adds[ao].aosRemarks;
+                            accord += `</p>`;
+                        }
+                    accord +=` </div> 
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
+                $("#addonTable  tbody").append(row1);
+                $("#addonTable  tbody").append(accord);
 
-                var accordion = `
-            <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="6"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-					<div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-							<b style="float:left;">Remarks: </b><!-- label-->
-								<p style="float:left;margin-left:2%">
-								${table.aosRemarks == null || table.aosRemarks == '' ? "No remarks." : table.aosRemarks}
-                                </p>
-                            </div> 
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            `;
                 $(".updateBtn").last().on('click', function() {
                     $("#editSpoil").find("input[name='aoID']").val($(this).closest("tr").attr(
                         "data-aoID"));
@@ -211,8 +214,8 @@
                     $("#deleteSpoilage").find("input[name='aoID']").val($(this).closest("tr").attr(
                         "data-id"));
                 });
-                $("#addonTable > tbody").append(accordion);
-            });
+            }
+
             $(".accordionBtn").on('click', function() {
                 if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
                     $(this).closest("tr").next(".accordion").css("display", "table-row");
