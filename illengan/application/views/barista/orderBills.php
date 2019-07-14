@@ -179,8 +179,17 @@
               <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm"
+                  style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                  Discount</span>
+              </div>
+              <input type="text" step="any" min="0" class="form-control" name="discount2" id="discount2" value="0.00" readonly>
+              <span class="text-danger"><?php echo form_error("seniorDiscount"); ?></span>
+            </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount2" id="discount2"  > Senior Citizen Discount(20%)
+              <input type="checkbox" class="form-control-sm" name="discounted2" id="discounted2"  > Senior Citizen Discount(20%)
             </div>
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
@@ -364,7 +373,7 @@
                   dataType: "json",
                   complete: function() {
                       $("#Modal_Pay2").modal("hide");
-                      location.reload();
+                      //location.reload();
                   },
                   error: function(error) {
                       console.log(error);
@@ -397,7 +406,8 @@ document.getElementById("updtbutton2").disabled = true;
       var cash = parseFloat(document.getElementById('cash2').value);
       var seniorDiscount = parseFloat(payable * 0.20);
 
-      if(document.getElementById("discount2").checked){
+      if(document.getElementById("discounted2").checked){
+        document.getElementByName('amount_payable').value();
         var change = parseFloat(cash - (parseFloat(payable - seniorDiscount)));
         $("#Modal_Pay2").find("input[name='change2']").val(change);
         document.getElementById("updtbutton2").disabled = false;
