@@ -18,6 +18,11 @@ class Adminview extends CI_Controller{
     }
     
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
+function viewStockitems(){
+    $data =$this->adminmodel->get_stockitems();
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_PRETTY_PRINT);
+}
 function searchData()
 {
     $output = '';
@@ -74,7 +79,18 @@ function inventoryJS(){
     redirect('login');
     }
 }
-
+function viewPurchItems(){
+    $piID = $this->input->post('piID');
+    // $pID = $this->input->post('pID');
+    $data =$this->adminmodel->get_purchItems($piID);
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_PRETTY_PRINT);
+}
+function getpurchases(){
+    $data =$this->adminmodel->get_purchases();
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_PRETTY_PRINT);
+}
 function viewDashboard(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Dashboard";
@@ -189,7 +205,8 @@ function viewReturnFormEdit($id){
             'id' => $id,
             'returns' => $this->adminmodel->get_returns(),
             'returnitems' => $this->adminmodel->get_returnItems(),
-            'supplier' => $this->adminmodel->get_supplier()
+            'supplier' => $this->adminmodel->get_supplier(),
+            'resolvedItems' => $this->adminmodel->get_resolvedReturns()
             // 'suppmerch' => $this->adminmodel->get_stocktransitems()
         );
         $this->load->view('admin/returnsEdit', $data);
@@ -642,23 +659,51 @@ function viewSpoilagesStock(){
     }
     }
 
-function viewSpoilagesMenuJs(){
-    if($this->checkIfLoggedIn()){
-        $data= $this->adminmodel->get_spoilagesmenu();
-        echo json_encode($data);
-        
-    }else{
-        redirect('login');
-    }
-}
 function viewSpoilagesMenu(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Menu";
         $this->load->view('admin/templates/head', $data);
         $this->load->view('admin/templates/sideNav');
-        $this->load->view('admin/adminspoilagesmenu');
-        $this->load->view('admin/templates/footer');
-        // $this->load->view('admin/templates/scripts');
+        $this->load->view('admin/templates/scripts');
+        $data['slip'] = $this->adminmodel->getSlipNum();
+        $this->load->view('admin/adminspoilagesmenu', $data);
+    }else{
+        redirect('login');
+    }
+}
+function loadDataMenuSpoil($record=0) {
+    $recordPerPage = 10;
+    if($record != 0){
+        $record = ($record-1) * $recordPerPage;
+    }      	
+      $recordCount = $this->adminmodel->getCountRecMenuSpoil();
+    $msRecord = $this->adminmodel->get_spoilagesmenu($record,$recordPerPage);
+    $config['base_url'] = base_url().'admin/menuspoilage/loadDataMenuSpoil';
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '<ul>';
+    $config['num_tag_open'] = '<li class="page-item" style="padding:7px 10px 7px 10px;">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;<li>';
+    $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+    $config['cur_tag_close'] = '</li>';
+    $config['use_page_numbers'] = TRUE;
+    $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+    $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+    $config['total_rows'] = $recordCount;
+    $config['per_page'] = $recordPerPage;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    $data['menuspoiled'] = $msRecord;
+    echo json_encode($data);		
+}
+
+function viewMenuSpoilageFormAdd(){
+    if($this->checkIfLoggedIn()){
+        $data['title'] = "Spoilages - Menu";
+        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/sideNav');
+        $data['menu'] = $this->adminmodel->get_menuPrefSpoilage();
+        $data['slip'] = $this->adminmodel->getSlipNum();
+        $this->load->view('admin/adminspoilagesmenuAdd', $data);
     }else{
         redirect('login');
     }
@@ -683,6 +728,30 @@ function viewSpoilagesAddons(){
     }else{
         redirect('login');
     }
+}
+function loadDataAddsSpoil($record=0) {
+    $recordPerPage = 10;
+    if($record != 0){
+        $record = ($record-1) * $recordPerPage;
+    }      	
+      $recordCount = $this->adminmodel->countRecAddsSpoil();
+    $aoRecord = $this->adminmodel->get_addspoil($record,$recordPerPage);
+    $config['base_url'] = base_url().'admin/addonspoilage/loadDataAddsSpoil';
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '<ul>';
+    $config['num_tag_open'] = '<li class="page-item" style="padding:7px 10px 7px 10px;">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;<li>';
+    $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+    $config['cur_tag_close'] = '</li>';
+    $config['use_page_numbers'] = TRUE;
+    $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+    $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+    $config['total_rows'] = $recordCount;
+    $config['per_page'] = $recordPerPage;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    $data['addspoiled'] = $aoRecord;
+    echo json_encode($data);		
 }
 function getStockItem(){
     if($this->checkIfLoggedIn()){
@@ -783,18 +852,46 @@ function getStockItem(){
             $head['title'] = "Menu - Stock";
             $this->load->view('admin/templates/head',$head);
             $this->load->view('admin/templates/sideNav');
-            $data['menuStock'] = $this->adminmodel->get_prefStocks();
-            $this->load->view('admin/menu-stock', $data);
+           // $data['menuStock'] = $this->adminmodel->get_prefStocks();
+            $this->load->view('admin/menu-stock');
         }else{
             redirect('login');
         }
     }
-    function getMenuStockModalData(){
+    function loadDataMenuStock($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countMenuStock();
+        $prefRecord = $this->adminmodel->get_prefStocks($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/loadDataMenu';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['prefstocks'] = $prefRecord;
+        echo json_encode($data);		
+    }
+    function viewMenuStockFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            echo json_encode(array(
-                "preferences" => $this->adminmodel->get_prefNames(),
-                "stocks" => $this->adminmodel->get_stockItemNames()
-            ));
+        //     echo json_encode(array(
+               $data['preferences'] = $this->adminmodel->get_prefNames();
+               $data['stocks'] = $this->adminmodel->get_stockItemNames();
+        //     ));
+        $head['title'] = "Menu - Stock";
+        $this->load->view('admin/templates/head',$head);
+        $this->load->view('admin/templates/sideNav');
+        $this->load->view('admin/menu-stockAdd', $data);
         }else{
             echo json_encode(array(
                 "sessErr" => true
@@ -998,6 +1095,7 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
+                'resolvedItems' => $this->adminmodel->get_resolvedReturns(),
                 'supplier' => $this->adminmodel->get_supplier()
                 // 'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
