@@ -12,11 +12,14 @@
         <button class="btn btn-success" style="padding-right:100px;font-size:15px;" onClick="window.location.href='<?php echo base_url(); ?>customer/checkin';return false;"><i class="far fa-plus"></i> Add Order</button>
     </div>
     <!--End Top Nav-->
-    <div class="container-fluid" >
+    
+    <div class="container-fluid" style="touch-action: pan-x;">
         <section class="lists-container">
 
         </section>
     </div>
+    
+
     <!-- End of lists container -->
     <!--End Cards-->
     <!--START "Remove Slip" MODAL-->
@@ -328,6 +331,26 @@
                 });
             });
         }
+        //-----------------Not Working--------------
+        // $(function() {
+        //     $("body").mousewheel(function(event, delta) {
+        //     this.scrollLeft -= (delta * 30);
+        //     event.preventDefault();
+        //     });
+        // });
+
+            //-----------Working but with Error in Chrome Console// using of jquery.mousewheel.min.js-------------
+        // $("html, body").mousewheel(function(event, delta) {
+        //     this.scrollLeft -= (delta * 30);
+        //     event.preventDefault();
+        // });
+        $(document).ready(function(){
+            $(function() {  
+                $("body").niceScroll();
+            });
+        });
+
+
     </script>
 </body>
 

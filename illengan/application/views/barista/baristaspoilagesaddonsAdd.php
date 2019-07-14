@@ -55,8 +55,7 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        style="float:right">Cancel</button>
+                                        <a class="btn btn-danger btn-sm" type= "button" href="<?= site_url('barista/addons/spoilages')?>" data-original-title  style="float:right">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -167,6 +166,11 @@
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                 });
             });
+
+            if($('input[name="addon"]:checked').length == 0) {
+                alert('No checkbox is checked');
+                return false;
+            }
 
             // var checked = $("#conForm input:checked").length <= 0;
             // if (!checked){

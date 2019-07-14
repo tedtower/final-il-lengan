@@ -18,6 +18,11 @@ class Adminview extends CI_Controller{
     }
     
 //VIEW FUNCTIONS--------------------------------------------------------------------------------
+function viewStockitems(){
+    $data =$this->adminmodel->get_stockitems();
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_PRETTY_PRINT);
+}
 function searchData()
 {
     $output = '';
@@ -74,7 +79,18 @@ function inventoryJS(){
     redirect('login');
     }
 }
-
+function viewPurchItems(){
+    $piID = $this->input->post('piID');
+    // $pID = $this->input->post('pID');
+    $data =$this->adminmodel->get_purchItems($piID);
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_PRETTY_PRINT);
+}
+function getpurchases(){
+    $data =$this->adminmodel->get_purchases();
+    header('Content-Type: application/json');
+    echo json_encode($data, JSON_PRETTY_PRINT);
+}
 function viewDashboard(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Dashboard";

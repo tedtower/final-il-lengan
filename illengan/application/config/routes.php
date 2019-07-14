@@ -188,6 +188,9 @@ $route['admin/menu/addMenuStock'] = "adminadd/addMenuStock";
 $route['admin/inventory/getStocksForBeginningBrochure'] = "adminview/getStocksForBeginningBrochure";
 $route['admin/getUOMs'] = "adminview/getUOMs";
 $route['admin/deliveryreceipt/getFormVals'] = "adminview/getCardValuesForDR";
+$route['admin/viewStockitems']="adminview/viewStockitems";
+$route['admin/viewPurchItems']="adminview/viewPurchItems";
+$route['admin/getpurchases']="adminview/getpurchases";
 //End Admin Json Routes ---------------------------------------
 
 //CUSTOMER ROUTES

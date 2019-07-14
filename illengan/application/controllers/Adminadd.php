@@ -422,6 +422,8 @@ function addaccounts(){
             $account_id = $_SESSION["user_id"];
 
            
+            $this->adminmodel->add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems);
+    }
             switch($addtype) {
                 case 1:
                 $this->adminmodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);

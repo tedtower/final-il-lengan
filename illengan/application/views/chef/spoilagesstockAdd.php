@@ -173,11 +173,10 @@
                     curQty: curQty,
                 });
             });
-                // var checked = $("#conForm input:checked").length > 0;
-                // if (!checked){
-                //     alert("Please check at least one checkbox!");
-                //     return false;
-                // }
+                if($('input[name="stock"]:checked').length == 0) {
+                    alert('No checkbox is checked');
+                    return false;
+                }
             console.log(items);
             $.ajax({
                 method: "POST",

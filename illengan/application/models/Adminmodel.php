@@ -884,7 +884,7 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
     function get_stockitems() {
-        $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+        $query = "SELECT * FROM suppliermerchandise INNER JOIN supplier USING (spID) INNER JOIN stockitems USING (stID) LEFT JOIN uom ON stockitems.uomID = uom.uomID order by 2";
         return $this->db->query($query)->result_array();
     }
     function get_stocktransitems() {
@@ -1045,6 +1045,35 @@ function get_consumpitems(){
         $this->add_actlog($accountID, date("Y-m-d H:i:s"), "Admin ".$action."ed a stockitem return.", $action, $tiRemarks);
 
         } 
+    //FOR DR-----------------------------
+    function add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems){
+        $query = "INSERT INTO `purchases`(`pID`, `spID`, `receiptNo`, `pType`, `pDate`, `pDateRecorded`, `spAltName`) VALUES (NULL,?,?,?,?,?,?)";
+        for($in = 0; $in < count($drItems) ; $in++){
+            $this->db->query($query, array($drItems['spID'], $drItems['receiptNo'], "purchase order", $drItems['date'], $dateTime, $source ));
+            $this->add_purchaseItems($this->db->insert_id());
+        }
+    }
+    function add_purchaseItems($pID){
+        $query="INSERT INTO `purchase_items`(`piID`, `piStatus`) VALUES (NULL,?)";
+        if($this->db->query($query, array($this->db->insert_id(),"delivered"))){
+            $this->addpuritems($this->db->insert_id(),$pID);
+        }
+
+    }
+    function addpuritems($piID,$pID){
+        $query="INSERT INTO `pur_items`(`pID`, `piID`) VALUES (?,?)";
+        $this->db->query($query, array($pID,$piID));
+    }
+    //FOR PURCHASE ORDER-------------------------------------------
+    function get_purchItems($piID){
+        $query="SELECT * FROM `purchases` INNER JOIN pur_items using (pID) INNER JOIN purchase_items USING (piID) inner JOIN suppliermerchandise using (spID) INNER JOIN supplier USING (spID) where piID = ?";
+        return $this->db->query($query,array($piID))->result_array();
+    }
+    function get_purchases(){
+        $query="SELECT * FROM `purchases` INNER JOIN pur_items USING (`pID`) INNER JOIN purchase_items USING (`piID`) INNER JOIN transitems USING (piID) INNER JOIN supplier USING (spID)";
+        return $this->db->query($query)->result_array();
+    }
+    //--------------------------------
 
         function deleteStockspoil($tID){
             $query ="Update transactions set isArchived = ? where tID = ?";
@@ -2050,6 +2079,10 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         $query = "INSERT INTO transitems (tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, tiDate, stID, spmID, riID, piID, ciID, siID) 
                  VALUES(?, ?, ?, ?, NULL, NULL, ?, ?, ?, NULL, ?, NULL, NULL)";
         return $this->db->query($query,array($type, $qty, $actualQty, $subtotal, $date, $stID, $spmID, $piID));
+    }
+    function add_suppliermerch($spID, $stID, $uomID, $spmName, $spmPice, $spmActual){
+        $query = "INSERT INTO `suppliermerchandise`(`spmID`, `spID`, `stID`, `uomID`, `spmName`, `spmPrice`, `spmActual`) VALUES (NULL,?,?,?,?,?,?)";
+        return $this->db->query($query,array($spID, $stID, $uomID, $spmName, $spmPice, $spmActual));
     }
     function get_purchaseOrders(){
         $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, pDate AS transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC";
