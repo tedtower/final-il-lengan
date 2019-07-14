@@ -44,5 +44,37 @@
             }
         }
     });
+
+    $('a#custom_sale_generate').click(function(){
+        $('div#error-custom-generate').empty();
+        var csDate = $("input#sales-date[type='date']").val();
+        var tString = "<h4>Total Sales: &#8369;";
+        if(!csDate){
+            $('div#error-custom-generate').append("<div class='alert alert-danger' style='opacity:1;'>User Error: Please enter date.</div>");
+        } else {
+            $.ajax({
+                method: "post",
+                url: "<?php echo site_url('admin/dashboard/generateSalesDay')?>",
+                data: {
+                    date: csDate          
+                },
+                beforeSend: function(){
+                    $('span#csdg-load').append("<i class='fas fa-sync fa-spin'></i>");
+                },
+                success: function(data) {
+                    $('span#csdg-load').empty();
+                    if(!data){
+                        $('div#custom_sale_result').html(tString+"0</h4>");
+                    } else {
+                        $('div#custom_sale_result').html(tString+data+"</h4>");
+                    }
+                },
+                error: function() {
+                    $('span#csdg-load').empty();
+                    $('div#error-custom-generate').append("<div class='alert alert-danger' style='opacity:1;'>System Error: There is a problem in fetching data.</div>");
+                }
+            });
+        }
+    });
     
 </script>

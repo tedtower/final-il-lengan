@@ -173,13 +173,13 @@ function getTodaySales(){
     $query = "SELECT DATE_FORMAT(osDateTime,'%d') osDay, SUM(olQty) salesCount, SUM(osTotal) sales FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%d-%m-%Y') = ? GROUP BY osDay ORDER BY osDay";
     return $this->db->query($query,array(date('d-m-Y')))->result();
 }
-function getTotalSales(){
-    $query = "SELECT COUNT(olQty) total FROM orderslips NATURAL JOIN orderlists WHERE payStatus = 'paid'";
-    return $this->db->query($query)->result();
-}
 function getMonthConsumption(){
     $query = "SELECT COUNT(tiQty) total FROM consumed_items NATURAL JOIN consumptions NATURAL JOIN transitems WHERE DATE_FORMAT(cDate,'%Y-%m') = ?";
     return $this->db->query($query,array(date('Y-m')))->result();
+}
+function getTotalSalesByDay($day){
+    $query = "SELECT SUM(osTotal) tSales FROM orderslips WHERE payStatus='paid' AND DATE_FORMAT(osDateTime,'%Y-%m-%d') = ?";
+    return $this->db->query($query,array($day))->row()->tSales;
 }
 
 function get_transactions(){

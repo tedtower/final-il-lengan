@@ -109,6 +109,9 @@ function viewDashboard(){
         redirect('login');
     }
 }
+function generateSalesDay(){
+    echo $this->adminmodel->getTotalSalesByDay($this->input->post('date'));
+}
 function viewInventory($error = null){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Admin Stock Items";

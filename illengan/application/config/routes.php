@@ -8,6 +8,7 @@ $route['logout'] = 'login/logout';
 $route['verify'] = 'login/check_cred';
 $route['admin/search'] = "adminview/searchData";
 //Viewing Routes -----------------------------------------------
+$route['admin/dashboard/generateSalesDay'] = "adminview/generateSalesDay";
 $route['admin/menu'] = "adminview/viewmenu";
 $route['admin/menu/getDetails'] = "adminview/menuGetDetails";
 $route['admin/menu/addons'] = "adminview/menuAddons";
