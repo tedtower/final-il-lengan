@@ -411,7 +411,7 @@ function addaccounts(){
 
     function addDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $supplier = $this->input->post("supplier");
+            $supplier = $this->input->post("spID");
             $remarks = $this->input->post("remarks");
             $receipt = $this->input->post("receipt");
             $date = $this->input->post("date");

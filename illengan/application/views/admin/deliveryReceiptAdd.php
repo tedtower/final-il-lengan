@@ -407,7 +407,7 @@
                 });
                 $("#drForm").on("submit", function(event) {
                     event.preventDefault();
-                    var supplier = $(this).find("select[name='supplier']").val();
+                    var supplier = parseInt($(this).find("select[name='supplier']").val());
                     var source = $(this).find("input[name='source']").val();
                     var date = $(this).find("input[name='date']").val();
                     var receipt = $(this).find("input[name='receipt']").val();
@@ -439,7 +439,7 @@
                                 date: date,
                                 receipt: receipt,
                                 remarks: remarks,
-                                addtype: 1,
+                                addtype: "newitems",
                                 items: JSON.stringify(newItems)
                             }
                             break;
@@ -469,7 +469,6 @@
                                     tiDate: date,
                                     receipt: receipt,
                                     riStatus: (oldtiQty !== tiQty) ? 'pending' : 'replaced',
-                                    piStatus: 'delivered'
                                 });
                             });
 

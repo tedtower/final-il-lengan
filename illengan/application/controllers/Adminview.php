@@ -189,7 +189,8 @@ function viewReturnFormEdit($id){
             'id' => $id,
             'returns' => $this->adminmodel->get_returns(),
             'returnitems' => $this->adminmodel->get_returnItems(),
-            'supplier' => $this->adminmodel->get_supplier()
+            'supplier' => $this->adminmodel->get_supplier(),
+            'resolvedItems' => $this->adminmodel->get_resolvedReturns()
             // 'suppmerch' => $this->adminmodel->get_stocktransitems()
         );
         $this->load->view('admin/returnsEdit', $data);
@@ -998,6 +999,7 @@ function getStockItem(){
             $data = array(
                 'returns' => $this->adminmodel->get_returns(),
                 'returnitems' => $this->adminmodel->get_returnItems(),
+                'resolvedItems' => $this->adminmodel->get_resolvedReturns(),
                 'supplier' => $this->adminmodel->get_supplier()
                 // 'suppmerch' => $this->adminmodel->get_stocktransitems()
             );
