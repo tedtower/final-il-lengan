@@ -1147,8 +1147,8 @@ function add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockM
 }
 
 function add_BeginningNewStock($stID, $tiID, $tiType, $tiDate, $dateRecorded, $tiActual, $remainingQty, $tiRemarks){
-    $query = "INSERT INTO transitems(stID, tiType, tiDate, tiActual, remainingQty, discrepancy, tiRemarks) VALUES(?,?,?,?,?,?,?)";
-    return $this->db->query($query,array($stID, $tiType, $tiDate, $tiActual, $remainingQty, 0, $tiRemarks));
+    $query = "INSERT INTO transitems(stID, tiType, tiDate, dateRecorded, tiActual, remainingQty, discrepancy, tiRemarks) VALUES(?,?,?,?,?,?,?,?)";
+    return $this->db->query($query,array($stID, $tiType, $tiDate,$dateRecorded, $tiActual, $remainingQty, 0, $tiRemarks));
     
 } 
 function add_table($tableCode){
