@@ -280,5 +280,7 @@
                                     $(this).closest("tr").show();
                                 }
                             });
+                        });
             </script>
 </body>
+</html>
