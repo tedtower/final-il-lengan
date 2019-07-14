@@ -339,10 +339,9 @@ function addaccounts(){
     function addImage(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $config = array(
-                'upload_path' => "./uploads/",
+                'upload_path' => "./assets/media/customer/menu",
                 'allowed_types' => "gif|jpg|png|jpeg|pdf",
-                'overwrite' => TRUE,
-                'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
+                'overwrite' => TRUE
                 );
             $this->load->library('upload', $config);
             if ( ! $this->upload->do_upload('mImage')){
