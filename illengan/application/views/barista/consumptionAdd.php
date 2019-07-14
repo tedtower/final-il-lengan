@@ -74,7 +74,7 @@
                                 <!--checkboxes-->
                                 <?php if(!empty($stocks)){
                             ?>
-                                <table class="table table-borderless">
+                                <table class="table table-borderless" >
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
@@ -116,6 +116,7 @@
             if(event.target.type !== "checkbox"){
                 $(this).find("input[name='stock']").trigger("click");
             }
+
         });
         $("#stockCard input[name='stock']").on("click", function(event) {
             var id = $(this).val();
@@ -129,9 +130,9 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="tiQty"></td>
+                                class="form-control form-control-sm" name="tiQty" min="1" required></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" min="0" required></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
@@ -139,7 +140,8 @@
                     $('input[name="curQty"]').val($(this).closest("tr").data('curqty'));
                     $('input[name="uomID"]').val($(this).closest("tr").data('uomid')); 
                     console.log($(this));
-            }else{
+            }
+            else{
                 $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
             }
         });
@@ -174,6 +176,18 @@
                     curQty: curQty,
                 });
             });
+            if($('input[name="stock"]:checked').length == 0) {
+                alert('No checkbox is checked');
+                return false;
+            }
+           
+            
+
+            // var checked = $("#conForm input:checked").length > 0;
+            // if (!checked){
+            //     alert("Please check at least one checkbox!");
+            //     return false;
+            // }
             console.log(items);
             $.ajax({
                 method: "POST",
@@ -204,14 +218,6 @@
         }
     });
 
-    $('#conForm').submit(function(event){
-        var consumedDate = $("#date").val();
-        var currentDate = new Date();
-        if(Date.parse(consumedDate) > Date.parse(currentDate)){
-            alert('Invalid! Date exceeds current date.');
-            return false;
-        }
-    });
     </script>
 </body>
 

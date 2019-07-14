@@ -7,7 +7,7 @@
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
-                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/spoilages/menu')?>" data-original-title style="margin:0;width:15%"
+                        <a  class="btn btn-primary btn-sm" href="<?= site_url('chef/spoilages/menu')?>" data-original-title style="margin:0;width:20%"
                                             id="addBtn">View Spoiled Menu</a>
                     </div>
                     <!--Card Container-->
@@ -15,7 +15,7 @@
                         <!--Card-->
                         <div class="card" style="float:left;width:60%">
                             <div class="card-header">
-                                <h6 style="font-size:15px;">Add Menu Spoilage</h6>
+                                <h6 style="font-size:15px; width: 20%;">Add Menu Spoilage</h6>
                             </div>
                             <form id="conForm" action="<?= site_url("chef/menuspoilage/add")?>" accept-charset="utf-8"
                                 class="form">
@@ -165,6 +165,10 @@
                     remarks: $(this).find("textarea[name='cRemarks']").val()
                 });
             });
+                if($('input[name="stock"]:checked').length == 0) {
+                    alert('No checkbox is checked');
+                    return false;
+                }
             console.log(menus);
             console.log(date);
             if(menus != null){

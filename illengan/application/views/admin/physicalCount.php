@@ -78,16 +78,22 @@
             var discrep = $(this).val() - $(this).closest(".stockitems > tbody > tr").find("input[name='current']").val();
             $(this).closest(".stockitems > tbody > tr").find("input[name='discrepancy']").val(discrep);
         });
-        $("#stockCard input[name='search']").on("keyup",function(){
-            var string = $(this).val();
-            console.log(string);
-            $("#stockCard .stock").each(function(index){
-                if(!$(this).text().includes(string)){
-                    $(this).closest(".ic-level-1").hide();
-                }else{
-                    $(this).closest(".ic-level-1").show();
+
+
+
+         //Search Function
+         $("#stockCard input[name='search']").on("keyup", function() {
+            var string = $(this).val().toLowerCase();
+
+            $("#stockCard .ic-level-1").each(function(index) {
+                var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                if (!text.includes(string)) {
+                    $(this).closest("tr").hide();
+                } else {
+                    $(this).closest("tr").show();
                 }
             });
+
         });
           
         $("#physicalCount").on("submit", function(event){
@@ -101,7 +107,8 @@
                     current: $(this).find("input[name='current']").val(),
                     actual: $(this).find("input[name='actual']").val(),
                     discrepancy: $(this).find("input[name='discrepancy']").val(),
-                    remarks: $(this).find("textarea[name='remarks']").val()
+                    remarks: $(this).find("textarea[name='remarks']").val(),
+                    date: date
                 });
             });
             $.ajax({

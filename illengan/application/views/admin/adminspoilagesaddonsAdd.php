@@ -143,18 +143,22 @@
             }
         });
 
-        
-                    
-        $("#stockCard input[name='search']").on("keyup",function(){
-            var string = $(this).val();
-            $("#stockCard .addon").each(function(index){
-                if(!$(this).text().includes(string)){
-                    $(this).closest(".ic-level-1").hide();
-                }else{
-                    $(this).closest(".ic-level-1").show();
-                }
+        //Search Function
+        $("#stockCard input[name='search']").on("keyup", function() {
+                var string = $(this).val().toLowerCase();
+
+                $("#stockCard .ic-level-1").each(function(index) {
+                    var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                    if (!text.includes(string)) {
+                        $(this).closest("tr").hide();
+                    } else {
+                        $(this).closest("tr").show();
+                    }
+                });
+
             });
-        });
+
+
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");
@@ -169,6 +173,10 @@
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                 });
             });
+                if($('input[name="addon"]:checked').length == 0) {
+                        alert('No checkbox is checked');
+                        return false;
+                    }
             console.log(items);
             $.ajax({
                 method: "POST",

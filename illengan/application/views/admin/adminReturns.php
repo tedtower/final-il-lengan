@@ -13,12 +13,16 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content">
-                                <a class="addReturnsbtn btn btn-primary btn-sm" href="<?= site_url('admin/returns/formadd')?>" style="margin:0">Add Return</a>
+                            <div class="card-content" id="transTable">
+                                <a class="addReturnsbtn btn btn-primary btn-sm" href="<?= site_url('admin/returns/formadd') ?>" style="margin:0">Add Return</a>
                                 <br>
-                                <br>
-                                <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0"
-                                    width="100%">
+                                <!--Search-->
+                                <div id="transTable" style="width:25%; float:right; border-radius:5px">
+                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                                </div>
+                                <br><br>
+                                <!--Table Body-->
+                                <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                     <thead class="thead-dark">
                                         <th><b class="pull-left">Transaction #</b></th>
                                         <th><b class="pull-left">Supplier</b></th>
@@ -32,46 +36,36 @@
                                 <!--End Table Content-->
 
                                 <!--Start of Modal "Add Returns"-->
-                                <div class="modal fade bd-example-modal-lg" id="addReturns" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="overflow: auto !important;">
+                                <div class="modal fade bd-example-modal-lg" id="addReturns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Add Returns</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <!--Modal Content-->
-                                            <form id="formAdd" action="<?= site_url('admin/returns/add')?>"
-                                                method="post" accept-charset="utf-8">
+                                            <form id="formAdd" action="<?= site_url('admin/returns/add') ?>" method="post" accept-charset="utf-8">
                                                 <div class="modal-body">
                                                     <div class="form-row">
                                                         <!--Source Name-->
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Supplier</span>
                                                             </div>
-                                                            <select
-                                                                class="spID form-control form-control-sm  border-left-0"
-                                                                name="spID">
+                                                            <select class="spID form-control form-control-sm  border-left-0" name="spID">
                                                                 <option value="" selected>Choose</option>
                                                             </select>
                                                         </div>
                                                         <!--Invoice Type-->
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Delivery Receipt</span>
                                                             </div>
-                                                            <input type="text" name="receiptNo" id="receiptNo"
-                                                                class="form-control form-control-sm" value="0"
-                                                                readonly="readonly">
+                                                            <input type="text" name="receiptNo" id="receiptNo" class="form-control form-control-sm" value="0" readonly="readonly">
                                                         </div>
                                                     </div>
 
@@ -79,30 +73,24 @@
                                                     <div class="form-row">
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Transaction Date</span>
                                                             </div>
-                                                            <input type="date" name="tDate" id="tDate"
-                                                                class="form-control form-control-sm" required>
+                                                            <input type="date" name="tDate" id="tDate" class="form-control form-control-sm" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Remarks</span>
                                                             </div>
-                                                            <textarea name="tRemarks" id="tRemarks"
-                                                                class="form-control form-control-sm"> </textarea>
+                                                            <textarea name="tRemarks" id="tRemarks" class="form-control form-control-sm"> </textarea>
                                                         </div>
                                                     </div>
 
                                                     <!--Button to add row in the table-->
-                                                    <a id="addReturnStock" class="addReturnStock btn btn-default btn-sm"
-                                                        data-toggle="modal" data-target="#stockItemsModal"
-                                                        data-original-title style="margin:0" id="">Add Items</a>
+                                                    <a id="addReturnStock" class="addReturnStock btn btn-default btn-sm" data-toggle="modal" data-target="#stockItemsModal" data-original-title style="margin:0" id="">Add Items</a>
                                                     <br><br>
                                                     <!--Table containing the different input fields in adding PO items -->
                                                     <table class="returnsTable table table-sm table-borderless">
@@ -124,10 +112,8 @@
                                                     <span>Total: &#8369;<span id="total" class="total"> </span></span>
                                                     <!--Modal Footer-->
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger btn-sm"
-                                                            data-dismiss="modal">Cancel</button>
-                                                        <button class="btn btn-success btn-sm"
-                                                            type="submit">Add</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                                        <button class="btn btn-success btn-sm" type="submit">Add</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -137,46 +123,37 @@
                                 <!-- End of Modal "Add Returns" -->
 
                                 <!--Start of Modal "Edit Returns"-->
-                                <div class="modal fade bd-example-modal-lg" id="editReturns" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="overflow: auto !important;">
+                                <div class="modal fade bd-example-modal-lg" id="editReturns" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Edit Returns</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <!--Modal Content-->
-                                            <form id="formAdd" action="<?= site_url('admin/returns/edit')?>"
-                                                method="post" accept-charset="utf-8">
+                                            <form id="formAdd" action="<?= site_url('admin/returns/edit') ?>" method="post" accept-charset="utf-8">
                                                 <input type="hidden" name="trID" id="trID">
                                                 <div class="modal-body">
                                                     <div class="form-row">
                                                         <!--Source Name-->
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Supplier</span>
                                                             </div>
-                                                            <select
-                                                                class="spID form-control form-control-sm  border-left-0"
-                                                                name="spID" disabled>
+                                                            <select class="spID form-control form-control-sm  border-left-0" name="spID" disabled>
                                                                 <option value="" selected>Choose</option>
                                                             </select>
                                                         </div>
                                                         <!--Invoice Type-->
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Delivery Receipt</span>
                                                             </div>
-                                                            <input type="text" name="receiptNo" id="receiptNo"
-                                                                class="form-control form-control-sm" disabled>
+                                                            <input type="text" name="receiptNo" id="receiptNo" class="form-control form-control-sm" disabled>
                                                         </div>
                                                     </div>
 
@@ -184,30 +161,24 @@
                                                     <div class="form-row">
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Transaction Date</span>
                                                             </div>
-                                                            <input type="date" name="tDate" id="tDate"
-                                                                class="form-control form-control-sm" required>
+                                                            <input type="date" name="tDate" id="tDate" class="form-control form-control-sm" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="input-group mb-3 col">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                                    style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Remarks</span>
                                                             </div>
-                                                            <textarea name="tRemarks" id="tRemarks"
-                                                                class="form-control form-control-sm"> </textarea>
+                                                            <textarea name="tRemarks" id="tRemarks" class="form-control form-control-sm"> </textarea>
                                                         </div>
                                                     </div>
 
                                                     <!--Button to add row in the table-->
-                                                    <a id="addReturnStock" class="addReturnStock btn btn-default btn-sm"
-                                                        data-toggle="modal" data-target="#stockItemsModal"
-                                                        data-original-title style="margin:0" id="">Add Items</a>
+                                                    <a id="addReturnStock" class="addReturnStock btn btn-default btn-sm" data-toggle="modal" data-target="#stockItemsModal" data-original-title style="margin:0" id="">Add Items</a>
 
                                                     <a id="resolveBtn" class="resolveBtn btn btn-default btn-sm">Resolve
                                                         Items</a>
@@ -232,10 +203,8 @@
                                                     <span>Total: &#8369;<span id="total1" class="total1"> </span></span>
                                                     <!--Modal Footer-->
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-danger btn-sm"
-                                                            data-dismiss="modal">Cancel</button>
-                                                        <button class="btn btn-success btn-sm"
-                                                            type="submit">Update</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                                        <button class="btn btn-success btn-sm" type="submit">Update</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -245,15 +214,12 @@
                                 <!-- End of Modal "Edit Returns" -->
 
                                 <!--Start of Stock Items Modal"-->
-                                <div class="modal fade bd-example-modal-lg" id="stockItemsModal" tabindex="-1"
-                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="background:rgba(0, 0, 0, 0.3)">
+                                <div class="modal fade bd-example-modal-lg" id="stockItemsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Select Stock Items</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -261,16 +227,13 @@
                                                 <div class="modal-body">
                                                     <div style="margin:1% 3%" id="list">
                                                         <!--checkboxes-->
-                                                        <label style="width:96%"><input type="checkbox" class="mr-2"
-                                                                value="">Sample
+                                                        <label style="width:96%"><input type="checkbox" class="mr-2" value="">Sample
                                                             data 2</label>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button type="button" class="getSelected btn btn-success btn-sm"
-                                                        data-dismiss="modal" onclick="getSelectedStocks();">Ok</button>
+                                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="getSelected btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedStocks();">Ok</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -280,15 +243,12 @@
 
 
                                 <!--Start of Stock Items Modal"-->
-                                <div class="modal fade bd-example-modal-lg" id="stockItemsModal" tabindex="-1"
-                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                                    style="background:rgba(0, 0, 0, 0.3)">
+                                <div class="modal fade bd-example-modal-lg" id="stockItemsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
                                     <div class="modal-dialog modal-lg" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Select Stock Items</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -296,16 +256,13 @@
                                                 <div class="modal-body">
                                                     <div style="margin:1% 3%" id="list">
                                                         <!--checkboxes-->
-                                                        <label style="width:96%"><input type="checkbox" class="mr-2"
-                                                                value="">Sample
+                                                        <label style="width:96%"><input type="checkbox" class="mr-2" value="">Sample
                                                             data 2</label>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button type="button" class="btn btn-success btn-sm"
-                                                        data-dismiss="modal" onclick="getSelectedStocks();">Ok</button>
+                                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+                                                    <button type="button" class="btn btn-success btn-sm" data-dismiss="modal" onclick="getSelectedStocks();">Ok</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -313,30 +270,26 @@
                                 </div>
                                 <!--End of Stock Items Modal"-->
                                 <!--Start of Delete Modal-->
-                                <div class="modal fade" id="deleteReturns" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal fade" id="deleteReturns" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle">Delete Return</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formDelete" action="<?= site_url('admin/transaction/delete')?>">
+                                            <form id="formDelete" action="<?= site_url('admin/transaction/delete') ?>">
                                                 <div class="modal-body">
                                                     <h6 id="deleteReturnItem"></h6>
                                                     <p>Are you sure you want to delete this return?</p>
                                                     <input type="number" name="tID" value="" hidden="hidden">
                                                     <div>
-                                                        Remarks:<input type="text" name="deleteRemarks"
-                                                            id="deleteRemarks" class="form-control form-control-sm">
+                                                        Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm"
-                                                        data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                 </div>
                                             </form>
@@ -346,65 +299,61 @@
                                 <!--End of Delete Modal-->
 
                                 <!--Start of Resolve Modal-->
-                                <div class="modal fade" id="resolveModal" tabindex="-1" role="dialog"
-                                    aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
+                                <div class="modal fade" id="resolveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background: rgba(0, 0, 0, 0.5);">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle">Resolve a Return</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                                <div class="modal-body">
-                                                    <h6 id="deleteReturnItem"></h6>
-                                                    <input type="number" name="tiID" value="" hidden="hidden">
-                                                    <div>
-                                                        Remarks:<textarea name="tRemarks"
-                                                            id="tRemarks" class="form-control form-control-sm"></textarea>
-                                                    </div>
+                                            <div class="modal-body">
+                                                <h6 id="deleteReturnItem"></h6>
+                                                <input type="number" name="tiID" value="" hidden="hidden">
+                                                <div>
+                                                    Remarks:<textarea name="tRemarks" id="tRemarks" class="form-control form-control-sm"></textarea>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm"
-                                                        data-dismiss="modal">Close</button>
-                                                    <button type="button" onclick="setRemarks()" class="btn btn-warning btn-sm">Resolve</button>
-                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                                <button type="button" onclick="setRemarks()" class="btn btn-warning btn-sm">Resolve</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-      
+
 </body>
 <?php include_once('templates/scripts.php') ?>
 <script>
-var returns = [];
-var stocks = [];
-var supplier = [];
-var suppmerch = [];
+    var returns = [];
+    var stocks = [];
+    var supplier = [];
+    var suppmerch = [];
 
-    $(function () {
+    $(function() {
         $.ajax({
             url: '/admin/jsonReturns',
             dataType: 'json',
-            success: function (data) {
+            success: function(data) {
                 var poLastIndex = 0;
-                $.each(data.returns, function (index, items) {
+                $.each(data.returns, function(index, items) {
                     returns.push({
                         "returns": items
                     });
                     returns[index].returnitems = data.returnitems.filter(ret => ret.rID == items.rID);
                 });
                 supplier = data.supplier;
-                
+
                 showTable();
             },
-            error: function (response, setting, errorThrown) {
+            error: function(response, setting, errorThrown) {
                 console.log(errorThrown);
                 console.log(response.responseText);
             }
         });
 
-        $(".addReturnStock").on('click', function () {
+        $(".addReturnStock").on('click', function() {
             var spID = parseInt($(this).closest('.modal').find('.spID').val());
             setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
         });
@@ -434,50 +383,50 @@ var suppmerch = [];
         var receiptNo = $(checkbox).data('receipt');
         var checkboxes = $("input[name='stockitems']");
         console.log(receiptNo);
-        if($(checkbox).prop('checked')) {
+        if ($(checkbox).prop('checked')) {
             $(checkbox).addClass('checked');
-            for(var i = 0; i <= checkboxes.length - 1; i++) {
+            for (var i = 0; i <= checkboxes.length - 1; i++) {
                 console.log(!($(checkboxes).eq(i).hasClass(receiptNo)));
-            if($(checkboxes).eq(i).data("receipt") !== receiptNo) {
-                $(checkboxes).eq(i).attr('disabled', "disabled");
+                if ($(checkboxes).eq(i).data("receipt") !== receiptNo) {
+                    $(checkboxes).eq(i).attr('disabled', "disabled");
+                }
             }
-        }
         } else {
-           $(checkboxes).removeAttr('disabled');
-           $(checkbox).removeClass('checked');  
+            $(checkboxes).removeAttr('disabled');
+            $(checkbox).removeClass('checked');
         }
 
         disableSelected();
     }
 
     function disableSelected() {
-    var receiptNo = $("input[name='receiptNo']").eq(0).val();
-    var checkboxes = $("input[name='stockitems']");
+        var receiptNo = $("input[name='receiptNo']").eq(0).val();
+        var checkboxes = $("input[name='stockitems']");
 
-    if ($('.returnElements') != 0 || $('.returnElements') != null) {
-        var addedItems = $('.returnElements').find('#spmID');
-        for (var i = 0; i <= addedItems.length - 1; i++) {
-            var id = addedItems[i].value;
-            $('#spmID' + id).attr("disabled", "disabled");
-            $('#spmID' + id).attr("checked", "checked");
-            $('#spmID' + id).removeAttr("class");
+        if ($('.returnElements') != 0 || $('.returnElements') != null) {
+            var addedItems = $('.returnElements').find('#spmID');
+            for (var i = 0; i <= addedItems.length - 1; i++) {
+                var id = addedItems[i].value;
+                $('#spmID' + id).attr("disabled", "disabled");
+                $('#spmID' + id).attr("checked", "checked");
+                $('#spmID' + id).removeAttr("class");
 
+            }
+        }
+        if (parseInt(receiptNo) !== 0) {
+            for (var i = 0; i <= checkboxes.length - 1; i++) {
+                if ($(checkboxes).eq(i).data("receipt") !== receiptNo) {
+                    $(checkboxes).eq(i).attr('disabled', "disabled");
+                }
+            }
         }
     }
-    if(parseInt(receiptNo) !== 0) {
-        for(var i = 0; i <= checkboxes.length - 1; i++) {
-            if($(checkboxes).eq(i).data("receipt") !== receiptNo) {
-                $(checkboxes).eq(i).attr('disabled', "disabled");
-            }
-    }
-    }
-}
 
     function showTable() {
-        returns.forEach(function (item) {
+        returns.forEach(function(item) {
             var tableRow = `
                 <tr class="table_row" data-id="${item.returns.rID}">   <!-- table row ng table -->
-                    <td><a href="javascript:void(0)" class="ml-2 mr-4">
+                    <td class="ic-level-1"><a href="javascript:void(0)" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
                     ${item.returns.rID}</td>                    
                     <td>${item.returns.spAltName}</td>
@@ -553,7 +502,7 @@ var suppmerch = [];
 
         });
 
-        $(".accordionBtn").on('click', function () {
+        $(".accordionBtn").on('click', function() {
             if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
                 $(this).closest("tr").next(".accordion").css("display", "table-row");
                 $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
@@ -563,11 +512,11 @@ var suppmerch = [];
             }
         });
 
-        $(".addReturnsbtn").on('click', function () {
+        $(".addReturnsbtn").on('click', function() {
             setSupplier(supplier);
         });
 
-        $(".editBtn").on("click", function () {
+        $(".editBtn").on("click", function() {
             $('.resolveItems').remove();
             $('.returnsTable > tbody').empty();
             $('#addReturns form')[0].reset();
@@ -578,13 +527,13 @@ var suppmerch = [];
             setEditModal($("#editReturns"), returns.filter(item => item.returns.tID === tID)[0]);
         });
 
-        $('.deleteBtn').on('click',function() {
+        $('.deleteBtn').on('click', function() {
             var id = $(this).attr("data-id");
             console.log(id);
             console.log(this);
             $("#deleteReturns").find('input[name="tID"]').val(id);
-           
-    });
+
+        });
     }
 
     function setSupplier(supplier) {
@@ -596,8 +545,9 @@ var suppmerch = [];
 
 
     var subPrice = 0;
+
     function getSelectedStocks() {
-        $(document).ready(function () {
+        $(document).ready(function() {
             var value = 0;
             var choices = document.getElementsByClassName('stockitems');
             var merchChecked, st;
@@ -607,7 +557,7 @@ var suppmerch = [];
                 if (choices[i].checked) {
                     value = choices[i].value;
                     st = suppmerch.filter(st => st.stID === value);
-                   console.log(st);
+                    console.log(st);
                     merchChecked = `
                     <tr class="returnElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}"
                         data-currqty="${st[0].stQty}">
@@ -679,34 +629,34 @@ var suppmerch = [];
                     if ($('#addReturns').is(':visible')) {
                         $('#addReturns .returnsTable > tbody').append(merchChecked);
                         $('#addReturns').find("input[name='receiptNo']").val(st[0].receiptNo);
-                        $('#addReturns').find("input[name='receiptNo']").attr('disabled','disabled');
+                        $('#addReturns').find("input[name='receiptNo']").attr('disabled', 'disabled');
                         setInputValues();
                     } else {
                         $('#editReturns .returnsTable > tbody').append(merchChecked);
                         $('#editReturns').find("input[name='receiptNo']").val(st[0].receiptNo);
-                        $('#editReturns').find("input[name='receiptNo']").attr('disabled','disabled');
+                        $('#editReturns').find("input[name='receiptNo']").attr('disabled', 'disabled');
                     }
                 }
             }
         });
     }
-    $("#deleteReturns form").on('submit', function (event) {
+    $("#deleteReturns form").on('submit', function(event) {
         event.preventDefault();
         var tID = $("input[name='tID']").val();
 
         $.ajax({
-            url: "<?= site_url("admin/transaction/delete")?>",
-                method: "post",
-                data: {
-                    tID: tID
-                },
-                success: function () {
-                    location.reload();
-                },
-                error: function (response, setting, errorThrown) {
-                    console.log(errorThrown);
-                    console.log(response.responseText);
-                }
+            url: "<?= site_url("admin/transaction/delete") ?>",
+            method: "post",
+            data: {
+                tID: tID
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function(response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
 
         });
     });
@@ -765,13 +715,13 @@ var suppmerch = [];
     function removeItem(remove) {
         $(remove).closest("tr").next("tr").remove();
         $(remove).closest("tr").remove();
-        
+
         setInputValues();
     }
 
     // ----------------------- A D D I N G  R E T U R N S --------------------------
-    $(document).ready(function () {
-        $("#addReturns form").on('submit', function (event) {
+    $(document).ready(function() {
+        $("#addReturns form").on('submit', function(event) {
             event.preventDefault();
             var spID = $(this).find("select[name='spID']").val();
             var spName = $(this).find(".spID option[value='" + spID + "']").text();
@@ -812,7 +762,7 @@ var suppmerch = [];
             }
 
             $.ajax({
-                url: "<?= site_url("admin/returns/add")?>",
+                url: "<?= site_url("admin/returns/add") ?>",
                 method: "post",
                 data: {
                     spID: spID,
@@ -824,7 +774,7 @@ var suppmerch = [];
                     trans: JSON.stringify(trans),
                     ti: JSON.stringify(transitems)
                 },
-                beforeSend: function () {
+                beforeSend: function() {
                     console.log('spID ' + spID);
                     console.log('spName ' + spName);
                     console.log('tDate ' + tDate);
@@ -833,10 +783,10 @@ var suppmerch = [];
                     console.log(trans);
                     console.log(transitems);
                 },
-                success: function () {
+                success: function() {
                     location.reload();
                 },
-                error: function (response, setting, errorThrown) {
+                error: function(response, setting, errorThrown) {
                     console.log(errorThrown);
                     console.log(response.responseText);
                 }
@@ -853,7 +803,7 @@ var suppmerch = [];
         modal.find("input[name='tDate']").val(returns.returns.tDate);
         modal.find("textarea[name='tRemarks']").val(returns.returns.tRemarks);
         modal.find("input[name='trID']").val(returns.returns.tID);
-        
+
         returns.returnitems.forEach(rt => {
             modal.find(".returnsTable > tbody").append(`
         <tr class="returnElements" data-stockid="${rt.stID}" id="returns${rt.tiID}" data-id="${rt.tiID}">
@@ -943,13 +893,14 @@ var suppmerch = [];
                     </div>
                 </td>
             </tr>`);
-                modal.find("select[id='rStatus"+rt.tiID+"']").find(`option[value=${rt.rStatus}]`).attr("selected", "selected");
+            modal.find("select[id='rStatus" + rt.tiID + "']").find(`option[value=${rt.rStatus}]`).attr("selected", "selected");
 
         });
 
         setInputValues();
 
     }
+
     function getSelectedReceipts() {
         $(document).ready(function() {
             var value = 0;
@@ -959,7 +910,7 @@ var suppmerch = [];
                 if (choices[i].checked) {
                     value = choices[i].value;
                     st = suppmerch.filter(st => st.stID === value);
-                   console.log(st);
+                    console.log(st);
                     merchChecked = `
                     <tr class="resolveElements" data-stockid="${st[0].stID}" data-stqty="${st[0].prstQty}" data-tid="${st[0].tID}"
                         data-currqty="${st[0].stQty}">
@@ -980,9 +931,9 @@ var suppmerch = [];
                          `;
 
                     if ($('#editReturns').is(':visible')) {
-                        $('#editReturns').find('tr#returns'+st[0].stID).next('tr').after(merchChecked);
+                        $('#editReturns').find('tr#returns' + st[0].stID).next('tr').after(merchChecked);
                         setInputValues();
-                    } 
+                    }
                 }
             }
         });
@@ -990,8 +941,8 @@ var suppmerch = [];
 
 
     // --------------------- E D I T I N G  R E T U R N S ---------------------------------
-    $(document).ready(function () {
-        $("#editReturns form").on('submit', function (event) {
+    $(document).ready(function() {
+        $("#editReturns form").on('submit', function(event) {
             event.preventDefault();
             var tID = $(this).find("input[name='trID']").val();
             var spID = $(this).find("select[name='spID']").val();
@@ -1000,7 +951,7 @@ var suppmerch = [];
             var tDate = $(this).find("input[name='tDate']").val();
             var tTotal = $(this).find("span[id='total1']").text();
             var tRemarks = $(this).find("textarea[name='tRemarks']").val();
-            var rRemarks; 
+            var rRemarks;
 
             var trans = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
@@ -1020,7 +971,7 @@ var suppmerch = [];
                     del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
                 });
             }
-            
+
             var transitems = [];
             for (var index = 0; index < $(this).find(".returnElements").length; index++) {
                 var row = $(this).find(".returnElements").eq(index);
@@ -1042,17 +993,17 @@ var suppmerch = [];
                 });
             }
 
-         
-                    console.log('spID ' + spID);
-                    console.log('spName ' + spName);
-                    console.log('tDate ' + tDate);
-                    console.log('tTotal ' + tTotal);
-                    console.log('tRemarks ' + tRemarks);
-                    console.log(trans);
-                    console.log(transitems);
+
+            console.log('spID ' + spID);
+            console.log('spName ' + spName);
+            console.log('tDate ' + tDate);
+            console.log('tTotal ' + tTotal);
+            console.log('tRemarks ' + tRemarks);
+            console.log(trans);
+            console.log(transitems);
 
             $.ajax({
-                url: "<?= site_url("admin/returns/edit")?>",
+                url: "<?= site_url("admin/returns/edit") ?>",
                 method: "post",
                 data: {
                     tID: tID,
@@ -1066,7 +1017,7 @@ var suppmerch = [];
                     ti: JSON.stringify(transitems)
                 },
                 beforeSend: function() {
-                    console.log('tID '+tID);
+                    console.log('tID ' + tID);
                     console.log('spID ' + spID);
                     console.log('spName ' + spName);
                     console.log('tDate ' + tDate);
@@ -1075,10 +1026,10 @@ var suppmerch = [];
                     console.log(trans);
                     console.log(transitems);
                 },
-                success: function () {
+                success: function() {
                     location.reload();
                 },
-                error: function (response, setting, errorThrown) {
+                error: function(response, setting, errorThrown) {
                     console.log(errorThrown);
                     console.log(response.responseText);
                 }
@@ -1087,21 +1038,22 @@ var suppmerch = [];
     });
     // ----------------------- E N D  O F  E D I T I N G  R E T U R N S --------------------------
 
-var menuItem;
-function resolveReturn(item, tiID) {
-    if($(item).val() === "resolved") {
-        $("#resolveModal").modal('show');
-        $('#resolveModal').find('input[name="tiID"]').val(tiID);
-    } 
+    var menuItem;
 
-}
+    function resolveReturn(item, tiID) {
+        if ($(item).val() === "resolved") {
+            $("#resolveModal").modal('show');
+            $('#resolveModal').find('input[name="tiID"]').val(tiID);
+        }
 
-function setRemarks() {
-    var tiID =  $('#resolveModal').find('input[name="tiID"]').val();
-    var tRemarks = $('#resolveModal').find("textarea[name='tRemarks']").val();
-    console.log(tRemarks);
-    
-    merchChecked = `
+    }
+
+    function setRemarks() {
+        var tiID = $('#resolveModal').find('input[name="tiID"]').val();
+        var tRemarks = $('#resolveModal').find("textarea[name='tRemarks']").val();
+        console.log(tRemarks);
+
+        merchChecked = `
     <tr class="accordion" style="display:table-row">
                 <td colspan="6"> <!-- table row ng accordion -->
                     <div style="overflow:auto;"> <!-- container ng accordion -->
@@ -1124,13 +1076,28 @@ function setRemarks() {
             </tr>
                          `;
 
-    if ($('#editReturns').is(':visible')) {
-        $('#editReturns').find('tr#returns'+tiID).next('tr').after(merchChecked);
-        setInputValues();
-    }
-    
-    $("#resolveModal").modal("hide");
-}
+        if ($('#editReturns').is(':visible')) {
+            $('#editReturns').find('tr#returns' + tiID).next('tr').after(merchChecked);
+            setInputValues();
+        }
 
+        $("#resolveModal").modal("hide");
+    }
+
+    //Search Function
+    $("#transTable input[name='search']").on("keyup", function() {
+        var string = $(this).val().toLowerCase();
+
+        $("#transTable .ic-level-1").each(function(index) {
+            var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+            if (!text.includes(string)) {
+                $(this).closest("tr").hide();
+            } else {
+                $(this).closest("tr").show();
+            }
+        });
+
+    });
 </script>
+
 </html>

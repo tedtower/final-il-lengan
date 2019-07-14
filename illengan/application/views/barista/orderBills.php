@@ -104,7 +104,10 @@
               <input type="text" step="any" min="0" class="form-control" name="change" id="change" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change"); ?></span>
             </div>
-            <input type="hidden" class="form-control" name="osID" id="osID" readonly>
+            <div>
+              <input type="checkbox" class="form-control-sm" name="discount" id="discount">Senior Citizen Discount
+            </div>
+            <input type="hidden" class="form-control" name="osID" id="osID" readonly> 
             <!--Footer-->
             <div class="modal-footer">
               <button type="button" id="closeBillModal" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -175,6 +178,9 @@
               </div>
               <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
+            </div>
+            <div>
+              <input type="checkbox" class="form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
@@ -289,6 +295,8 @@
           $("#Modal_Pay").find("input[name='custName']").val($(this).closest("tr").attr(
                   "data-custName"));
 
+          
+
           });
         $(".item_delete").last().on('click', function () {
            
@@ -339,6 +347,7 @@
                             </tr>`
             }).join('')}`);
           }
+
     
      //---------------------For Resolving Payment Single Payment---------------------------
      $(document).ready(function() {

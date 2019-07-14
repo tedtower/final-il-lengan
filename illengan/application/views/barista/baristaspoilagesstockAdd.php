@@ -132,9 +132,9 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number" min= "1"
-                                class="form-control form-control-sm" name="tiQty"></td>
+                                class="form-control form-control-sm" name="tiQty" required></td>
                         <td style="padding:1% !important"><input type="number" min= "1"
-                                class="form-control form-control-sm" name="actualQty"></td>
+                                class="form-control form-control-sm" name="actualQty" required></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
@@ -172,6 +172,12 @@
                     curQty: $(this).find("input[name='curQty']").attr('data-curQty')
                 });
             });
+            if($('input[name="stock"]:checked').length == 0) {
+                alert('No checkbox is checked');
+                return false;
+            }
+            
+           
             console.log(items);
             $.ajax({
                 method: "POST",

@@ -14,15 +14,18 @@
 						<div class="card-content">
 
 							<!--Add Stock Spoilage BUTTON-->
-							<div class="col-md-4 col-lg-2">
+							<div class="col-md-4 col-lg-2" id="spoilagesTable">
 							<!-- <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br> -->
 							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/stock/spoilage/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Spoilage</a>
 							<!--eND Add Stock Spoilage BUTTON-->
 							</div>
 						</div>
-							<!--eND Add Stock Spoilage BUTTON-->
-							<br>
+						 <!--Search-->
+						 <div id="spoilagesTable" style="width:25%; float:right; border-radius:5px">
+								<input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+							</div>
+							<br><br>
 							<table id="spoilagesTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 								<thead class="thead-dark" style="font-weight:900">
 									<th></th>
@@ -34,7 +37,7 @@
 									<th>OPERATION</th>
 								
 								</thead>
-								<tbody id="spoilage_data">
+								<tbody id="spoilage_data" class="spoilagesTable ic-level-2">
 								</tbody>
 							</table>
 							<!--End Table Content-->
@@ -176,7 +179,7 @@
         }
         spoilages.forEach(table => {
             $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr" data-tiActual="${table.tiActual}" data-tiQty="${table.tiQty}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
+			<tr class="spoilagesTabletr ic-level-1" data-tiActual="${table.tiActual}" data-tiQty="${table.tiQty}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
 				<td>${table.tiID}</td>
 				<td>${table.stName}</td>
@@ -336,6 +339,20 @@
 
 	//End Function Delete
 
+	//Search Function
+	$("#spoilagesTable input[name='search']").on("keyup", function() {
+			var string = $(this).val().toLowerCase();
+
+			$("#spoilagesTable .ic-level-1").each(function(index) {
+				var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+				if (!text.includes(string)) {
+					$(this).closest("tr").hide();
+				} else {
+					$(this).closest("tr").show();
+				}
+			});
+
+		});
 </script> 
 </body>
 

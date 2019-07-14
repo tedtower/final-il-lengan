@@ -91,11 +91,12 @@ function addSales() {
         $osDateRecorded = date("Y-m-d H:i:s");
         $addons = json_decode($this->input->post('addons'), true);
         $account_id = $_SESSION["user_id"];
-       
+        $action = 'add';
+
         header('Content-Type: application/json');
         echo json_encode($addons, JSON_PRETTY_PRINT);
         $this->adminmodel->add_salesOrder($tableCode, $custName, $osTotal, $osDateTime,
-        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id);
+        $osPayDateTime, $osDateRecorded, $osDiscount, $orderlists, $addons, $account_id, $action);
 
     }else{
         redirect('login');
@@ -221,7 +222,6 @@ function addaccounts(){
             $this->adminmodel->get_stockItem($id);
             $data['report'] = $this->adminmodel->get_inventoryReport($stID, $sDate, $eDate);
             $data['stock'] = $this->adminmodel->get_stockItem($id)[0];
-            $data['currentInv'] = $this->adminmodel->get_invPeriodStart($stID)[0];
             $this->load->view('admin/reportInventory', $data);
             // redirect('admin/stocklog/report');
         }else{
@@ -416,13 +416,25 @@ function addaccounts(){
             $receipt = $this->input->post("receipt");
             $date = $this->input->post("date");
             $source = $this->input->post("spAltName");
-            $addtype = $this->input->post("addType");
+            $addtype = $this->input->post("addtype");
             $dateTime = date("Y-m-d H:i:s");
             $drItems = json_decode($this->input->post('items'),true);
+            $account_id = $_SESSION["user_id"];
+
            
             $this->adminmodel->add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems);
     }
+            switch($addtype) {
+                case 1:
+                $this->adminmodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);
+                break;
+                case 3:
+                $this->adminmodel->add_purchase($supplier, $receipt, "delivery", $date, $dateTime, NULL, $drItems, $addtype, $account_id);
+                break;
+            }
+            echo 'HHAHAHAA';
     }
+ }
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
