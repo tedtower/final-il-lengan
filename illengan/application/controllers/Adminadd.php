@@ -436,7 +436,7 @@ function addaccounts(){
             }
             echo 'HHAHAHAA';
     }
- 
+}
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
