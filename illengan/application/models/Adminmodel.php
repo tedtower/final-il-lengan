@@ -1036,13 +1036,13 @@ function get_consumpitems(){
 
         } 
     //FOR DR-----------------------------
-    function add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems){
-        $query = "INSERT INTO `purchases`(`pID`, `spID`, `receiptNo`, `pType`, `pDate`, `pDateRecorded`, `spAltName`) VALUES (NULL,?,?,?,?,?,?)";
-        for($in = 0; $in < count($drItems) ; $in++){
-            $this->db->query($query, array($drItems['spID'], $drItems['receiptNo'], "purchase order", $drItems['date'], $dateTime, $source ));
-            $this->add_purchaseItems($this->db->insert_id());
-        }
-    }
+    // function add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems){
+    //     $query = "INSERT INTO `purchases`(`pID`, `spID`, `receiptNo`, `pType`, `pDate`, `pDateRecorded`, `spAltName`) VALUES (NULL,?,?,?,?,?,?)";
+    //     for($in = 0; $in < count($drItems) ; $in++){
+    //         $this->db->query($query, array($drItems['spID'], $drItems['receiptNo'], "purchase order", $drItems['date'], $dateTime, $source ));
+    //         $this->add_purchaseItems($this->db->insert_id());
+    //     }
+    // }
     function add_purchaseItems($pID){
         $query="INSERT INTO `purchase_items`(`piID`, `piStatus`) VALUES (NULL,?)";
         if($this->db->query($query, array($this->db->insert_id(),"delivered"))){
@@ -2087,56 +2087,84 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
             LEFT JOIN uom ON (suppliermerchandise.uomID = uom.uomID) GROUP BY piID";
         return $this->db->query($query)->result_array();
     }
+    // function get_deliveryReceipts(){
+    //     $query = "SELECT
+    //     pID AS id,
+    //     purchase_items.piID,
+    //     receiptNo as receipt,
+    //     spID AS supplier,
+    //     spName AS supplierName,
+    //     spAltName as altSupplier,
+    //     DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
+    //     DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
+    //     SUM(tiSubtotal) AS total
+    // FROM
+    //     (
+    //     purchases LEFT JOIN pur_items USING (pID)
+    //     LEFT JOIN purchase_items USING (piID)
+    //     )
+    //     LEFT JOIN transitems USING(piID)
+    //     LEFT JOIN supplier USING(spID)
+    //     WHERE pType = 'delivery'
+    //     ORDER BY transDate DESC ,pID DESC";
+    //     return $this->db->query($query)->result_array();
+    // }
     function get_deliveryReceipts(){
-        $query = "SELECT
-        pID AS id,
-        purchase_items.piID,
-        receiptNo as receipt,
-        spID AS supplier,
-        spName AS supplierName,
-        spAltName as altSupplier,
-        DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
-        DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-        SUM(tiSubtotal) AS total
+        $query = "SELECT pID AS id, piID, receiptNo AS receipt, suppliermerg.spID AS supplier,
+        spName AS supplierName, spAltName AS altSupplier, DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
+        DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS totaltiID,
+        tiDiscount, tiType AS TYPE, SUM(tiQty) AS qty, SUM(tiActual) AS actual,
+        SUM(tiSubtotal) AS total, remainingQty, tiRemarks, tiDate,
+        CONCAT( stName, IFNULL(CONCAT(' ', stSize), '')) AS stockname,
+        spmName, spmPrice, piID, piStatus
     FROM
-        (
-        purchases LEFT JOIN pur_items USING (pID)
-        LEFT JOIN purchase_items USING (piID)
-        )
-        LEFT JOIN transitems USING(piID)
+        `transitems`
+    LEFT JOIN(
+        SELECT
+            *
+        FROM
+            purchases
+        LEFT JOIN pur_items USING(pID)
+        LEFT JOIN purchase_items USING(piID)
+    ) AS purchasesmerg USING(piID)
+    LEFT JOIN stockitems USING(stID)
+    LEFT JOIN(
+        SELECT
+            *
+        FROM
+            suppliermerchandise
         LEFT JOIN supplier USING(spID)
-        WHERE pType = 'delivery'
-        ORDER BY transDate DESC ,pID DESC";
+    ) AS suppliermerg USING(spmID)";
         return $this->db->query($query)->result_array();
     }
-    function get_deliveryReceiptItems(){
-        $query = "SELECT
-                tiID,
-                tiDiscount,
-                tiType as type,
-                SUM(tiQty) AS qty,
-                SUM(tiActual) AS actual,
-                SUM(tiSubtotal) AS subtotal,
-                remainingQty,
-                tiRemarks,
-                tiDate,
-                CONCAT(
-                    stName,
-                    IFNULL(CONCAT(' ', stSize),
-                    '')
-                ) AS stockname,
-                spmName,
-                spmPrice,
-                piID,
-                piStatus
-            FROM
-                transitems
-            LEFT JOIN purchase_items USING(piID)
-            LEFT JOIN stockitems USING(stID)
-            LEFT JOIN suppliermerchandise USING(spmID)
-            WHERE piStatus in ('partially delivered','delivered')";
-        return $this->db->query($query)->result_array();
-    }
+    // function get_deliveryReceiptItems(){
+    //     $query = "SELECT
+    //             tiID,
+    //             tiDiscount,
+    //             tiType as type,
+    //             SUM(tiQty) AS qty,
+    //             SUM(tiActual) AS actual,
+    //             SUM(tiSubtotal) AS subtotal,
+    //             remainingQty,
+    //             tiRemarks,
+    //             tiDate,
+    //             CONCAT(
+    //                 stName,
+    //                 IFNULL(CONCAT(' ', stSize),
+    //                 '')
+    //             ) AS stockname,
+    //             spmName,
+    //             spmPrice,
+    //             piID,
+    //             piStatus
+    //         FROM
+    //             transitems
+    //         LEFT JOIN purchase_items USING(piID)
+    //         LEFT JOIN stockitems USING(stID)
+    //         LEFT JOIN suppliermerchandise USING(spmID)
+    //         WHERE piStatus in ('partially delivered','delivered')";
+    //     return $this->db->query($query)->result_array();
+    // }
 
     function get_poItem($tiID){
         $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus

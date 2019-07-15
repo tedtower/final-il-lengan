@@ -67,6 +67,8 @@ $route['admin/stocks/loadDataUnitMeasures/(:num)'] = "adminview/loadDataUnitMeas
 $route['admin/loadDataMenu/(:num)'] = "adminview/loadDataMenu/$1";
 $route['admin/menu/loadDataMenuCategories/(:num)'] = "adminview/loadDataMenuCategories/$1";
 $route['admin/loadDataTables/(:num)'] = "adminview/loadDataTables/$1";
+$route['admin/viewDeliveryReceiptJS'] = "adminview/viewDeliveryReceiptJS";
+$route['admin/viewDeliveryReceiptItemsJS'] = "adminview/viewDeliveryReceiptItemsJS";
 //End Viewing Routes 
 
 //Not Sure Routes

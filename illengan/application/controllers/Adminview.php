@@ -973,14 +973,29 @@ function getStockItem(){
             $data['title'] = "Delivery Receipt";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $data['drs'] = $this->adminmodel->get_deliveryReceipts();
-            $data['drItems'] = $this->adminmodel->get_deliveryReceiptItems();
-            $this->load->view('admin/adminDeliveryReceipt', $data);
+            $this->load->view('admin/adminDeliveryReceipt');
         }else{
             redirect('login');
         }
     }
-
+    function viewDeliveryReceiptJS(){
+        if($this->checkIfLoggedIn()){
+        // ['drs'] 
+            $data= $this->adminmodel->get_deliveryReceipts();
+            echo json_encode($data);
+        }else{
+            redirect('login');
+        }
+    }
+    function viewDeliveryReceiptItemsJS(){
+        if($this->checkIfLoggedIn()){
+        // ['drItems'] 
+            $data=$this->adminmodel->get_deliveryReceiptItems();
+            echo json_encode($data);
+        }else{
+            redirect('login');
+        }
+    }
     function viewOfficialReceipt(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Official Receipt";

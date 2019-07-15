@@ -22,8 +22,7 @@
                                 </div>
                                 <br><br>
                                 <!--Table Body-->
-                                <?php if (isset($drs[0])) {
-                                    ?>
+                                
                                     <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                         <thead class="thead-dark">
                                             <th><b class="pull-left">Transaction #</b></th>
@@ -33,70 +32,9 @@
                                             <th><b class="pull-left">Total</b></th>
                                             <th><b class="pull-left">Actions</b></th>
                                         </thead>
-                                        <tbody class="transTable ic-level-2">
-                                            <?php foreach ($drs as $dr) {
-                                                ?>
-                                                <tr class="ic-level-1" data-id="<?= $dr['id'] ?>">
-                                                    <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px" /></a>DEl - <?= $dr['id'] ?></td>
-                                                    <td><?= $dr['receipt'] ?></td>
-                                                    <td><?= $dr['supplierName'] ?></td>
-                                                    <td><?= $dr['transDate'] ?></td>
-                                                    <td><?= $dr['total'] ?></td>
-                                                    <td>
-                                                        <a class="btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/' . $dr['id']) ?>" data-original-title style="margin:0" id="editBtn">Edit</a>
-                                                        <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePO">Archive</button>
-                                                    </td>
-                                                </tr>
-                                                <tr class="accordion" style="display:none">
-                                                    <td colspan="6">
-                                                        <div class="container" style="display:none">
-                                                            <div>Date Recorded:<?= $dr['dateRecorded'] == null ? "N/A" : $dr['dateRecorded'] ?></div>
-                                                            <?php foreach ($drItems as $drItem) {
-                                                                if ($drItem['piID'] == $dr['piID']) { ?>
-                                                                    <div>Remarks:<?= $drItem['tiRemarks'] == null ? "N/A" : $drItem['tiRemarks'] ?></div>
-
-                                                                    <table class="table table-bordered">
-                                                                        <thead class="thead-light">
-                                                                            <tr>
-                                                                                <th>Name</th>
-                                                                                <th>Qty</th>
-                                                                                <th>Actual Qty</th>
-                                                                                <th>Price</th>
-                                                                                <th>Discount</th>
-                                                                                <th>Subtotal</th>
-                                                                                <th>Delivery Status</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-
-
-                                                                            <tr>
-                                                                                <td><?= $drItem['stockname'] ?></td>
-                                                                                <td><?= $drItem['qty'] ?></td>
-                                                                                <td><?= $drItem['actual'] ?></td>
-                                                                                <td><?= $drItem['spmPrice'] ?></td>
-                                                                                <td><?= $drItem['tiDiscount'] == null ||  $drItem['tiDiscount'] == 0 ? "N/A" : $drItem['tiDiscount'] ?></td>
-                                                                                <td><?= ($drItem['qty'] * $drItem['spmPrice']) - $drItem['tiDiscount'] ?></td>
-                                                                                <td><?= $drItem['piStatus'] ?></td>
-                                                                            </tr>
-
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    <?php
-                                                    } ?>
-                                                </tbody>
-                                            </table>
-                                        <?php }
-                                    } ?>
-                                <?php
-                                } else {
-                                    ?>
-                                    <p>No deliveries recorded!</p>
-                                <?php
-                                } ?>
+                                        <tbody class="transTable  ic-level-2">
+                                        </tbody>
+                                    </table>
                                 <!--End Table Content-->
 
                                 <!--Start of Modal "Delete Stock Item"-->
@@ -147,18 +85,7 @@
         var getPOsUrl = '<?= site_url('admin/transactions/getPOs') ?>';
         var getDRsUrl = '<?= site_url('admin/transactions/getDRs') ?>';
         var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs') ?>';
-        $(function() {
-            $(".accordionBtn").on('click', function() {
-                if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
-                    $(this).closest("tr").next(".accordion").css("display", "table-row");
-                    $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
-                } else {
-                    $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
-                    $(this).closest("tr").next(".accordion").hide("slow");
-                }
-            });
-        });
-
+       
         //Search Function
         $("#transTable input[name='search']").on("keyup", function() {
             var string = $(this).val().toLowerCase();
@@ -173,5 +100,109 @@
             });
 
         });
+
+        var delReceipt = [];
+		$(function() {
+			viewDelReceipts();
+
+			//POPULATE TABLE
+			var table = $('#transTable');
+
+			function viewDelReceipts() {
+				$.ajax({
+					url: "<?= site_url('admin/viewDeliveryReceiptJS') ?>",
+					method: "post",
+					dataType: "json",
+					success: function(data) {
+						delReceipt = data;
+						setDelReceiptsData(delReceipt);
+					},
+					error: function(response, setting, errorThrown) {
+						console.log(response.responseText);
+						console.log(errorThrown);
+					}
+				});
+			}
+		});
+
+		function setDelReceiptsData() {
+			if ($("#transTable > tbody").children().length > 0) {
+				$("#transTable > tbody").empty();
+			}
+			delReceipt.forEach(dr => {
+				$("#transTable > tbody").append(`
+			    <tr class="transTabletr ic-level-1">
+                    <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.id}</td>
+                    <td>${dr.receipt == null || dr.receipt == '' ?  "No receipt." : dr.receipt}</td>
+                    <td>${dr.supplierName}</td>
+                    <td>${dr.transDate}</td>
+                    <td>${dr.total}</td>
+                    <td>
+                            <!--Action Buttons-->
+                            <div class="onoffswitch">
+                                <!--Edit button-->
+                                <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
+                                    data-target="#editDelRecipt">Edit</button>
+                                <!--Delete button-->
+                                <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
+                                data-target="#delete">Archive</button>                      
+                            </div>
+                    </td>
+				</tr>`);
+              
+				var accordion = `
+                <tr class="accordion" style="display:none;background: #f9f9f9">
+                <td colspan="7">
+                <!-- table row ng accordion -->
+                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                        
+                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
+                            <div style="margin:0 46px;overflow:auto;">
+                            <table id="drItems" class="drItems table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                    <th>Name</th>
+                                    <th>Qty</th>
+                                    <th>Actual Qty</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Subtotal</th>
+                                    <th>Delivery Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <td>${dr.stockname}</td>
+                                    <td>${dr.qty}</td>
+                                    <td>${dr.actual}</td>
+                                    <td>${dr.spmPrice}</td>
+                                    <td>${dr.tiDiscount == null || dr.tiDiscount == '' ?  "N/A." : dr.tiDiscount}</td>
+                                    <td>${(dr.qty * dr.spmPrice) - parseInt(dr.tiDiscount)}</td>
+                                    <td>${dr.piStatus}</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    </td>
+				</tr>
+            `;
+            $("#transTable > tbody").append(accordion);
+            });
+			$(".accordionBtn").on('click', function() {
+				if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+					$(this).closest("tr").next(".accordion").css("display", "table-row");
+					$(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+
+				} else {
+					$(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+					$(this).closest("tr").next(".accordion").hide("slow");
+				}
+			});
+        
+        }
+		//END OF POPULATING TABLE
+
     </script>
 </body>

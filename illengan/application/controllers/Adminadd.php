@@ -434,7 +434,7 @@ function addaccounts(){
             }
             echo 'HHAHAHAA';
     }
- }
+ 
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
@@ -548,7 +548,7 @@ function addConsumption(){
             $this->adminmodel->add_beginning($date, $dateTime, $logs);
         }
     }
-}    
+}
 
 ?>
 
