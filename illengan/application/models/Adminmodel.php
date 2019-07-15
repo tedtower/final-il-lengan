@@ -1133,14 +1133,6 @@ function get_consumpitems(){
         }
         $this->$this->add_actlog($account_id, $date, "Admin added prefstock.", "add", '');;
     }
-    function add_menuStock($items){
-        $query = "INSERT INTO prefstock(prID, stID, prstQty)
-        VALUES(?, ?, ?)";
-        foreach($items as $item){
-            $this->db->query($query, array($item['prID'],$item['stID'],$item['prstQty']));
-        }
-        return true;
-    }
     function add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore){
         $query = "INSERT into uom (uomName, uomAbbreviation, uomVariant, uomStore) values (?,?,?,?)";
         return $this->db->query($query,array($uomName, $uomAbbreviation, $uomVariant, $uomStore));
