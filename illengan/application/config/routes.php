@@ -8,6 +8,7 @@ $route['logout'] = 'login/logout';
 $route['verify'] = 'login/check_cred';
 $route['admin/search'] = "adminview/searchData";
 //Viewing Routes -----------------------------------------------
+$route['admin/dashboard/generateSalesDay'] = "adminview/generateSalesDay";
 $route['admin/menu'] = "adminview/viewmenu";
 $route['admin/menu/getDetails'] = "adminview/menuGetDetails";
 $route['admin/menu/addons'] = "adminview/menuAddons";
@@ -30,7 +31,7 @@ $route['admin/purchaseorders'] = "adminview/viewpurtory/(:nchaseorders";
 $route['admin/spoilages/menu/add'] ="adminview/viewInsertSpoilageMenu";
 $route['admin/spoilages/stock/add'] ="adminview/viewInsertSpoilageStock";
 $route['admin/spoilages/addons/add'] ="adminview/viewInsertSpoilageAo";
-$route['admin/menu/spoilages'] = "adminview/viewspoilagesmenu";
+$route['admin/menu/spoilages'] = "adminview/viewSpoilagesMenu";
 $route['admin/addons/spoilages'] = "adminview/viewspoilagesaddons";
 $route['admin/log/stocks'] = "adminview/viewLogStock";
 $route['admin/log/activity'] = "adminview/viewActivityLog";
@@ -69,6 +70,11 @@ $route['admin/menu/loadDataMenuCategories/(:num)'] = "adminview/loadDataMenuCate
 $route['admin/loadDataTables/(:num)'] = "adminview/loadDataTables/$1";
 $route['admin/viewDeliveryReceiptJS'] = "adminview/viewDeliveryReceiptJS";
 $route['admin/viewDeliveryReceiptItemsJS'] = "adminview/viewDeliveryReceiptItemsJS";
+$route['admin/addonspoilage/loadDataAddsSpoil/(:num)'] = "adminview/loadDataAddsSpoil/$1";
+$route['admin/menuspoilage/loadDataMenuSpoil/(:num)'] = "adminview/loadDataMenuSpoil/$1";
+$route['admin/menustock/loadDataMenuStock/(:num)'] = "adminview/loadDataMenuStock/$1";
+$route['admin/menuspoilage/formadd'] = "adminview/viewMenuSpoilageFormAdd";
+$route['admin/menustock/formadd'] = "adminview/viewMenuStockFormAdd";
 //End Viewing Routes 
 
 //Not Sure Routes
@@ -103,6 +109,7 @@ $route['admin/stocklog/report/add'] = "adminadd/addInventoryReport";
 $route['admin/sales/report/add'] = "adminadd/addSalesReport"; 
 $route['admin/returns/add'] = "adminadd/addReturns";
 $route['admin/inventory/beginning'] = "adminadd/addBeginningLogs";
+$route['admin/menuspoilage/add']= "adminadd/addMenuSpoilage";
 
 
 //End Admin Add Routes ------------------------------------------
@@ -128,6 +135,7 @@ $route['admin/menu/spoilage/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
 $route['admin/returns/edit'] = "adminupdate/editReturns";
 $route['admin/consumption/edit'] = "adminupdate/editConsumption";
+$route['admin/spoilages/menu/edit'] = "adminupdate/editMenuSpoil";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------
