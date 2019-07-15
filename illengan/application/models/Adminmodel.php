@@ -24,9 +24,14 @@ function fetch_searchdata($query) {
  }
 
 //GET FUNCTIONS-------------------------------------------------------------------
-function get_activityLogs(){
-    $query = "SELECT alDate,alDesc,alType, additionalRemarks, aUserName from activitylog natural join accounts order by alDate desc";
+function get_activityLogs($s, $l){
+    $query = "SELECT alDate,alDesc,alType, additionalRemarks, aUserName from activitylog natural join accounts order by alDate desc LIMIT $s, $l";
     return $this->db->query($query)->result_array();
+}
+function countActLog(){
+    $query = "SELECT count(alID) as allcount from activitylog";
+    $result= $this->db->query($query)->result_array();
+    return $result[0]['allcount'];
 }
 function get_stockCard($stID){
     $query = "SELECT
