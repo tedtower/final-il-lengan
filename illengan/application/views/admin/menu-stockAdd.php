@@ -24,7 +24,7 @@
                                             <thead style="border-bottom:2px solid #cccccc;font-size:14px">
                                                 <tr>
                                                 <th>Menu Name</th>
-                                                <th>Stock Name</th>
+                                                <th>Stock ID</th>
                                                 <th>Qty</th>
                                                 <th></th>
                                                 </tr>
@@ -38,8 +38,8 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        style="float:right">Cancel</button>
+                                    <a href="<?= site_url()?>admin/menu/menustock" class="btn btn-danger btn-sm"
+                                        style="float:right">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -69,8 +69,8 @@
                                 foreach($preferences as $pref){
                                 ?>
                                         <tr class="ic-level-1" >
-                                            <td><input type="checkbox" class="mr-2" name="menu" data-name="<?= $pref['prefname']?>" value="<?= $pref['id']?>"></td>
-                                            <td class="menu"><?= $pref['prefname']?></td>
+                                            <td><input type="checkbox" class="mr-2" name="pref" data-name="<?= $pref['prefname']?>" value="<?= $pref['id']?>"></td>
+                                            <td class="pref"><?= $pref['prefname']?></td>
                                         </tr>
                                         <?php 
                                 }?>
@@ -96,31 +96,30 @@
     $(function() {
         $("#stockCard .ic-level-1").on("click",function(event){
             if(event.target.type !== "checkbox"){
-                $(this).find("input[name='menu']").trigger("click");
+                $(this).find("input[name='pref']").trigger("click");
             }
         });
-        $("#stockCard input[name='menu']").on("click", function(event) {
+        $("#stockCard input[name='pref']").on("click", function(event) {
             var id = $(this).val();
             var name = $(this).attr("data-name");
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
-                    <tr class="ic-level-1" data-addon="${id}">
+                    <tr class="ic-level-1" data-pref="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
-                        <td style="padding:1% !important"> 
-                        <input list="stocks" type="text" name="stID" id="stID"  class="form-control form-control-sm" required/>
+                                class="form-control form-control-sm" data-id="${id}" value="${name}" name="pref" readonly></td>
+                        <td style="padding:1% !important">
+                        <?php foreach($stocks as $s){ ?> 
+                        <input list="stocks" type="text" name="stID" id="stID" class="form-control form-control-sm" required/>
                             <datalist id="stocks">
-                            <?php foreach($stocks as $s){ 
-                                echo '<option data-id="'.$s['stID'].'" value="'.$s['stName'].'"></option>';
-                            }?>
-                        </datalist></td>
-                        <td style="padding:1% !important"><input type="number"
+                                <?php echo '<option value="'.$s['stID'].'">'. $s['stName'].'</option>';}?>
+                        </datalist>
+                        </td>
+                        <td style="padding:1% !important"><input type="number" min="1" value="1"
                                 class="form-control form-control-sm" name="quantity" id="quantity" required/></td>
                     </tr>`);
-                    console.log($(this));
             }else{
-                $(`#conForm .ic-level-1[data-addon=${id}]`).remove();
+                $(`#conForm .ic-level-1[data-pref=${id}]`).remove();
             }
         });
 
@@ -140,42 +139,37 @@
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");
-            var tDate = $(this).find("input[name='tDate']").val();
-            var remarks = $(this).find("textarea[name='remarks']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
-                    aoID: $(this).find("input[name='addon']").attr('data-id'),
-                    aosQty: $(this).find("input[name='actualQty']").val(),
-                    osID: $(this).find("input[name='osID']").val(),
-                    tRemarks: $(this).find("textarea[name='tRemarks']").val(),
+                    prID: $(this).find("input[name='pref']").attr('data-id'),
+                    stID: $(this).find("input[name='stID']").val(),
+                    qty: $(this).find("input[name='quantity']").val(),
                 });
             });
             console.log(items);
-            // $.ajax({
-            //     method: "POST",
-            //     url: url,
-            //     data: {
-            //         date: tDate,
-            //         remarks: remarks,
-            //         items: JSON.stringify(items)
-            //     },
-            //     dataType: "JSON",
-            //     succes: function(data){
-            //         // if(data.sessErr){
-            //         //     location.replace("/login");
-            //         // }else{
-            //         //     console.log(data);
-            //         // }
-            //     },
-            //     complete: function() {
-            //     //location.reload();
-            //     },
-            //     error: function(response, setting, error) {
-            //         console.log(error);
-            //         console.log(response.responseText);
-            //     }
-            // });
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: {
+                    items: JSON.stringify(items)
+                },
+                dataType: "JSON",
+                succes: function(data){
+                    if(data.sessErr){
+                        location.replace("/login");
+                    }else{
+                        console.log(data);
+                    }
+                },
+                complete: function() {
+                location.reload();
+                },
+                error: function(response, setting, error) {
+                    console.log(error);
+                    console.log(response.responseText);
+                }
+            });
         });
     });
 

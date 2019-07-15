@@ -1125,13 +1125,13 @@ function get_consumpitems(){
         $query = "INSERT into addons (aoName, aoPrice, aoCategory, aoStatus) values (?,?,?,?)";
         return $this->db->query($query,array($aoName, $aoPrice, $aoCategory, $aoStatus));
     }
-    function add_menuStock($items){
+    function add_menuStock($items, $account_id, $date){
         $query = "INSERT INTO prefstock(prID, stID, prstQty)
         VALUES(?, ?, ?)";
         foreach($items as $item){
-            $this->db->query($query, array($item['prID'],$item['stID'],$item['prstQty']));
+            $this->db->query($query, array($item['prID'],$item['stID'],$item['qty']));
         }
-        return true;
+        $this->$this->add_actlog($account_id, $date, "Admin added prefstock.", "add", '');;
     }
     function add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore){
         $query = "INSERT into uom (uomName, uomAbbreviation, uomVariant, uomStore) values (?,?,?,?)";
@@ -1554,7 +1554,7 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         return $this->db->query($query)->result_array();
     }
     function get_spoilagesmenu($s, $l){
-        $query = "Select msID,prID, mName,msQty,CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ', 
+        $query = "Select osID,msID,prID, mName,msQty,CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ', 
         CONCAT(' ',mTemp))) as prName,DATE_FORMAT(spoiledmenu.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') AS msDateRecorded,msRemarks 
         from menuspoil inner join spoiledmenu using (msID) inner join preferences using (prID) inner join menu using (mID)
         order by msDateRecorded DESC Limit $s, $l";
@@ -1584,14 +1584,15 @@ function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
                 $osID = $menus[$in]['slip'];
             }
         $this->db->query($query, array($msID, $menus[$in]['prID'],$osID,$menus[$in]['qty'],$date,$menus[$in]['remarks']));
+        $this->add_actlog($account_id, $date_recorded, "Admin added a spoiled menu.", "add", $menus[$in]['remarks']);
             if($menus[$in]['stID'] !== null && $menus[$in]['stID'] !== '') {
                 $this->update_msstockqty($menus[$in]['qty'], $menus[$in]['prID']);
-                $this->add_stockSpoiled($menus[$in]['prID'],$msID,$menus[$in]['qty'],$menus[$in]['remarks'],$date,$date_recorded, $tiType);
+                $this->add_stockSpoiled($menus[$in]['prID'],$msID,$menus[$in]['qty'],$menus[$in]['remarks'],$date,$date_recorded, $tiType, $account_id);
             }
         }
     }
 }
-    function add_stockSpoiled($prID,$msID,$qty,$remarks,$date,$date_recorded,$tiType){
+    function add_stockSpoiled($prID,$msID,$qty,$remarks,$date,$date_recorded,$tiType,$accid){
         $query1 = "SELECT stID FROM prefstock where prID = '$prID'";
         $return = $this->db->query($query1)->result_array();
         foreach($return as $ret){
@@ -1601,6 +1602,7 @@ function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
                 $query2 = "insert into spoiledstock (siID,sID) values (NULL,?)";
                 if($this->db->query($query2, array($sID))){
                     $this->add_trans($prID,$ret['stID'],$qty,$remarks,$date, $this->db->insert_id(), $tiType);
+                    $this->add_actlog($accid, $date_recorded, "Admin added a spoiled stock.", "add", $remarks);
                 }
             }
         }
@@ -1614,6 +1616,7 @@ function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
         $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, stID, siID)
             VALUES (NULL, ?,?,?,?,?,?,?,?)";
          $this->db->query($query, array($tiType, $qty, $prstQty, $stQty, $remarks, $date, $stID, $siID));
+         
         } 
         
     }
@@ -1649,6 +1652,7 @@ function editmenuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_re
         
         $spoiled = "Select stID from spoiledmenu inner join prefstock on spoiledmenu.prID=prefstock.prID where msID = '$msID'";
         $stock = $this->db->query($spoiled)->result_array();
+        
         foreach($stock as $stk){
             if($stk['stID'] != null && $stk['stID'] != ''){
                 $this->update_stockItems($prID, $msQty, $oldQty);
@@ -2156,12 +2160,12 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
         $query = "INSERT INTO st_recon (reID, stID, reQty, reRemain, reDiscrepancy, reRemarks) VALUES (?, ?, ?, ?, ?, ?)";
         return $this->db->query($query,array($rei["reID"], $rei["stock"], $rei["qty"], $rei["remain"], $rei["discrepancy"], $rei["remarks"]));
     }
-    function add_purchase($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName, $items, $addtype, $accountID){
-        $query = "INSERT INTO `purchases`(spID, receiptNo, pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
-        if($this->db->query($query, array($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName))) {
-            $this->add_dItem($this->db->insert_id(), $items, $addtype, $accountID);
-        }
-    }
+    // function add_purchase($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName, $items, $addtype, $accountID){
+    //     $query = "INSERT INTO `purchases`(spID, receiptNo, pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
+    //     if($this->db->query($query, array($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName))) {
+    //         $this->add_dItem($this->db->insert_id(), $items, $addtype, $accountID);
+    //     }
+    // }
 
     function add_dItem($pID, $items, $addtype, $accountID) {
         $query = "INSERT INTO purchase_items (piStatus) VALUES (?)";

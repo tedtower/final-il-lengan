@@ -83,6 +83,19 @@ class Adminupdate extends CI_Controller{
         }
 
     }
+    function editMenuStock(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $prID = $this->input->post('prID');
+            $stID = $this->input->post('stID');
+            $qty = $this->input->post('qty');
+            $account_id = $this->session->userdata('user_id');
+            $date_recorded = date("Y-m-d H:i:s");
+            $this->adminmodel->edit_menuStock($prID, $stID, $qty);
+           $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a prefstock.", "update", "");
+        }else{
+            redirect("login");
+        }
+    }
     
     function editStockSpoil(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
