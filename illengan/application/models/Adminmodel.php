@@ -1799,7 +1799,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
         return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
     }
 
-    function add_beginning($date, $dateTime, $logs, $user, $accountID){
+    function add_beginning($date, $dateTime, $logs, $user, $account_id){
         $query = "INSERT INTO reconciliation(reDate, reDateRecorded) VALUES (?,?)";
         if($this->db->query($query,array($date, $dateTime))){
             $reID = $this->db->insert_id();
@@ -1809,7 +1809,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
                     $this->set_stockQtyBeginning($logs);
                 }
             }
-        $this->add_actlog($account_id,$dateTime, "$user added perorm a physical count.", "add", NULL); 
+        $this->add_actlog($account_id,$dateTime, "$user performed physical count.", "add", NULL); 
         }
     }
 

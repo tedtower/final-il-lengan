@@ -498,7 +498,7 @@ function addConsumption(){
             $account_id = $_SESSION["user_id"];
             $user= $_SESSION["user_name"];
             $logs = json_decode($this->input->post('items'),true);
-            $this->adminmodel->add_beginning($date, $dateTime, $logs, $user, $accountID);
+            $this->adminmodel->add_beginning($date, $dateTime, $logs, $user, $account_id);
         }
     }
 }
