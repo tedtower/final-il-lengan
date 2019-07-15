@@ -425,7 +425,7 @@ function addaccounts(){
                 $this->adminmodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);
                 break;
                 case "merchandise":
-                $this->adminmodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, $source, $drItems, $addType, $account_id);
+                $this->adminmodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, NULL, $drItems, $addType, $account_id);
                 break;
                 case "po":
                 $this->adminmodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, $source, $drItems, $addType, $account_id);
@@ -551,6 +551,6 @@ function addConsumption(){
         }
     }
 }
-
+}
 ?>
 

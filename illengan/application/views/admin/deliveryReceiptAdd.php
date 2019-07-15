@@ -262,38 +262,53 @@
 
         });
         $(document).on("click", "#list input[name='merch']", function (event) {
-            var id = $(this).val();
-            var name = $(this).attr("data-spmName");
-            var curQty = $(this).attr("data-curQty");
+            var spmID = $(this).val();
+            var stID = $(this).attr("data-stID");
+            var spmName = $(this).attr("data-spmName");
+            var stQty = $(this).attr("data-stQty");
             var spmActual = $(this).attr("data-spmActual");
             var spmPrice = $(this).attr("data-spmPrice");
             var spID = $(this).attr("data-spID");
-     
+            var piID = $(this).attr("data-piID");
+            
+            
+            console.log("spmID "+spmID);
+            console.log("spmName "+ spmName);
+            console.log("stQty" +stQty);
+            console.log("spmActual "+ spmActual);
+            console.log("spmPrice "+spmPrice);
+            console.log("spID "+spID);
+            console.log("stID "+stID);
+            console.log("stID "+piID);
             if ($(this).is(":checked")) {
                 $("#drForm .ic-level-2").append(`
-               <div style="overflow:auto" class="ic-level-1" data-stock="${id}">
+               <div style="overflow:auto" class="ic-level-1">
                    <div style="float:left;width:96%;overflow:auto;">
                        <div class="input-group mb-1">
-                       <input type="text" name="name"
-                           class="form-control form-control-sm" data-id="${id}" value="${name}"
+                       <input type="text" name="spmName" class="form-control form-control-sm" value="${name}"
                            style="width:17%" readonly>
-                        <input type="text" name="receiptNo" id="receiptNo" placeholder="Receipt No."
-                           class="form-control form-control-sm" style="width:17%">
                         <input type="hidden" name="spID"
                            class="form-control form-control-sm" placeholder="spID" id="spID" value="${spID}">
+                        <input type="hidden" name="stID"
+                           class="form-control form-control-sm" placeholder="stID" id="stID" value="${stID}">
+                        <input type="hidden" name="stQty"
+                           class="form-control form-control-sm" placeholder="stQty" id="stQty" value="${stQty}">
+                        <input type="hidden" name="piID"
+                           class="form-control form-control-sm" placeholder="piID" id="piID" value="${piID}">
                        <input type="hidden" name="spmActualQty"
                            class="form-control form-control-sm" placeholder="spmActualQty" id="spmActualQty" value="${spmActual}">
                        <input type="number" name="tiQty" id="tiQty"
                            class="form-control form-control-sm" placeholder="tiQty" required>
                         <input type="number" name="tiActualQty" id="tiActualQty"
                            class="form-control form-control-sm" placeholder="tiActualQty">
+                        <input type="number" name="tiDiscount" id="tiDiscount"
+                           class="tiDiscount form-control form-control-sm" placeholder="Discount" >
                        <input type="number" name="spmPrice" id="spmPrice"
                            class="form-control form-control-sm" placeholder="Price" value="${spmPrice}">
-                       <input type="number" name="subtotal" id="subtotal"
+                       <input type="number" name="tiSubtotal" id="tiSubtotal"
                            class="form-control form-control-sm" placeholder="Subtotal"
                            readonly>
                        </div>
-                       <label style="width:96%;font-size:14px;"><input type="checkbox" name="discount" id ="discount" class="discount mr-2">Add Discount</label>
                    </div>
                </div>
                `);
@@ -364,7 +379,7 @@
         $(document).on("click", "#listpo input[name='purchorder']", function (event) {
             var id = $(this).val();
             var name = $(this).attr("data-spmName");
-            var curQty = $(this).attr("data-curQty");
+            var stQty = $(this).attr("data-stQty");
             var spmID = $(this).val();
             var spmActual = $(this).attr("data-spmActual");
             var spmPrice = $(this).attr("data-spmPrice");
@@ -394,7 +409,7 @@
                           readonly>
                       </div>
                       
-                      <label style="width:96%;font-size:14px;"><input type="checkbox" name="discount" id ="discount" class="discount mr-2">Add Discount</label>
+                      <label style="width:96%;font-size:14px;"><input type="checkbox" name="tiDiscount" id ="tiDiscount" class="tiDiscount mr-2">Add Discount</label>
                   </div>
               </div>
               `);
@@ -418,15 +433,11 @@
             $("#drForm").find("input[name='subtotal']").val(subtotal);
         });
 
-        $(document).on('click', '.discount', function () {
-            var subtotal = parseFloat(document.getElementById('subtotal').value);
-            if (this.checked) {
-                var disPrice = parseFloat(subtotal - (0.20 * subtotal));
+        $(document).on('change', '.tiDiscount', function () {
+                var subtotal = parseFloat(document.getElementById('subtotal').value);
+                var discount = parseFloat(document.getElementById('tiDiscount').value);
+                var disPrice = parseFloat(subtotal - (discount * subtotal));
                 $("#drForm").find("input[name='subtotal']").val(disPrice);
-            } else {
-                var disPrice = parseFloat(subtotal + (0.20 * subtotal));
-                $("#drForm").find("input[name='subtotal']").val(disPrice);
-            }
         });
 
        
@@ -554,22 +565,34 @@
                     break;
                 case "merchandise":
                     $("#drForm .ic-level-1").each(function (index) {
-                        var tiQty = parseInt($(this).find("input[name='tiQty[]']").val());
+                        var stID = $(this).find("input[name='stID']").val();
+                        var spmID = $(this).find("input[name='spmID']").val();
+                        var piID = $(this).find("input[name='piID']").val();
+                        var stQty = $(this).find("input[name='stQty']").val();
+                        var tiQty= $(this).find("input[name='tiQty']").val();
+                        var tiSubtotal= $(this).find("input[name='tiSubtotal']").val();
+                        var tiActualQty= $(this).find("input[name='tiActualQty']").val()
+                        var tiQty = parseInt($(this).find("input[name='tiQty']").val());
                         var price = parseFloat($(this).find("input[name='spmPrice[]']").val());
+                        var tiDiscount = parseInt($(this).find("input[name='tiDiscount']").val());
                         var subtotal = parseFloat(tiQty * price);
                         rTotal = parseFloat(rTotal + subtotal);
 
                         merchItems.push({
-                            stID: $(this).find("input[name='stock']").attr('data-id'),
-                            spmID: $(this).find("input[name='stock']").attr('data-spmid'),
-                            tiQty: $(this).find("input[name='tiQty[]']").val(),
-                            tiActualQty: $(this).find("input[name='tiActualQty[]']").val(),
-                            tiDate: date,
-                            tiSubtotal: $(this).find("input[name='subtotal']").val()
+                            stID: stID,
+                            stQty: stQty,
+                            tiSubtotal:tiSubtotal,
+                            spmID: spmID,
+                            piID: piID,
+                            tiQty: tiQty,
+                            tiActualQty:tiActualQty,
+                            tiDate: date
+                            tiDiscount: tiDiscount
                         });
                     });
 
                     params.data = {
+                        supplier:supplier,
                         spAltName: source,
                         date: date,
                         receipt: receipt,
@@ -696,7 +719,7 @@
         $("#list").append(`${merch.map(stock => {
             return `<label style="width:96%"><input type="checkbox" name="merch" class="choiceStock mr-2" data-spID="${stock.spID}" 
             data-spmActual="${stock.spmActual}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
-            data-stid="${stock.stID}" value="${stock.spmID}">${stock.spmName}</label>`
+            data-stID="${stock.stID}" data-piID="${stock.piID}" data-stQty="${stock.stQty}" value="${stock.spmID}">${stock.spmName}</label>`
         }).join('')}`);
         } else {
             $("#list").append(`<p>No merchandises</p>`);

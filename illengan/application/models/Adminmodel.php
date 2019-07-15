@@ -1487,22 +1487,22 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
     }
     
     //end ADD ADDONS SPOIL-----------------
-    function add_menuspoil($date_recorded,$menu,$account_id){
-        $query = "insert into menuspoil (msID,msDateRecorded) values (NULL,?)";
-        if($this->db->query($query,array($date_recorded))){ 
-            $this->add_spoiledmenu($this->db->insert_id(),$menu,$date_recorded,$account_id);
-            return true;
-        }
-    }
-    function add_spoiledmenu($msID,$menus,$date_recorded,$account_id){
-        $query = "insert into spoiledmenu (msID,prID,msQty,msDate,msRemarks) values (?,?,?,?,?)";
-        if(count($menus) > 0){
-            for($in = 0; $in < count($menus)-1 ; $in++){
-                $this->db->query($query, array($msID, $menus[$in]['prID'], $menus[$in]['msQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks']));
-                $this->add_actlog($account_id,$date_recorded, "Admin added a menu spoilage.", "add", $menus[$in]['msRemarks']);
-            }    
-        }
-    }
+    // function add_menuspoil($date_recorded,$menu,$account_id){
+    //     $query = "insert into menuspoil (msID,msDateRecorded) values (NULL,?)";
+    //     if($this->db->query($query,array($date_recorded))){ 
+    //         $this->add_spoiledmenu($this->db->insert_id(),$menu,$date_recorded,$account_id);
+    //         return true;
+    //     }
+    // }
+    // function add_spoiledmenu($msID,$menus,$date_recorded,$account_id){
+    //     $query = "insert into spoiledmenu (msID,prID,msQty,msDate,msRemarks) values (?,?,?,?,?)";
+    //     if(count($menus) > 0){
+    //         for($in = 0; $in < count($menus)-1 ; $in++){
+    //             $this->db->query($query, array($msID, $menus[$in]['prID'], $menus[$in]['msQty'],$menus[$in]['msDate'],$menus[$in]['msRemarks']));
+    //             $this->add_actlog($account_id,$date_recorded, "Admin added a menu spoilage.", "add", $menus[$in]['msRemarks']);
+    //         }    
+    //     }
+    // }
     
     function destockvarItems($stID,$curQty,$tNum){
         $query = "UPDATE stockitems 
