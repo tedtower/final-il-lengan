@@ -75,6 +75,7 @@ $route['admin/menuspoilage/loadDataMenuSpoil/(:num)'] = "adminview/loadDataMenuS
 $route['admin/menustock/loadDataMenuStock/(:num)'] = "adminview/loadDataMenuStock/$1";
 $route['admin/menuspoilage/formadd'] = "adminview/viewMenuSpoilageFormAdd";
 $route['admin/menustock/formadd'] = "adminview/viewMenuStockFormAdd";
+$route['admin/log/activity/(:num)'] = "adminview/loadActLogData/$1";
 //End Viewing Routes 
 
 //Not Sure Routes
