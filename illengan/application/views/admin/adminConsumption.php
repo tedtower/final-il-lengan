@@ -27,7 +27,6 @@
 									<th></th>
 									<th>TRANSACTION #</th>
 									<th>CONSUMPTION ITEM</th>
-									<th>QUANTITY</th>
 									<th>ACTUAL QUANTITY</th>
 									<th>DATE CONSUMED</th>
 									<th>OPERATION</th>
@@ -89,14 +88,6 @@
 													<div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                            Quantity</span>
-                                                        </div>
-                                                        <input type="number" min="1" name="updateTiQty" id="updateTiQty" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("updateTiQty"); ?></span>
-                                                    </div>
-													<div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                Actual Quantity</span>
                                                         </div>
                                                         <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
@@ -120,7 +111,6 @@
                                                         <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
                                                     </div>
 													<input name="tiActual" id="tiActual" hidden="hidden">
-													<input name="tiQty" id="tiQty" hidden="hidden">
 													<input name="stQty" id="stQty" hidden="hidden">
 													<input name="stID" id="stID" hidden="hidden">
 													<input name="ciID" id="ciID" hidden="hidden">
@@ -176,11 +166,10 @@
         }
         consumptions.forEach(table => {
             $("#consumptionTable > tbody").append(`
-			<tr class="consumptionTabletr" data-tiActual="${table.tiActual}" data-tiQty="${table.tiQty}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-ciID="${table.ciID}">
+			<tr class="consumptionTabletr" data-tiActual="${table.tiActual}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-ciID="${table.ciID}">
 				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
 				<td>${table.tiID}</td>
 				<td>${table.stName}</td>
-				<td>${table.tiQty}</td>
 				<td>${table.tiActual}</td>
 				<td>${table.tiDate}</td>
                 <td>
@@ -232,11 +221,6 @@
 					"data-ciID"));
 				$("#editConsumption").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
 					"data-tiActual"));
-				$("#editConsumption").find("input[name='updateTiQty']").val($(this).closest("tr").attr(
-					"data-tiQty"));
-				$("#editConsumption").find("input[name='tiQty']").val($(this).closest("tr").attr(
-					"data-tiQty"));
-
 				
             });
             $(".item_delete").last().on('click', function () {
@@ -269,8 +253,6 @@
     $("#editConsumption form").on('submit', function(event) {
 		event.preventDefault();
 		var tiActual = $(this).find("input[name='tiActual']").val();
-		var updateTiQty = $(this).find("input[name='updateTiQty']").val();
-		var tiQty = $(this).find("input[name='tiQty']").val();
 		var stQty = $(this).find("input[name='stQty']").val(); 
         var tiRemarks = $(this).find("input[name='tiRemarks']").val();
         var tiDate = $(this).find("input[name='tiDate']").val();
@@ -284,8 +266,6 @@
             method: "post",
             data: {
 				tiActual: tiActual,
-				tiQty:tiQty,
-				updateTiQty:updateTiQty,
 				stQty: stQty,
 				tiRemarks: tiRemarks,
 				tiDate: tiDate,
