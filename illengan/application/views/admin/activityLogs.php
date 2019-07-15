@@ -22,9 +22,22 @@
                                     <th><b class="pull-left">Date Recorded</b></th>
                                     <th><b class="pull-left">User</b></th>
                                     <th><b class="pull-left">Activity</b></th>
+                                    <th><b class="pull-left">Remarks</b></th>
                                 </tr>
                             </thead>
-                            <tbody class="stockTable ic-level-1">
+                            <tbody class="activityLogTable ic-level-1">
+                            <?php
+                                if (isset($actlogs)) {
+                                    foreach ($actlogs as $actlog) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $actlog['alDate'] ?></td>
+                                            <td><?php echo $actlog['aUserName'] ?></td>
+                                            <td><?php echo $actlog['alDesc'] ?></td>
+                                            <td><?php echo $actlog['additionalRemarks'] ?></td>
+                                        </tr>
+                                    <?php }
+                                } ?>
                             </tbody>
                         </table>
                     </div>
@@ -34,6 +47,8 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
+
+
         //Search Function
         $("stockTable input[name='search']").on("keyup", function() {
             var string = $(this).val().toLowerCase();
@@ -48,5 +63,7 @@
             });
 
         });
+
+
     </script>
 </body>

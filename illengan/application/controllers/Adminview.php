@@ -1195,7 +1195,8 @@ function getStockItem(){
             $data['title'] = "Activity Logs";
             $this->load->view('admin/templates/head',$data);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/activityLogs');
+            $data['actlogs'] = $this->adminmodel->get_activityLogs();
+            $this->load->view('admin/activityLogs', $data);
 		    
         }else {
             redirect('login');

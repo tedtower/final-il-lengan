@@ -24,6 +24,10 @@ function fetch_searchdata($query) {
  }
 
 //GET FUNCTIONS-------------------------------------------------------------------
+function get_activityLogs(){
+    $query = "SELECT alDate,alDesc,alType, additionalRemarks, aUserName from activitylog natural join accounts order by alDate desc";
+    return $this->db->query($query)->result_array();
+}
 function get_stockCard($stID){
     $query = "SELECT
                 tiID,
