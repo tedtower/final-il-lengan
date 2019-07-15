@@ -1957,7 +1957,7 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
                 } else{
                     $orderlist = array();
                     array_push($orderlist, $orlist);
-                    $this->add_salesList($osID, $orderlist, $addons);
+                    $this->add_salesList($osID, $orderlist, $addons, $osDateTime, $account_id, $action);
                 } 
             }   
         }
