@@ -34,6 +34,7 @@
 								
 								</thead>
 								<tbody id="spoilage_data">
+								
 								</tbody>
 							</table>
 							<!--End Table Content-->

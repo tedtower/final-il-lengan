@@ -193,7 +193,11 @@ function addaccounts(){
     function addMenuCategory(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $ctName = trim($this->input->post('ctName'));
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->add_menucategory($ctName);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added category $ctName .", "add", NULL);
             redirect('admin/menucategories');
         }else{
             redirect('login');
@@ -436,6 +440,7 @@ function addaccounts(){
             }
             echo 'HHAHAHAA';
     }
+}
  
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){

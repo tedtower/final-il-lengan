@@ -572,9 +572,9 @@
                 accordion += ` <div style="overflow:auto;display:none;">`;
                 accordion += `<div style="width:278px;overflow:auto;float:left;margin-right:3%;background:#bcbcbc">`;
                 if (menu[m].mImage == null) {
-                    accordion += `<img src="<?= site_url('uploads/'); ?>no_image.jpg" alt="Missing Image" style="width:278px;height:178px;border-bottom:2px solid white">`;
+                    accordion += `<img src="<?= site_url('assets/media/customer/menu/'); ?>no_image.jpg" alt="Missing Image" style="width:278px;height:178px;border-bottom:2px solid white">`;
                 } else {
-                    accordion += `<img src="<?= site_url('uploads/'); ?>` + menu[m].mImage + `" alt="Missing Image" style="width:278px;height:178px;border-bottom:2px solid white">`;
+                    accordion += `<img src="<?= site_url('assets/media/customer/menu/'); ?>` + menu[m].mImage + `" alt="Missing Image" style="width:278px;height:178px;border-bottom:2px solid white">`;
                 }
                 accordion += `<div style="margin:auto;width:90%">`;
                 accordion += ` <div style="margin:4% 0;font-size:14px;">`;
