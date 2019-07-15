@@ -110,6 +110,7 @@ $route['admin/sales/report/add'] = "adminadd/addSalesReport";
 $route['admin/returns/add'] = "adminadd/addReturns";
 $route['admin/inventory/beginning'] = "adminadd/addBeginningLogs";
 $route['admin/menuspoilage/add']= "adminadd/addMenuSpoilage";
+$route['admin/menustock/add'] = "adminadd/addMenuStock";
 
 
 //End Admin Add Routes ------------------------------------------
@@ -136,6 +137,7 @@ $route['admin/addons/spoilage/edit'] = "adminupdate/editAoSpoil";
 $route['admin/returns/edit'] = "adminupdate/editReturns";
 $route['admin/consumption/edit'] = "adminupdate/editConsumption";
 $route['admin/spoilages/menu/edit'] = "adminupdate/editMenuSpoil";
+$route['admin/menustock/edit'] = "adminupdate/editMenuStock";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------

@@ -363,19 +363,12 @@ function addaccounts(){
         }
     }
 
-    function addMenuStock(){
+   function addMenuStock(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $items = json_decode($this->input->post("items"),true);
-            $inputErr = false;
-            if($this->adminmodel->add_menuStock($items)){
-                echo json_encode(array(
-                    "inputErr" => $inputErr
-                ));
-            }else{
-                echo json_encode(array(
-                    "inputErr" => !$inputErr
-                ));
-            }
+            $items = json_decode($this->input->post('items'), true);
+            $account_id = $this->session->userdata('user_id');
+            $date =date("Y-m-d H:i:s");
+            $this->adminmodel->add_menuStock($items, $account_id, $date);
         }else{
             echo json_encode(array(
                 "sessErr" => true
