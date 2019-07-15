@@ -110,7 +110,7 @@ function viewDashboard(){
     }
 }
 function generateSalesDay(){
-    echo $this->adminmodel->getTotalSalesByDay($this->input->post('date'));
+    echo json_encode($this->adminmodel->getTotalSalesByDay($this->input->post('date')));
 }
 function viewInventory($error = null){
     if($this->checkIfLoggedIn()){

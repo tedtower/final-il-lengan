@@ -154,7 +154,7 @@ function get_totalSales($sDate, $eDate){
 //DASHBOARD GETTERS
 
 function getOSMonthByYear($year){
-    $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(osTotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
+    $query = "SELECT DATE_FORMAT(osDateTime,'%m') osMonth, DATE_FORMAT(osDateTime,'%M') osLongMonth, SUM(olQty) salesCount, SUM(olSubtotal) revenue FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y') = ? GROUP BY osMonth ORDER BY osMonth";
     return $this->db->query($query,array($year))->result_array();
 }
 function getUnavailableKitchen(){
@@ -178,8 +178,8 @@ function getMonthConsumption(){
     return $this->db->query($query,array(date('Y-m')))->result();
 }
 function getTotalSalesByDay($day){
-    $query = "SELECT SUM(osTotal) tSales FROM orderslips WHERE payStatus='paid' AND DATE_FORMAT(osDateTime,'%Y-%m-%d') = ?";
-    return $this->db->query($query,array($day))->row()->tSales;
+    $query = "SELECT ctName, COUNT(olID) olCount, SUM(olSubtotal) sCount FROM menu NATURAL JOIN categories NATURAL JOIN preferences NATURAL JOIN orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%Y-%m-%d') = ? GROUP BY ctID";
+    return $this->db->query($query,array($day))->result();
 }
 
 function get_transactions(){

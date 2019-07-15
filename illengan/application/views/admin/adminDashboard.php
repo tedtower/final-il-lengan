@@ -52,7 +52,7 @@
 
                             <!--Sales Category-->
                             <div class="row">
-                                <div class="col-md-12 col-lg-8">
+                                <div class="col-md-12 col-lg-7">
                                     <div class="card">
                                         <div class="header">
                                             <h4 class="title">Monthly Sales</h4>
@@ -72,7 +72,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 col-lg-4">
+                                <div class="col-md-12 col-lg-5">
                                     <div class="card">
                                         <div class="header">
                                             <h4 class="title">Total Sales By Custom Date <span id="csdg-load"></span></h4>
