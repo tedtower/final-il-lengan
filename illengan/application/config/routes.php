@@ -8,6 +8,7 @@ $route['logout'] = 'login/logout';
 $route['verify'] = 'login/check_cred';
 $route['admin/search'] = "adminview/searchData";
 //Viewing Routes -----------------------------------------------
+$route['admin/dashboard/generateSalesDay'] = "adminview/generateSalesDay";
 $route['admin/menu'] = "adminview/viewmenu";
 $route['admin/menu/getDetails'] = "adminview/menuGetDetails";
 $route['admin/menu/addons'] = "adminview/menuAddons";
@@ -67,6 +68,8 @@ $route['admin/stocks/loadDataUnitMeasures/(:num)'] = "adminview/loadDataUnitMeas
 $route['admin/loadDataMenu/(:num)'] = "adminview/loadDataMenu/$1";
 $route['admin/menu/loadDataMenuCategories/(:num)'] = "adminview/loadDataMenuCategories/$1";
 $route['admin/loadDataTables/(:num)'] = "adminview/loadDataTables/$1";
+$route['admin/viewDeliveryReceiptJS'] = "adminview/viewDeliveryReceiptJS";
+$route['admin/viewDeliveryReceiptItemsJS'] = "adminview/viewDeliveryReceiptItemsJS";
 $route['admin/addonspoilage/loadDataAddsSpoil/(:num)'] = "adminview/loadDataAddsSpoil/$1";
 $route['admin/menuspoilage/loadDataMenuSpoil/(:num)'] = "adminview/loadDataMenuSpoil/$1";
 $route['admin/menustock/loadDataMenuStock/(:num)'] = "adminview/loadDataMenuStock/$1";

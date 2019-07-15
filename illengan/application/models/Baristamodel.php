@@ -88,13 +88,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         function get_orderslips(){
             $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus, IFNULL(aoTotal, 0) as aoTotal from orderslips inner join orderlists using (osID) left join orderaddons on orderlists.olID = orderaddons.olID GROUP BY osID, tableCode' );
             return $query->result();
-    }
+        }
 
-    function get_oslips(){
-        $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" GROUP BY osID, tableCode' );
-        return $query->result();
+        function get_oslips(){
+            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" GROUP BY osID, tableCode' );
+            return $query->result();
 
-    }
+        }
+
+        function get_olistsID($osID){
+            $query = "SELECT prID,DATE_FORMAT('%Y-%m-%d') osDate FROM orderlists NATURAL JOIN orderslips WHERE osID = ?";
+            return $this->db->query($query,array($osID))->result();
+        }
+        function get_prefStocks(){
+            $query = $this->db->query("SELECT * FROM prefstock");
+            return $query->result();
+        }
+        function get_stockDetails($stID){
+            $query = "SELECT stQty FROM stockitems WHERE stID = ?";
+            $result = $this->db->query($query,array($stID))->result_array();
+            return $result[0];
+        }
 
         function get_orderlists($osID){
             $query = "Select olID, olDesc, olQty, olSubtotal from orderlists inner join preferences using (prID) inner join orderslips using (osID) where osID = ?";
@@ -201,9 +215,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $this->db->select('MAX(tNum) AS lastnum');
             $this->db->from('transactions');
             $this->db->where('tType', 'consumption');
-
             return $this->db->get()->row()->lastnum;
-            
+        }
+        function getLastConsumption(){
+            $this->db->select('MAX(cID) lastnum');
+            $this->db->from('consumptions');
+            return $this->db->get()->row()->lastnum;
+        }
+        function getLastConItem(){
+            $this->db->select('MAX(ciID) lastnum');
+            $this->db->from('consumed_items');
+            return $this->db->get()->row()->lastnum;
         }
         function getconsumptionItems(){
             $query="SELECT * FROM `prefstock` LEFT join stockitems using (stID)";

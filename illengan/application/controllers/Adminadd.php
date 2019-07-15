@@ -419,21 +419,24 @@ function addaccounts(){
             $dateTime = date("Y-m-d H:i:s");
             $drItems = json_decode($this->input->post('items'),true);
             $account_id = $_SESSION["user_id"];
-
            
-            $this->adminmodel->add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems);
-    }
             switch($addtype) {
-                case 1:
+                case "new":
                 $this->adminmodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);
                 break;
-                case 3:
+                case "merchandise":
+                $this->adminmodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, $source, $drItems, $addType, $account_id);
+                break;
+                case "po":
+                $this->adminmodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, $source, $drItems, $addType, $account_id);
+                break;
+                case "return":
                 $this->adminmodel->add_purchase($supplier, $receipt, "delivery", $date, $dateTime, NULL, $drItems, $addtype, $account_id);
                 break;
             }
             echo 'HHAHAHAA';
     }
- }
+ 
     function addOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $total = 0;
@@ -547,7 +550,7 @@ function addConsumption(){
             $this->adminmodel->add_beginning($date, $dateTime, $logs);
         }
     }
-}    
+}
 
 ?>
 
