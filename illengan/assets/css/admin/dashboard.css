@@ -1,56 +1,63 @@
-.card-header-1 {
-    background: #1c1ce0;
-    position: relative;
-    top: -30px;
-    left: 4%;
-    height: 75px;
-    width: 75px;
-    margin-top: 20px;
-}
+.card-counter{
+    box-shadow: 2px 2px 10px #DADADA;
+    margin: 5px;
+    padding: 20px 10px;
+    background-color: #fff;
+    height: 100px;
+    border-radius: 5px;
+    transition: .3s linear all;
+  }
 
-.card-header-2 {
-    background: #0ac70a;
-    position: relative;
-    top: -30px;
-    left: 4%;
-    height: 75px;
-    width: 75px;
-    margin-top:20px;
-}
+  .card-counter:hover{
+    box-shadow: 4px 4px 20px #DADADA;
+    transition: .3s linear all;
+  }
 
-.card-header-3 {
-    background: #8210d3;
-    position: relative;
-    top: -30px;
-    left: 4%;
-    height: 75px;
-    width: 75px;
-    margin-top:20px;
-}
+  .card-counter.primary{
+    background-color: #007bff;
+    color: #ffffff;
+  }
 
-.card-header-4 {
-    background: #ca1010;
-    position: relative;
-    top: -30px;
-    left: 4%;
-    height: 75px;
-    width: 75px;
-    margin-top:20px;
-}
+  .card-counter.danger{
+    background-color: #ef5350;
+    color: #ffffff;
+  }  
 
-.card-top {
-    margin-top: -25% !important;
-}
+  .card-counter.success{
+    background-color: #66bb6a;
+    color: #ffffff;
+  }  
 
-.card-content-text {
-    text-align: right;
-    right: -110%;
-}
+  .card-counter.info{
+    background-color: #26c6da;
+    color: #ffffff;
+  }  
 
-.card-img {
-    height: 60%;
-    width: 60%;
-    margin: auto;
+  .card-counter i{
+    font-size: 5em;
+    opacity: 0.2;
+  }
+
+  .card-counter .count-numbers{
+    position: absolute;
+    right: 35px;
+    top: 20px;
+    font-size: 32px;
     display: block;
-}
+  }
 
+  .card-counter .count-name{
+    position: absolute;
+    right: 35px;
+    top: 65px;
+    font-style: italic;
+    text-transform: capitalize;
+    opacity: 0.8;
+    display: block;
+    font-size: 18px;
+  }
+
+  .text-force-white{
+    color:white;
+    opacity: 1;
+  }

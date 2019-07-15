@@ -139,16 +139,16 @@ function addspoilagesaddons(){
         redirect('login');
     }
 }
-function addspoilagesmenu(){
+function addMenuSpoilage(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-        $this->load->model('adminmodel');
         $date_recorded = date("Y-m-d H:i:s");
+        $date = $this->input->post('date');
         $menus = json_decode($this->input->post('menus'), true);
         $account_id = $_SESSION["user_id"];
+        $tiType = "spoilage";
 
         echo json_encode($menus, true);
-        $this->adminmodel->add_menuspoil($date_recorded,$menus,$account_id);
-       
+        $this->adminmodel->add_menuspoil($date, $date_recorded,$account_id, $menus, $tiType);
     }else{
         redirect('login');
     }
@@ -339,10 +339,9 @@ function addaccounts(){
     function addImage(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $config = array(
-                'upload_path' => "./uploads/",
+                'upload_path' => "./assets/media/customer/menu",
                 'allowed_types' => "gif|jpg|png|jpeg|pdf",
-                'overwrite' => TRUE,
-                'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
+                'overwrite' => TRUE
                 );
             $this->load->library('upload', $config);
             if ( ! $this->upload->do_upload('mImage')){

@@ -23,7 +23,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary"
                                                 style="width:125px;font-size:14px;">
-                                                Date Consumed</span>
+                                                Date Spoiled</span>
                                         </div>
                                         <input class="form-control form-control-sm" name="tDate" id="tDate" type="date" class="no-border"  data-validate="required" message="Date consumed is required!"  required>
                                     </div>
@@ -143,22 +143,18 @@
             }
         });
 
-        //Search Function
-        $("#stockCard input[name='search']").on("keyup", function() {
-                var string = $(this).val().toLowerCase();
-
-                $("#stockCard .ic-level-1").each(function(index) {
-                    var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
-                    if (!text.includes(string)) {
-                        $(this).closest("tr").hide();
-                    } else {
-                        $(this).closest("tr").show();
-                    }
-                });
-
+        
+                    
+        $("#stockCard input[name='search']").on("keyup",function(){
+            var string = $(this).val();
+            $("#stockCard .addon").each(function(index){
+                if(!$(this).text().includes(string)){
+                    $(this).closest(".ic-level-1").hide();
+                }else{
+                    $(this).closest(".ic-level-1").show();
+                }
             });
-
-
+        });
         $("#conForm").on("submit", function(event){
             event.preventDefault();
             var url = $(this).attr("action");
@@ -173,10 +169,6 @@
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                 });
             });
-                if($('input[name="addon"]:checked').length == 0) {
-                        alert('No checkbox is checked');
-                        return false;
-                    }
             console.log(items);
             $.ajax({
                 method: "POST",
@@ -204,6 +196,18 @@
             });
         });
     });
+    //Search Function
+    $("#stockCard input[name='search']").on("keyup", function() {
+                var string = $(this).val().toLowerCase();
+                $("#stockCard .ic-level-1").each(function(index) {
+                    var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                    if (!text.includes(string)) {
+                        $(this).closest("tr").hide();
+                    } else {
+                        $(this).closest("tr").show();
+                    }
+                });
+            });
 
     $('#conForm').submit(function(event){
         var spoilageDate = $("#tDate").val();
