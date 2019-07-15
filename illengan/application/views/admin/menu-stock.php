@@ -33,97 +33,51 @@
                                         </tbody>
                                     </table>
                                     <div id="pagination" style="float:right"></div>
-                                <!--Start of Modal "Add Stock Spoilages"-->
-                                <div class="modal fade bd-example-modal-lg" id="addEditMenuStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
-                                    <div class="modal-dialog modal-lg" role="document">
+                                <!--Edit Spoilage-->
+                                <div class="modal fade" id="editMS" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
+                                    <div class="modal-dialog " role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Add Menu-Stock</h5>
+                                                <h5 class="modal-title" id="exampleModalLabel">Edit Menu-Stock</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <form id="formAdd" accept-charset="utf-8">
+                                            <form id="formEdit" accept-charset="utf-8">
                                                 <div class="modal-body">
-                                                    <!--Button to add launche the brochure modal-->
-                                                    <a class="addItemBtn btn btn-default btn-sm" data-toggle="modal" data-target="#brochureMenu" data-original-title style="margin:0">Add
-                                                        Menu Items</a>
-                                                    <br><br>
-                                                    <table class="stockSpoilageTable table table-sm table-borderless">
-                                                        <!--Table containing the different input fields in adding stock spoilages -->
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Menu Name</th>
-                                                                <th>Stock Name</th>
-                                                                <th>Qty</th>
-                                                                <th></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="ic-level-2">
-                                                        </tbody>
-                                                    </table>
-                                                    <!--Total of the trans items-->
-
+                                                    <!--Quantity-->
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Quantity</span>
+                                                        </div>
+                                                        <input type="number" min="1" name="qty" id="qty" class="form-control form-control-sm" required/>
+                                                    </div>
+                                                    <!--Date Spoiled-->
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                                Stock ID</span>
+                                                        </div>
+                                                         
+                                                        <input list="stocks" type="text" name="newstID" id="newstID" class="form-control form-control-sm" required/>
+                                                            <datalist id="stocks">
+                                                                <?php foreach($stocks as $s){ 
+                                                                 echo '<option value="'.$s['stID'].'">'. $s['stName'].'</option>';}?>
+                                                        </datalist>
+                                                    </div>
+                                                    <input name="prID" id="prID" hidden="hidden"/>
+                                                    <!--Footer-->
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-success btn-sm">Add</button>
+                                                        <button class="btn btn-success btn-sm" type="submit">Update</button>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                                <!--End of Modal "Add Stock Spoilage"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal" id="brochureMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Menu</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form method="post" accept-charset="utf-8">
-                                                <div class="modal-body">
-                                                    <div style="margin:1% 3%" class="ic-level-2">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-success btn-sm">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
-
-                                <!--Start of Brochure Modal"-->
-                                <div class="modal fade bd-example-modal" id="brochureStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="background:rgba(0, 0, 0, 0.3)">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Select Stock</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form method="post" accept-charset="utf-8">
-                                                <div class="modal-body">
-                                                    <div style="margin:1% 3%" class="ic-level-2">
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-success btn-sm">Ok</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Brochure Modal"-->
+                                <!--End of Edit Modal-->
                             </div>
                         </div>
                     </div>
@@ -162,7 +116,7 @@
                 var text = `<p>No items recorded!</p>`;
                 $('#menuStockTable > tbody').append(text);
             }else{
-            var row = `<tr class="menuStockTable ic-level-1" data-id1="`+item[p].prID+`" data-id2="`+item[p].stockitem+`">`;
+            var row = `<tr class="menuStockTable ic-level-1" data-id1="`+item[p].prID+`" data-id2="`+item[p].stID+`" data-qty="`+item[p].qty+`">`;
             row += ` <td>`+item[p].prefname+`</td>`;
             row += ` <td>`+item[p].stockitemname+`</td>`;
             row += ` <td>`+item[p].qty+`</td>`;
@@ -173,8 +127,42 @@
             </tr>`;
             $('#menuStockTable > tbody').append(row);
         }
+        $(".editBtn").last().on('click', function() {
+                    $("#editMS").find("input[name='prID']").val($(this).closest("tr").attr(
+                        "data-id1"));
+                    $("#editMS").find("input[name='qty']").val($(this).closest("tr").attr(
+                        "data-qty"));
+                });
     }
     }
+    $(document).ready(function() {
+            $("#editMS form").on('submit', function(event) {
+                event.preventDefault();
+                var prID = $(this).find("input[name='prID']").val();
+                var qty = $(this).find("input[name='qty']").val();
+                var stID = $(this).find("input[name='newstID']").val();
+                console.log(prID,stID,qty);
+                $.ajax({
+                    url: "<?= site_url("admin/menustock/edit") ?>",
+                    method: "post",
+                    data: {
+                        prID: prID,
+                        qty: qty,
+                        stID: stID
+                    },
+                    dataType: "json",
+                    complete: function() {
+                    //     $("#editMS").modal("hide");
+                    //     location.reload();
+                     },
+                     error: function(response, setting, error) {
+                    console.log(error);
+                    console.log(response.responseText);
+                }
+
+                });
+            });
+        });
 
                 //Search Function
                 $("#menuStockTable input[name='search']").on("keyup", function() {
