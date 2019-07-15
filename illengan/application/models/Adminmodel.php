@@ -24,9 +24,14 @@ function fetch_searchdata($query) {
  }
 
 //GET FUNCTIONS-------------------------------------------------------------------
-function get_activityLogs(){
-    $query = "SELECT alDate,alDesc,alType, additionalRemarks, aUserName from activitylog natural join accounts order by alDate desc";
+function get_activityLogs($s, $l){
+    $query = "SELECT alDate,alDesc,alType, additionalRemarks, aUserName from activitylog natural join accounts order by alDate desc LIMIT $s, $l";
     return $this->db->query($query)->result_array();
+}
+function countActLog(){
+    $query = "SELECT count(alID) as allcount from activitylog";
+    $result= $this->db->query($query)->result_array();
+    return $result[0]['allcount'];
 }
 function get_stockCard($stID){
     $query = "SELECT
@@ -1799,7 +1804,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
         return $this->db->query($query, array($con['date'], $con['dateRecorded'], $con['remarks'], $con['id']));
     }
 
-    function add_beginning($date, $dateTime, $logs){
+    function add_beginning($date, $dateTime, $logs, $user, $accountID){
         $query = "INSERT INTO reconciliation(reDate, reDateRecorded) VALUES (?,?)";
         if($this->db->query($query,array($date, $dateTime))){
             $reID = $this->db->insert_id();
@@ -1809,6 +1814,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
                     $this->set_stockQtyBeginning($logs);
                 }
             }
+        $this->add_actlog($account_id,$dateTime, "$user added perorm a physical count.", "add", NULL); 
         }
     }
 

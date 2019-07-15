@@ -26,20 +26,9 @@
                                 </tr>
                             </thead>
                             <tbody class="activityLogTable ic-level-1">
-                            <?php
-                                if (isset($actlogs)) {
-                                    foreach ($actlogs as $actlog) {
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $actlog['alDate'] ?></td>
-                                            <td><?php echo $actlog['aUserName'] ?></td>
-                                            <td><?php echo $actlog['alDesc'] ?></td>
-                                            <td><?php echo $actlog['additionalRemarks'] ?></td>
-                                        </tr>
-                                    <?php }
-                                } ?>
                             </tbody>
                         </table>
+                        <div id="pagination" style="float:right"> </div>
                     </div>
                 </div>
             </div>
@@ -47,8 +36,43 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
-
-
+     $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/log/activity/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var acts = data.actlogs;
+                setActLogData(acts);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+	}
+        
+   });
+   function setActLogData(act){
+        $("#stockTable > tbody").empty();
+        for(a in act){
+            var row = `<tr>`;
+            row += `<td>`+act[a].alDate+`</td>`;
+            row += `<td>`+act[a].aUserName+`</td>`;
+            row += `<td>`+act[a].alDesc+`</td>`;
+            row += `<td>`+act[a].additionalRemarks+`</td>`;
+            row += `</tr>`;
+        $("#stockTable > tbody").append(row);             
+        }
+   }
         //Search Function
         $("stockTable input[name='search']").on("keyup", function() {
             var string = $(this).val().toLowerCase();
