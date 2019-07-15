@@ -1554,7 +1554,7 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         return $this->db->query($query)->result_array();
     }
     function get_spoilagesmenu($s, $l){
-        $query = "Select msID,prID, mName,msQty,CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ', 
+        $query = "Select osID,msID,prID, mName,msQty,CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ', 
         CONCAT(' ',mTemp))) as prName,DATE_FORMAT(spoiledmenu.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') AS msDateRecorded,msRemarks 
         from menuspoil inner join spoiledmenu using (msID) inner join preferences using (prID) inner join menu using (mID)
         order by msDateRecorded DESC Limit $s, $l";
