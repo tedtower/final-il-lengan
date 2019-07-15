@@ -15,7 +15,6 @@
                                 <!--Table-->
                                 <div class="card-content" id="categTable">
                                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newMCategory" data-original-title style="margin:0" id="addCategroy">Add Category</button>
-                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newSCategory" data-original-title style="margin:0" id="addCategroy">Add Subcategory</button>
                                     <br>
                                     <!--Search-->
                                     <div id="categTable" style="width:25%; float:right; border-radius:5px">
@@ -64,51 +63,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="modal fade bd-example" id="newSCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-
-                                                <form id="formAdd" action="<?= site_url('admin/substockcategories/add') ?>" method="post" accept-charset="utf-8">
-                                                    <div class="modal-body">
-                                                        <div class="input-group mb-3">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                    Main Category</span>
-                                                            </div>
-                                                            <select name="subcatID" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
-                                                                <option value="">Choose</option>
-                                                                <?php if (isset($maincategory)) {
-                                                                    foreach ($maincategory as $row) {
-                                                                        ?>
-                                                                        <option value="<?php echo $row['ctID']; ?>"><?php echo $row['ctName']; ?></option>
-                                                                    <?php }
-                                                                } ?>
-                                                            </select>
-
-                                                        </div>
-                                                        <div class="input-group mb-3">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                                    Category Name</span>
-                                                            </div>
-                                                            <input type="text" name="ctName" id="ctName" class="form-control form-control-sm" required pattern="[a-zA-Z][a-zA-Z\s]*">
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
-                                                            <button class="btn btn-success btn-sm" type="submit">Add</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--End of Modal "Add Menu Category"-->
 
                                     <!--Start of Modal "Edit Transaction"-->
                                     <div class="modal fade bd-example" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">

@@ -50,6 +50,9 @@ function addStockItem(){
             $stockSize = $this->input->post('size');
             $stockID = $this->input->post('id');
             $dbErr = false;
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             if($stockID == null){
                 if(!$this->adminmodel->add_stockItem($stockCategory, $stockUom, $stockName, $stockQty, $stockMin, $stockType, $stockStatus, $stockBty, $stockLocation, $stockSize)){
                     $dbErr = true;
@@ -69,6 +72,8 @@ function addStockItem(){
                     "categories" => $this->adminmodel->get_stockSubCategories()
                 ));
             }
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a new stock item: $stockName .", "add", NULL);
+
         }
     }else{
         echo json_encode(array(
@@ -186,7 +191,7 @@ function addaccounts(){
                 'aType'=>$aType
             );
             $this->adminmodel->add_accounts($data);
-            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added account $username .", "add", NULL);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added a new account: $username .", "add", NULL);
 
             redirect('admin/accounts');
     }
@@ -197,7 +202,7 @@ function addaccounts(){
             $date_recorded = date("Y-m-d H:i:s");
             $user= $_SESSION["user_name"];
             $this->adminmodel->add_menucategory($ctName);
-            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added category $ctName .", "add", NULL);
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a menu main category: $ctName .", "add", NULL);
             redirect('admin/menucategories');
         }else{
             redirect('login');
@@ -209,7 +214,11 @@ function addaccounts(){
             $uomAbbreviation = trim($this->input->post('uomAbbreviation'));
             $uomVariant = trim($this->input->post('uomVariant'));
             $uomStore = trim($this->input->post('uomStore'));
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore);
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a unit of measurement: $uomName .", "add", NULL);
             redirect('admin/measurements');
         }else{
             redirect('login');
@@ -252,7 +261,12 @@ function addaccounts(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $ctName = trim($this->input->post('ctName'));
             $supcatID = trim($this->input->post('subcatID'));
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->add_submenucategory($ctName, $supcatID);
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a menu subcategory: $ctName .", "add", NULL);
+            
             redirect('admin/menucategories');
         }else{
             redirect('login');
@@ -261,22 +275,27 @@ function addaccounts(){
     function addStockCategory(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $ctName = $this->input->post('ctName');
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->add_stockcategory($ctName);
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a stock category: $ctName .", "add", NULL);
+
             redirect('admin/stockcategories');
         }else{
             redirect('login');
         }
     }
-    function addSubStockCategory(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $ctName = trim($this->input->post('ctName'));
-            $supcatID = trim($this->input->post('subcatID'));
-            $this->adminmodel->add_SubStockCategory($ctName, $supcatID);
-            redirect('admin/stockcategories');
-        }else{
-            redirect('login');
-        }
-    }
+    // function addSubStockCategory(){
+    //     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+    //         $ctName = trim($this->input->post('ctName'));
+    //         $supcatID = trim($this->input->post('subcatID'));
+    //         $this->adminmodel->add_SubStockCategory($ctName, $supcatID);
+    //         redirect('admin/stockcategories');
+    //     }else{
+    //         redirect('login');
+    //     }
+    // }
 
 
     function addAddon(){
@@ -285,7 +304,12 @@ function addaccounts(){
             $aoPrice = $this->input->post('aoPrice');
             $aoCategory = $this->input->post('aoCategory');
             $aoStatus = $this->input->post('aoStatus');
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->add_addon($aoName, $aoPrice, $aoCategory, $aoStatus);
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a new addon: $aoName .", "add", NULL);
+
             redirect('admin/menu/addons');
         }else{
             redirect('login');
@@ -300,6 +324,9 @@ function addaccounts(){
             $spStatus = $this->input->post('status');
             $spAddress = $this->input->post('address');
             $spMerch = json_decode($this->input->post('merchandises'),true);
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             if($this->adminmodel->add_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch)){
                 echo json_encode(array(
                     'sources' => $this->adminmodel->get_supplier(),
@@ -311,6 +338,8 @@ function addaccounts(){
                 redirect("admin/dashboard");
                 // echo json_encode(array("stock" => $stockName, "stock" => $stockCategory, "stock" => $stockStatus, "stock" => $stockType, "stock" => $stockVariance));
             }
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a new supplier: $spName .", "add", NULL);
+
         }else{
             redirect('login');
         }
@@ -325,6 +354,9 @@ function addaccounts(){
                 $status = $this->input->post('status');
                 $preference = json_decode($this->input->post('preferences'),true);
                 $addon = json_decode($this->input->post('addons'),true);
+                $account_id = $_SESSION["user_id"];
+                $date_recorded = date("Y-m-d H:i:s");
+                $user= $_SESSION["user_name"];
                 if($this->adminmodel->add_menu($mName, $mDesc, $category, $status, $preference, $addon)){
                     echo json_encode(array(
                             'menu' => $this->adminmodel->get_menu(),
@@ -335,6 +367,8 @@ function addaccounts(){
                     redirect("admin/menu");
                     // echo json_encode(array("stock" => $stockName, "stock" => $stockCategory, "stock" => $stockStatus, "stock" => $stockType, "stock" => $stockVariance));
                 }
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a new menu: $mName .", "add", NULL);
+
         }else{
             redirect("login");
         }
@@ -399,7 +433,12 @@ function addaccounts(){
             $current = date("Y-m-d H:i:s");
             $type = "purchase order";
             $poitems = json_decode($this->input->post('poitems'),true);
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->add_purchaseOrder($supplier, $date, $current, $type, $poitems);
+            $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a purchase order to $supplier .", "add", NULL);
+
         }else{
             redirect("login");
         }
@@ -435,94 +474,6 @@ function addaccounts(){
     }
 }
  
-    function addOfficialReceipt(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $total = 0;
-            $currentDate = date("Y-m-d H:i:s");
-            $transDate = $this->input->post("date");
-            $items = json_decode($this->input->post("items"),true);
-            $or = array(
-                "supplier" => $this->input->post('supplier'),
-                "supplierName" => NULL,
-                "receipt" => $this->input->post('receipt'),
-                "date" => $transDate,
-                "dateRecorded" => $currentDate,
-                "type" => "official receipt",
-                "total" => NULL,
-                "remarks" => $this->input->post('remarks')
-            );
-            $orID = $this->adminmodel->add_receiptTransaction($or);
-            foreach ($items as $item) {
-                $tiID = isset($item['tiID']) ? $item['tiID'] : NULL;
-                $or = array(
-                    "uom" => $item['uomID'],
-                    "stock" => $item['stID'],
-                    "name" => $item['name'],
-                    "price" => $item['price'],
-                    "discount" => $item['discount'],
-                    "delivery" => "complete",
-                    "payment" => 'paid',
-                    "return" => NULL,
-                    "tiQty" => $item['qty'],
-                    "perUnit" => $item['actualQty'],
-                    "actual" => $item['qty'] * $item['actualQty'],
-                    "subtotal" => ($item['price'] * $item['qty']) - $item['discount'],
-                    "tiID" => $tiID
-                );
-                if($or['tiID'] == NULL){
-                    $or['tiID'] = $this->adminmodel->add_receiptTransactionItems($or);
-                    $total += $or['subtotal'];
-                    $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
-                    $log = array(
-                        "stock" => $or['stock'],
-                        "qty" => $or['actual'],
-                        "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
-                        "actual" => NULL,
-                        "discrepancy" => NULL,
-                        "dateTime" => $transDate,
-                        "dateRecorded" => $currentDate,
-                        "remarks" => NULL
-                    );
-                    $this->adminmodel->add_restockLog($orID, $log);
-                    $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
-                }else{
-                    $po = $this->adminmodel->get_poItem($tiID);
-                    $dr = $this->adminmodel->get_drItem($tiID);
-                    $log = array(
-                        "stock" => $or['stock'],
-                        "qty" => $or['actual'],
-                        "remain" => $this->adminmodel->get_stockQty($or['stock'])[0]['stQty'] + $or['actual'],
-                        "actual" => NULL,
-                        "discrepancy" => NULL,
-                        "dateTime" => $transDate,
-                        "dateRecorded" => $currentDate,
-                        "remarks" => NULL
-                    );
-                    if(count($dr) > 0){
-                        $this->adminmodel->edit_receiptItemPayStatus($or);
-                        $total += $or['subtotal'];
-                        $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
-                    }else if(count($po) > 0){
-                        $this->adminmodel->edit_receiptItemPayStatus($or);
-                        $total += $or['subtotal'];
-                        $this->adminmodel->add_receiptTransactionItemsQty($orID, $or);
-                        $this->adminmodel->add_restockLog($orID, $log);
-                        $this->adminmodel->update_stockQty($or['stock'], $or['actual']);
-                    }else{
-                        $or['tiID'] = $this->adminmodel->add_receiptTransactionItems($or);
-                        $total += $or['subtotal'];
-                        $this->adminmodel->add_receiptTransactionItemsQty($tID, $or);
-                        $this->adminmodel->add_restockLog($log);
-                        $this->adminmodel->update_stockQty($or['stock'],$or['actual']);
-                    }
-                }
-            }
-        }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
-        }
-    }
 //-----------------------------CONSUMPTION---------------------
 function addConsumption(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -544,8 +495,10 @@ function addConsumption(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $dateTime = date("Y-m-d H:i:s");
             $date = $this->input->post('date');
+            $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
             $logs = json_decode($this->input->post('items'),true);
-            $this->adminmodel->add_beginning($date, $dateTime, $logs);
+            $this->adminmodel->add_beginning($date, $dateTime, $logs, $user, $accountID);
         }
     }
 }
