@@ -548,7 +548,7 @@ function addConsumption(){
             $this->adminmodel->add_beginning($date, $dateTime, $logs);
         }
     }
-}    
+    
 
 ?>
 
