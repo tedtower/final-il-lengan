@@ -182,7 +182,7 @@ function setMenuSpoilData(data) {
     $("#menuTable > tbody").empty();
         for(mesp in data){
             var osID;
-                if(data[mesp].osID == null){
+                if(data[mesp].osID === null){
                     osID = 'No order slip.';
                 }else{
                     osID = data[mesp].osID;
