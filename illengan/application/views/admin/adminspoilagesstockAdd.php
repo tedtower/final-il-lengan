@@ -21,16 +21,9 @@
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary" style="width:125px;font-size:14px;">
-                                                Date Consumed</span>
+                                                Date Spoiled</span>
                                         </div>
                                         <input type="date" id="tDate" class="form-control" name="tDate" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text border border-secondary" style="width:125px;font-size:14px">
-                                                Remarks</span>
-                                        </div>
-                                        <textarea type="text" name="remarks" class="form-control" rows="1"></textarea>
                                     </div>
 
                                     <div class="ic-level-3">
