@@ -909,9 +909,16 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
 //--------------CONSUMPTIONS--------------------
-function get_consumpitems(){
-    $query = "SELECT `tiID`,`tiType`,sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`ciID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'consumed' GROUP BY `ciID`,`stID`";
+function get_consumpitems($s, $l){
+    $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`ciID`,`stName`, `stQty` 
+    FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'consumed' 
+    GROUP BY `ciID`,`stID` LIMIT $s, $l";
     return  $this->db->query($query)->result_array();
+}
+function countConsump(){
+    $query = "SELECT count(tiID) as allcount from transitems WHERE tiType = 'consumed'";
+      $result = $this->db->query($query)->result_array();
+       return $result[0]['allcount'];
 }
     //--------------------------------
     function get_returns() {
