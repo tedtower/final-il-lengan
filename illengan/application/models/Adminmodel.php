@@ -824,6 +824,15 @@ function get_transitems(){
         $query = "Select *, DATE_FORMAT(osPayDateTime, '%b %d, %Y') as osPayDateTime from orderslips where payStatus = 'paid';";
         return $this->db->query($query)->result_array();
     }
+    function get_osSalesData($s, $l){
+        $query = "Select *, DATE_FORMAT(osPayDateTime, '%b %d, %Y') as osPayDateTime from orderslips where payStatus = 'paid' Limit $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countOSSales(){
+        $query = "Select count(osID) as allcount from orderslips where payStatus = 'paid';";
+        $result= $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_olSales(){
         $query = "Select * from orderlists inner join preferences using (prID) inner join menu using (mID) 
         LEFT JOIN prefstock USING (prID) LEFT JOIN stockitems USING (stID)";
