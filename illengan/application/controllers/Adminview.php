@@ -80,9 +80,9 @@ function inventoryJS(){
     }
 }
 function viewPurchItems(){
-    $piID = $this->input->post('piID');
+    $pID = $this->input->post('pID');
     // $pID = $this->input->post('pID');
-    $data =$this->adminmodel->get_purchItems($piID);
+    $data =$this->adminmodel->get_purchItems($pID);
     header('Content-Type: application/json');
     echo json_encode($data, JSON_PRETTY_PRINT);
 }
@@ -246,6 +246,7 @@ function viewDRFormAdd(){
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['returns'] = $this->adminmodel->get_retItems();
+        $data['retTrans'] = $this->adminmodel->get_returns();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');

@@ -487,7 +487,7 @@
                 </tr>
             `;
             var ordersDiv = `
-            <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
+            <div style="padding-left:40px;padding-right:40px" > <!-- Preferences table container-->
                 ${item.orders[0].orderlists.length === 0 ? "No orders" : 
                 `<caption><b>Orders</b></caption>
                 <br>
@@ -521,14 +521,8 @@
             var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                    <div style="overflow:auto;display:none" class="poAccordionContent"> <!-- container ng accordion -->
                         
-                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
-                            
-                            <div class="poAccordionContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
-                                
-                            </div>
-                        </div>
                     </div>
                 </td>
             </tr>

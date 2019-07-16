@@ -493,7 +493,7 @@
                         <tr>
                         <td>${merchandise.spmName}</td>
                         <td>${merchandise.uomName}</td>
-                        <td>${merchandise.spmActualQty}</td>
+                        <td>${merchandise.spmActual}</td>
                         <td>${merchandise.spmPrice}</td>
                         </tr> 
                         `;
