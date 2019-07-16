@@ -116,7 +116,7 @@
                             }?>
                         </datalist></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="quantity" id="quantity" required/></td>
+                                class="form-control form-control-sm" name="quantity" id="quantity" min="0" required/></td>
                     </tr>`);
                     console.log($(this));
             }else{
@@ -151,6 +151,10 @@
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                 });
             });
+                if($('input[name="menu"]:checked').length == 0) {
+                        alert('No checkbox is checked');
+                        return false;
+                    }
             console.log(items);
             // $.ajax({
             //     method: "POST",

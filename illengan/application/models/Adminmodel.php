@@ -148,7 +148,7 @@ function get_salesReport($sDate, $eDate){
 }
 
 function get_totalSales($sDate, $eDate){
-    $query = "SELECT SUM(olSubtotal) as total FROM orderslips LEFT JOIN orderlists USING(osID) WHERE payStatus = 'paid' AND osPayDateTime BETWEEN ? and ? order by olDesc ASC";
+    $query = "SELECT SUM(osTotal) as total FROM orderslips  WHERE payStatus = 'paid' AND osPayDateTime BETWEEN ? and ?";
     return $this->db->query($query, array($sDate, $eDate))->result_array();
 }
 //DASHBOARD GETTERS

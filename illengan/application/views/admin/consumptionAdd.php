@@ -172,6 +172,10 @@
                     curQty: $(this).find("input[name='curQty']").attr('data-curQty')
                 });
             });
+                if($('input[name="stock"]:checked').length == 0) {
+                    alert('No checkbox is checked');
+                    return false;
+                }
             console.log(items);
             $.ajax({
                 method: "POST",
@@ -201,7 +205,7 @@
     }); 
 
     $('#conForm').submit(function(event){
-        var consumptionDate = $("#consumptionDate").val();
+        var consumptionDate = $("#tDate").val();
         var currentDate = new Date();
         if(Date.parse(consumptionDate) > Date.parse(currentDate)){
             alert('Invalid! Date exceeds current date.');
@@ -209,15 +213,6 @@
         }
     });
 
-    
-    $('#conForm').submit(function(event){
-            var spDate = $("#tDate").val();
-            var currentDate= new Date();
-            if(Date.parse(currentDate) <= Date.parse(spDate)){
-                alert('Please check the date entered!');
-                return false;
-        }
-    });
     </script>
 </body>
 
