@@ -364,6 +364,7 @@
                 success: function (data) {
                     var poLastIndex = 0;
                     var purchorder = data;
+                    console.log(data);
                     setPOBrochure(purchorder);
 
                 },
@@ -374,6 +375,22 @@
             });
         });
 
+        function setPOBrochure(purchorder) {
+            $("#listpo").empty();
+
+            if (purchorder.length > 0) {
+                $("#listpo").append(`${purchorder.map(stock => {
+                return `<label style="width:96%"><input type="checkbox" name="purchorder" class="choiceStock mr-2"  
+                data-spID="${stock.spID}" data-spmActual="${stock.spmActual}" data-piid="${stock.piID}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
+                    data-stID="${stock.stID}" data-stQty="${stock.stQty}"  value="${stock.spmID}">${stock.spmName}</label>`
+                }).join('')}`);
+            } else {
+                $("#listpo").append(`<p>No purchases</p>`);
+            }
+
+            checkSelectedStocks();
+        }
+
         $(document).on("click", "#listpo input[name='purchorder']", function (event) {
             var spmID = $(this).val();
             var stID = $(this).attr("data-stID");
@@ -382,7 +399,7 @@
             var spmActual = $(this).attr("data-spmActual");
             var spmPrice = $(this).attr("data-spmPrice");
             var spID = $(this).attr("data-spID");
-            
+            var piID = $(this).attr("data-piid");
             // console.log("spmID "+spmID);
             // console.log("spmName "+ spmName);
             // console.log("stQty" +stQty);
@@ -397,7 +414,7 @@
                    <div style="float:left;width:96%;overflow:auto;">
                        <div class="input-group mb-1">
                        <input type="text" name="spmName" class="form-control form-control-sm" value="${spmName}"
-                           style="width:17%" readonly>
+                           style="width:17%" data-piid="${piID}" readonly>
                         <input type="hidden" name="spmID"
                            class="form-control form-control-sm" placeholder="spmID" id="spmID" value="${spmID}">
                         <input type="hidden" name="spID"
@@ -616,7 +633,7 @@
                     }
                     break;
 
-                case "purchaseorder":
+                case "po":
                     $("#drForm .ic-level-1").each(function (index) {
                         var stID = $(this).find("input[name='stID']").val();
                         var spmID = $(this).find("input[name='spmID']").val();
@@ -625,10 +642,12 @@
                         var tiSubtotal= $(this).find("input[name='tiSubtotal']").val();
                         var tiActualQty= $(this).find("input[name='tiActualQty']").val()
                         var price = parseFloat($(this).find("input[name='spmPrice']").val());
+                        var piID = parseInt($(this).find("input[name='spmName']").data("piid"));
                         var tiDiscount = parseInt($(this).find("input[name='tiDiscount']").val());
                         rTotal = parseFloat(rTotal + tiSubtotal);
 
                         purItems.push({
+                            piID: piID,
                             stID: stID,
                             stQty: stQty,
                             tiSubtotal:tiSubtotal,
@@ -743,22 +762,6 @@
             $("#list").append(`<p>No merchandises</p>`);
         }
 
-        checkSelectedStocks();
-    }
-
-    function setPOBrochure(purchorder) {
-        $("#listpo").empty();
-        
-        if(purchorder.length > 0) {
-            $("#listpo").append(`${purchorder.map(stock => {
-                return `<label style="width:96%"><input type="checkbox" name="purchorder" class="choiceStock mr-2"  
-                data-spID="${stock.spID}" data-spmActual="${stock.spmActual}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
-                    data-stID="${stock.stID}" data-stQty="${stock.stQty}"  value="${stock.spmID}">${stock.spmName}</label>`
-                }).join('')}`);
-        } else {
-            $("#listpo").append(`<p>No purchases</p>`);
-        }
-       
         checkSelectedStocks();
     }
 

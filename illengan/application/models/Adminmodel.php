@@ -2170,32 +2170,35 @@ function add_consumptionitems($ciID,$stocks,$date){
         $query = "INSERT INTO st_recon (reID, stID, reQty, reRemain, reDiscrepancy, reRemarks) VALUES (?, ?, ?, ?, ?, ?)";
         return $this->db->query($query,array($rei["reID"], $rei["stock"], $rei["qty"], $rei["remain"], $rei["discrepancy"], $rei["remarks"]));
     }
-    // function add_purchase($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName, $items, $addtype, $accountID){
-    //     $query = "INSERT INTO `purchases`(spID, receiptNo, pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
-    //     if($this->db->query($query, array($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName))) {
-    //         $this->add_dItem($this->db->insert_id(), $items, $addtype, $accountID);
-    //     }
-    // }
+    function add_purchase($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName, $items, $addtype, $accountID){
+        $query = "INSERT INTO `purchases`(spID, receiptNo, pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
+        if($this->db->query($query, array($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName))) {
+            $this->add_dItem($this->db->insert_id(), $items, $addtype, $accountID);
+        }
+    }
 
     function add_dItem($pID, $items, $addtype, $accountID) {
         $query = "INSERT INTO purchase_items (piStatus) VALUES (?)";
         for($in = 0; $in < count($items) ; $in++){
-            $this->db->query($query, array('delivered'));
-            $piID = $this->db->insert_id();
-            $this->add_purItem($pID, $piID); 
-            
+            if(!isset($items[$in]["piID"])) {
+                $this->db->query($query, array('delivered'));
+                $piID = $this->db->insert_id();
+                $this->add_purItem($pID, $piID); 
+            }
+
             switch($addtype) {
                 case "new":
                 $this->add_drtransitems("restock", $items[$in]["qty"], $items[$in]["qty"], $items[$in]["qty"], NULL, NULL,
                 $items[$in]["date"], $items[$in]["stID"] ,NULL, $piID, NULL, NULL, NULL, $accountID, "add");
                 break;
-                case "po":
+                case "merchandise":
                 $this->add_drtransitems("restock", $items[$in]["tiQty"], $items[$in]["tiActualQty"], $items[$in]["tiActualQty"], 
-                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $items[$in]["stID"],NULL, $piID, NULL, NULL, NULL, $accountID, "add");
+                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $items[$in]["stID"],$items[$in]["spmID"], $piID, NULL, NULL, NULL, $accountID, "add");
                 break;
                 case "po":
                 $this->add_drtransitems("restock", $items[$in]["tiQty"], $items[$in]["tiActualQty"], $items[$in]["tiActualQty"], 
-                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $items[$in]["stID"],NULL, $piID, NULL, NULL, NULL, $accountID, "add");
+                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $items[$in]["stID"],$items[$in]["spmID"], $items[$in]["piID"], NULL,
+                NULL, NULL, $accountID, "add");
                 break;
                 case "return":
                 $this->add_drtransitems("restock", $items[$in]["tiQty"], $items[$in]["tiActualQty"], $items[$in]["tiActual"], 
@@ -2203,8 +2206,11 @@ function add_consumptionitems($ciID,$stocks,$date){
                 $piID, $items[$in]["riID"], NULL, NULL, $accountID, "add");
                 break;
             }
+            
             if(isset($items[$in]['riID'])) {
-            $this->resolve_returns($items[$in]['riID'], $items[$in]["receipt"], $piID);
+             $this->resolve_returns($items[$in]['riID'], $items[$in]["receipt"], $piID);
+            } else if(isset($items[$in]['piID'])) {
+             $this->resolve_po($items[$in]['piID']); 
             }
         }
         
@@ -2218,7 +2224,6 @@ function add_consumptionitems($ciID,$stocks,$date){
         $return = "SELECT tiQty FROM transitems WHERE riID = ? ";
         $returnQty = intval($this->db->query($return, $riID)->row()->tiQty);
         $string = 'riID '.$riID.' sumQty '.$sumQty.' returnQtyResolve '.$returnQty; 
-        print_r($string);
 
             if($sumQty == $returnQty) {
                 print_r('echooo');
@@ -2232,7 +2237,25 @@ function add_consumptionitems($ciID,$stocks,$date){
             }
 
         }
-        
+    
+    function resolve_po($piID) {
+        $query = "UPDATE purchase_items SET piStatus = ? WHERE piID = ?";
+
+        $sum = "SELECT SUM(tiQty) as sumQty FROM transitems WHERE piID = ? AND tiType = 'purchase order' GROUP BY piID";
+        $sumQty = intval($this->db->query($sum, $piID)->row()->sumQty);
+        $delivery = "SELECT tiQty FROM transitems INNER JOIN (SELECT max(tiID) as maxTrans, piID WHERE piID = ? AND tiType = 'restock') as po USING (piID)";
+        $delQty = intval($this->db->query($delivery, $piID)->row()->tiQty);
+        $string = 'riID '.$riID.' sumQty '.$sumQty.' returnQtyResolve '.$returnQty; 
+      
+        if($sumQty == $delQty) {
+            print_r('echooo');
+            $this->db->query($query, array('delivered', $piID));
+        } else if($sumQty > $returnQty) {
+            return false;
+        } else {
+            $this->db->query($query, array('partially delivered', $piID));
+        }
+    }
 
     function update_piStatus($status, $piID) {
         $query = "UPDATE purchase_items SET piStatus = ? WHERE piID = ?";
