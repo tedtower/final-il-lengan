@@ -27,7 +27,6 @@
 									<th></th>
 									<th>TRANSACTION #</th>
 									<th>CONSUMPTION ITEM</th>
-									<th>QUANTITY</th>
 									<th>ACTUAL QUANTITY</th>
 									<th>DATE CONSUMED</th>
 									<th>OPERATION</th>
@@ -37,6 +36,7 @@
 								
 								</tbody>
 							</table>
+							<div id="pagination" style="float:right"></div>
 							<!--End Table Content-->
 
 							<!--Delete Confirmation Box-->
@@ -89,14 +89,6 @@
 													<div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                            Quantity</span>
-                                                        </div>
-                                                        <input type="number" min="1" name="updateTiQty" id="updateTiQty" class="form-control form-control-sm" required>
-                                                        <span class="text-danger"><?php echo form_error("updateTiQty"); ?></span>
-                                                    </div>
-													<div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                Actual Quantity</span>
                                                         </div>
                                                         <input type="number" min="1" name="actualQtyUpdate" id="actualQtyUpdate" class="form-control form-control-sm" required>
@@ -120,7 +112,6 @@
                                                         <span class="text-danger"><?php echo form_error("ssRemarks"); ?></span>
                                                     </div>
 													<input name="tiActual" id="tiActual" hidden="hidden">
-													<input name="tiQty" id="tiQty" hidden="hidden">
 													<input name="stQty" id="stQty" hidden="hidden">
 													<input name="stID" id="stID" hidden="hidden">
 													<input name="ciID" id="ciID" hidden="hidden">
@@ -146,45 +137,43 @@
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
 <script>
-	var consumptions = [];
-	$(function() {
-		viewConsumptions();
-
-
-	//POPULATE TABLE
-	var table = $('#consumptionTable');
-	
-	function viewConsumptions() {
-        $.ajax({
-            url: "<?= site_url('admin/jsonConsumptions') ?>",
-            method: "post",
-            dataType: "json",
-            success: function(data) {
-                consumptions = data;
-                setConsumptionData(consumptions);
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(response.responseText);
-                console.log(errorThrown);
-            }
-        });
-	}
+	$(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
 	});
-	function setConsumptionData() {
-        if ($("#consumptionTable> tbody").children().length > 0) {
-            $("#consumptionTable> tbody").empty();
-        }
-        consumptions.forEach(table => {
-            $("#consumptionTable > tbody").append(`
-			<tr class="consumptionTabletr" data-tiActual="${table.tiActual}" data-tiQty="${table.tiQty}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-ciID="${table.ciID}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-				<td>${table.tiID}</td>
-				<td>${table.stName}</td>
-				<td>${table.tiQty}</td>
-				<td>${table.tiActual}</td>
-				<td>${table.tiDate}</td>
-                <td>
-                        <!--Action Buttons-->
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadConsumptionData/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var cons = data.consumption;
+				console.log(cons);
+                setConsumptionData(cons);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+	}
+        
+   });
+	function setConsumptionData(table) {
+            $("#consumptionTable > tbody").empty();
+			for(t in table){
+			var row=`<tr class="consumptionTabletr" data-tiActual="`+table[t].tiActual+`" data-stQty="${table.stQty}" data-tiRemarks="`+table[t].tiRemarks+`" data-tiDate="`+table[t].tiDate+`" data-stID="`+table[t].stID+`" data-ciID="`+table[t].ciID+`">`;
+				row += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>`;
+				row += `<td>`+table[t].tiID+`</td>`;
+				row += `<td>`+table[t].stName+`</td>`;
+				row += `<td>`+table[t].tiActual+`</td>`;
+				row += `<td>`+table[t].tiDate+`</td>`;
+                row += `<td>`;
+				row += ` <!--Action Buttons-->
                         <div class="onoffswitch">
 
                             <!--Edit button-->
@@ -195,18 +184,22 @@
                             data-target="#deleteConsumption">Archive</button>                      
                         </div>
                     </td>
-				</tr>`);
+				</tr>`;
+                       
 
-			var accordion = `
-            <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="7"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-							<b style="float:left;">Remarks: </b><!-- label-->
-								<p style="float:left;margin-left:2%">
-								${table.tiRemarks == null || table.tiRemarks == '' ?  "No remarks." : table.tiRemarks}
+			var accordion = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+            	accordion += ` <td colspan="7">`;
+                accordion += `<div style="overflow:auto;display:none">`;
+                accordion += `<div style="overflow:auto;">`;
+				accordion += `<div style="margin:0 46px;overflow:auto;">`;
+				accordion += `<b style="float:left;">Remarks: </b>`;
+				accordion += `<p style="float:left;margin-left:2%">`;
+				if(table[t].tiRemarks == null || table[t].tiRemarks == ''){
+					accordion += `No remarks.`;
+				}else{
+					accordion += table[t].tiRemarks;
+				}
+				accordion += `
                                 </p>
                             </div> 
                         </div>
@@ -214,7 +207,8 @@
                 </td>
             </tr>
             `;
-			
+			$("#consumptionTable > tbody").append(row);
+			$("#consumptionTable > tbody").append(accordion);
 			
 			$(".updateBtn").last().on('click', function () {
 				
@@ -232,11 +226,6 @@
 					"data-ciID"));
 				$("#editConsumption").find("input[name='actualQtyUpdate']").val($(this).closest("tr").attr(
 					"data-tiActual"));
-				$("#editConsumption").find("input[name='updateTiQty']").val($(this).closest("tr").attr(
-					"data-tiQty"));
-				$("#editConsumption").find("input[name='tiQty']").val($(this).closest("tr").attr(
-					"data-tiQty"));
-
 				
             });
             $(".item_delete").last().on('click', function () {
@@ -249,8 +238,8 @@
 				$("#deleteConsumption").find("input[name='tID']").val($(this).closest("tr").attr(
                     "data-tID"));
             });
-			$("#consumptionTable > tbody").append(accordion);
-		});
+			
+		};
 		$(".accordionBtn").on('click', function(){
             if($(this).closest("tr").next(".accordion").css("display") == 'none'){
                 $(this).closest("tr").next(".accordion").css("display","table-row");
@@ -269,8 +258,6 @@
     $("#editConsumption form").on('submit', function(event) {
 		event.preventDefault();
 		var tiActual = $(this).find("input[name='tiActual']").val();
-		var updateTiQty = $(this).find("input[name='updateTiQty']").val();
-		var tiQty = $(this).find("input[name='tiQty']").val();
 		var stQty = $(this).find("input[name='stQty']").val(); 
         var tiRemarks = $(this).find("input[name='tiRemarks']").val();
         var tiDate = $(this).find("input[name='tiDate']").val();
@@ -284,8 +271,6 @@
             method: "post",
             data: {
 				tiActual: tiActual,
-				tiQty:tiQty,
-				updateTiQty:updateTiQty,
 				stQty: stQty,
 				tiRemarks: tiRemarks,
 				tiDate: tiDate,
