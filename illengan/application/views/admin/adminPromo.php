@@ -391,7 +391,8 @@
             $('#addNewPromo').submit(function(event) {
                 var startDate = $("#pmStartDate").val();
                 var endDate = $("#pmEndDate").val();
-                if (Date.parse(endDate) < Date.parse(startDate)) {
+                var currentDate = new Date();
+                if (Date.parse(endDate) < Date.parse(startDate) || Date.parse(currentDate) < Date.parse(startDate) ) {
                     alert('Incorrect Date Range!');
                     return false;
                 }

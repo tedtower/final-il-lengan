@@ -166,6 +166,12 @@
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                 });
             });
+
+            if($('input[name="addon"]:checked').length == 0) {
+                alert('No checkbox is checked');
+                return false;
+            }
+
             console.log(items);
             $.ajax({
                 method: "POST",
