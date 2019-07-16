@@ -256,12 +256,9 @@ function viewDRFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         if(is_numeric($id)){
             $head['title'] = "Inventory - Edit Delivery";
-            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/head2', $head);
             $this->load->view('admin/templates/sideNav');
-            $data['dr'] = $this->adminmodel->get_receiptTransaction($id);
-            $data['stocks'] = $this->adminmodel->get_stocks();
-            $data['returns'] = $this->adminmodel->get_retItems();
-            $this->load->view('admin/deliveryReceiptEdit',$data);
+            $this->load->view('admin/deliveryReceiptEdit');
         }else{
             redirect('admin/deliveryreceipt');
         }
