@@ -78,6 +78,8 @@ $route['admin/menustock/formadd'] = "adminview/viewMenuStockFormAdd";
 $route['admin/log/activity/(:num)'] = "adminview/loadActLogData/$1";
 $route['admin/loadDataSpoilagesStock/(:num)'] = "adminview/loadDataSpoilagesStock/$1";
 $route['admin/loadConsumptionData/(:num)'] = "adminview/loadConsumptionData/$1";
+$route['admin/loadDataSales/(:num)'] = "adminview/loadDataSales/$1";
+$route['admin/loadDataPurchaseOrder/(:num)'] = "adminview/loadDataPurchaseOrder/$1";
 //End Viewing Routes 
 
 //Not Sure Routes
@@ -265,7 +267,9 @@ $route['barista/jsonConsumptions'] = "barista/jsonConsumptions";
 $route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
 $route['barista/consumption/add'] = "barista/addConsumption";
 $route['barista/consumption/edit'] = "barista/editConsumption";
-
+$route['barista/loadDataSpoilagesStock/(:num)'] = "barista/loadDataSpoilagesStock/$1";
+$route['barista/addonspoilage/loadDataAddsSpoil/(:num)'] = "barista/loadDataAddsSpoil/$1";
+$route['barista/loadConsumptionData/(:num)'] = "barista/loadConsumptionData/$1";
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
 // $route['barista/pendingOrdersJS'] ="barista/pendingOrdersJS";

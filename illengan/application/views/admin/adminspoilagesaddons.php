@@ -93,7 +93,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Date Spoiled</span>
                                                         </div>
-                                                        <input type="date" name="aosDate" id="aosDate" class="form-control form-control-sm" required>
+                                                        <input type="date" name="aosDate" id="aosDate" class="form-control form-control-sm" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                                         <span class="text-danger"><?php echo form_error("aosDate"); ?></span>
                                                     </div>
                                                     <div class="input-group mb-3">
@@ -153,10 +153,10 @@
         
    });
         function setSpoilagesData(adds) {
-                $("#addonTable> tbody").empty();
+                $("#addonTable > tbody").empty();
                 for(ao in adds){
                     var row1 = `<tr class="addonTable ic-level-1" data-aoID="`+adds[ao].aoID+`" data-aosID="`+adds[ao].aosID+`" data-aosQty="`+adds[ao].aosQty+`"  data-aosDate="`+adds[ao].aosDate+`"  data-aosRemarks="`+adds[ao].aosRemarks+`" data-spoilname="`+adds[ao].aoName+`"  >`;
-                    row1 += `	<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
+                    row1 += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
                     row1 += `<td>`+adds[ao].aoCategory+`</td>`;
                     row1 += `<td>`+adds[ao].aosQty+`</td>`;
                     row1 += `<td>`+adds[ao].aosDate+`</td>`;

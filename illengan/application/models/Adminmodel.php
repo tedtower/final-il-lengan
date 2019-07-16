@@ -157,7 +157,7 @@ function get_salesReport($sDate, $eDate){
 }
 
 function get_totalSales($sDate, $eDate){
-    $query = "SELECT SUM(olSubtotal) as total FROM orderslips LEFT JOIN orderlists USING(osID) WHERE payStatus = 'paid' AND osPayDateTime BETWEEN ? and ? order by olDesc ASC";
+    $query = "SELECT SUM(osTotal) as total FROM orderslips  WHERE payStatus = 'paid' AND osPayDateTime BETWEEN ? and ?";
     return $this->db->query($query, array($sDate, $eDate))->result_array();
 }
 //DASHBOARD GETTERS
@@ -179,7 +179,7 @@ function getTopTenMenu(){
     return $this->db->query($query,array(date('Y')))->result();
 }
 function getTodaySales(){
-    $query = "SELECT DATE_FORMAT(osDateTime,'%d') osDay, SUM(olQty) salesCount, SUM(osTotal) sales FROM orderlists NATURAL JOIN orderslips WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%d-%m-%Y') = ? GROUP BY osDay ORDER BY osDay";
+    $query = " SELECT  DATE_FORMAT(osDateTime,'%d') osDay, SUM(osTotal) as sales, COUNT(osID) as numOS, items.mitems as salesCount FROM orderslips LEFT JOIN (SELECT osID, COUNT(olID) as mitems FROM orderlists LEFT JOIN orderslips USING (osID) GROUP BY CAST(osPayDateTime as date)) as items USING (osID) WHERE payStatus = 'paid' AND DATE_FORMAT(osDateTime,'%d-%m-%Y') = ? GROUP BY 1";
     return $this->db->query($query,array(date('d-m-Y')))->result();
 }
 function getMonthConsumption(){
@@ -568,7 +568,7 @@ function get_transitems(){
             spmID,
             spmName,
             spmPrice,
-            spmActualQty,
+            spmActual,
             spID,
             spName
         FROM
@@ -824,6 +824,15 @@ function get_transitems(){
         $query = "Select *, DATE_FORMAT(osPayDateTime, '%b %d, %Y') as osPayDateTime from orderslips where payStatus = 'paid';";
         return $this->db->query($query)->result_array();
     }
+    function get_osSalesData($s, $l){
+        $query = "Select *, DATE_FORMAT(osPayDateTime, '%b %d, %Y') as osPayDateTime from orderslips where payStatus = 'paid' Limit $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countOSSales(){
+        $query = "Select count(osID) as allcount from orderslips where payStatus = 'paid';";
+        $result= $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_olSales(){
         $query = "Select * from orderlists inner join preferences using (prID) inner join menu using (mID) 
         LEFT JOIN prefstock USING (prID) LEFT JOIN stockitems USING (stID)";
@@ -902,7 +911,7 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
     function get_stocktransitems() {
-        $query = "SELECT ti.stID, ti.tiID, tri.tiQty, trans.tDate, ti.rRemarks,trans.supplierName,trans.receiptNo, pf.prstQty, sp.spID, sp.spmID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActualQty, sp.spmPrice, tr.tID
+        $query = "SELECT ti.stID, ti.tiID, tri.tiQty, trans.tDate, ti.rRemarks,trans.supplierName,trans.receiptNo, pf.prstQty, sp.spID, sp.spmID, sp.spmName, uom.uomID, uom.uomName, st.stQty, sp.spmActual, sp.spmPrice, tr.tID
         FROM `transitems` ti INNER JOIN trans_items tri USING (tiID) INNER JOIN transactions trans USING (tID) 
         INNER JOIN uom USING (uomID) INNER JOIN suppliermerchandise sp USING (stID) INNER JOIN stockitems st USING (stID) 
         LEFT JOIN prefstock pf USING (stID) LEFT JOIN transactions tr USING (tID) WHERE trans.tType = 'delivery receipt' ORDER BY 4";
@@ -1381,7 +1390,7 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
                 stID = ?,
                 uomID = ?,
                 spmName = ?,
-                spmActualQty = ?,
+                spmActual = ?,
                 spmPrice = ?
             WHERE
                 spmID = ?;";
@@ -2331,6 +2340,15 @@ function add_consumptionitems($ciID,$stocks,$date){
     function get_purchaseOrders(){
         $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, DATE_FORMAT(pDate, '%b %d, %Y') as transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC";
         return $this->db->query($query)->result_array();
+    }
+    function get_purchaseOrdersData($s, $l){
+        $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, DATE_FORMAT(pDate, '%b %d, %Y') as transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC LIMIT $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countPurchOrd(){
+        $query = "SELECT count(pID) AS allcount FROM purchases WHERE pType = 'purchase order'";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     
     function get_purchaseOrderItems(){

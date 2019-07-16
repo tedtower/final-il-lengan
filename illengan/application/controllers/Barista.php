@@ -7,6 +7,8 @@ class Barista extends CI_Controller{
         parent:: __construct();      
         date_default_timezone_set('Asia/Manila');        
         $this->load->model('baristamodel');  
+        $this->load->helper('url');
+        $this->load->library('pagination');
         // code for getting current date : date("Y-m-d")
         // code for getting current date and time : date("Y-m-d H:i:s")
     }
@@ -382,7 +384,7 @@ class Barista extends CI_Controller{
             $account_id = $_SESSION["user_id"];
 
             $this->baristamodel->edit_aospoilage($aoID,$aosID,$aosQty,$aosDate,$aosRemarks,$date_recorded);
-            $this->baristamodel->add_actlog($account_id,$date_recorded, "Barista updated an addon spoilage.", "update", $aosRemarks);
+            $this->baristamodel->add_actlog($account_id,$date_recorded, "Admin updated an addon spoilage.", "update", $aosRemarks);
         }else{
             redirect('login');
         } 
@@ -411,6 +413,63 @@ class Barista extends CI_Controller{
             redirect('login');
         }
         }
+        function loadDataSpoilagesStock($record=0) {
+            $recordPerPage = 10;
+            if($record != 0){
+                $record = ($record-1) * $recordPerPage;
+            }      	
+            $recordCount = $this->baristamodel->countSpoiledStock();
+            $ssRecord = $this->baristamodel->get_spoilagesstock($record,$recordPerPage);
+            $config['base_url'] = base_url().'barista/loadDataSpoilagesStock';
+            $config['full_tag_open'] = '<ul class="pagination">';
+            $config['full_tag_close'] = '</ul>';
+            $config['last_tag_open'] = '<li class="page-link">';
+            $config['last_tag_close'] = '</li>';
+            $config['first_tag_open'] = '<li class="page-link">';
+            $config['first_tag_close'] = '</li>';
+            $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+            $config['num_tag_close'] = '&nbsp;</li>';
+            $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+            $config['cur_tag_close'] = '</li>';
+            $config['use_page_numbers'] = TRUE;
+            $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+            $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+            $config['total_rows'] = $recordCount;
+            $config['per_page'] = $recordPerPage;
+            $this->pagination->initialize($config);
+            $data['pagination'] = $this->pagination->create_links();
+            $data['stckspoiled'] = $ssRecord;
+            echo json_encode($data);		
+        }
+        function loadDataAddsSpoil($record=0) {
+            $recordPerPage = 10;
+            if($record != 0){
+                $record = ($record-1) * $recordPerPage;
+            }      	
+            $recordCount = $this->baristamodel->countRecAddsSpoil();
+            $aoRecord = $this->baristamodel->get_addspoil($record,$recordPerPage);
+            $config['base_url'] = base_url().'barista/addonspoilage/loadDataAddsSpoil';
+            $config['full_tag_open'] = '<ul class="pagination">';
+            $config['full_tag_close'] = '</ul>';
+            $config['last_tag_open'] = '<li class="page-link">';
+            $config['last_tag_close'] = '</li>';
+            $config['first_tag_open'] = '<li class="page-link">';
+            $config['first_tag_close'] = '</li>';
+            $config['num_tag_open'] = '<li class="page-link" style="padding:7px 10px 7px 10px;">&nbsp;';
+            $config['num_tag_close'] = '&nbsp;<li>';
+            $config['cur_tag_open'] = '<li  class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+            $config['cur_tag_close'] = '</li>';
+            $config['use_page_numbers'] = TRUE;
+            $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+            $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+            $config['total_rows'] = $recordCount;
+            $config['per_page'] = $recordPerPage;
+            $this->pagination->initialize($config);
+            $data['pagination'] = $this->pagination->create_links();
+            $data['addspoiled'] = $aoRecord;
+            echo json_encode($data);		
+               
+        }
     function viewSpoilagesStock(){
             if($this->checkIfLoggedIn()){
                 $data['title'] = "Spoilages - Stock";
@@ -433,54 +492,54 @@ class Barista extends CI_Controller{
         }
         }
         function editStockSpoil(){
-                if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-        
-                    
-                    $tiActual = $this->input->post('tiActual');
-                    $actualQtyUpdate = $this->input->post('actualQtyUpdate');
-                    $updateTiQty = $this->input->post('updateTiQty');
-                    $tiQty = $this->input->post('tiQty');
-                    $stQty = $this->input->post('stQty');
-                    $tiRemarks = $this->input->post('tiRemarks');
-                    $tiDate = $this->input->post('tiDate');
-                    $stID= $this->input->post('stID');
-                    $siID = $this->input->post('siID');
-        
-                    $tiType = "spoilage";
-                    $date_recorded = date("Y-m-d H:i:s");
-                    $user= $_SESSION["user_name"];
-                    $account_id= $_SESSION["user_id"];
-                    $updatedActual = $actualQtyUpdate - $tiActual;
-                    $updatedQty = $updateTiQty - $tiQty;
-        
-                    if($tiActual > $actualQtyUpdate){
-                        $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                        $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $siID);
-                        $this->baristamodel->update_stock($stID, $updateQtyl);
-                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-                                        
-                    }else if($tiActual < $actualQtyUpdate) {
-                            $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                            $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $siID);
-                            $this->baristamodel->update_stock($stID, $updateQtyh);
-                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-        
-                    }else{
-                        if($tiQty == $updateTiQty){
-                            $this->baristamodel->add_stocktransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
-                            $this->baristamodel->update_stock($stID, $stQty);
-                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-                        }else{
-                            $this->baristamodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $siID);
-                            $this->baristamodel->update_stock($stID, $stQty);
-                            $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-                        }
-                    }
-                   
+            if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+    
+                
+                $tiActual = $this->input->post('tiActual');
+                $actualQtyUpdate = $this->input->post('actualQtyUpdate');
+                $updateTiQty = $this->input->post('updateTiQty');
+                $tiQty = $this->input->post('tiQty');
+                $stQty = $this->input->post('stQty');
+                $tiRemarks = $this->input->post('tiRemarks');
+                $tiDate = $this->input->post('tiDate');
+                $stID= $this->input->post('stID');
+                $siID = $this->input->post('siID');
+    
+                $tiType = "spoilage";
+                $date_recorded = date("Y-m-d H:i:s");
+                $user= $_SESSION["user_name"];
+                $account_id= $_SESSION["user_id"];
+                $updatedActual = $actualQtyUpdate - $tiActual;
+                $updatedQty = $updateTiQty - $tiQty;
+    
+                if($tiActual > $actualQtyUpdate){
+                    $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
+                    $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiDate,$tiRemarks, $stID, $siID);
+                    $this->baristamodel->update_stock($stID, $updateQtyl);
+                    $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+                                    
+                }else if($tiActual < $actualQtyUpdate) {
+                        $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
+                        $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiDate,$tiRemarks,$stID, $siID);
+                        $this->baristamodel->update_stock($stID, $updateQtyh);
+                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+    
                 }else{
-                    redirect('login');
-                } 
-            }
+                    if($tiQty == $updateTiQty){
+                        $this->baristamodel->add_stocktransitems($tiType,0,0,$stQty,$tiDate,$tiRemarks, $stID, $siID);
+                        $this->baristamodel->update_stock($stID, $stQty);
+                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+                    }else{
+                        $this->baristamodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiDate,$tiRemarks, $stID, $siID);
+                        $this->baristamodel->update_stock($stID, $stQty);
+                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+                    }
+                }
+               
+            }else{
+                redirect('login');
+            } 
+        }
             function addspoilagesstock(){
                 if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
                     $date_recorded = date("Y-m-d H:i:s");
@@ -700,6 +759,34 @@ class Barista extends CI_Controller{
         }
     }
     //-----------------------------CONSUMPTION---------------------
+    function loadConsumptionData($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->baristamodel->countConsump();
+        $conRecord = $this->baristamodel->get_consumpitems($record,$recordPerPage);
+        $config['base_url'] = base_url().'barista/loadConsumptionData';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['consumption'] = $conRecord;
+        echo json_encode($data);		
+    }
     function jsonConsumptions() {
         if($this->checkIfLoggedIn()){
             $data=$this->baristamodel->get_consumpitems();
@@ -747,47 +834,36 @@ function addConsumption(){
 }
 function editConsumption(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-
         
         $tiActual = $this->input->post('tiActual');
         $actualQtyUpdate = $this->input->post('actualQtyUpdate');
-        $updateTiQty = $this->input->post('updateTiQty');
-        $tiQty = $this->input->post('tiQty');
         $stQty = $this->input->post('stQty');
         $tiRemarks = $this->input->post('tiRemarks');
         $tiDate = $this->input->post('tiDate');
         $stID= $this->input->post('stID');
         $ciID = $this->input->post('ciID');
-
         $tiType = "consumed";
         $date_recorded = date("Y-m-d H:i:s");
         $user= $_SESSION["user_name"];
         $account_id= $_SESSION["user_id"];
         $updatedActual = $actualQtyUpdate - $tiActual;
-        $updatedQty = $updateTiQty - $tiQty;
-
         if($tiActual > $actualQtyUpdate){
             $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-            $this->baristamodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
+            $this->baristamodel->add_consumptiontransitems($tiType,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
             $this->baristamodel->update_stock($stID, $updateQtyl);
             $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                             
         }else if($tiActual < $actualQtyUpdate) {
                 $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                $this->baristamodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->baristamodel->add_consumptiontransitems($tiType,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
                 $this->baristamodel->update_stock($stID, $updateQtyh);
                 $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-
+        
         }else{
-            if($tiQty == $updateTiQty){
-                $this->baristamodel->add_consumptiontransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->baristamodel->add_consumptiontransitems($tiType,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
                 $this->baristamodel->update_stock($stID, $stQty);
                 $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-            }else{
-                $this->baristamodel->add_consumptiontransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
-                $this->baristamodel->update_stock($stID, $stQty);
-                $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-            }
+            
         }
        
     }else{

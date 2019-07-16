@@ -32,67 +32,9 @@
                                         <th><b class="pull-left">Actions</b></th>
                                     </thead>
                                     <tbody class="transTable ic-level-2">
-                                        <?php if(isset($pos[0])){
-                                        foreach($pos as $po){
-                                    ?>
-                                        <tr class="ic-level-1" data-id="<?= $po['id']?>">
-                                            <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn"
-                                                        src="/assets/media/admin/down-arrow%20(1).png"
-                                                        style="height:15px;width: 15px" /></a><?=  $po['id'];?>
-                                            </td>
-                                            <td><?= $po['supplierName']?></td>
-                                            <td><?= $po['transDate']?></td>
-                                            <td>&#8369; <?=$po['total']?></td>
-                                            <td>
-                                                <a class="editBtn btn btn-sm btn-secondary"
-                                                    href="<?= site_url('admin/purchaseorder/formedit/')?><?= $po['id']?>">Edit</a>
-                                                <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
-                                                    data-target="#deletePO">Archive</button>
-                                            </td>
-                                        </tr>
-                                        <tr class="accordion" style="display:none">
-                                            <td colspan="5">
-                                                <div class="container" style="display:none">
-                                                    <div>Date
-                                                        Recorded:<?= $po['dateRecorded'] == null ? "No recorded date." : $po['dateRecorded']?>
-                                                    </div>
-                                                    <div>
-                                                        <!-- Remarks:<?= $transaction['remarks'] == null ? "None" : $transaction['remarks']?> -->
-                                                    </div>
-
-                                                    <table class="table table-bordered">
-                                                        <thead class="thead-light">
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Qty</th>
-                                                                <th>Actual Qty</th>
-                                                                <th>Price</th>
-                                                                <th>Subtotal</th>
-                                                                <th>Delivery Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?php foreach($poitems as $poitem){
-                                                            if($poitem['pID'] == $po['id']){?>
-                                                                <td><?= $poitem['spmName']?></td>
-                                                                <td><?= $poitem['qty']?></td>
-                                                                <td><?= $poitem['actual']?></td>
-                                                                <td>&#8369; <?= $poitem['spmPrice']?></td>
-                                                                <td>&#8369; <?= $poitem['subtotal']?></td>
-                                                                <td><?= $poitem['piStatus']?></td>
-                                                            </tr>
-                                                            <?php }
-                                                        }?>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                        }
-                                    }?>
                                     </tbody>
                                 </table>
+                                <div id="pagination" style="float:right"></div>
                                 <!--End Table Content-->
 
                                 <!--Start of Modal "Delete PO"-->
@@ -140,6 +82,109 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
+    $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadDataPurchaseOrder/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var po = data.purOrd;
+                var poi =data.poitems;
+                console.log(po);
+                setSpoilagesData(po, poi);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+	}
+        
+   });
+   function setSpoilagesData(po, poi) {
+                $("#transTable > tbody").empty();
+                for(p in po){
+                    var row = ` <tr class="ic-level-1" data-id="`+po[p].id+`">`;
+                        row +=`<td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png"
+                        style="height:15px;width: 15px" /></a>`+po[p].id+`</td>`;
+                        row +=`<td>`+po[p].supplierName+`</td>`;
+                        row +=`<td>`+po[p].transDate+`</td>`;
+                        row +=`<td>&#8369;`+po[p].total+`</td>`;
+                        row +=` <td>
+                                    <a class="editBtn btn btn-sm btn-secondary" href="<?= site_url()?>admin/purchaseorder/formedit/`+po[p].id+`">Edit</a>
+                                    <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
+                                                    data-target="#deletePO">Archive</button>
+                                </td> </tr>`;
+                var ordItems = poi.filter(function(o){
+                    return o.pID == po[p].id
+                });
+
+                    var poitems = `<div>Date Recorded:&nbsp;`;
+                    if(po[p].dateRecorded == null){
+                        poitems +=` No recorded date.`;
+                                    
+                    }else{
+                        poitems += po[p].dateRecorded;
+                    }
+                        poitems += `</div>`;
+                        poitems +=`<table class="table table-bordered">`;
+                        poitems +=`<thead class="thead-light"><tr>`;
+                        poitems +=`<th>Name</th>
+                                    <th>Qty</th>
+                                    <th>Actual Qty</th>
+                                    <th>Price</th>
+                                    <th>Subtotal</th>
+                                    <th>Delivery Status</th></tr> </thead>`;
+                        poitems +=`<tbody>`;
+                for(oi in ordItems){
+                        poitems +=`<tr><td>`+ordItems[oi].spmName+`</td>`;
+                        poitems +=`<td>`+ordItems[oi].qty+`</td>`;
+                        poitems +=`<td>`+ordItems[oi].actual+`</td>`;
+                        poitems +=`<td>&#8369; `+ordItems[oi].spmPrice+`</td>`;
+                        poitems +=`<td>&#8369; `+ordItems[oi].subtotal+`</td>`;
+                        poitems +=`<td>`+ordItems[oi].piStatus+`</td></tr>`;
+                        }
+                        poitems +=`</tbody>`;
+                        poitems +=`</table>`;
+                        poitems +=`</div></td></tr>`;
+                    
+            var accordion = `
+                    <tr class="accordion" style="display:none">
+                        <td colspan="6"> <!-- table row ng accordion -->
+                            <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                                <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
+                                    <div class="poItemsContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    `;
+
+            $("#transTable > tbody").append(row);
+            $("#transTable > tbody").append(accordion);
+            $(".poItemsContent").last().append(poitems);
+            
+        }
+            $(".accordionBtn").on('click', function() {
+            if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+                $(this).closest("tr").next(".accordion").css("display", "table-row");
+                $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+            } else {
+                $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+                $(this).closest("tr").next(".accordion").hide("slow");
+            }
+        });
+               
+    }
     var stocks = [];
     var supplier = [];
     var suppmerch = [];
@@ -176,15 +221,6 @@
             }).join('')}`);
 
     }
-    $(".accordionBtn").on('click', function() {
-        if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
-            $(this).closest("tr").next(".accordion").css("display", "table-row");
-            $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
-        } else {
-            $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
-            $(this).closest("tr").next(".accordion").hide("slow");
-        }
-    });
 
     //Search Function
     $("#transTable input[name='search']").on("keyup", function() {

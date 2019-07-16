@@ -10,7 +10,7 @@
           <li class="nav-item mr-2">
           <a class="nav-link" href="<?php echo base_url().'chef'?>"><i class="fal fa-tasks"></i> Orders</a>
           </li>
-          <li class="nav-item dropdown mr-2">
+          <!-- <li class="nav-item dropdown mr-2">
               <a class="nav-link dropdown-toggle" id="menu-dd" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fal fa-boxes"></i> Inventory</a>
               <div class="dropdown-menu dropdown-default elegant-color c-focus" aria-labelledby="menu-dd">
                   <a class="dropdown-item" href="<?php echo base_url('chef/consumption')?>"><i class="far fa-truck-loading"></i> Consumption</a>
@@ -23,7 +23,7 @@
                   <a class="dropdown-item" href="<?php echo base_url('chef/spoilages/menu')?>"><i class="fal fa-utensils-alt"></i> Menu Spoilage</a>
                   <a class="dropdown-item" href="<?php echo base_url('chef/spoilages/stock')?>"><i class="fal fa-box-open"></i> Stock Spoilage</a>
               </div>
-          </li>
+          </li> -->
         </ul>
        <ul class="navbar-nav delius">
           <li class="nav-item" >
