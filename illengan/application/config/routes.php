@@ -79,6 +79,7 @@ $route['admin/log/activity/(:num)'] = "adminview/loadActLogData/$1";
 $route['admin/loadDataSpoilagesStock/(:num)'] = "adminview/loadDataSpoilagesStock/$1";
 $route['admin/loadConsumptionData/(:num)'] = "adminview/loadConsumptionData/$1";
 $route['admin/loadDataSales/(:num)'] = "adminview/loadDataSales/$1";
+$route['admin/loadDataPurchaseOrder/(:num)'] = "adminview/loadDataPurchaseOrder/$1";
 //End Viewing Routes 
 
 //Not Sure Routes
