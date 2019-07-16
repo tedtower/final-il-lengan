@@ -13,11 +13,11 @@
                     <div class="content">
                         <div class="container-fluid">
                             <!--Table-->
-                            <div class="card-content" id="transTable">
+                            <div class="card-content">
                                 <a class="addReturnsbtn btn btn-primary btn-sm" href="<?= site_url('admin/returns/formadd') ?>" style="margin:0">Add Return</a>
                                 <br>
                                 <!--Search-->
-                                <div id="transTable" style="width:25%; float:right; border-radius:5px">
+                                <div style="width:25%; float:right; border-radius:5px">
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                 </div>
                                 <br><br>
@@ -336,7 +336,6 @@
             url: '/admin/jsonReturns',
             dataType: 'json',
             success: function(data) {
-                var poLastIndex = 0;
                 $.each(data.returns, function(index, items) {
                     returns.push({
                         "returns": items
@@ -353,84 +352,17 @@
                 console.log(response.responseText);
             }
         });
-
-        $(".addReturnStock").on('click', function() {
-            var spID = parseInt($(this).closest('.modal').find('.spID').val());
-            setBrochureContent(suppmerch.filter(sm => sm.spID == spID));
-        });
     });
 
-    function setBrochureContent(suppstocks) {
-        $("#list").empty();
-        $("#list").append(`<table class="table"><thead>
-                    <th></th>
-                    <th>Receipt No.</th>
-                    <th>Date</th>
-                    <th>Stock</th>
-                </thead><tbody></tbody></table>`);
-
-        $("#list").find('table > tbody').append(`${suppstocks.map(st => {
-            return ` <tr><td><input type="checkbox" id="spmID${st.spmID}" name="stockitems" onchange="disableReceipts(this)" 
-            class="${st.receiptNo} receipts stockitems mr-2" value="${st.stID}" data-receipt="${st.receiptNo}"></td>
-                    <td>${st.receiptNo}</td>
-                    <td>${st.tDate}</td>
-                    <td>${st.spmName}</td></tr>`
-        }).join('')}`);
-
-        disableSelected();
-    }
-
-    function disableReceipts(checkbox) {
-        var receiptNo = $(checkbox).data('receipt');
-        var checkboxes = $("input[name='stockitems']");
-        console.log(receiptNo);
-        if ($(checkbox).prop('checked')) {
-            $(checkbox).addClass('checked');
-            for (var i = 0; i <= checkboxes.length - 1; i++) {
-                console.log(!($(checkboxes).eq(i).hasClass(receiptNo)));
-                if ($(checkboxes).eq(i).data("receipt") !== receiptNo) {
-                    $(checkboxes).eq(i).attr('disabled', "disabled");
-                }
-            }
-        } else {
-            $(checkboxes).removeAttr('disabled');
-            $(checkbox).removeClass('checked');
-        }
-
-        disableSelected();
-    }
-
-    function disableSelected() {
-        var receiptNo = $("input[name='receiptNo']").eq(0).val();
-        var checkboxes = $("input[name='stockitems']");
-
-        if ($('.returnElements') != 0 || $('.returnElements') != null) {
-            var addedItems = $('.returnElements').find('#spmID');
-            for (var i = 0; i <= addedItems.length - 1; i++) {
-                var id = addedItems[i].value;
-                $('#spmID' + id).attr("disabled", "disabled");
-                $('#spmID' + id).attr("checked", "checked");
-                $('#spmID' + id).removeAttr("class");
-
-            }
-        }
-        if (parseInt(receiptNo) !== 0) {
-            for (var i = 0; i <= checkboxes.length - 1; i++) {
-                if ($(checkboxes).eq(i).data("receipt") !== receiptNo) {
-                    $(checkboxes).eq(i).attr('disabled', "disabled");
-                }
-            }
-        }
-    }
 
     function showTable() {
         returns.forEach(function(item) {
             var tableRow = `
-                <tr class="table_row" data-id="${item.returns.rID}">   <!-- table row ng table -->
-                    <td class="ic-level-1"><a href="javascript:void(0)" class="ml-2 mr-4">
+                <tr class="table_row ic-level-1" data-id="${item.returns.rID}">   <!-- table row ng table -->
+                    <td><a href="javascript:void(0)" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
                     ${item.returns.rID}</td>                    
-                    <td>${item.returns.spAltName}</td>
+                    <td>${jQuery.trim(item.returns.spAltName) == "" ? item.returns.spName : item.returns.spAltName }</td>
                     <td>${item.returns.rDate}</td>
                     <td>${item.returns.rTotal}</td>
                     <td>
@@ -571,11 +503,13 @@
     });
 
     //Search Function
-    $("#transTable input[name='search']").on("keyup", function() {
+    $("input[name='search']").on("keyup", function() {
         var string = $(this).val().toLowerCase();
-
+        
         $("#transTable .ic-level-1").each(function(index) {
             var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+            console.log(text);
+
             if (!text.includes(string)) {
                 $(this).closest("tr").hide();
             } else {

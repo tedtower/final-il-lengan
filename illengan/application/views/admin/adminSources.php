@@ -108,7 +108,7 @@
                                                                 <th width="20%">Unit</th>
                                                                 <th width="13%">Actual Qty</th>
                                                                 <th width="13%">Price</th>
-                                                                <th width="26%">Variance</th>
+                                                                <th width="26%">Stock</th>
                                                                 <th width="2%"></th>
                                                             </tr>
                                                         </thead>
@@ -201,7 +201,7 @@
                                                             <th width="20%">Unit</th>
                                                             <th width="13%">Actual Qty</th>
                                                             <th width="13%">Price</th>
-                                                            <th width="26%">Variance</th>
+                                                            <th width="26%">Variants</th>
                                                             <th width="2%"></th>
                                                         </tr>
                                                     </thead>

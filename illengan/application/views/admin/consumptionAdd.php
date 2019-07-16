@@ -42,7 +42,6 @@
                                             <thead style="border-bottom:2px solid #cccccc;font-size:14px">
                                                 <tr>
                                                     <th style="font-weight:500 !important;">Stock Item</th>
-                                                    <th width="17%" style="font-weight:500 !important;">Quantity</th>
                                                     <th width="17%" style="font-weight:500 !important;">Actual Quantity</th>
                                                     <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
@@ -132,8 +131,6 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
                         <td style="padding:1% !important"><input type="number" min= "1"
-                                class="form-control form-control-sm" name="tiQty"></td>
-                        <td style="padding:1% !important"><input type="number" min= "1"
                                 class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
@@ -166,7 +163,6 @@
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
-                    tiQty: $(this).find("input[name='tiQty']").val(),
                     actualQty: $(this).find("input[name='actualQty']").val(),
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
                     curQty: $(this).find("input[name='curQty']").attr('data-curQty')

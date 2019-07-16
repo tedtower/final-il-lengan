@@ -132,17 +132,21 @@ function loadDataStocks($record=0) {
         $record = ($record-1) * $recordPerPage;
     }      	
     $recordCount = $this->adminmodel->record_count();
-    $stkRecord = $this->adminmodel->get_invstocks($record,$recordPerPage);
+    $stkRecord = $this->adminmodel->get_invstocks($record, $recordPerPage);
     $config['base_url'] = base_url().'admin/stocks/loadDataStocks';
     $config['full_tag_open'] = '<ul class="pagination">';
-    $config['full_tag_close'] = '<ul>';
-    $config['num_tag_open'] = '<li class="page-item">&nbsp;';
-    $config['num_tag_close'] = '&nbsp;<li>';
-    $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+    $config['full_tag_close'] = '</ul>';
+    $config['last_tag_open'] = '<li class="page-link">';
+    $config['last_tag_close'] = '</li>';
+    $config['first_tag_open'] = '<li class="page-link">';
+    $config['first_tag_close'] = '</li>';
+    $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;</li>';
+    $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
     $config['cur_tag_close'] = '</li>';
     $config['use_page_numbers'] = TRUE;
-    $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-    $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+    $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+    $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
     $config['total_rows'] = $recordCount;
     $config['per_page'] = $recordPerPage;
     $this->pagination->initialize($config);
@@ -352,20 +356,25 @@ function loadDataTables($record=0){
         $tabRecord = $this->adminmodel->get_dattables($record,$recordPerPage);
         $config['base_url'] = base_url().'admin/loadDataTables';
         $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '<ul>';
-        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
-        $config['num_tag_close'] = '&nbsp;<li>';
-        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
         $config['cur_tag_close'] = '</li>';
         $config['use_page_numbers'] = TRUE;
-        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
         $config['total_rows'] = $recordCount;
         $config['per_page'] = $recordPerPage;
         $this->pagination->initialize($config);
         $data['pagination'] = $this->pagination->create_links();
         $data['tabs'] = $tabRecord;
         echo json_encode($data);
+
 }
 function getEnumValsForStock(){
     if($this->checkIfLoggedIn()){
@@ -661,6 +670,34 @@ function viewSpoilagesStock(){
         redirect('login');
     }
     }
+function loadDataSpoilagesStock($record=0) {
+    $recordPerPage = 10;
+    if($record != 0){
+        $record = ($record-1) * $recordPerPage;
+    }      	
+    $recordCount = $this->adminmodel->countSpoiledStock();
+    $ssRecord = $this->adminmodel->get_spoilagesstock($record,$recordPerPage);
+    $config['base_url'] = base_url().'admin/loadDataSpoilagesStock';
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['last_tag_open'] = '<li class="page-link">';
+    $config['last_tag_close'] = '</li>';
+    $config['first_tag_open'] = '<li class="page-link">';
+    $config['first_tag_close'] = '</li>';
+    $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;</li>';
+    $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+    $config['cur_tag_close'] = '</li>';
+    $config['use_page_numbers'] = TRUE;
+    $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+    $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+    $config['total_rows'] = $recordCount;
+    $config['per_page'] = $recordPerPage;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    $data['stckspoiled'] = $ssRecord;
+    echo json_encode($data);		
+}
 
 function viewSpoilagesMenu(){
     if($this->checkIfLoggedIn()){
@@ -683,14 +720,18 @@ function loadDataMenuSpoil($record=0) {
     $msRecord = $this->adminmodel->get_spoilagesmenu($record,$recordPerPage);
     $config['base_url'] = base_url().'admin/menuspoilage/loadDataMenuSpoil';
     $config['full_tag_open'] = '<ul class="pagination">';
-    $config['full_tag_close'] = '<ul>';
-    $config['num_tag_open'] = '<li class="page-item" style="padding:7px 10px 7px 10px;">&nbsp;';
-    $config['num_tag_close'] = '&nbsp;<li>';
-    $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+    $config['full_tag_close'] = '</ul>';
+    $config['last_tag_open'] = '<li class="page-link">';
+    $config['last_tag_close'] = '</li>';
+    $config['first_tag_open'] = '<li class="page-link">';
+    $config['first_tag_close'] = '</li>';
+    $config['num_tag_open'] = '<li class="page-link" style="padding:7px 10px 7px 10px;">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;</li>';
+    $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
     $config['cur_tag_close'] = '</li>';
     $config['use_page_numbers'] = TRUE;
-    $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-    $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+    $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+    $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
     $config['total_rows'] = $recordCount;
     $config['per_page'] = $recordPerPage;
     $this->pagination->initialize($config);
@@ -741,20 +782,25 @@ function loadDataAddsSpoil($record=0) {
     $aoRecord = $this->adminmodel->get_addspoil($record,$recordPerPage);
     $config['base_url'] = base_url().'admin/addonspoilage/loadDataAddsSpoil';
     $config['full_tag_open'] = '<ul class="pagination">';
-    $config['full_tag_close'] = '<ul>';
-    $config['num_tag_open'] = '<li class="page-item" style="padding:7px 10px 7px 10px;">&nbsp;';
+    $config['full_tag_close'] = '</ul>';
+    $config['last_tag_open'] = '<li class="page-link">';
+    $config['last_tag_close'] = '</li>';
+    $config['first_tag_open'] = '<li class="page-link">';
+    $config['first_tag_close'] = '</li>';
+    $config['num_tag_open'] = '<li class="page-link" style="padding:7px 10px 7px 10px;">&nbsp;';
     $config['num_tag_close'] = '&nbsp;<li>';
-    $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+    $config['cur_tag_open'] = '<li  class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
     $config['cur_tag_close'] = '</li>';
     $config['use_page_numbers'] = TRUE;
-    $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-    $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+    $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+    $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
     $config['total_rows'] = $recordCount;
     $config['per_page'] = $recordPerPage;
     $this->pagination->initialize($config);
     $data['pagination'] = $this->pagination->create_links();
     $data['addspoiled'] = $aoRecord;
     echo json_encode($data);		
+       
 }
 function getStockItem(){
     if($this->checkIfLoggedIn()){
@@ -870,20 +916,25 @@ function getStockItem(){
         $prefRecord = $this->adminmodel->get_prefStocks($record,$recordPerPage);
         $config['base_url'] = base_url().'admin/loadDataMenu';
         $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '<ul>';
-        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
-        $config['num_tag_close'] = '&nbsp;<li>';
-        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
         $config['cur_tag_close'] = '</li>';
         $config['use_page_numbers'] = TRUE;
-        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
         $config['total_rows'] = $recordCount;
         $config['per_page'] = $recordPerPage;
         $this->pagination->initialize($config);
         $data['pagination'] = $this->pagination->create_links();
         $data['prefstocks'] = $prefRecord;
         echo json_encode($data);		
+	
     }
     function viewMenuStockFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -925,14 +976,18 @@ function getStockItem(){
         $menuRecord = $this->adminmodel->get_menuData($record,$recordPerPage);
         $config['base_url'] = base_url().'admin/loadDataMenu';
         $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '<ul>';
-        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
         $config['num_tag_close'] = '&nbsp;<li>';
-        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
         $config['cur_tag_close'] = '</li>';
         $config['use_page_numbers'] = TRUE;
-        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
         $config['total_rows'] = $recordCount;
         $config['per_page'] = $recordPerPage;
         $this->pagination->initialize($config);
@@ -941,7 +996,8 @@ function getStockItem(){
         $data['addons'] = $this->adminmodel->get_addons2();
         $data['categories'] = $this->adminmodel->get_menucategories();
         $data['menu'] = $menuRecord;
-        echo json_encode($data);		
+        echo json_encode($data);	
+       
     }
     function menuAddons(){
         if($this->checkIfLoggedIn()){
@@ -987,14 +1043,18 @@ function getStockItem(){
         $catRecord = $this->adminmodel->get_mencat($record,$recordPerPage);
         $config['base_url'] = base_url().'admin/menu/loadDataMenuCategories';
         $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '<ul>';
-        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
-        $config['num_tag_close'] = '&nbsp;<li>';
-        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
         $config['cur_tag_close'] = '</li>';
         $config['use_page_numbers'] = TRUE;
-        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
         $config['total_rows'] = $recordCount;
         $config['per_page'] = $recordPerPage;
         $this->pagination->initialize($config);
@@ -1024,14 +1084,18 @@ function getStockItem(){
         $uomRecord = $this->adminmodel->get_uomData($record,$recordPerPage);
         $config['base_url'] = base_url().'admin/stocks/loadDataUnitMeasures';
         $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '<ul>';
-        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
-        $config['num_tag_close'] = '&nbsp;<li>';
-        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
         $config['cur_tag_close'] = '</li>';
         $config['use_page_numbers'] = TRUE;
-        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';    
         $config['total_rows'] = $recordCount;
         $config['per_page'] = $recordPerPage;
         $this->pagination->initialize($config);
@@ -1064,8 +1128,8 @@ function getStockItem(){
     }
     function viewDeliveryReceiptJS(){
         if($this->checkIfLoggedIn()){
-        // ['drs'] 
-            $data= $this->adminmodel->get_deliveryReceipts();
+        $data['dr']= $this->adminmodel->get_deliveryReceipts();
+        $data['drItems']= $this->adminmodel->get_deliveryItems();
             echo json_encode($data);
         }else{
             redirect('login');
@@ -1142,6 +1206,34 @@ function getStockItem(){
             redirect('login');
         }
     }
+    function loadConsumptionData($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countConsump();
+        $conRecord = $this->adminmodel->get_consumpitems($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/loadConsumptionData';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['consumption'] = $conRecord;
+        echo json_encode($data);		
+    }
     function viewConsumptionFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $head['title'] = "Inventory - Add Consumption";
@@ -1154,17 +1246,46 @@ function getStockItem(){
         }
     }
     //---------------------------------------------------------
-    function viewActivityLog() {
+     function viewActivityLog() {
         if($this->checkIfLoggedIn()){
             $data['title'] = "Activity Logs";
             $this->load->view('admin/templates/head',$data);
             $this->load->view('admin/templates/sideNav');
+            //$data['actlogs'] = $this->adminmodel->get_activityLogs();
             $this->load->view('admin/activityLogs');
 		    
         }else {
             redirect('login');
         }
     }
+    function loadActLogData($record=0) {
+            $recordPerPage = 10;
+            if($record != 0){
+                $record = ($record-1) * $recordPerPage;
+            }      	
+            $recordCount = $this->adminmodel->countActLog();
+            $actRecord = $this->adminmodel->get_activityLogs($record,$recordPerPage);
+            $config['base_url'] = base_url().'admin/loadActLogData';
+            $config['full_tag_open'] = '<ul class="pagination">';
+            $config['full_tag_close'] = '</ul>';
+            $config['last_tag_open'] = '<li class="page-link">';
+            $config['last_tag_close'] = '</li>';
+            $config['first_tag_open'] = '<li class="page-link">';
+            $config['first_tag_close'] = '</li>';
+            $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+            $config['num_tag_close'] = '&nbsp;</li>';
+            $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+            $config['cur_tag_close'] = '</li>';
+            $config['use_page_numbers'] = TRUE;
+            $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+            $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+            $config['total_rows'] = $recordCount;
+            $config['per_page'] = $recordPerPage;
+            $this->pagination->initialize($config);
+            $data['pagination'] = $this->pagination->create_links();
+            $data['actlogs'] = $actRecord;
+            echo json_encode($data);		
+        }
 
     function viewStockCategories(){
         if($this->checkIfLoggedIn()){
@@ -1186,16 +1307,20 @@ function getStockItem(){
         }      	
         $recordCount = $this->adminmodel->countCat();
         $catRecord = $this->adminmodel->get_stkcat($record,$recordPerPage);
-        $config['base_url'] = base_url().'admin/stocks/loadDataCategories';
+        $config['base_url'] = base_url().'admin/stocks/loadDataCategories';  
         $config['full_tag_open'] = '<ul class="pagination">';
-        $config['full_tag_close'] = '<ul>';
-        $config['num_tag_open'] = '<li class="page-item">&nbsp;';
-        $config['num_tag_close'] = '&nbsp;<li>';
-        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
         $config['cur_tag_close'] = '</li>';
         $config['use_page_numbers'] = TRUE;
-        $config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
-        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
         $config['total_rows'] = $recordCount;
         $config['per_page'] = $recordPerPage;
         $this->pagination->initialize($config);

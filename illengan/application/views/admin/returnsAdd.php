@@ -117,7 +117,7 @@
                             data-stid="${del.stID}"  data-actual="${del.spmActual}" 
                             data-price="${del.spmPrice}"  data-spmid="${del.spmID}"
                              value="${del.stID}"></td>
-                    <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spAltName}' 
+                    <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spName}' 
                     data-spid="${del.spID}">${del.trans}</td>
                     <td class="item" data-stid='${del.stID}'>${del.item}</td>
                 </tr>`

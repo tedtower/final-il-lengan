@@ -74,14 +74,31 @@ class Adminupdate extends CI_Controller{
             $pID = $this->input->post('id');
             $date = $this->input->post('date');
             $current = date("Y-m-d H:i:s");
+            $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
             $poitems = json_decode($this->input->post('poitems'),true);
             $this->adminmodel->edit_purchaseOrder($date, $current, $pID);
             $this->adminmodel->edit_pItem($poitems);
             $this->adminmodel->edit_potransitem($poitems);
+            $this->adminmodel->add_actlog($account_id, $current, "$user updated a purchase order. .", "add", NULL);
+
         }else{
             redirect("login");
         }
 
+    }
+    function editMenuStock(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $prID = $this->input->post('prID');
+            $stID = $this->input->post('stID');
+            $qty = $this->input->post('qty');
+            $account_id = $this->session->userdata('user_id');
+            $date_recorded = date("Y-m-d H:i:s");
+            $this->adminmodel->edit_menuStock($prID, $stID, $qty);
+           $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a prefstock.", "update", "");
+        }else{
+            redirect("login");
+        }
     }
     
     function editStockSpoil(){
@@ -172,8 +189,6 @@ class Adminupdate extends CI_Controller{
             
             $tiActual = $this->input->post('tiActual');
             $actualQtyUpdate = $this->input->post('actualQtyUpdate');
-            $updateTiQty = $this->input->post('updateTiQty');
-            $tiQty = $this->input->post('tiQty');
             $stQty = $this->input->post('stQty');
             $tiRemarks = $this->input->post('tiRemarks');
             $tiDate = $this->input->post('tiDate');
@@ -184,28 +199,23 @@ class Adminupdate extends CI_Controller{
             $user= $_SESSION["user_name"];
             $account_id= $_SESSION["user_id"];
             $updatedActual = $actualQtyUpdate - $tiActual;
-            $updatedQty = $updateTiQty - $tiQty;
             if($tiActual > $actualQtyUpdate){
                 $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
+                $this->adminmodel->add_consumptiontransitems($tiType,$updatedActual,$updateQtyl,$tiRemarks,$tiDate, $stID, $ciID);
                 $this->adminmodel->update_stock($stID, $updateQtyl);
                 $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
                                 
             }else if($tiActual < $actualQtyUpdate) {
                     $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                    $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
+                    $this->adminmodel->add_consumptiontransitems($tiType,$updatedActual,$updateQtyh,$tiRemarks,$tiDate, $stID, $ciID);
                     $this->adminmodel->update_stock($stID, $updateQtyh);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
+            
             }else{
-                if($tiQty == $updateTiQty){
-                    $this->adminmodel->add_consumptiontransitems($tiType,0,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
+                    $this->adminmodel->add_consumptiontransitems($tiType,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
                     $this->adminmodel->update_stock($stID, $stQty);
                     $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-                }else{
-                    $this->adminmodel->add_consumptiontransitems($tiType,$updatedQty,0,$stQty,$tiRemarks,$tiDate, $stID, $ciID);
-                    $this->adminmodel->update_stock($stID, $stQty);
-                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a consumption.", "update", $tiRemarks);
-                }
+                
             }
            
         }else{
@@ -265,7 +275,12 @@ class Adminupdate extends CI_Controller{
             $ctID = $this->input->post('ctID');
             $ctName = $this->input->post('new_name');
             $ctStatus = $this->input->post('new_status');
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->edit_category($ctName, $ctStatus, $ctID);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated the stock category: $ctName.", "update", NULL);
+
             redirect('admin/stockcategories');
         }else{
             redirect('login');
@@ -281,6 +296,9 @@ class Adminupdate extends CI_Controller{
             $spEmail= $this->input->post('email');
             $spStatus = $this->input->post('status');
             $spAddress = $this->input->post('address');
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $spMerch = json_decode($this->input->post('merchandises'),true);
             if($this->adminmodel->edit_supplier($spName, $spContactNum, $spEmail, $spStatus, $spAddress, $spMerch, $spID)){
                 echo json_encode(array(
@@ -290,6 +308,8 @@ class Adminupdate extends CI_Controller{
                     'uom' => $this->adminmodel->get_uom()
                 ));
             }
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated the supplier details of $spName.", "update", NULL);
+
         }else{
             redirect('login');
         }
@@ -303,6 +323,9 @@ class Adminupdate extends CI_Controller{
             $mAvailability = $this->input->post('status');
             $preference = json_decode($this->input->post('preferences'),true);
             $addon = json_decode($this->input->post('addons'),true);
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             if($this->adminmodel->edit_menu($mName, $mDesc, $mCat, $mAvailability, $preference, $addon, $mID)){
                 echo json_encode(array(
                     'menu' => $this->adminmodel->get_menu(),
@@ -311,6 +334,8 @@ class Adminupdate extends CI_Controller{
                     'categories' => $this->adminmodel->get_menucategories()
                 ));
             }
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated the menu details of $mName.", "update", NULL);
+
         }else{
             redirect('login');
         }
@@ -323,8 +348,13 @@ class Adminupdate extends CI_Controller{
             $aoPrice = $this->input->post('aoPrice');
             $aoCategory = $this->input->post('aoCategory');
             $aoStatus= $this->input->post('aoStatus');
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->edit_addon($aoName, $aoPrice, $aoCategory, $aoStatus, $aoID);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated the addon details of $aoName.", "update", NULL);
             redirect('admin/menu/addons');
+
         }else{
             redirect('login');
         }
@@ -337,28 +367,13 @@ class Adminupdate extends CI_Controller{
             $uomAbbreviation = $this->input->post('uomAbbreviation');
             $uomVariant = $this->input->post('uomVariant');
             $uomStore = $this->input->post('uomStore');
+            $account_id = $_SESSION["user_id"];
+            $date_recorded = date("Y-m-d H:i:s");
+            $user= $_SESSION["user_name"];
             $this->adminmodel->edit_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore, $uomID);
+            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated the measurement details of $uomName.", "update", NULL);
+
             redirect('admin/measurements');
-        }else{
-            redirect('login');
-        }
-    }
-
-    function edit_image(){
-        $data['image'] = $this->adminmodel->edit_image();
-        $this->load->view('admin_module/edit_menuimage', $data);
-        
-    }
-
-    function editSource(){
-        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $source_id = $this->input->get('source_id');
-            $source_name = $this->input->get('new_name');
-            $contact_num = $this->input->get('new_contact');
-            $email = $this->input->get('new_email');
-            $status = $this->input->get('new_status');
-            $this->adminmodel->edit_source($source_id, $source_name, $contact_num, $email, $status);
-            redirect('admin/sources');
         }else{
             redirect('login');
         }
@@ -386,12 +401,17 @@ class Adminupdate extends CI_Controller{
                 $stockUom = $this->input->post('uom');
                 $stockID = $this->input->post('id');
                 $stockSize = $this->input->post('size');
+                $account_id = $_SESSION["user_id"];
+                $date_recorded = date("Y-m-d H:i:s");
+                $user= $_SESSION["user_name"];
                 if($this->adminmodel->edit_stockItem($stockCategory, $stockBqty, $stockLocation, $stockMin, $stockName, $stockQty, $stockStatus, $stockType, $stockUom, $stockSize, $stockID)){
                     echo json_encode(array(
                         "stocks" => $this->adminmodel->get_stocks(),
                         "categories" => $this->adminmodel->get_stockSubCategories()
                     ));
                 }
+                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated the stock item details of $stockName.", "update", NULL);
+
             }
 
         }else{
