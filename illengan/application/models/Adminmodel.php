@@ -2339,6 +2339,15 @@ function add_consumptionitems($ciID,$stocks,$date){
         $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, DATE_FORMAT(pDate, '%b %d, %Y') as transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC";
         return $this->db->query($query)->result_array();
     }
+    function get_purchaseOrdersData($s, $l){
+        $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, DATE_FORMAT(pDate, '%b %d, %Y') as transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC LIMIT $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countPurchOrd(){
+        $query = "SELECT count(pID) AS allcount FROM purchases WHERE pType = 'purchase order'";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     
     function get_purchaseOrderItems(){
         $query = "SELECT
