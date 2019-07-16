@@ -96,23 +96,42 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
         }
 
+        //JEANE NEEDED THIS SHIT FOR AUTO CONSUMPTION
         function get_olistsID($osID){
-            $query = "SELECT prID,DATE_FORMAT('%Y-%m-%d') osDate FROM orderlists NATURAL JOIN orderslips WHERE osID = ?";
+            $query = "SELECT prID,DATE_FORMAT('%Y-%m-%d') osDate, olQty FROM orderlists NATURAL JOIN orderslips WHERE osID = ?";
             return $this->db->query($query,array($osID))->result();
         }
         function get_prefStocks(){
             $query = $this->db->query("SELECT * FROM prefstock");
             return $query->result();
         }
-        function get_stockDetails($stID){
+        function get_stockQty($stID){
             $query = "SELECT stQty FROM stockitems WHERE stID = ?";
-            $result = $this->db->query($query,array($stID))->result_array();
-            return $result[0];
+            return $this->db->query($query,array($stID))->row()->stQty;
         }
-
         function get_orderlists($osID){
-            $query = "Select olID, olDesc, olQty, olSubtotal from orderlists inner join preferences using (prID) inner join orderslips using (osID) where osID = ?";
-            return $this->db->query($query, array($order_id))->result_array(); 
+            $query = "SELECT olID, olDesc, olQty, olSubtotal FROM orderlists INNER JOIN preferences USING (prID) INNER JOIN orderslips USING (osID) WHERE osID = ?";
+            return $this->db->query($query, array($osID))->result_array(); 
+        }
+        function getLastNum2(){
+            $this->db->select('MAX(tNum) AS lastnum');
+            $this->db->from('transactions');
+            $this->db->where('tType', 'consumption');
+            return $this->db->get()->row()->lastnum;
+        }
+        function getLastConsumption(){
+            $this->db->select('MAX(cID) lastnum');
+            $this->db->from('consumptions');
+            return $this->db->get()->row()->lastnum;
+        }
+        function getLastConItem(){
+            $this->db->select('MAX(ciID) lastnum');
+            $this->db->from('consumed_items');
+            return $this->db->get()->row()->lastnum;
+        }
+        function getconsumptionItems(){
+            $query="SELECT * FROM `prefstock` LEFT join stockitems using (stID)";
+            return $this->db->query($query)->result_array();
         }
 
         function update_billstatus($osID, $payment_date_time = null, $date_recorded = null){
@@ -209,27 +228,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $this->db->where('olID', $id);
             $result=$this->db->delete('orderlists');
             return $result;
-        }
-       
-        function getLastNum2(){
-            $this->db->select('MAX(tNum) AS lastnum');
-            $this->db->from('transactions');
-            $this->db->where('tType', 'consumption');
-            return $this->db->get()->row()->lastnum;
-        }
-        function getLastConsumption(){
-            $this->db->select('MAX(cID) lastnum');
-            $this->db->from('consumptions');
-            return $this->db->get()->row()->lastnum;
-        }
-        function getLastConItem(){
-            $this->db->select('MAX(ciID) lastnum');
-            $this->db->from('consumed_items');
-            return $this->db->get()->row()->lastnum;
-        }
-        function getconsumptionItems(){
-            $query="SELECT * FROM `prefstock` LEFT join stockitems using (stID)";
-            return $this->db->query($query)->result_array();
         }
 
         //ADDON SPOILAGES-------------------------------------------------------------------------------------------------
@@ -783,6 +781,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $this->add_consumptransitems($this->db->insert_id(),$stocks,$date);
             $this->add_actlog($account_id,$date_recorded, "$user added a consumption.", "add", $remarks);
         }
+    }
+    function addAutoConsumption($consumption,$destockables){
+        $this->db->insert('consumptions',$consumption);
+        $conID = $this->db->insert_id();
+        $this->addAutoTransItems($conID,$destockables);
+    }
+    function addAutoTransItems($conID,$destockables){
+        $conitemID = $this->getLastConItem();
+        $conitemIDs = array();
+        for($x = 0; $x < count($destockables); $x++){
+            $destockables[$x]['ciID'] = $conitemID;
+            array_push($conitemIDs,array(
+                'cID'   => $conID,
+                'ciID'  => $conitemID
+            ));
+            $conitemID++;
+        }
+        $this->db->insert_batch('transitems',$destockables);
+        $this->addAutoConItems($conitemIDs);
+    }
+    function addAutoConItems($conitemIDs){
+        $this->db->insert_batch('consumed_items',$conitemIDs);
     }
     
     function add_consumptransitems($ciID, $stocks,$date) {
