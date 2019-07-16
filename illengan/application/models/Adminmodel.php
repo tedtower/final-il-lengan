@@ -1733,9 +1733,14 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
         return $this->db->query($query)->result_array();
     }
     // MODIFIED--------------------------------
-    function get_spoilagesstock(){
-        $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`siID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'spoilage' GROUP BY `siID`,`stID`";
+     function get_spoilagesstock($s, $l){
+        $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`siID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'spoilage' GROUP BY `siID`,`stID` LIMIT $s, $l";
         return  $this->db->query($query)->result_array();
+    }
+    function countSpoiledStock(){
+        $query = "SELECT count(stID) as allcount FROM `transitems` WHERE tiType = 'spoilage'";
+        $result =  $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     function get_spoilagesaddons(){
         $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC";
