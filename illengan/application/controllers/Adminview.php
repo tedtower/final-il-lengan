@@ -1100,8 +1100,8 @@ function getStockItem(){
     }
     function viewDeliveryReceiptJS(){
         if($this->checkIfLoggedIn()){
-        // ['drs'] 
-            $data= $this->adminmodel->get_deliveryReceipts();
+        $data['dr']= $this->adminmodel->get_deliveryReceipts();
+        $data['drItems']= $this->adminmodel->get_deliveryItems();
             echo json_encode($data);
         }else{
             redirect('login');

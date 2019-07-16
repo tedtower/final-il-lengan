@@ -2,7 +2,6 @@
     <div class="content">
         <div class="container-fluid">
             <br>
-            <div div class="content" style="margin-left:250px;">
                 <div class="container-fluid">
                     <!--Date and Time-->
                     <div style="overflow:auto">
@@ -107,7 +106,6 @@
 
                     <!--End of container divs-->
                 </div>
-            </div>
         </div>
     </div>
     <?php include_once('templates/scripts.php');?>
