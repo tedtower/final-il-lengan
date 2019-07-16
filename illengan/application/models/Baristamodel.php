@@ -231,12 +231,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 
         //ADDON SPOILAGES-------------------------------------------------------------------------------------------------
+        function get_addspoil($s, $l){
+            $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, 
+            DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using 
+            (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC Limit $s, $l";
+            return  $this->db->query($query)->result_array();
+        }
+        function countRecAddsSpoil(){
+            $query = "Select count(aoID) as allcount from addonspoil";
+            $result = $this->db->query($query)->result_array();
+            return $result[0]['allcount'];
+        }
         function get_spoilagesaddons(){
             $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC";
             return  $this->db->query($query)->result_array();
         }
         function get_addons(){
-            $query = "Select * from addons inner join orderaddons using (aoID)";
+            $query = "Select * from addons";
             return $this->db->query($query)->result_array();
         }
         function add_aospoil($date_recorded,$date,$remarks,$addons,$account_id,$user){
@@ -266,9 +277,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         }
         //Stock Spoilage---------------------------------------------------------------------------------------------------
-        function get_spoilagesstock(){
-            $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`siID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'spoilage' GROUP BY `siID`,`stID`";
+        function get_spoilagesstock($s, $l){
+            $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`siID`,`stName`, `stQty` FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'spoilage' GROUP BY `siID`,`stID` LIMIT $s, $l";
             return  $this->db->query($query)->result_array();
+        }
+        function countSpoiledStock(){
+            $query = "SELECT count(stID) as allcount FROM `transitems` WHERE tiType = 'spoilage'";
+            $result =  $this->db->query($query)->result_array();
+            return $result[0]['allcount'];
         }
         function get_stocks(){
             $query = "SELECT
@@ -346,9 +362,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             return $this->db->get()->row()->lastnum;
         }
-        function add_stocktransitems($tiType,$tiQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID){
+        function add_stocktransitems($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID){
             $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
-            return $this->db->query($query, array($tiType,$tiQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID));
+            return $this->db->query($query, array($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID));
         }
         function update_stockQty($stID, $stQty){
             $query = "UPDATE stockitems
@@ -761,13 +777,20 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         return $this->db->query($query,array($total, $tID));
     }
     //--------------CONSUMPTIONS-------------------
-    function get_consumpitems() {
-        $query = "SELECT `ciID`,`cID`,`cDate`,`cDateRecorded`,`tiID`, `tiType`, sum(`tiQty`) as tiQty, sum(`tiActual`) AS tiActual, `tiSubtotal`, `remainingQty`, `tiRemarks`, `tiDate`, st.`stID`, `ciID`, `ctID`, `stName`, `stQty`, `stType` FROM transitems ti LEFT JOIN consumed_items USING (ciID) LEFT JOIN consumptions USING (cID) LEFT JOIN stockitems st ON (ti.stID = st.stID) where tiType = 'consumed' group by ciID,stID";
-        return $this->db->query($query)->result_array();
+    function get_consumpitems($s, $l){
+        $query = "SELECT `tiID`,`tiType`,sum(`tiQty`) AS tiQty, sum(`tiActual`) AS tiActual,`remainingQty`,`tiRemarks`,`tiDate`,`stID`,`ciID`,`stName`, `stQty` 
+        FROM `transitems` inner join stockitems using (stID) inner join uom USING (uomID) WHERE tiType = 'consumed' 
+        GROUP BY `ciID`,`stID` LIMIT $s, $l";
+        return  $this->db->query($query)->result_array();
     }
-    function add_consumptiontransitems($tiType,$tiQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID){
-        $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiQty`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
-        return $this->db->query($query, array($tiType,$tiQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID));
+    function countConsump(){
+        $query = "SELECT count(tiID) as allcount from transitems WHERE tiType = 'consumed'";
+          $result = $this->db->query($query)->result_array();
+           return $result[0]['allcount'];
+    }
+    function add_consumptiontransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID){
+        $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?)";
+        return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID));
     }
     function add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks) {
         $query = "INSERT INTO consumptions (cID, cDate, cDateRecorded) VALUES (NULL,?,?)";

@@ -22,9 +22,9 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text border border-secondary"
                                                 style="width:125px;font-size:14px;">
-                                                Date Consumed</span>
+                                                Date Spoiled</span>
                                         </div>
-                                        <input type="date" id="aosDate" class="form-control" name="tDate" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
+                                        <input class="form-control form-control-sm" name="tDate" id="tDate" type="date" class="no-border"  data-validate="required" message="Date consumed is required!"  required>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -55,7 +55,7 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                        <a class="btn btn-danger btn-sm" type= "button" href="<?= site_url('barista/addons/spoilages')?>" data-original-title  style="float:right">Cancel</a>
+                                        <a class="btn btn-danger btn-sm" type="button" href="<?= site_url('barista/addons/spoilages') ?>" data-original-title style="float:right">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -104,8 +104,8 @@
 
                     <!--End of container divs-->
                 </div>
+            </div>
         </div>
-    </div>
     <?php include_once('templates/scripts.php');?>
     <script>
     $(function() {
@@ -127,7 +127,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="addon" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty" min="1" required></td>
+                                class="form-control form-control-sm" name="actualQty" min="0" required></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" name="osID"></td>
                         <td style="padding:1% !important"><textarea type="text"
@@ -172,11 +172,6 @@
                 return false;
             }
 
-            // var checked = $("#conForm input:checked").length <= 0;
-            // if (!checked){
-            //     alert("Please check at least one checkbox!");
-            //     return false;
-            // }
             console.log(items);
             $.ajax({
                 method: "POST",
@@ -204,11 +199,23 @@
             });
         });
     });
+    //Search Function
+    $("#stockCard input[name='search']").on("keyup", function() {
+                var string = $(this).val().toLowerCase();
+                $("#stockCard .ic-level-1").each(function(index) {
+                    var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+                    if (!text.includes(string)) {
+                        $(this).closest("tr").hide();
+                    } else {
+                        $(this).closest("tr").show();
+                    }
+                });
+            });
 
     $('#conForm').submit(function(event){
-        var spoilDate = $("#aosDate").val();
+        var spoilageDate = $("#tDate").val();
         var currentDate = new Date();
-        if(Date.parse(currentDate) < Date.parse(spoilDate)){
+        if(Date.parse(spoilageDate) > Date.parse(currentDate)){
             alert('Invalid! Date exceeds current date.');
             return false;
         }

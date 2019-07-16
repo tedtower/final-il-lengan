@@ -32,7 +32,7 @@
                                             <th><b class="pull-left">Total</b></th>
                                             <th><b class="pull-left">Actions</b></th>
                                         </thead>
-                                        <tbody class="transTable  ic-level-2">
+                                        <tbody class="transTable ic-level-2">
                                         </tbody>
                                     </table>
                                 <!--End Table Content-->
@@ -114,7 +114,14 @@
 					method: "post",
 					dataType: "json",
 					success: function(data) {
-						delReceipt = data;
+                        console.log(data);
+                        $.each(data.dr, function(index, items) {
+                            delReceipt.push({
+                                "dr": items
+                            });
+                            delReceipt[index].drItems = data.drItems.filter(dr => dr.pID == items.pID);
+                        });
+                        console.log(delReceipt);
 						setDelReceiptsData(delReceipt);
 					},
 					error: function(response, setting, errorThrown) {
@@ -125,24 +132,24 @@
 			}
 		});
 
-		function setDelReceiptsData() {
+		function setDelReceiptsData(delReceipt) {
 			if ($("#transTable > tbody").children().length > 0) {
 				$("#transTable > tbody").empty();
 			}
 			delReceipt.forEach(dr => {
 				$("#transTable > tbody").append(`
 			    <tr class="transTabletr ic-level-1">
-                    <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.id}</td>
-                    <td>${dr.receipt == null || dr.receipt == '' ?  "No receipt." : dr.receipt}</td>
-                    <td>${dr.supplierName}</td>
-                    <td>${dr.transDate}</td>
-                    <td>${dr.total}</td>
+                    <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4">
+                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.dr.pID}</td>
+                    <td>${dr.dr.receipt == null || dr.dr.receipt == '' ?  "No receipt." : dr.dr.receipt}</td>
+                    <td>${jQuery.trim(dr.dr.spAltName) == "" ? dr.dr.spName : dr.dr.spAltName }</td>
+                    <td>${dr.dr.pDate}</td>
+                    <td>${dr.dr.pTotal}</td>
                     <td>
                             <!--Action Buttons-->
                             <div class="onoffswitch">
                                 <!--Edit button-->
-                                <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
-                                    data-target="#editDelRecipt">Edit</button>
+                                <a role="button" class="updateBtn btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/')?>${dr.dr.pID}">Edit</a>
                                 <!--Delete button-->
                                 <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
                                 data-target="#delete">Archive</button>                      
@@ -154,12 +161,10 @@
                 <tr class="accordion" style="display:none;background: #f9f9f9">
                 <td colspan="7">
                 <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-                            <table id="drItems" class="drItems table-bordered">
-                                <thead class="thead-light">
+                    <div class="container" style="overflow:auto;display:none"> <!-- container ng accordion -->
+                            ${dr.drItems.length === 0 ? "No item delivered" : 
+                            `<table id="drItems" width="90%" style="margin-left:auto;margin-right:auto;" class="drItems table-bordered">
+                                <thead class="thead-light" style="font-size: 15px">
                                     <tr>
                                     <th>Name</th>
                                     <th>Qty</th>
@@ -171,19 +176,22 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                ${dr.drItems.map(dri => {
+                                    return `
                                     <tr>
-                                    <td>${dr.stockname}</td>
-                                    <td>${dr.qty}</td>
-                                    <td>${dr.actual}</td>
-                                    <td>${dr.spmPrice}</td>
-                                    <td>${dr.tiDiscount == null || dr.tiDiscount == '' ?  "N/A." : dr.tiDiscount}</td>
-                                    <td>${(dr.qty * dr.spmPrice) - parseInt(dr.tiDiscount)}</td>
-                                    <td>${dr.piStatus}</td>
+                                    <td>${dri.stockname}</td>
+                                    <td>${dri.qty}</td>
+                                    <td>${dri.actual}</td>
+                                    <td>${dri.spmPrice == null || dri.spmPrice == '' ? "N/A" : dri.spmPrice }</td>
+                                    <td>${dri.tiDiscount == null || dri.tiDiscount == '' ?  "N/A" : dri.tiDiscount}</td>
+                                    <td>${isNaN((dri.qty * dri.spmPrice) - parseInt(dri.tiDiscount)) ? "N/A" : 
+                                    (dri.qty * dri.spmPrice) - parseInt(dri.tiDiscount)}</td>
+                                    <td>${dri.piStatus}</td>
                                     </tr>
+                                    `;
+                                }).join('')}
                                 </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                </table> `}
                     </div>
                     </td>
 				</tr>

@@ -105,7 +105,7 @@
               <span class="text-danger"><?php echo form_error("change"); ?></span>
             </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount" id="discount">Senior Citizen Discount
+              <input type="checkbox" class="discount form-control-sm" name="discount" id="discount">Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID" id="osID" readonly> 
             <!--Footer-->
@@ -179,8 +179,17 @@
               <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-sm"
+                  style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                  Discount</span>
+              </div>
+              <input type="text" step="any" min="0" class="form-control" name="discount2" id="discount2" value="0.00" readonly>
+              <span class="text-danger"><?php echo form_error("seniorDiscount"); ?></span>
+            </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
+              <input type="checkbox" class="discount form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
@@ -364,7 +373,7 @@
                   dataType: "json",
                   complete: function() {
                       $("#Modal_Pay2").modal("hide");
-                      location.reload();
+                      //location.reload();
                   },
                   error: function(error) {
                       console.log(error);
@@ -382,25 +391,36 @@
       if(cash < payable){
         $("#Modal_Pay").find("input[name='change']").val("Insufficient Amount");
         document.getElementById("updtbutton").disabled = true;
-      }else{
+      }
+      else{
         var change = parseFloat(cash - payable);
         $("#Modal_Pay").find("input[name='change']").val(change);
         document.getElementById("updtbutton").disabled = false;
       }
+
     });
 //-----------------------For the Payment Modal Single Payment-------------------------
 document.getElementById("updtbutton2").disabled = true;
     $("#cash2").on('change', function () {
       var payable = parseFloat(document.getElementById('amount_payable2').value);
       var cash = parseFloat(document.getElementById('cash2').value);
-      if(cash < payable){
+      var seniorDiscount = parseFloat(payable * 0.20);
+
+      if(document.getElementById("discounted2").checked){
+        document.getElementByName('amount_payable').value();
+        var change = parseFloat(cash - (parseFloat(payable - seniorDiscount)));
+        $("#Modal_Pay2").find("input[name='change2']").val(change);
+        document.getElementById("updtbutton2").disabled = false;
+      }
+      else if(cash < payable){
         $("#Modal_Pay2").find("input[name='change2']").val("Insufficient Amount");
         document.getElementById("updtbutton2").disabled = true;
-      }else{
+      }else {
         var change = parseFloat(cash - payable);
         $("#Modal_Pay2").find("input[name='change2']").val(change);
         document.getElementById("updtbutton2").disabled = false;
       }
+
     });
 //------------------------Stocks Get Brochure Function-----------------------------------
 function getSelectedSlips() {
@@ -493,6 +513,15 @@ function setTotal() {
     
     
 }
+        $(document).on('click', '.discount', function () {
+        var payable = parseFloat(document.getElementById('amount_payable').value);
+          if (document.getElementById('discount').checked){
+                  var disPrice = parseFloat(payable - (0.20*payable));
+                  $("#formEdit").find("input[name='amount_payable']").val(disPrice);
+          }else{
+                  $("#formEdit").find("input[name='amount_payable']").val(payable);
+          }
+        });
  
   </script>
 </body>

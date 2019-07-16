@@ -147,6 +147,10 @@
                     qty: $(this).find("input[name='quantity']").val(),
                 });
             });
+                if($('input[name="menu"]:checked').length == 0) {
+                        alert('No checkbox is checked');
+                        return false;
+                    }
             console.log(items);
             $.ajax({
                 method: "POST",

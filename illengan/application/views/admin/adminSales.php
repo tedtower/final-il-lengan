@@ -33,7 +33,7 @@
                             <tbody class="salesTable ic-level-1">
                             </tbody>
                         </table>
-
+                        <div id="pagination" style="float:right"></div>
                         <!--Start of Modal "Add Sales"-->
                         <div class="modal fade bd-example-modal-lg" id="addSales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                             <div class="modal-dialog modal-lg" role="document">
@@ -422,7 +422,7 @@
                 tables = data.tables;
                 stocks = data.stocks;
                 addons = data.addons;
-                showTable();
+                setSalesData();
             },
             error: function(response, setting, errorThrown) {
                 console.log(errorThrown);
@@ -467,68 +467,85 @@
             return `<option value="${tab.tableCode}">${tab.tableCode}</option>`;
         }).join('')}`);
         subPrice = 0;
-
     });
+    
+    $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadDataSales/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var sales = data.salesSlips;
+                var olist = data.orderlists;
+                setSalesData(sales, olist);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+	}
+        
+   });
+        function setSalesData(item, olist) {
+            $("#salesTable > tbody").empty();
+            for(i in item){
+                var tableRow = `<tr class="salesTable ic-level-1" data-id="`+item[i].osID+`">`;
+                    tableRow += ` <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
+                    ${item[i].osID}</td>`;
+                    tableRow += `<td>`+item[i].tableCode+`</td>`;
+                    tableRow += `<td>`+item[i].osPayDateTime+`</td>`;
+                    tableRow += ` <td>&#8369;`+(parseFloat(item[i].osTotal)).toFixed(2)+`</td>`;
+                    tableRow += ` <td>`;
+                    tableRow += `<button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editSales" id="editSalesBtn">Edit</button>
+                        <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#delete">Archive</button>`;
+                    tableRow += `</td></tr>`;
 
-    function showTable() {
-        orderslips.forEach(function(item) {
-            var tableRow = `
-                <tr class="salesTable ic-level-1" data-id="${item.orderslips.osID}">   <!-- table row ng table -->
-                    <td><a href="javascript:void(0)" class="ml-2 mr-4">
-                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
-                    ${item.orderslips.osID}</td>                    
-                    <td>${item.orderslips.tableCode}</td>
-                    <td>${item.orderslips.osPayDateTime}</td>
-                    <td>&#8369; ${(parseFloat(item.orderslips.osTotal)).toFixed(2)}</td>
-                    <td>
-                    <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editSales" id="editSalesBtn">Edit</button>
-                        <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#delete">Archive</button>
-                    </td>
-                </tr>
-            `;
-            var ordersDiv = `
-            <div class="preferences" style="float:left;margin-right:3%" > <!-- Preferences table container-->
-                ${item.orders[0].orderlists.length === 0 ? "No orders" : 
-                `<caption><b>Orders</b></caption>
-                <br>
-                <table id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
-                    <thead class="thead-light">
-                        <tr>
-                        <th></th>
-                            <th scope="col">Item Name</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Subtotal Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    ${item.orders.map(ol => {
-                        return `
-                        <tr id="${ol.orderlists.olID}">
-                            <td><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></td>
-                            <td>${ol.orderlists.mName} ${ol.orderlists.prName === 'Normal' ? " " : ol.orderlists.prName }</td>
-                            <td>${ol.orderlists.olQty}</td>
-                            <td>&#8369; ${ol.orderlists.prPrice}</td>
-                            <td>&#8369; ${(parseFloat(ol.orderlists.olSubtotal)).toFixed(2)}</td>
-                        </tr>
-                        `;
-                    }).join('')}
-                    </tbody>
-                </table>
-                `}
-            </div>
-            `;
+var ol = olist.filter(function(o){
+                return item[i].osID == o.osID;
+            });
+                var ordersDiv = `<div class="preferences" style="float:left;margin-right:3%" >`;
+                if(ol == null || ol == ""){
+                    ordersDiv += `No orders`;
+                }else{
+                    ordersDiv += `<caption><b>Orders</b></caption>`;
+                    ordersDiv += `<br>`;
+                    ordersDiv += `<table id="orderitem" class=" table table-bordered">`;
+                    ordersDiv += `<thead class="thead-light">`;
+                    ordersDiv += `<tr><th></th>`;
+                    ordersDiv += `<th scope="col">Item Name</th>`;
+                    ordersDiv += `<th scope="col">Quantity</th>`;
+                    ordersDiv += `<th scope="col">Price</th>`;
+                    ordersDiv += `<th scope="col">Subtotal Price</th>`;
+                    ordersDiv += `</tr></thead><tbody>`;
+                    for(o in ol){
+                        ordersDiv += `<tr id="`+ol[o].olID+`">`;
+                        ordersDiv += ` <td><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></td>`;
+                        if(ol[o].prName === 'Normal'){
+                            ordersDiv += ` <td>` +ol[o].mName+ `</td>`;
+                        }else{
+                            ordersDiv += `<td>`+ol[o].mName+`&nbsp;`+ol[o].prName+`</td>`;//${ol[o].prName === 'Normal' ? " " : ol[o].prName }
+                        }    
+                        ordersDiv += ` <td>`+ol[o].olQty+`</td>`;
+                        ordersDiv += ` <td>&#8369; `+ol[o].prPrice+`</td>`;
+                        ordersDiv += `<td>&#8369;`+(parseFloat(ol[o].olSubtotal)).toFixed(2)+`</td>`;
+                        ordersDiv += `</tr>`;
+                    }
+                }
+           
             var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                    <div style="overflow:auto;display:none" class="poAccordionContent"> <!-- container ng accordion -->
                         
-                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
-                            
-                            <div class="poAccordionContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
-                                
-                            </div>
-                        </div>
                     </div>
                 </td>
             </tr>
@@ -537,9 +554,8 @@
             $("#salesTable > tbody").append(tableRow);
             $("#salesTable > tbody").append(accordion);
             $(".poAccordionContent").last().append(ordersDiv);
-
-        });
-        $(".accordionBtn").on('click', function() {
+   }
+            $(".accordionBtn").on('click', function() {
             if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
                 $(this).closest("tr").next(".accordion").css("display", "table-row");
                 $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
@@ -548,7 +564,7 @@
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
         });
-
+         
         $(".editBtn").on("click", function() {
             $('#dcpercent').remove();
             $('.salesTable > tbody').empty();
