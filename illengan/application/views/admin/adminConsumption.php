@@ -36,6 +36,7 @@
 								
 								</tbody>
 							</table>
+							<div id="pagination" style="float:right"></div>
 							<!--End Table Content-->
 
 							<!--Delete Confirmation Box-->
@@ -136,44 +137,43 @@
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
 <script>
-	var consumptions = [];
-	$(function() {
-		viewConsumptions();
-
-
-	//POPULATE TABLE
-	var table = $('#consumptionTable');
-	
-	function viewConsumptions() {
-        $.ajax({
-            url: "<?= site_url('admin/jsonConsumptions') ?>",
-            method: "post",
-            dataType: "json",
-            success: function(data) {
-                consumptions = data;
-                setConsumptionData(consumptions);
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(response.responseText);
-                console.log(errorThrown);
-            }
-        });
-	}
+	$(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
 	});
-	function setConsumptionData() {
-        if ($("#consumptionTable> tbody").children().length > 0) {
-            $("#consumptionTable> tbody").empty();
-        }
-        consumptions.forEach(table => {
-            $("#consumptionTable > tbody").append(`
-			<tr class="consumptionTabletr" data-tiActual="${table.tiActual}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-ciID="${table.ciID}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-				<td>${table.tiID}</td>
-				<td>${table.stName}</td>
-				<td>${table.tiActual}</td>
-				<td>${table.tiDate}</td>
-                <td>
-                        <!--Action Buttons-->
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadConsumptionData/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var cons = data.consumption;
+				console.log(cons);
+                setConsumptionData(cons);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+	}
+        
+   });
+	function setConsumptionData(table) {
+            $("#consumptionTable > tbody").empty();
+			for(t in table){
+			var row=`<tr class="consumptionTabletr" data-tiActual="`+table[t].tiActual+`" data-stQty="${table.stQty}" data-tiRemarks="`+table[t].tiRemarks+`" data-tiDate="`+table[t].tiDate+`" data-stID="`+table[t].stID+`" data-ciID="`+table[t].ciID+`">`;
+				row += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>`;
+				row += `<td>`+table[t].tiID+`</td>`;
+				row += `<td>`+table[t].stName+`</td>`;
+				row += `<td>`+table[t].tiActual+`</td>`;
+				row += `<td>`+table[t].tiDate+`</td>`;
+                row += `<td>`;
+				row += ` <!--Action Buttons-->
                         <div class="onoffswitch">
 
                             <!--Edit button-->
@@ -184,18 +184,22 @@
                             data-target="#deleteConsumption">Archive</button>                      
                         </div>
                     </td>
-				</tr>`);
+				</tr>`;
+                       
 
-			var accordion = `
-            <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="7"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-							<b style="float:left;">Remarks: </b><!-- label-->
-								<p style="float:left;margin-left:2%">
-								${table.tiRemarks == null || table.tiRemarks == '' ?  "No remarks." : table.tiRemarks}
+			var accordion = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+            	accordion += ` <td colspan="7">`;
+                accordion += `<div style="overflow:auto;display:none">`;
+                accordion += `<div style="overflow:auto;">`;
+				accordion += `<div style="margin:0 46px;overflow:auto;">`;
+				accordion += `<b style="float:left;">Remarks: </b>`;
+				accordion += `<p style="float:left;margin-left:2%">`;
+				if(table[t].tiRemarks == null || table[t].tiRemarks == ''){
+					accordion += `No remarks.`;
+				}else{
+					accordion += table[t].tiRemarks;
+				}
+				accordion += `
                                 </p>
                             </div> 
                         </div>
@@ -203,7 +207,8 @@
                 </td>
             </tr>
             `;
-			
+			$("#consumptionTable > tbody").append(row);
+			$("#consumptionTable > tbody").append(accordion);
 			
 			$(".updateBtn").last().on('click', function () {
 				
@@ -233,8 +238,8 @@
 				$("#deleteConsumption").find("input[name='tID']").val($(this).closest("tr").attr(
                     "data-tID"));
             });
-			$("#consumptionTable > tbody").append(accordion);
-		});
+			
+		};
 		$(".accordionBtn").on('click', function(){
             if($(this).closest("tr").next(".accordion").css("display") == 'none'){
                 $(this).closest("tr").next(".accordion").css("display","table-row");

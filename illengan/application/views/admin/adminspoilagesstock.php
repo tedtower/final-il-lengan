@@ -40,6 +40,7 @@
 								<tbody id="spoilage_data" class="spoilagesTable ic-level-2">
 								</tbody>
 							</table>
+							<div id="pagination" style="float:right"></div>
 							<!--End Table Content-->
 
 							<!--Delete Confirmation Box-->
@@ -149,44 +150,42 @@
 <!--End Table Content-->
 <?php include_once('templates/scripts.php') ?>
 <script>
-	var spoilages = [];
-	$(function() {
-		viewSpoilagesJs();
-
-
-	//POPULATE TABLE
-	var table = $('#spoilagesTable');
-	
-	function viewSpoilagesJs() {
-        $.ajax({
-            url: "<?= site_url('admin/spoilagesstockjson') ?>",
-            method: "post",
-            dataType: "json",
-            success: function(data) {
-                spoilages = data;
-                setSpoilagesData(spoilages);
-            },
-            error: function(response, setting, errorThrown) {
-                console.log(response.responseText);
-                console.log(errorThrown);
-            }
-        });
-	}
+ $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
 	});
-	function setSpoilagesData() {
-        if ($("#spoilagesTable> tbody").children().length > 0) {
-            $("#spoilagesTable> tbody").empty();
-        }
-        spoilages.forEach(table => {
-            $("#spoilagesTable > tbody").append(`
-			<tr class="spoilagesTabletr ic-level-1" data-tiActual="${table.tiActual}" data-tiQty="${table.tiQty}" data-stQty="${table.stQty}" data-tiRemarks="${table.tiRemarks}" data-tiDate="${table.tiDate}" data-stID="${table.stID}" data-siID="${table.siID}">
-				<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>
-				<td>${table.tiID}</td>
-				<td>${table.stName}</td>
-				<td>${table.tiQty}</td>
-				<td>${table.tiActual}</td>
-				<td>${table.tiDate}</td>
-                <td>
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadDataSpoilagesStock/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var ss = data.stckspoiled;
+                setSpoilagesData(ss);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
+		});
+	}
+        
+   });
+	function setSpoilagesData(table) {
+            $("#spoilagesTable > tbody").empty();
+        for(t in table){
+			var row =`<tr class="spoilagesTabletr ic-level-1" data-tiActual="`+table[t].tiActual+`" data-tiQty="`+table[t].tiQty+`" data-stQty="`+table[t].stQty+`" data-tiRemarks="`+table[t].tiRemarks+`" data-tiDate="`+table[t].tiDate+`" data-stID="`+table[t].stID+`" data-siID="`+table[t].siID+`">`;
+				row += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>`;
+				row += `<td>`+table[t].tiID+`</td>`;
+				row += `<td>`+table[t].stName+`</td>`;
+				row += `<td>`+table[t].tiQty+`</td>`;
+				row += `<td>`+table[t].tiActual+`</td>`;
+				row += `<td>`+table[t].tiDate+`</td>`;
+				row += ` <td>
                         <!--Action Buttons-->
                         <div class="onoffswitch">
 
@@ -198,18 +197,21 @@
                             data-target="#deleteSpoilage">Archive</button>                      
                         </div>
                     </td>
-				</tr>`);
-
-			var accordion = `
-            <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="7"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
-                        
-                        <div style="overflow:auto;"> <!-- description, preferences, and addons container -->
-                            <div style="margin:0 46px;overflow:auto;">
-							<b style="float:left;">Remarks: </b><!-- label-->
-								<p style="float:left;margin-left:2%">
-								${table.tiRemarks == null || table.tiRemarks == '' ?  "No remarks." : table.tiRemarks}
+				</tr>`;
+		
+		var accordion = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+            accordion += `<td colspan="7">`;
+			accordion += `<div style="overflow:auto;display:none">`;
+			accordion += `<div style="overflow:auto;"> `;
+			accordion += `<div style="margin:0 46px;overflow:auto;">`;
+            accordion += `<b style="float:left;">Remarks: </b>`;
+			accordion += `<p style="float:left;margin-left:2%">`;
+			if(table[t].tiRemarks == null || table[t].tiRemarks == ''){
+				accordion += `No remarks.`;
+			}else{
+				accordion += table[t].tiRemarks;
+			}
+			accordion += `
                                 </p>
                             </div> 
                         </div>
@@ -217,7 +219,8 @@
                 </td>
             </tr>
             `;
-			
+			$("#spoilagesTable > tbody").append(row);
+			$("#spoilagesTable > tbody").append(accordion);
 			
 			$(".updateBtn").last().on('click', function () {
 				
@@ -252,8 +255,8 @@
 				$("#deleteSpoilage").find("input[name='tID']").val($(this).closest("tr").attr(
                     "data-tID"));
             });
-			$("#spoilagesTable > tbody").append(accordion);
-		});
+		}
+	
 		$(".accordionBtn").on('click', function(){
             if($(this).closest("tr").next(".accordion").css("display") == 'none'){
                 $(this).closest("tr").next(".accordion").css("display","table-row");
@@ -264,7 +267,7 @@
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
         	});
-	}
+		}
 	//END OF POPULATING TABLE
 	//-------------------------Function for Edit-------------------------------
 

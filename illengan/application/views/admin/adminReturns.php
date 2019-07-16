@@ -336,7 +336,6 @@
             url: '/admin/jsonReturns',
             dataType: 'json',
             success: function(data) {
-                var poLastIndex = 0;
                 $.each(data.returns, function(index, items) {
                     returns.push({
                         "returns": items
@@ -363,7 +362,7 @@
                     <td><a href="javascript:void(0)" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
                     ${item.returns.rID}</td>                    
-                    <td>${item.returns.spAltName}</td>
+                    <td>${jQuery.trim(item.returns.spAltName) == "" ? item.returns.spName : item.returns.spAltName }</td>
                     <td>${item.returns.rDate}</td>
                     <td>${item.returns.rTotal}</td>
                     <td>
