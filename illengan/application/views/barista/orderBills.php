@@ -105,7 +105,7 @@
               <span class="text-danger"><?php echo form_error("change"); ?></span>
             </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount" id="discount">Senior Citizen Discount
+              <input type="checkbox" class="discount form-control-sm" name="discount" id="discount">Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID" id="osID" readonly> 
             <!--Footer-->
@@ -180,7 +180,7 @@
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
             <div>
-              <input type="checkbox" class="form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
+              <input type="checkbox" class="discount form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
@@ -493,6 +493,15 @@ function setTotal() {
     
     
 }
+        $(document).on('click', '.discount', function () {
+        var payable = parseFloat(document.getElementById('amount_payable').value);
+          if (document.getElementById('discount').checked){
+                  var disPrice = parseFloat(payable - (0.20*payable));
+                  $("#formEdit").find("input[name='amount_payable']").val(disPrice);
+          }else{
+                  $("#formEdit").find("input[name='amount_payable']").val(payable);
+          }
+        });
  
   </script>
 </body>

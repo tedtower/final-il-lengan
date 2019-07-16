@@ -166,7 +166,7 @@
 	function setConsumptionData(table) {
             $("#consumptionTable > tbody").empty();
 			for(t in table){
-			var row=`<tr class="consumptionTabletr" data-tiActual="`+table[t].tiActual+`" data-stQty="${table.stQty}" data-tiRemarks="`+table[t].tiRemarks+`" data-tiDate="`+table[t].tiDate+`" data-stID="`+table[t].stID+`" data-ciID="`+table[t].ciID+`">`;
+			var row=`<tr class="consumptionTabletr" data-tiActual="`+table[t].tiActual+`" data-stQty="${table[t].stQty}" data-tiRemarks="`+table[t].tiRemarks+`" data-tiDate="`+table[t].tiDate+`" data-stID="`+table[t].stID+`" data-ciID="`+table[t].ciID+`">`;
 				row += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a></td>`;
 				row += `<td>`+table[t].tiID+`</td>`;
 				row += `<td>`+table[t].stName+`</td>`;

@@ -265,7 +265,9 @@ $route['barista/jsonConsumptions'] = "barista/jsonConsumptions";
 $route['barista/consumption/formadd'] = "barista/viewConsumptionFormAdd";
 $route['barista/consumption/add'] = "barista/addConsumption";
 $route['barista/consumption/edit'] = "barista/editConsumption";
-
+$route['barista/loadDataSpoilagesStock/(:num)'] = "barista/loadDataSpoilagesStock/$1";
+$route['barista/addonspoilage/loadDataAddsSpoil/(:num)'] = "barista/loadDataAddsSpoil/$1";
+$route['barista/loadConsumptionData/(:num)'] = "barista/loadConsumptionData/$1";
 //BARISTA JS ROUTES
 // $route['barista/orderslipJS'] = "barista/viewOrderslipJS";
 // $route['barista/pendingOrdersJS'] ="barista/pendingOrdersJS";
