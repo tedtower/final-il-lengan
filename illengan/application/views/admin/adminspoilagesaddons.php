@@ -153,10 +153,10 @@
         
    });
         function setSpoilagesData(adds) {
-                $("#addonTable> tbody").empty();
+                $("#addonTable > tbody").empty();
                 for(ao in adds){
                     var row1 = `<tr class="addonTable ic-level-1" data-aoID="`+adds[ao].aoID+`" data-aosID="`+adds[ao].aosID+`" data-aosQty="`+adds[ao].aosQty+`"  data-aosDate="`+adds[ao].aosDate+`"  data-aosRemarks="`+adds[ao].aosRemarks+`" data-spoilname="`+adds[ao].aoName+`"  >`;
-                    row1 += `	<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
+                    row1 += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
                     row1 += `<td>`+adds[ao].aoCategory+`</td>`;
                     row1 += `<td>`+adds[ao].aosQty+`</td>`;
                     row1 += `<td>`+adds[ao].aosDate+`</td>`;
