@@ -190,6 +190,36 @@ function viewReturn(){
         redirect('login');
     }
 }
+function loadDataReturns($record=0) {
+    $recordPerPage = 10;
+    if($record != 0){
+        $record = ($record-1) * $recordPerPage;
+    }      	
+    $recordCount = $this->adminmodel->countReturns();
+    $retRecord = $this->adminmodel->get_datareturns($record, $recordPerPage);
+    $config['base_url'] = base_url().'admin/loadDataReturns';
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['last_tag_open'] = '<li class="page-link">';
+    $config['last_tag_close'] = '</li>';
+    $config['first_tag_open'] = '<li class="page-link">';
+    $config['first_tag_close'] = '</li>';
+    $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;</li>';
+    $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+    $config['cur_tag_close'] = '</li>';
+    $config['use_page_numbers'] = TRUE;
+    $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+    $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+    $config['total_rows'] = $recordCount;
+    $config['per_page'] = $recordPerPage;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    $data['returns'] = $retRecord;
+    $data['returnitems'] = $this->adminmodel->get_returnItems();
+    $data['resolvedItems'] = $this->adminmodel->get_resolvedReturns();
+    echo json_encode($data);		
+}
 
 function viewReturnFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
