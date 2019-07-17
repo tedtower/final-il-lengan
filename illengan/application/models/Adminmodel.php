@@ -2405,16 +2405,21 @@ function add_consumptionitems($ciID,$stocks,$date){
     //     ORDER BY transDate DESC ,pID DESC";
     //     return $this->db->query($query)->result_array();
     // }
-    function get_deliveryReceipts(){
+    function get_deliveryReceipts($s, $l){
         $query = "SELECT pID, spName, DATE_FORMAT(pDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, pType, spAltName FROM purchases
         LEFT JOIN supplier USING (spID) INNER JOIN (SELECT SUM(tiSubtotal) as pTotal, pID  from transitems INNER JOIN pur_items 
-        USING (piID) LEFT JOIN purchases pur USING (pID) GROUP BY pID) as total USING (pID) WHERE pType ='delivery'";
+        USING (piID) LEFT JOIN purchases pur USING (pID) GROUP BY pID) as total USING (pID) WHERE pType ='delivery' LIMIT $s, $l";
         return $this->db->query($query)->result_array();
+    }
+    function countDR(){
+        $query = "SELECT count(pID) as allcount FROM purchases WHERE pType ='delivery'";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     function get_deliveryItems(){
         $query = "SELECT pr.pID, ti.tiID, tiDiscount, tiQty as qty, tiActual as actual, tiType as type, remainingQty, tiRemarks, tiDate, CONCAT(stName, IFNULL(CONCAT(' ', stSize), '') ) 
         AS stockname, spmName, spmPrice, piID, piStatus FROM transitems ti LEFT JOIN purchase_items USING(piID) LEFT JOIN pur_items USING (piID)
-        LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(spmID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
+        LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(stID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
         LEFT JOIN pur_items USING (piID) GROUP BY piID) AS maxNew ON (ti.tiID = maxNew.tiID) WHERE piStatus in ('partially delivered','delivered')";
         return $this->db->query($query)->result_array();
     }
