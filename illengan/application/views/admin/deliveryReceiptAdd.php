@@ -120,7 +120,6 @@
                                         <!--checkboxes-->
                                         <div class="mt-1 mb-1">
                                             <select class="form-control form-control-sm" id="po" name="po" required>
-                                                <option value="0" selected>Choose PO</option>
                                             </select>
                                       </div>
                                       <p class="modal-title" style="font-size: 16px;padding-left: 10px;font-weight: 600;
@@ -153,8 +152,8 @@
                                 <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
                                     <!--checkboxes-->
                                     <div class="mt-1 mb-1">
-                                        <select class="form-control form-control-sm" required>
-                                            <option value="" selected>Choose Return</option>
+                                        <select class="form-control form-control-sm" name="returns" required>
+                                            <option value="0" selected>Choose Return</option>
                                         </select>
                                     </div>
                                     <table class="table table-borderless">
@@ -270,17 +269,9 @@
             var spmPrice = $(this).attr("data-spmPrice");
             var spID = $(this).attr("data-spID");
             
-            // console.log("spmID "+spmID);
-            // console.log("spmName "+ spmName);
-            // console.log("stQty" +stQty);
-            // console.log("spmActual "+ spmActual);
-            // console.log("spmPrice "+spmPrice);
-            // console.log("spID "+spID);
-            // console.log("stID "+stID);
-            
             if ($(this).is(":checked")) {
                 $("#drForm .ic-level-2").append(`
-               <div style="overflow:auto" class="ic-level-1">
+               <div style="overflow:auto" class="ic-level-1" data-id="${spmID}">
                    <div style="float:left;width:96%;overflow:auto;">
                        <div class="input-group mb-1">
                        <input type="text" name="spmName" class="form-control form-control-sm" value="${spmName}"
@@ -291,14 +282,11 @@
                            class="form-control form-control-sm" placeholder="spID" id="spID" value="${spID}">
                         <input type="hidden" name="stID"
                            class="form-control form-control-sm" placeholder="stID" id="stID" value="${stID}">
-                        <input type="hidden" name="stQty"
-                           class="form-control form-control-sm" placeholder="stQty" id="stQty" value="${stQty}">
-                       <input type="hidden" name="spmActualQty"
-                           class="form-control form-control-sm" placeholder="spmActualQty" id="spmActualQty" value="${spmActual}">
-                       <input type="number" min="0" name="tiQty" id="tiQty"
+                       <input type="number" min="0" name="tiQty" id="tiQty" data-price="${spmPrice}" data-actqty="${spmActual}"
                            class="form-control form-control-sm" placeholder="tiQty" required>
                         <input type="number" min="0" name="tiActualQty" id="tiActualQty"
-                           class="form-control form-control-sm" placeholder="tiActualQty">
+                           class="form-control form-control-sm" placeholder="tiActualQty"
+                           readonly>
                         <input type="number"  min="0" name="tiDiscount" id="tiDiscount"
                            class="tiDiscount form-control form-control-sm" placeholder="Discount" >
                        <input type="number" name="spmPrice" id="spmPrice"
@@ -312,16 +300,34 @@
                `);
      
             } else {
-                $('#drForm .ic-level-1[data-stock='+id+']').remove();
+                $('#drForm .ic-level-1[data-id='+spmID+']').remove();
             }
+            setIL1FormEvents();
    
         });
 
+        function setMerchandiseBrochure(merch) {
+            var spID = $("select[name='supplier']").val();
+            merch = merch.filter(me => me.spID == spID);
+
+            $("#list").empty();
+            if (merch.length > 0) {
+                $("#list").append(`${merch.map(stock => {
+                    return `<label style="width:96%"><input type="checkbox" name="merch" class="choiceStock mr-2" data-spID="${stock.spID}" 
+                    data-spmActual="${stock.spmActual}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
+                    data-stID="${stock.stID}" data-stQty="${stock.stQty}" value="${stock.spmID}">${stock.spmName}</label>`
+                }).join('')}`);
+            } else {
+                $("#list").append(`<p>No merchandises</p>`);
+            }
+
+            checkSelectedStocks();
+        }
         //---------------- FOR PURCHASE ORDER STOCK ITEMS FUNCTIONS -------------------//
         $("#addPOBtn").on("click", function () {
             $(".brochure").attr("hidden", true);
             $("#stockCardPO").removeAttr("hidden");
-            $("#drForm .ic-level-2").attr("data-type", "purchaseorder");
+            $("#drForm .ic-level-2").attr("data-type", "po");
             var supplier = $("#drForm select[name='spID']").val();
             var url = $(this).attr("data-url");
 
@@ -341,32 +347,32 @@
                     console.log(response.responseText);
                 }
             });
+            setIL1FormEvents();
         });
 
         function setStockData(stockitem) {
-            console.log(stockitem);
+            $("#po").empty();
+            $("#po").append(`<option data-spID="0" value="0" selected>Choose PO</option>`);
             $("#po").append(`${stockitem.map(stocks => {
-				return `<option name= "piID" id="piID" data-spID="${stocks.spID}" data-pID="${stocks.pID}" value="${stocks.piID}">${stocks.spName} (${stocks.pDate})</option>`
+				return `<option data-spID="${stocks.spID}" data-pID="${stocks.pID}" value="${stocks.piID}">${stocks.spName} (${stocks.pDate})</option>`
 			}).join('')}`);
         }
 
         $("#po").on("change", function () {
             resetForm();
-            var piID = document.getElementById('piID').value;
-  
+            var pID = $(this).find("option:selected").attr("data-pID");
+          
             $.ajax({
                 type: 'POST',
                 url: '<?= site_url('admin/viewPurchItems') ?>',
                 data: {
-                    piID: piID
+                    pID: pID
                 },
                 dataType: 'json',
                 success: function (data) {
                     var poLastIndex = 0;
                     var purchorder = data;
-                    console.log(data);
                     setPOBrochure(purchorder);
-
                 },
                 error: function (response, setting, error) {
                     console.log(response.responseText);
@@ -382,7 +388,7 @@
                 $("#listpo").append(`${purchorder.map(stock => {
                 return `<label style="width:96%"><input type="checkbox" name="purchorder" class="choiceStock mr-2"  
                 data-spID="${stock.spID}" data-spmActual="${stock.spmActual}" data-piid="${stock.piID}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
-                    data-stID="${stock.stID}" data-stQty="${stock.stQty}"  value="${stock.spmID}">${stock.spmName}</label>`
+                    data-stID="${stock.stID}" data-tiqty="${stock.tiQty}"  value="${stock.spmID}">${stock.spmName}</label>`
                 }).join('')}`);
             } else {
                 $("#listpo").append(`<p>No purchases</p>`);
@@ -395,22 +401,15 @@
             var spmID = $(this).val();
             var stID = $(this).attr("data-stID");
             var spmName = $(this).attr("data-spmName");
-            var stQty = $(this).attr("data-stQty");
+            var tiQty = $(this).attr("data-tiqty");
             var spmActual = $(this).attr("data-spmActual");
             var spmPrice = $(this).attr("data-spmPrice");
             var spID = $(this).attr("data-spID");
             var piID = $(this).attr("data-piid");
-            // console.log("spmID "+spmID);
-            // console.log("spmName "+ spmName);
-            // console.log("stQty" +stQty);
-            // console.log("spmActual "+ spmActual);
-            // console.log("spmPrice "+spmPrice);
-            // console.log("spID "+spID);
-            // console.log("stID "+stID);
             
             if ($(this).is(":checked")) {
                 $("#drForm .ic-level-2").append(`
-               <div style="overflow:auto" class="ic-level-1">
+               <div style="overflow:auto" class="ic-level-1" data-id="${spmID}">
                    <div style="float:left;width:96%;overflow:auto;">
                        <div class="input-group mb-1">
                        <input type="text" name="spmName" class="form-control form-control-sm" value="${spmName}"
@@ -421,14 +420,11 @@
                            class="form-control form-control-sm" placeholder="spID" id="spID" value="${spID}">
                         <input type="hidden" name="stID"
                            class="form-control form-control-sm" placeholder="stID" id="stID" value="${stID}">
-                        <input type="hidden" name="stQty"
-                           class="form-control form-control-sm" placeholder="stQty" id="stQty" value="${stQty}">
-                       <input type="hidden" name="spmActualQty"
-                           class="form-control form-control-sm" placeholder="spmActualQty" id="spmActualQty" value="${spmActual}">
-                       <input type="number" min="0" name="tiQty" id="tiQty"
-                           class="form-control form-control-sm" placeholder="tiQty" required>
+                       <input type="number" min="0" name="tiQty" id="tiQty" data-price="${spmPrice}" data-actqty="${spmActual}"
+                           class="form-control form-control-sm" placeholder="tiQty" min="1" max="${tiQty}" required>
                         <input type="number" min="0" name="tiActualQty" id="tiActualQty"
-                           class="form-control form-control-sm" placeholder="tiActualQty">
+                           class="form-control form-control-sm" placeholder="tiActualQty"
+                           readonly>
                         <input type="number"  min="0" name="tiDiscount" id="tiDiscount"
                            class="tiDiscount form-control form-control-sm" placeholder="Discount" >
                        <input type="number" name="spmPrice" id="spmPrice"
@@ -442,39 +438,39 @@
                `);
      
             } else {
-                $('#drForm .ic-level-1[data-stock='+id+']').remove();
+                $('#drForm .ic-level-1[data-id='+spmID+']').remove();
             }
-
+            setIL1FormEvents();
         });
 
-        $(document).on('change', '#tiQty', function () {
-            var tiQty = parseFloat(document.getElementById('tiQty').value);
-            var spmActualQty = parseFloat(document.getElementById('spmActualQty').value);
-
+        $(document).on('change', 'input[name="tiQty"]', function () {
+            var tiQty = parseFloat($(this).val());
+            var spmActualQty = parseFloat($(this).data('actqty'));
             var tiActual = parseFloat(tiQty * spmActualQty);
-            $("#drForm").find("input[name='tiActualQty']").val(tiActual);
+            $(this).next("input[name='tiActualQty']").val(tiActual);
 
-            var spmPrice = parseFloat(document.getElementById('spmPrice').value);
+            var spmPrice = parseFloat($(this).data("price"));
             var subtotal = parseFloat(spmPrice * tiQty);
-            $("#drForm").find("input[name='tiSubtotal']").val(subtotal);
+            $(this).closest(".ic-level-1").find("input[name='tiSubtotal']").val(subtotal);
+
+            setTotals();
         });
 
-        $(document).on('change', '.tiDiscount', function () {
-                var subtotal = parseFloat(document.getElementById('tiSubtotal').value);
-                var discount = parseFloat(document.getElementById('tiDiscount').value);
-                console.log(discount);
-                var disPrice = parseFloat(subtotal-discount);
-                $("#drForm").find("input[name='tiSubtotal']").val(disPrice);
+        $(document).on('change', 'input[name="tiDiscount"]', function () {
+            var subtotal = parseFloat($(this).closest('.ic-level-1').find('input[name="tiSubtotal"]').val());
+            var discount = parseFloat($(this).val());
+            var disPrice = parseFloat(subtotal - discount);
+            $(this).closest(".ic-level-1").find("input[name='tiSubtotal']").val(disPrice);
+
+            setTotals();
         });
 
-        
-        $(document).on("change", "select[name='po']", function(){
+        $(document).on("change", "select[name='po']", function () {
             var supplier = $(this).find(':selected').attr('data-spID');
-            console.log(supplier);
             $("#drForm").find("select[name='supplier']").val(supplier);
         });
 
-       
+
         // ----------------------- RESOLVING RETURNED ITEMS -----------------------
         $("#addRBtn").on("click", function () {
             $(".brochure").attr("hidden", true);
@@ -482,8 +478,47 @@
             $("#returnCard").removeAttr("hidden");
             var supplier = $("#drForm select[name='spID']").val();
             var url = $(this).attr("data-url");
-            setReturnsBrochure();
+            setReturnData();
+
         });
+        
+        function setReturnData() {
+            var ret = <?= json_encode($retTrans) ?>;
+
+            $("select[name='returns']").append(`${ret.map(rt => {
+				return `<option name="rID" id="rID" value="${rt.rID}">${rt.spName} (${rt.rDate})</option>`
+			}).join('')}`);
+        }
+
+       $("select[name='returns']").on("change", function() {
+            $("#returnCard tbody").empty();
+            var returns = <?= json_encode($returns) ?>;
+            var rID = $(this).val();
+            returns = returns.filter(rt => rt.rID == rID);
+
+            if (returns.length > 0) {
+                returns.forEach(function (del) {
+                $("#returnCard tbody").append(`
+                    <tr class="ic-level-1">
+                    <td><input type="checkbox" class="mr-2" name="returns"
+                            data-name="${del.stName}" data-uom="${del.uomName}" 
+                            data-stid="${del.stID}"  data-actual="${del.spmActual}" 
+                            data-price="${del.spmPrice}"  data-riid="${del.riID}" 
+                            data-tiqty="${del.tiQty}" data-spmid="${del.spmID}"
+                            value="${del.stID}"></td>
+                    <td class="trans"  data-receipt='${del.returnReference}' data-supplier='${del.spAltName}' 
+                    data-spid="${del.spID}">${del.returnReference}${del.rDate}</td>
+                    <td class="item" data-stid='${del.stID}'>${del.item}</td>
+            </tr>`);
+                });
+            } else {
+                $("#returnCard tbody").append(`<tr><td colspan="6">No return items</td></tr>`);
+            }
+
+            checkSelectedStocks();
+
+       });
+          
 
         $(document).on("click", "#returnCard input[name='returns']", function (event) {
             var id = $(this).val();
@@ -508,7 +543,7 @@
                                 value="${name}" data-tiqty="${tiQty}" name="stock" readonly></td>
                         <td width="20%" style="padding:1% !important">
                             <div class="input-group input-group-sm mb-3">
-                                <input type="number" class="form-control form-control-sm" name="qty" value="${tiQty}" min="1">
+                                <input type="number" class="form-control form-control-sm" name="qty" value="${tiQty}" min="1" max="${tiQty}">
                                 <div class="input-group-append">
                                     <span class="input-group-text" style="font-size:14px">
                                         ${uom} </span>
@@ -574,7 +609,7 @@
                 url: '/admin/deliveryreceipt/add',
                 type: "POST",
                 success: function () {
-                    console.log("yehey");
+                    location.reload();
                 }
             };
             switch (addType) {
@@ -602,7 +637,7 @@
                         var stID = $(this).find("input[name='stID']").val();
                         var spmID = $(this).find("input[name='spmID']").val();
                         var stQty = $(this).find("input[name='stQty']").val();
-                        var tiQty= $(this).find("input[name='tiQty']").val();
+                        var tiQty = $(this).find("input[name='tiQty']").val();
                         var tiSubtotal= $(this).find("input[name='tiSubtotal']").val();
                         var tiActualQty= $(this).find("input[name='tiActualQty']").val()
                         var price = parseFloat($(this).find("input[name='spmPrice']").val());
@@ -639,7 +674,7 @@
                         var spmID = $(this).find("input[name='spmID']").val();
                         var stQty = $(this).find("input[name='stQty']").val();
                         var tiQty= $(this).find("input[name='tiQty']").val();
-                        var tiSubtotal= $(this).find("input[name='tiSubtotal']").val();
+                        var tiSubtotal= parseFloat($(this).find("input[name='tiSubtotal']").val());
                         var tiActualQty= $(this).find("input[name='tiActualQty']").val()
                         var price = parseFloat($(this).find("input[name='spmPrice']").val());
                         var piID = parseInt($(this).find("input[name='spmName']").data("piid"));
@@ -708,11 +743,9 @@
             }
 
             $.ajax(params);
-            console.log(params);
 
         });
     });
-
 
     function setIL1FormEvents() {
         $("#drForm .ic-level-1:last-child .exitBtn").on("click", function () {
@@ -736,34 +769,15 @@
                 $(this).closest(".ic-level-1").attr("data-focus", true);
             }
         });
-        $("#drForm .ic-level-1:last-child input[name='itemQty[]']").on("change", function () {
+        $("#drForm .ic-level-1:last-child input[name='tiQty']").on("change", function () {
             setTotals();
         });
-        $("#drForm .ic-level-1:last-child input[name='itemPrice[]']").on("change", function () {
-            setTotals();
-        });
-        $("#drForm .ic-level-1:last-child input[name='discount[]']").on("change", function () {
+        $("#drForm .ic-level-1:last-child input[name='tiDiscount']").on("change", function () {
             setTotals();
         });
     }
 
-    function setMerchandiseBrochure(merch) {
-        var spID = $("select[name='supplier']").val();
-        merch = merch.filter(me => me.spID == spID);
-
-        $("#list").empty();
-        if(merch.length > 0) {
-        $("#list").append(`${merch.map(stock => {
-            return `<label style="width:96%"><input type="checkbox" name="merch" class="choiceStock mr-2" data-spID="${stock.spID}" 
-            data-spmActual="${stock.spmActual}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
-            data-stID="${stock.stID}" data-stQty="${stock.stQty}" value="${stock.spmID}">${stock.spmName}</label>`
-        }).join('')}`);
-        } else {
-            $("#list").append(`<p>No merchandises</p>`);
-        }
-
-        checkSelectedStocks();
-    }
+   
 
     function setInputUOM(uom) {
         $("#drForm .ic-level-1:last-child select[name='itemUnit[]']").append(uom.map(unit => {
@@ -772,44 +786,15 @@
     }
 
     function setTotals() {
-        var qty = $("#drForm .ic-level-1[data-focus='true'] input[name='itemQty[]']").val();
-        var price = $("#drForm .ic-level-1[data-focus='true'] input[name='itemPrice[]']").val();
-        var discount = $("#drForm .ic-level-1[data-focus='true'] input[name='discount[]']").val();
-        var subtotal = qty * (price - discount);
-        subtotal = subtotal < 0 ? 0 : subtotal;
         var total = 0;
-        $("#drForm .ic-level-1[data-focus='true'] input[name='itemSubtotal[]']").val(subtotal);
-        $("#drForm .ic-level-1 input[name='itemSubtotal[]']").each(function (index) {
-            total += isNaN(parseFloat($(this).val())) ? 0 : parseFloat($(this).val());
-        });
+
+        $('input[name="tiSubtotal"]').each(function(index) {
+            var subtotal = isNaN(parseFloat($(this).val())) ? 0 : parseFloat($(this).val());
+            total = parseFloat(total + subtotal);
+
+        }); 
+
         $("#drForm .total").text(total);
-    }
-
-    var returns = <?= json_encode($returns) ?>;
-
-    function setReturnsBrochure() {
-        $("#returnCard tbody").empty();
-
-        if(returns.length > 0) {
-        returns.forEach(function (del) {
-            $("#returnCard tbody").append(`
-                    <tr class="ic-level-1">
-                    <td><input type="checkbox" class="mr-2" name="returns"
-                            data-name="${del.stName}" data-uom="${del.uomName}" 
-                            data-stid="${del.stID}"  data-actual="${del.spmActual}" 
-                            data-price="${del.spmPrice}"  data-riid="${del.riID}" 
-                            data-tiqty="${del.tiQty}" data-spmid="${del.spmID}"
-                             value="${del.stID}"></td>
-                    <td class="trans"  data-receipt='${del.returnReference}' data-supplier='${del.spAltName}' 
-                    data-spid="${del.spID}">${del.returnReference}</td>
-                    <td class="item" data-stid='${del.stID}'>${del.item}</td>
-                </tr>`);
-        });
-        } else {
-            $("#returnCard tbody").append(`<tr><td colspan="6">No return items</td></tr>`);
-        }
-
-        checkSelectedStocks();
     }
 
     function checkSelectedStocks() {
@@ -820,6 +805,7 @@
     }
 
     function resetForm() {
+        $("#drForm .total").text("0");
         $("#drForm .ic-level-2").empty();
     }
 
