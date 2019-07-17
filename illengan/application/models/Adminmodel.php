@@ -2419,7 +2419,7 @@ function add_consumptionitems($ciID,$stocks,$date){
     function get_deliveryItems(){
         $query = "SELECT pr.pID, ti.tiID, tiDiscount, tiQty as qty, tiActual as actual, tiType as type, remainingQty, tiRemarks, tiDate, CONCAT(stName, IFNULL(CONCAT(' ', stSize), '') ) 
         AS stockname, spmName, spmPrice, piID, piStatus FROM transitems ti LEFT JOIN purchase_items USING(piID) LEFT JOIN pur_items USING (piID)
-        LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(stID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
+        LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(spmID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
         LEFT JOIN pur_items USING (piID) GROUP BY piID) AS maxNew ON (ti.tiID = maxNew.tiID) WHERE piStatus in ('partially delivered','delivered')";
         return $this->db->query($query)->result_array();
     }
