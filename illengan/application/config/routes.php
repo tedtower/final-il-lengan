@@ -80,6 +80,7 @@ $route['admin/loadDataSpoilagesStock/(:num)'] = "adminview/loadDataSpoilagesStoc
 $route['admin/loadConsumptionData/(:num)'] = "adminview/loadConsumptionData/$1";
 $route['admin/loadDataSales/(:num)'] = "adminview/loadDataSales/$1";
 $route['admin/loadDataPurchaseOrder/(:num)'] = "adminview/loadDataPurchaseOrder/$1";
+$route['admin/loadDataDeliveryReceipt/(:num)'] = "adminview/loadDataDeliveryReceipt/$1";
 //End Viewing Routes 
 
 //Not Sure Routes

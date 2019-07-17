@@ -35,6 +35,7 @@
                                         <tbody class="transTable ic-level-2">
                                         </tbody>
                                     </table>
+                                    <div id="pagination" style="float:right"></div>
                                 <!--End Table Content-->
 
                                 <!--Start of Modal "Delete Stock Item"-->
@@ -101,74 +102,69 @@
 
         });
 
-        var delReceipt = [];
-		$(function() {
-			viewDelReceipts();
-
-			//POPULATE TABLE
-			var table = $('#transTable');
-
-			function viewDelReceipts() {
-				$.ajax({
-					url: "<?= site_url('admin/viewDeliveryReceiptJS') ?>",
-					method: "post",
-					dataType: "json",
-					success: function(data) {
-                        console.log(data);
-                        $.each(data.dr, function(index, items) {
-                            delReceipt.push({
-                                "dr": items
-                            });
-                            delReceipt[index].drItems = data.drItems.filter(dr => dr.pID == items.pID);
-                        });
-                        console.log(data.dr);
-                        console.log('items');
-                        console.log(data.drItems);
-                        console.log(delReceipt);
-						setDelReceiptsData(delReceipt);
-					},
-					error: function(response, setting, errorThrown) {
-						console.log(response.responseText);
-						console.log(errorThrown);
-					}
-				});
-			}
+    $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadDataDeliveryReceipt/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var dr = data.delRec;
+                var drItems = data.dr;
+				console.log(dr, drItems);
+                setDelReceiptsData(dr, drItems);
+			},
+            error: function (response, setting, errorThrown) {
+                console.log(errorThrown);
+                console.log(response.responseText);
+            }
 		});
-
-		function setDelReceiptsData(delReceipt) {
-			if ($("#transTable > tbody").children().length > 0) {
+	}
+        
+   });
+		function setDelReceiptsData(del, delItems) {
 				$("#transTable > tbody").empty();
-			}
-			delReceipt.forEach(dr => {
-				$("#transTable > tbody").append(`
-			    <tr class="transTabletr ic-level-1">
-                    <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4">
-                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.dr.pID}</td>
-                    <td>${dr.dr.receipt == null || dr.dr.receipt == '' ?  "No receipt." : dr.dr.receipt}</td>
-                    <td>${jQuery.trim(dr.dr.spAltName) == "" ? dr.dr.spName : dr.dr.spAltName }</td>
-                    <td>${dr.dr.pDate}</td>
-                    <td>${dr.dr.pTotal}</td>
-                    <td>
-                            <!--Action Buttons-->
-                            <div class="onoffswitch">
-                                <!--Edit button-->
-                                <a role="button" class="updateBtn btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/')?>${dr.dr.pID}">Edit</a>
-                                <!--Delete button-->
-                                <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                                data-target="#delete">Archive</button>                      
-                            </div>
-                    </td>
-				</tr>`);
-              
-				var accordion = `
-                <tr class="accordion" style="display:none;background: #f9f9f9">
-                <td colspan="7">
-                <!-- table row ng accordion -->
-                    <div class="container" style="overflow:auto;display:none"> <!-- container ng accordion -->
-                            ${dr.drItems.length === 0 ? "No item delivered" : 
-                            `<table id="drItems" width="90%" style="margin-left:auto;margin-right:auto;" class="drItems table-bordered">
-                                <thead class="thead-light" style="font-size: 15px">
-                                    <tr>
+            for(dr in del){
+                var row = ` <tr class="transTabletr ic-level-1">`;
+                    row += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4">`;
+                    row += `<img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${del[dr].pID}</td>`;
+                    if(del[dr].receipt == null || del[dr].receipt == ''){
+                        row += ` <td>No receipt<td>`; 
+                    }else{
+                        row += `<td>`+del[dr].receipt+`</td>`;
+                    }
+                    if(jQuery.trim(del[dr].spAltName) == ""){
+                        row += `<td>${del[dr].spName}</td>`;
+                    }else{
+                        row += `<td>${del[dr].spAltName }</td>`;
+                    }
+                    row += `<td>${del[dr].pDate}</td>`;
+                    row += `<td>${del[dr].pTotal}</td>`;
+                    row += `<td>`;
+                    row += ` <div class="onoffswitch">`;
+                    row += `<a role="button" class="updateBtn btn btn-secondary btn-sm" href="<?= site_url()?>admin/deliveryreceipt/formedit/${del[dr].pID}">Edit</a>`;
+                    row += ` <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" data-target="#delete">Archive</button>`;
+                    row += `</div></td></tr>`;
+               
+            var dri = delItems.filter(function(dI){
+                return dI.pID == del[dr].pID
+            });
+            var accordion = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
+                accordion += ` <td colspan="7">`;
+                accordion += ` <div class="container" style="overflow:auto;display:none">`;
+                if(dri.length === 0){
+                    accordion += ` No item delivered `;
+                }else{
+                accordion += `<table id="drItems" width="90%" style="margin-left:auto;margin-right:auto;" class="drItems table-bordered">`;
+                accordion += `<thead class="thead-light" style="font-size: 15px">`;
+                accordion += `<tr>
                                     <th>Name</th>
                                     <th>Qty</th>
                                     <th>Actual Qty</th>
@@ -176,31 +172,40 @@
                                     <th>Discount</th>
                                     <th>Subtotal</th>
                                     <th>Delivery Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                ${dr.drItems.map(dri => {
-                                    return `
-                                    <tr>
-                                    <td>${dri.merch == null ? dri.stock : dri.merch}</td>
-                                    <td>${dri.qty}</td>
-                                    <td>${dri.actual}</td>
-                                    <td>${dri.spmPrice == null || dri.spmPrice == '' ? "N/A" : dri.spmPrice }</td>
-                                    <td>${dri.tiDiscount == null || dri.tiDiscount == '' ?  "N/A" : dri.tiDiscount}</td>
-                                    <td>${isNaN((dri.tiSubtotal)) ? "N/A" : 
-                                    (dri.tiSubtotal)}</td>
-                                    <td>${dri.priStatus}</td>
-                                    </tr>
-                                    `;
-                                }).join('')}
-                                </tbody>
-                                </table> `}
-                    </div>
-                    </td>
-				</tr>
-            `;
+                            </tr></thead>`;
+                accordion +=` <tbody>`;
+                for(it in dri){
+                accordion +=`<tr>`;
+                accordion +=` <td>${dri[it].merch == null ? dri[it].stock : dri[it].merch }</td>`;
+                accordion +=` <td>${dri[it].qty}</td>`;
+                accordion +=`<td>${dri[it].actual}</td>`;
+                if(dri[it].spmPrice == null || dri[it].spmPrice == ''){
+                    accordion +=`<td>N/A</td>`; 
+                }else{
+                    accordion +=`<td>${dri[it].spmPrice}</td>`;
+                }
+                if(dri[it].tiDiscount == null || dri[it].tiDiscount == ''){
+                    accordion +=`<td>N/A</td>`; 
+                }else{
+                    accordion +=`<td>${dri[it].tiDiscount}</td>`;
+                }
+                if(dri[it].tiSubtotal == null || dri[it].tiSubtotal == ''){
+                    accordion +=`<td>N/A</td>`;
+                    
+                } else {
+                    accordion +=`<td>${dri[it].tiSubtotal}</td>`;
+                }
+                accordion +=` <td>${dri[it].priStatus}</td>`;
+                accordion +=`</tr>`;
+                accordion +=` </tbody>
+                                </table>`;
+                }
+            }
+                accordion += `</div></td></tr>`;
+            
+            $('#transTable > tbody').append(row);
             $("#transTable > tbody").append(accordion);
-            });
+        }	
 			$(".accordionBtn").on('click', function() {
 				if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
 					$(this).closest("tr").next(".accordion").css("display", "table-row");

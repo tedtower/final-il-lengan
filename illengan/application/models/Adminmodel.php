@@ -2412,11 +2412,16 @@ function add_consumptionitems($ciID,$stocks,$date){
     //     ORDER BY transDate DESC ,pID DESC";
     //     return $this->db->query($query)->result_array();
     // }
-    function get_deliveryReceipts(){
+    function get_deliveryReceipts($s, $l){
         $query = "SELECT pID, spName, DATE_FORMAT(pDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, pType, spAltName FROM purchases
         LEFT JOIN supplier USING (spID) INNER JOIN (SELECT SUM(tiSubtotal) as pTotal, pID  from transitems INNER JOIN pur_items 
-        USING (piID) LEFT JOIN purchases pur USING (pID) GROUP BY pID) as total USING (pID) WHERE pType ='delivery'";
+        USING (piID) LEFT JOIN purchases pur USING (pID) GROUP BY pID) as total USING (pID) WHERE pType ='delivery' LIMIT $s, $l";
         return $this->db->query($query)->result_array();
+    }
+    function countDR(){
+        $query = "SELECT count(pID) as allcount FROM purchases WHERE pType ='delivery'";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     function get_deliveryItems(){
         $query = "SELECT tiID, pi.pID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, CONCAT(spmName,' ',stSize) as merch,
