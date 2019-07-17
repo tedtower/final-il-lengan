@@ -1,5 +1,4 @@
 <!--End Side Bar-->
-
 <body style="background:white">
     <div class="content">
         <div class="container-fluid">
@@ -74,7 +73,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Email</span>
                                                             </div>
-                                                            <input class="form-control form-control-sm" name="email" type="textarea" id="email" require pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" require title="You have entered an invalid E-mail address. Please try again." required>
+                                                            <input class="form-control form-control-sm" name="email" type="textarea" id="email" require pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" require title="You have entered an invalid E-mail address. Please try again.">
                                                         </div>
                                                         <!--Status-->
                                                         <div class="input-group mb-3 col">
@@ -94,7 +93,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Address</span>
                                                         </div>
-                                                        <input type="text" name="supplierAddress" id="supplierAddress" class="form-control form-control-sm" required>
+                                                        <input type="text" name="supplierAddress" id="supplierAddress" class="form-control form-control-sm">
                                                     </div>
                                                     <!--Merchandise-->
                                                     <a class="addMerchandise btn btn-primary btn-sm" style="color:blue;margin:0">Add Merchandise Item</a>
@@ -493,7 +492,7 @@
                         <tr>
                         <td>${merchandise.spmName}</td>
                         <td>${merchandise.uomName}</td>
-                        <td>${merchandise.spmActualQty}</td>
+                        <td>${merchandise.spmActual}</td>
                         <td>${merchandise.spmPrice}</td>
                         </tr> 
                         `;

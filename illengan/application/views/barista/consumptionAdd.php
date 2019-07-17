@@ -15,7 +15,7 @@
                             <div class="card-header">
                                 <h6 style="font-size:15px;margin:0">Add Consumption</h6>
                             </div>
-                            <form id="conForm" action="<?= site_url("barista/consumption/add")?>"  accept-charset="utf-8"
+                            <form id="conForm" action="<?= site_url("barista/consumption/add")?>" accept-charset="utf-8"
                                 class="form">
                                 <div class="card-body">
                                     <div class="input-group input-group-sm mb-3">
@@ -24,7 +24,7 @@
                                                 style="width:125px;font-size:14px;">
                                                 Date Consumed</span>
                                         </div>
-                                        <input type="date" id="spoiledDate" class="form-control" name="tDate" required>
+                                        <input type="date" id="tDate" class="form-control" name="tDate" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
@@ -41,7 +41,6 @@
                                             <thead style="border-bottom:2px solid #cccccc;font-size:14px">
                                                 <tr>
                                                     <th style="font-weight:500 !important;">Stock Item</th>
-                                                    <th width="17%" style="font-weight:500 !important;">Quantity</th>
                                                     <th width="17%" style="font-weight:500 !important;">Actual Quantity</th>
                                                     <th width="33%" style="font-weight:500 !important;">Log Remarks</th>
                                                 </tr>
@@ -55,7 +54,7 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                    <a class="btn btn-danger btn-sm" type= "button" href="<?= site_url('barista/consumption')?>" data-original-title  style="float:right">Cancel</a>
+                                        <a class="btn btn-danger btn-sm" type= "button" href="<?= site_url('barista/consumption')?>" data-original-title  style="float:right">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -74,7 +73,7 @@
                                 <!--checkboxes-->
                                 <?php if(!empty($stocks)){
                             ?>
-                                <table class="table table-borderless" >
+                                <table class="table table-borderless">
                                     <thead style="border-bottom:2px solid #cccccc">
                                         <tr>
                                             <th width="2%"></th>
@@ -85,8 +84,8 @@
                                     <tbody class="ic-level-2"><?php
                                 foreach($stocks as $stock){
                                 ?>
-                                        <tr class="ic-level-1" data-curQty="<?= $stock['stQty']?>" data-uomID="<?= $stock['uomID']?>" >
-                                            <td><input type="checkbox" class="mr-2" name="stock" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
+                                        <tr class="ic-level-1"  >
+                                            <td><input type="checkbox" class="mr-2" name="stock" data-curQty="<?= $stock['stQty']?>" data-name="<?= $stock['stName']?>" value="<?= $stock['stID']?>" required></td>
                                             <td class="stock"><?= $stock['stName']?></td>
                                             <td class="category"><?= $stock['ctName']?></td>
                                         </tr>
@@ -103,11 +102,10 @@
                             </div>
                         </div>
                     </div>
-
                     <!--End of container divs-->
                 </div>
+            </div>
         </div>
-    </div>
     <?php include_once('templates/scripts.php');?>
     <script>
     $(function() {
@@ -116,32 +114,27 @@
             if(event.target.type !== "checkbox"){
                 $(this).find("input[name='stock']").trigger("click");
             }
-
         });
         $("#stockCard input[name='stock']").on("click", function(event) {
+           
             var id = $(this).val();
             var name = $(this).attr("data-name");
+            var curQty = $(this).attr("data-curQty");
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
-                    <input name="curQty" id="curQty" type="hidden">
-					<input name="uomID" id="uomID" type="hidden">
+                    <input name="curQty" id="curQty" type="hidden" data-curQty="${curQty}" >
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${id}" value="${name}" name="stock" readonly></td>
-                        <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="tiQty" min="1" required></td>
-                        <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" name="actualQty" min="0" required></td>
+                        <td style="padding:1% !important"><input type="number" min= "1"
+                                class="form-control form-control-sm" name="actualQty"></td>
                         <td style="padding:1% !important"><textarea type="text"
                                 class="form-control form-control-sm" name="tRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
-                    $('input[name="curQty"]').val($(this).closest("tr").data('curqty'));
-                    $('input[name="uomID"]').val($(this).closest("tr").data('uomid')); 
                     console.log($(this));
-            }
-            else{
+            }else{
                 $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
             }
         });
@@ -163,31 +156,15 @@
             var url = $(this).attr("action");
             var tDate = $(this).find("input[name='tDate']").val();
             var remarks = $(this).find("textarea[name='remarks']").val();
-            var uomID = $(this).find("input[name='uomID']").val();
-            var curQty = $(this).find("input[name='curQty']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
                     stID: $(this).find("input[name='stock']").attr('data-id'),
                     actualQty: $(this).find("input[name='actualQty']").val(),
-                    tiQty: $(this).find("input[name='tiQty']").val(),
                     tRemarks: $(this).find("textarea[name='tRemarks']").val(),
-                    uomID: uomID,
-                    curQty: curQty,
+                    curQty: $(this).find("input[name='curQty']").attr('data-curQty')
                 });
             });
-            if($('input[name="stock"]:checked').length == 0) {
-                alert('No checkbox is checked');
-                return false;
-            }
-           
-            
-
-            // var checked = $("#conForm input:checked").length > 0;
-            // if (!checked){
-            //     alert("Please check at least one checkbox!");
-            //     return false;
-            // }
             console.log(items);
             $.ajax({
                 method: "POST",
@@ -198,6 +175,13 @@
                     items: JSON.stringify(items)
                 },
                 dataType: "JSON",
+                succes: function(data){
+                    if(data.sessErr){
+                        location.replace("/login");
+                    }else{
+                        console.log(data);
+                    }
+                },
                 complete: function() {
                 location.reload();
                 },
@@ -210,14 +194,23 @@
     }); 
 
     $('#conForm').submit(function(event){
-        var spoiledDate = $("#spoiledDate").val();
+        var consumptionDate = $("#consumptionDate").val();
         var currentDate = new Date();
-        if(Date.parse(spoiledDate) > Date.parse(currentDate)){
-            alert('Incorrect date input!');
+        if(Date.parse(consumptionDate) > Date.parse(currentDate)){
+            alert('Invalid! Date exceeds current date.');
             return false;
         }
     });
 
+    
+    $('#conForm').submit(function(event){
+            var spDate = $("#tDate").val();
+            var currentDate= new Date();
+            if(Date.parse(currentDate) <= Date.parse(spDate)){
+                alert('Please check the date entered!');
+                return false;
+        }
+    });
     </script>
 </body>
 
