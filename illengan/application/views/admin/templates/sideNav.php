@@ -29,7 +29,6 @@
                 <li><a href="<?php echo base_url('admin/menu/menustock') ?>"><i class="far fa-book"></i> Menu - Stock</a></li>
                 <li><a href="<?php echo base_url('admin/menu/addons')?>"><i class="far fa-layer-group"></i> Addons</a></li>
                 <li><a href="<?php echo base_url('admin/menucategories')?>"><i class="far fa-bookmark"></i> Categories</a></li>
-                <li><a href="<?php echo base_url('admin/menu/promos')?>"><i class="far fa-gift"></i> Promos</a></li>
                 <li>
                     <a href="#Spoilages" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="far fa-trash"></i> Spoilages</a>
                     <ul  class="collapse list-unstyled" id="Spoilages">

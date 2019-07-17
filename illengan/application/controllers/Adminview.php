@@ -1234,7 +1234,7 @@ function getStockItem(){
     function viewConsumptionFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $head['title'] = "Inventory - Add Consumption";
-            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/head2', $head);
             $this->load->view('admin/templates/sideNav');
             $data['stocks'] = $this->adminmodel->get_stocks();
             $this->load->view('admin/consumptionAdd', $data);
