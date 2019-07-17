@@ -179,7 +179,7 @@
               <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
-            <div class="input-group mb-3">
+            <!-- <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-sm"
                   style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
@@ -187,7 +187,7 @@
               </div>
               <input type="text" step="any" min="0" class="form-control" name="discount2" id="discount2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("seniorDiscount"); ?></span>
-            </div>
+            </div> -->
             <div>
               <input type="checkbox" class="form-control-sm" name="discounted2" id="discounted2"  > Senior Citizen Discount(20%)
             </div>
@@ -351,7 +351,7 @@
                             <td><input type="text" name="olQty" class="form-control form-control-sm"  value="${items.olQty}" required readonly></td>
                             <td><input type="text" name="olPrice" class="form-control form-control-sm"  value="${items.olPrice}" required readonly></td>
                             <td><input type="text" name="aoTotal" class="form-control form-control-sm"  value="${items.aoTotal}" required readonly></td>
-                            <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal}" required readonly></td>
+                            <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal} " required readonly></td>
                             <td></td>
                             </tr>`
             }).join('')}`);
