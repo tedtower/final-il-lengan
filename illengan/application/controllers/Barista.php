@@ -242,6 +242,9 @@ class Barista extends CI_Controller{
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
             $this->baristamodel->update_payment($status,$osID,$payDate, $date_recorded);
+            foreach ($osID as $o) {
+                $this->destockPrefStock($o);
+            }
         }else{
             redirect('login');
             }
@@ -253,6 +256,7 @@ class Barista extends CI_Controller{
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
             $this->baristamodel->update_payment2($status,$osID,$payDate, $date_recorded);
+            $this->destockPrefStock($osID);
         }else{
             redirect('login');
             }
