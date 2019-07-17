@@ -512,7 +512,7 @@
 var ol = olist.filter(function(o){
                 return item[i].osID == o.osID;
             });
-                var ordersDiv = `<div class="preferences" style="float:left;margin-right:3%" >`;
+                var ordersDiv = `<div style="padding-right:3%;padding-left:3%;" >`;
                 if(ol == null || ol == ""){
                     ordersDiv += `No orders`;
                 }else{
