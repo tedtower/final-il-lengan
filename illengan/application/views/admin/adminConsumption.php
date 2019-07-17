@@ -13,12 +13,8 @@
 						<!--Table-->
 						<div class="card-content">
 
-							<!--Add  Consumption BUTTON-->
-							<div class="col-md-4 col-lg-2">
 							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/consumption/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Consumption</a>
-							<!--eND Add  Consumption BUTTON-->
-							</div>
 						</div>
 							<!--eND Add  Consumption BUTTON-->
 							<br>

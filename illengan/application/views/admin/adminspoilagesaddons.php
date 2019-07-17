@@ -12,11 +12,7 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <!--Add Addon Spoilage BUTTON-->
-                                <div class="col-md-4 col-lg-2" id="addonTable">
                                     <a class="btn btn-primary btn-sm" href="<?= site_url('admin/addons/spoilage/formadd') ?>" data-original-title style="margin:0" id="addBtn">Add Spoilage</a>
-                                </div>
-                                <!--eND Add Addon Spoilage BUTTON-->
                                 <!--Search-->
                                 <div id="addonTable" style="width:25%; float:right; border-radius:5px">
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">

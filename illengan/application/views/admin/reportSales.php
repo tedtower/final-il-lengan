@@ -35,6 +35,7 @@
                         <th><b>Quantity</b></th>
                         <th><b>Price</b></th>
                         <th><b>Subtotal</b></th>
+                        <th><b>W/ Discount</b></th>
                     </tr>
                 </thead>
 
@@ -49,7 +50,18 @@
                         <td><?php echo $report['osPayDateTime']?></td>
                         <td><?php echo $report['olQty']?></td>
                         <td><?php echo $report['olPrice']?></td>
-                        <td><?php echo $report['olSubtotal']?></td>
+                        <?php if($report['osDiscount'] == 0){
+                                echo '<td>'.$report['olSubtotal'].'</td>
+                                        <td></td>';
+                            }else{
+                                $discount = $report['olSubtotal'] * ($report['osDiscount']/100);
+                                $amount = $report['olSubtotal'] - $discount;
+                                echo 
+                                    '<td style="color:red">'.$amount.'</td>
+                                    <td>w/ 20% discount</td>
+                                ';
+                                }
+                            ?>
                     </tr>
                     <?php foreach($addons as $addon){
                     if($addon['olID'] == $report['olID']){?>
@@ -59,7 +71,17 @@
                         <td><?php echo $report['osPayDateTime']?></td>
                         <td><?php echo $addon['aoQty']?></td>
                         <td><?php echo $addon['aoPrice']?></td>
-                        <td><?php echo $addon['aoTotal']?></td>  
+                        <?php if($report['osDiscount'] == 0){
+                                    echo '<td>'.$addon['aoTotal'].'</td>
+                                          <td></td>';
+                                }else{
+                                    $discount = $addon['aoTotal'] * ($report['osDiscount']/100);
+                                    $amount = $addon['aoTotal'] - $discount;
+                                    echo 
+                                        '<td style="color:red">'.$amount.'</td>
+                                        <td>w/ 20% discount</td>';
+                                    }
+                        ?>
                     </tr>
                     <?php }
                      }?>
