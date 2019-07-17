@@ -674,7 +674,7 @@
                         var spmID = $(this).find("input[name='spmID']").val();
                         var stQty = $(this).find("input[name='stQty']").val();
                         var tiQty= $(this).find("input[name='tiQty']").val();
-                        var tiSubtotal= $(this).find("input[name='tiSubtotal']").val();
+                        var tiSubtotal= parseFloat($(this).find("input[name='tiSubtotal']").val());
                         var tiActualQty= $(this).find("input[name='tiActualQty']").val()
                         var price = parseFloat($(this).find("input[name='spmPrice']").val());
                         var piID = parseInt($(this).find("input[name='spmName']").data("piid"));
@@ -805,6 +805,7 @@
     }
 
     function resetForm() {
+        $("#drForm .total").text("0");
         $("#drForm .ic-level-2").empty();
     }
 

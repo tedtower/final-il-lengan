@@ -121,6 +121,9 @@
                             });
                             delReceipt[index].drItems = data.drItems.filter(dr => dr.pID == items.pID);
                         });
+                        console.log(data.dr);
+                        console.log('items');
+                        console.log(data.drItems);
                         console.log(delReceipt);
 						setDelReceiptsData(delReceipt);
 					},
@@ -179,14 +182,14 @@
                                 ${dr.drItems.map(dri => {
                                     return `
                                     <tr>
-                                    <td>${dri.stockname}</td>
+                                    <td>${dri.merch == null ? dri.stock : dri.merch}</td>
                                     <td>${dri.qty}</td>
                                     <td>${dri.actual}</td>
                                     <td>${dri.spmPrice == null || dri.spmPrice == '' ? "N/A" : dri.spmPrice }</td>
                                     <td>${dri.tiDiscount == null || dri.tiDiscount == '' ?  "N/A" : dri.tiDiscount}</td>
-                                    <td>${isNaN((dri.qty * dri.spmPrice) - parseInt(dri.tiDiscount)) ? "N/A" : 
-                                    (dri.qty * dri.spmPrice) - parseInt(dri.tiDiscount)}</td>
-                                    <td>${dri.piStatus}</td>
+                                    <td>${isNaN((dri.tiSubtotal)) ? "N/A" : 
+                                    (dri.tiSubtotal)}</td>
+                                    <td>${dri.priStatus}</td>
                                     </tr>
                                     `;
                                 }).join('')}
