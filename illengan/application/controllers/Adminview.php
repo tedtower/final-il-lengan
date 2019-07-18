@@ -286,10 +286,16 @@ function viewDRFormAdd(){
 function viewDRFormEdit($id){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         if(is_numeric($id)){
+            // $id = $this->uri->segment('3');
             $head['title'] = "Inventory - Edit Delivery";
             $this->load->view('admin/templates/head2', $head);
             $this->load->view('admin/templates/sideNav');
-            $this->load->view('admin/deliveryReceiptEdit');
+            $data = array(
+                'id' => $id,
+                'dr'=> $this->adminmodel->get_deliveryReceipts(),
+                'drItem'=> $this->adminmodel->get_deliveryItems()
+            );
+            $this->load->view('admin/deliveryReceiptEdit',$data);
         }else{
             redirect('admin/deliveryreceipt');
         }

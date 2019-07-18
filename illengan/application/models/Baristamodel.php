@@ -720,10 +720,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 VALUES(?, ?, ?, ?, ?, ?)";
             return $this->db->query($query, array($tID, $item['tiID'], $item['tiQty'], $item['perUnit'], $item['actual'], $item['subtotal']));
         }
-        function get_stockQty($stID){
-            $query = "SELECT stQty from stockitems where stID = ?";
-            return $this->db->query($query,array($stID))->result_array();
-        }
+//         function get_stockQty($stID){
+//             $query = "SELECT stQty from stockitems where stID = ?";
+//             return $this->db->query($query,array($stID))->result_array();
+//         }
         function add_restockLog($tID, $log){
             $query = "INSERT INTO stocklog(
                 stID,
