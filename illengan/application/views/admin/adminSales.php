@@ -506,7 +506,7 @@
                     tableRow += ` <td>&#8369;`+(parseFloat(item[i].osTotal)).toFixed(2)+`</td>`;
                     tableRow += ` <td>`;
                     tableRow += `<button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editSales" id="editSalesBtn">Edit</button>
-                        <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#delete">Archive</button>`;
+                        `;
                     tableRow += `</td></tr>`;
 
 var ol = olist.filter(function(o){

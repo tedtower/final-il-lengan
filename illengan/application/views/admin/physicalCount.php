@@ -122,12 +122,8 @@
                 beforeSend: function() {
                     console.log(date, items);
                 },
-                succes: function(data){
-                    if(data.sessErr){
-                        location.replace("/login");
-                    }else{
-                        console.log(data);
-                    }
+                succes: function(){
+                    location.reload();
                 },
                 error: function(response, setting, error) {
                     console.log(error);

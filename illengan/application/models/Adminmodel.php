@@ -39,6 +39,7 @@ function get_stockCard($stID){
                 stockitems.stID,
                 tiType as type,
                 DATE_FORMAT(tiDate, '%b %d, %Y %r') AS logDate,
+                dateRecorded,
                 tiQty,
                 remainingQty as remain,
                 tiActual as actual,
@@ -58,7 +59,7 @@ function get_stockCard($stID){
 ON
     stockitems.stID = COALESCE(suppliermerchandise.stID, transitems.stID)
 	WHERE stockitems.stID = ? AND tiType <> 'purchase order' AND tiID >= (SELECT MAX(tiID) FROM transitems WHERE tiType = 'beginning' AND 	transitems.stID = ?)
-            order by tiDate desc";
+            order by dateRecorded desc";
     return $this->db->query($query, array($stID, $stID))->result_array();
 }
 
@@ -68,6 +69,7 @@ function get_stockCardAll($stID){
                 stockitems.stID,
                 tiType as type,
                 DATE_FORMAT(tiDate, '%b %d, %Y %r') AS logDate,
+                dateRecorded,
                 tiQty,
                 remainingQty as remain,
                 tiActual as actual,
@@ -86,7 +88,7 @@ function get_stockCardAll($stID){
             ON
             stockitems.stID = COALESCE(suppliermerchandise.stID, transitems.stID)
             WHERE stockitems.stID = ? AND tiType <> 'purchase order'
-            order by tiDate";
+            order by dateRecorded";
     return $this->db->query($query,array($stID))->result_array();
 }
 
