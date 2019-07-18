@@ -374,7 +374,7 @@
             row += `<td>${item[r].rTotal}</td>`;
             row += `<td>
                     <a class="editReturnsbtn btn btn-secondary btn-sm" href="returns/formedit/${item[r].rID}" style="margin:0">Edit Return</a>                 
-                        <button class="deleteBtn btn btn-sm btn-warning" data-id="${item[r].rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
+                        <!--<button class="deleteBtn btn btn-sm btn-warning" data-id="${item[r].rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>-->
                     </td>`;
             row += ` </tr>`;
             row += ``;

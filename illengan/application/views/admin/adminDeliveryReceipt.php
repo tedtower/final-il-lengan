@@ -153,9 +153,7 @@
                             <div class="onoffswitch">
                                 <!--Edit button-->
                                 <a role="button" class="updateBtn btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/')?>${dr.dr.pID}">Edit</a>
-                                <!--Delete button-->
-                                <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                                data-target="#delete">Archive</button>                      
+                                <!--Delete button-->                
                             </div>
                     </td>
 				</tr>`);
