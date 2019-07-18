@@ -1951,7 +1951,7 @@ function consumed_item($cID,$stocks,$remarks,$date,$account_id,$date_recorded,$u
     }
 }
 function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
-    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
+    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?)";
     if(count($stocks) > 0){
         for($in = 0; $in < count($stocks) ; $in++){
             $this->db->query($query,array("consumed",$stocks[$in]['actualQty'],$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$ciID,$date_recorded));
