@@ -120,8 +120,6 @@
                         row +=`<td>&#8369;`+po[p].total+`</td>`;
                         row +=` <td>
                                     <a class="editBtn btn btn-sm btn-secondary" href="<?= site_url()?>admin/purchaseorder/formedit/`+po[p].id+`">Edit</a>
-                                    <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal"
-                                                    data-target="#deletePO">Archive</button>
                                 </td> </tr>`;
                 var ordItems = poi.filter(function(o){
                     return o.pID == po[p].id

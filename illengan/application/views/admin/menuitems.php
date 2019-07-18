@@ -503,7 +503,7 @@
                 },
                 complete: function() {
                     $("#editMenu").modal("hide");
-                    loction.reload();
+                    location.reload();
                 }
             });
         });

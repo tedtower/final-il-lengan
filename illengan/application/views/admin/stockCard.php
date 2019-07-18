@@ -19,8 +19,17 @@
                         <div style="width:100%;overflow:auto;">
                             <div style="overflow:auto;">
                             <span style="float:left;width:40%;"><b>Stock Item:</b> <?= $stock['stName'] . " " . $stock['stSize']?></span>
-                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $logs[0]['logDate']?></span>
-                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $logs[0]['actual'] . " " . $stock['uomAbbreviation']?></span>
+                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> 
+                                <?php foreach($logs as $log){
+                                    if($log['type'] == 'beginning'){
+                                        echo $log['logDate'];
+                                    }}?></span>
+                                <span style="float:left;width:20%">
+                                <b>Beginning Qty:</b> 
+                                <?php foreach($logs as $log){
+                                    if($log['type'] == 'beginning'){
+                                        echo $log['actual'] ;
+                                    }}?> <?= $stock['uomAbbreviation']?></span>
                             </div>
                             
                             <div style="overflow:auto;">

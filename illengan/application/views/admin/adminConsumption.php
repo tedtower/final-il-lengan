@@ -176,8 +176,7 @@
                             <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
                                 data-target="#editConsumption">Edit</button>
                             <!--Delete button-->
-                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteConsumption">Archive</button>                      
+                  
                         </div>
                     </td>
 				</tr>`;

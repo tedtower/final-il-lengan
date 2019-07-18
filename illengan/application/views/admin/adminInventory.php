@@ -429,7 +429,7 @@ $(document).ready(function() {
                 row1 += `<td>`+data[stk].stLocation+`</td>`;
                 row1 += `<td>
                 <button class="editBtn btn btn-default btn-sm" data-toggle="modal" data-target="#addEditStock">Edit</button>
-                <button class="btn btn-warning btn-sm">Archived</button>
+               
                 <a href="<?= site_url()?>admin/inventory/stockcard/`+data[stk].stID+`" class="btn btn-success btn-sm">Stock Card</a>
                 </td></tr>`;
             $("table#stockTable  tbody").append(row1);
