@@ -105,7 +105,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = $this->db->query("SELECT * FROM prefstock");
             return $query->result();
         }
-        function get_stockQty($stID){
+        function get_stockQtyConsumption($stID){
             $query = "SELECT stQty FROM stockitems WHERE stID = ?";
             return $this->db->query($query,array($stID))->row()->stQty;
         }
