@@ -1745,7 +1745,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
             $stID = $r3['stID'];
         }
         $tiType = 'spoilage';
-        $this->add_trans($prID,$stID,$qty,$remarks, $sDate, $siID, $tiType);
+        $this->add_trans($prID,$stID,$qty,$remarks, $sDate, $dateRecorded, $siID, $tiType);
     }
 }
 //-----------------------------------------------------------------------------------------------
