@@ -80,9 +80,9 @@ function inventoryJS(){
     }
 }
 function viewPurchItems(){
-    $piID = $this->input->post('piID');
+    $pID = $this->input->post('pID');
     // $pID = $this->input->post('pID');
-    $data =$this->adminmodel->get_purchItems($piID);
+    $data =$this->adminmodel->get_purchItems($pID);
     header('Content-Type: application/json');
     echo json_encode($data, JSON_PRETTY_PRINT);
 }
@@ -190,6 +190,36 @@ function viewReturn(){
         redirect('login');
     }
 }
+function loadDataReturns($record=0) {
+    $recordPerPage = 10;
+    if($record != 0){
+        $record = ($record-1) * $recordPerPage;
+    }      	
+    $recordCount = $this->adminmodel->countReturns();
+    $retRecord = $this->adminmodel->get_datareturns($record, $recordPerPage);
+    $config['base_url'] = base_url().'admin/loadDataReturns';
+    $config['full_tag_open'] = '<ul class="pagination">';
+    $config['full_tag_close'] = '</ul>';
+    $config['last_tag_open'] = '<li class="page-link">';
+    $config['last_tag_close'] = '</li>';
+    $config['first_tag_open'] = '<li class="page-link">';
+    $config['first_tag_close'] = '</li>';
+    $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+    $config['num_tag_close'] = '&nbsp;</li>';
+    $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+    $config['cur_tag_close'] = '</li>';
+    $config['use_page_numbers'] = TRUE;
+    $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+    $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';
+    $config['total_rows'] = $recordCount;
+    $config['per_page'] = $recordPerPage;
+    $this->pagination->initialize($config);
+    $data['pagination'] = $this->pagination->create_links();
+    $data['returns'] = $retRecord;
+    $data['returnitems'] = $this->adminmodel->get_returnItems();
+    $data['resolvedItems'] = $this->adminmodel->get_resolvedReturns();
+    echo json_encode($data);		
+}
 
 function viewReturnFormAdd(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
@@ -246,6 +276,7 @@ function viewDRFormAdd(){
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['returns'] = $this->adminmodel->get_retItems();
+        $data['retTrans'] = $this->adminmodel->get_returns();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
@@ -1136,17 +1167,46 @@ function getStockItem(){
         echo json_encode($data);		
     }
     
-    function viewPurchaseOrder(){
+     function viewPurchaseOrder(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Purchase Order";
             $this->load->view('admin/templates/head', $data);
             $this->load->view('admin/templates/sideNav');
-            $data['pos'] = $this->adminmodel->get_purchaseOrders();
-            $data['poitems'] = $this->adminmodel->get_purchaseOrderItems();
+            // $data['pos'] = $this->adminmodel->get_purchaseOrders();
+            // $data['poitems'] = $this->adminmodel->get_purchaseOrderItems();
             $this->load->view('admin/adminPurchaseOrder', $data);
         }else{
             redirect('login');
         }
+    }
+    function loadDataPurchaseOrder($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countPurchOrd();
+        $poRecord = $this->adminmodel->get_purchaseOrdersData($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/loadDataPurchaseOrder';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';    
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['purOrd'] = $poRecord;
+        $data['poitems'] = $this->adminmodel->get_purchaseOrderItems();
+        echo json_encode($data);		
     }
     function viewDeliveryReceipt(){
         if($this->checkIfLoggedIn()){
@@ -1157,6 +1217,35 @@ function getStockItem(){
         }else{
             redirect('login');
         }
+    }
+    function loadDataDeliveryReceipt($record=0) {
+        $recordPerPage = 10;
+        if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+        }      	
+        $recordCount = $this->adminmodel->countDR();
+        $drRecord = $this->adminmodel->get_deliveryReceipts($record,$recordPerPage);
+        $config['base_url'] = base_url().'admin/loadDataDeliveryReceipt';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '</ul>';
+        $config['last_tag_open'] = '<li class="page-link">';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-link">';
+        $config['first_tag_close'] = '</li>';
+        $config['num_tag_open'] = '<li class="page-link">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;</li>';
+        $config['cur_tag_open'] = '<li class="page-link" style="background-color:#EBEEEE;width:30px;padding:7px 10px 7px 10px;font-weight:700">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+        $config['next_link'] = '<li class="page-link">Next <i class="fa fa-long-arrow-right"></i></li>';
+        $config['prev_link'] = '<li class="page-link"><i class="fa fa-long-arrow-left"></i> Previous</li>';    
+        $config['total_rows'] = $recordCount;
+        $config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+        $data['delRec'] = $drRecord;
+        $data['dr'] = $this->adminmodel->get_deliveryItems();
+        echo json_encode($data);		
     }
     function viewDeliveryReceiptJS(){
         if($this->checkIfLoggedIn()){
@@ -1269,7 +1358,7 @@ function getStockItem(){
     function viewConsumptionFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $head['title'] = "Inventory - Add Consumption";
-            $this->load->view('admin/templates/head', $head);
+            $this->load->view('admin/templates/head2', $head);
             $this->load->view('admin/templates/sideNav');
             $data['stocks'] = $this->adminmodel->get_stocks();
             $this->load->view('admin/consumptionAdd', $data);

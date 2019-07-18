@@ -934,6 +934,15 @@ function countConsump(){
         $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as rDate FROM `returns` LEFT JOIN supplier USING (spID)";
         return $this->db->query($query)->result_array();
     }
+    function get_datareturns($s, $l) {
+        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as rDate FROM `returns` LEFT JOIN supplier USING (spID) LIMIT $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countReturns(){
+        $query = "SELECT count(rID) as allcount FROM `returns`";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_returnItems() {
         $query = "SELECT * FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
         INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID) INNER JOIN (SELECT max(tiID) as tiID 
@@ -941,17 +950,20 @@ function countConsump(){
         return $this->db->query($query)->result_array();
     }
     function get_deliveries() {
-        $query = "SELECT tiID, spmID, pur.spID, ti.stID, sup.spName, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName, tiQty, tiActual, 
-        CONCAT(receiptNo,' - ', DATE_FORMAT(pDate, '%b %d, %Y')) AS trans, CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
-        FROM `transitems` ti LEFT JOIN purchase_items USING (piID) LEFT JOIN pur_items USING (piID) LEFT JOIN purchases pur USING (pID) LEFT JOIN stockitems st USING (stID) 
-        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) LEFT JOIN supplier sup ON pur.spID = sup.spID 
-        INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri LEFT JOIN pur_items USING (piID) GROUP BY piID) AS maxNew USING (tiID) WHERE pur.spID IS NOT NULL AND
-        pur.ptype = 'delivery' AND ti.tiType = 'restock'";
+        $query = "SELECT tiID, spmID, pur.spID, ti.stID, sup.spName, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomName,
+        tiQty, tiActual, pDate, CONCAT(receiptNo,' - ', DATE_FORMAT(pDate, '%b %d, %Y')) AS trans, 
+        CONCAT(ti.tiQty,' ',u.uomName,'/s of ',spm.spmName) AS item FROM `transitems` ti 
+        LEFT JOIN purchase_items USING (piID) LEFT JOIN pur_items USING (piID) 
+        LEFT JOIN purchases pur USING (pID) LEFT JOIN stockitems st USING (stID) 
+        LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) 
+        LEFT JOIN supplier sup ON pur.spID = sup.spID INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
+        GROUP BY piID) AS maxNew USING (tiID) WHERE pur.spID IS NOT NULL 
+        AND ti.tiType = 'restock' AND pType = 'delivery'";
         return $this->db->query($query)->result_array(); 
 
     }
     function get_retItems() {
-        $query = "SELECT tiID, ri.riID, ri.returnReference, spmID, ri.riStatus, ret.spID, ti.stID, spmPrice, spmActual, spAltName, stName, 
+        $query = "SELECT tiID, DATE_FORMAT(ret.rDate, '%b %d, %Y') as rDate, ret.rID, ri.riID, ri.returnReference, spmID, ri.riStatus, ret.spID, ti.stID, spmPrice, spmActual, spAltName, stName, 
         u.uomName, tiQty, tiActual,  CONCAT(ti.tiQty,' ',u.uomName,'/s of ',st.stName) AS item 
         FROM `transitems` ti LEFT JOIN return_items ri USING (riID) LEFT JOIN returns ret USING (rID) LEFT JOIN stockitems st USING (stID) 
         LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom u ON (spm.uomID = u.uomID) INNER JOIN (SELECT max(tiID) as tiID 
@@ -1076,14 +1088,7 @@ function countConsump(){
         $this->add_actlog($accountID, date("Y-m-d H:i:s"), "Admin ".$action."ed a stockitem return.", $action, $tiRemarks);
 
         } 
-    //FOR DR-----------------------------
-    // function add_purchase($supplier,$remarks,$receipt,$date,$source,$addType,$dateTime,$drItems){
-    //     $query = "INSERT INTO `purchases`(`pID`, `spID`, `receiptNo`, `pType`, `pDate`, `pDateRecorded`, `spAltName`) VALUES (NULL,?,?,?,?,?,?)";
-    //     for($in = 0; $in < count($drItems) ; $in++){
-    //         $this->db->query($query, array($drItems['spID'], $drItems['receiptNo'], "purchase order", $drItems['date'], $dateTime, $source ));
-    //         $this->add_purchaseItems($this->db->insert_id());
-    //     }
-    // }
+ 
     function add_purchaseItems($pID){
         $query="INSERT INTO `purchase_items`(`piID`, `piStatus`) VALUES (NULL,?)";
         if($this->db->query($query, array($this->db->insert_id(),"delivered"))){
@@ -1096,13 +1101,17 @@ function countConsump(){
         $this->db->query($query, array($pID,$piID));
     }
     //FOR PURCHASE ORDER-------------------------------------------
-    function get_purchItems($piID){
-        $query="SELECT * FROM `purchases` INNER JOIN pur_items using (pID) INNER JOIN purchase_items USING (piID) inner JOIN suppliermerchandise using (spID) INNER JOIN supplier USING (spID) where piID = ?";
-        return $this->db->query($query,array($piID))->result_array();
+    function get_purchItems($pID){
+        $query="SELECT ti.stID, pu.piID, ti.spmID, spmActual, spmPrice, tiQty, spmName FROM transitems ti 
+        LEFT JOIN purchase_items pu USING (piID) LEFT JOIN pur_items pri USING (piID) LEFT JOIN purchases pur USING 
+        (pID) INNER JOIN supplier USING (spID) LEFT JOIN suppliermerchandise sm ON (ti.spmID = sm.spmID) 
+        WHERE piStatus != 'delivered' AND ti.tiType = 'purchase order' AND pur.piD = ?";
+        return $this->db->query($query,array($pID))->result_array();
     }
     function get_purchases(){
-        $query="SELECT * FROM `purchases` INNER JOIN pur_items USING (`pID`) INNER JOIN purchase_items USING (`piID`) INNER JOIN transitems USING (piID) INNER JOIN supplier USING (spID)
-        GROUP BY pID";
+        $query="SELECT * FROM `purchases` INNER JOIN pur_items USING (`pID`) INNER JOIN purchase_items USING (`piID`) 
+        INNER JOIN transitems USING (piID) INNER JOIN supplier USING (spID) WHERE purchases.pType = 'purchase order' 
+        AND purchase_items.piStatus != 'delivered' GROUP BY pID";
         return $this->db->query($query)->result_array();
     }
     //--------------------------------
@@ -2194,36 +2203,36 @@ function add_consumptionitems($ciID,$stocks,$date){
     function add_purchase($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName, $items, $addtype, $accountID){
         $query = "INSERT INTO `purchases`(spID, receiptNo, pType, pDate, pDateRecorded, spAltName ) VALUES(?,?,?,?,?,?);";
         if($this->db->query($query, array($spID, $receiptNo, $pType, $pDate, $pDateRecorded, $spAltName))) {
-            $this->add_dItem($this->db->insert_id(), $items, $addtype, $accountID);
+            $this->add_dItem($this->db->insert_id(), $items, $addtype, $pDateRecorded, $accountID);
         }
     }
 
-    function add_dItem($pID, $items, $addtype, $accountID) {
+    function add_dItem($pID, $items, $addtype, $pDateRecorded, $accountID) {
         $query = "INSERT INTO purchase_items (piStatus) VALUES (?)";
         for($in = 0; $in < count($items) ; $in++){
             if(!isset($items[$in]["piID"])) {
                 $this->db->query($query, array('delivered'));
                 $piID = $this->db->insert_id();
-                $this->add_purItem($pID, $piID); 
+                $this->add_purItem($pID, $piID, 'delivered'); 
             }
 
             switch($addtype) {
                 case "new":
                 $this->add_drtransitems("restock", $items[$in]["qty"], $items[$in]["qty"], $items[$in]["qty"], NULL, NULL,
-                $items[$in]["date"], $items[$in]["stID"] ,NULL, $piID, NULL, NULL, NULL, $accountID, "add");
+                $items[$in]["date"], $pDateRecorded, $items[$in]["stID"] ,NULL, $piID, NULL, NULL, NULL, $accountID, "add");
                 break;
                 case "merchandise":
                 $this->add_drtransitems("restock", $items[$in]["tiQty"], $items[$in]["tiActualQty"], $items[$in]["tiActualQty"], 
-                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $items[$in]["stID"],$items[$in]["spmID"], $piID, NULL, NULL, NULL, $accountID, "add");
+                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $pDateRecorded, $items[$in]["stID"],$items[$in]["spmID"], $piID, NULL, NULL, NULL, $accountID, "add");
                 break;
                 case "po":
                 $this->add_drtransitems("restock", $items[$in]["tiQty"], $items[$in]["tiActualQty"], $items[$in]["tiActualQty"], 
-                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $items[$in]["stID"],$items[$in]["spmID"], $items[$in]["piID"], NULL,
+                $items[$in]["tiSubtotal"], NULL, $items[$in]["tiDate"], $pDateRecorded, $items[$in]["stID"],$items[$in]["spmID"], $items[$in]["piID"], NULL,
                 NULL, NULL, $accountID, "add");
                 break;
                 case "return":
                 $this->add_drtransitems("restock", $items[$in]["tiQty"], $items[$in]["tiActualQty"], $items[$in]["tiActual"], 
-                $items[$in]["tiSubtotal"], $items[$in]["tiRemarks"], $items[$in]["tiDate"], $items[$in]["stID"], $items[$in]["spmID"], 
+                $items[$in]["tiSubtotal"], $items[$in]["tiRemarks"], $items[$in]["tiDate"], $pDateRecorded, $items[$in]["stID"], $items[$in]["spmID"], 
                 $piID, $items[$in]["riID"], NULL, NULL, $accountID, "add");
                 break;
             }
@@ -2231,7 +2240,8 @@ function add_consumptionitems($ciID,$stocks,$date){
             if(isset($items[$in]['riID'])) {
              $this->resolve_returns($items[$in]['riID'], $items[$in]["receipt"], $piID);
             } else if(isset($items[$in]['piID'])) {
-             $this->resolve_po($items[$in]['piID']); 
+            $this->add_purItem($pID, $items[$in]['piID'], 'pending'); 
+             $this->resolve_po($pID, $items[$in]['piID']); 
             }
         }
         
@@ -2242,7 +2252,8 @@ function add_consumptionitems($ciID,$stocks,$date){
         
         $sum = "SELECT SUM(tiQty) as sumQty FROM transitems WHERE piID IS NOT NULL AND riID = ? GROUP BY riID";
         $sumQty = intval($this->db->query($sum, $riID)->row()->sumQty);
-        $return = "SELECT tiQty FROM transitems WHERE riID = ? ";
+        $return = "SELECT tiQty FROM transitems INNER JOIN (SELECT riID, max(tiID) as maxTrans FROM transitems WHERE riID = ?) 
+        as returns USING (riID)";
         $returnQty = intval($this->db->query($return, $riID)->row()->tiQty);
         $string = 'riID '.$riID.' sumQty '.$sumQty.' returnQtyResolve '.$returnQty; 
 
@@ -2259,22 +2270,24 @@ function add_consumptionitems($ciID,$stocks,$date){
 
         }
     
-    function resolve_po($piID) {
+    function resolve_po($pID, $piID) {
         $query = "UPDATE purchase_items SET piStatus = ? WHERE piID = ?";
 
         $sum = "SELECT SUM(tiQty) as sumQty FROM transitems WHERE piID = ? AND tiType = 'purchase order' GROUP BY piID";
         $sumQty = intval($this->db->query($sum, $piID)->row()->sumQty);
-        $delivery = "SELECT tiQty FROM transitems INNER JOIN (SELECT max(tiID) as maxTrans, piID WHERE piID = ? AND tiType = 'restock') as po USING (piID)";
+        $delivery = "SELECT sum(tiQty) as tiQty FROM transitems WHERE tiType = 'restock' AND piID = ? GROUP BY piID ";
         $delQty = intval($this->db->query($delivery, $piID)->row()->tiQty);
-        $string = 'riID '.$riID.' sumQty '.$sumQty.' returnQtyResolve '.$returnQty; 
-      
+        $string = 'piID '.$piID.' sumQty '.$sumQty.' poQtyResolve '.$delQty; 
+        print_r($string);
+        
         if($sumQty == $delQty) {
-            print_r('echooo');
             $this->db->query($query, array('delivered', $piID));
-        } else if($sumQty > $returnQty) {
+            $this->update_priStatus('delivered', $piID, $pID);
+        } else if($sumQty < $delQty) {
             return false;
         } else {
             $this->db->query($query, array('partially delivered', $piID));
+            $this->update_priStatus('partially delivered', $piID, $pID);
         }
     }
 
@@ -2283,18 +2296,23 @@ function add_consumptionitems($ciID,$stocks,$date){
         $this->db->query($query, array($status, $piID));
     }
 
-    function add_drtransitems($tiType, $tiQty, $tiActualQty, $tiActual, $tiSubtotal, $tiRemarks, $tiDate, $stID,
+    function update_priStatus($status, $piID, $pID) {
+        $query = "UPDATE pur_items SET priStatus = ? WHERE pID = ? AND piID = ?";
+        $this->db->query($query, array($status, $pID, $piID));        
+    }
+
+    function add_drtransitems($tiType, $tiQty, $tiActualQty, $tiActual, $tiSubtotal, $tiRemarks, $tiDate, $pDateRecorded, $stID,
      $spmID, $piID, $riID, $ciID, $siID, $accountID, $action) {
         $qty = "SELECT stQty FROM stockitems WHERE stID = ?";
         $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty) + intval($tiActual); 
 
         $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, 
-        tiDate, stID, spmID, piID, riID, ciID, siID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        tiDate, dateRecorded, stID, spmID, piID, riID, ciID, siID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($query, array($tiType, $tiQty, $tiActualQty, $tiSubtotal, $remainingQty, $tiRemarks,
-        $tiDate, $stID, $spmID, $piID, $riID, $ciID, $siID));
+        $tiDate,$pDateRecorded, $stID, $spmID, $piID, $riID, $ciID, $siID));
 
         $this->update_stock($stID, $remainingQty);
-        $this->add_actlog($accountID, date("Y-m-d H:i:s"), "Admin ".$action."ed a stockitem purchase.", $action, $tiRemarks);
+        $this->add_actlog($accountID, $pDateRecorded, "Admin ".$action."ed a stockitem purchase.", $action, $tiRemarks);
 
         } 
      
@@ -2304,14 +2322,14 @@ function add_consumptionitems($ciID,$stocks,$date){
         for($in = 0; $in < count($poitems) ; $in++){
             $this->db->query($query, array($poitems[$in]['piStatus']));
             $piID = $this->db->insert_id();
-            $this->add_purItem($pID, $piID);
+            $this->add_purItem($pID, $piID, 'pending');
             $this->add_potransitem($poitems[$in]["piType"], $poitems[$in]["tiQty"], $poitems[$in]["tiActual"], $poitems[$in]["tiSubtotal"], $poitems[$in]["date"], $poitems[$in]["stID"] ,$poitems[$in]["spmID"], $piID);
         }
     }
  
-    function add_purItem($pID, $piID){
-        $query = "INSERT INTO pur_items(pID, piID) VALUES(?,?)";
-        return $this->db->query($query, array($pID, $piID));
+    function add_purItem($pID, $piID, $status){
+        $query = "INSERT INTO pur_items(pID, piID, priStatus) VALUES(?,?,?)";
+        return $this->db->query($query, array($pID, $piID, $status));
     }
     
     function edit_purchase($p){
@@ -2338,6 +2356,15 @@ function add_consumptionitems($ciID,$stocks,$date){
     function get_purchaseOrders(){
         $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, DATE_FORMAT(pDate, '%b %d, %Y') as transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC";
         return $this->db->query($query)->result_array();
+    }
+    function get_purchaseOrdersData($s, $l){
+        $query = "SELECT pur_items.pID AS id, spID AS supplier, spName AS supplierName, DATE_FORMAT(pDate, '%b %d, %Y') as transDate, DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded, SUM(tiSubtotal) AS total FROM ( ( purchases LEFT JOIN pur_items USING(pID) ) LEFT JOIN purchase_items USING(piID) ) LEFT JOIN transitems USING(piID) LEFT JOIN supplier USING(spID) WHERE pType = 'purchase order' GROUP BY pur_items.pID ORDER BY transDate DESC, pur_items.pID DESC LIMIT $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countPurchOrd(){
+        $query = "SELECT count(pID) AS allcount FROM purchases WHERE pType = 'purchase order'";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
     }
     
     function get_purchaseOrderItems(){
@@ -2401,13 +2428,27 @@ function add_consumptionitems($ciID,$stocks,$date){
         return $this->db->query($query)->result_array();
     }
     function get_deliveryItems(){
-        $query = "SELECT tiSubtotal,spmID,pr.pID,piID, ti.tiID, tiDiscount, tiQty as qty, tiActual as actual, tiType as type, remainingQty, tiRemarks, tiDate, CONCAT(stName, IFNULL(CONCAT(' ', stSize), '') ) 
-        AS stockname, spmName, spmPrice, piID, piStatus FROM transitems ti LEFT JOIN purchase_items USING(piID) LEFT JOIN pur_items USING (piID)
-        LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(spmID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
-        LEFT JOIN pur_items USING (piID) GROUP BY piID) AS maxNew ON (ti.tiID = maxNew.tiID) WHERE piStatus in ('partially delivered','delivered')";
+        $query = "SELECT spmID,tiID, pi.pID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, CONCAT(spmName,' ',stSize) as merch,
+        stSize, spmName, spmPrice, spmActual, tiQty as qty, uomName, tiActual as actual, tiType, tiSubtotal, 
+        piStatus, priStatus, pType, pDateRecorded, dateRecorded FROM purchase_items pri LEFT JOIN transitems ti USING (piID) 
+        LEFT JOIN pur_items pi ON (pri.piID = pi.piID) LEFT JOIN purchases p ON (pi.pID = p.pID) LEFT JOIN stockitems st 
+        ON (ti.stID = st.stID) LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom ON (spm.uomID = uom.uomID) 
+        WHERE tiType = 'restock' and pType = 'delivery' AND p.pDateRecorded = ti.dateRecorded";
         return $this->db->query($query)->result_array();
     }
+    function countDR(){
+        $query = "SELECT count(pID) as allcount FROM purchases WHERE pType ='delivery'";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
    
+    // function get_deliveryItems(){
+    //     $query = "SELECT pr.pID, ti.tiID, tiDiscount, tiSubtotal, tiQty as qty, tiActual as actual, tiType as type, remainingQty, tiRemarks, tiDate, CONCAT(stName, IFNULL(CONCAT(' ', stSize), '') ) 
+    //     AS stockname, spmName, spmPrice, piID, piStatus FROM transitems ti LEFT JOIN purchase_items USING(piID) LEFT JOIN pur_items USING (piID)
+    //     LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(spmID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
+    //     LEFT JOIN pur_items USING (piID) GROUP BY piID) AS maxNew ON (ti.tiID = maxNew.tiID) WHERE piStatus in ('partially delivered','delivered')";
+    //     return $this->db->query($query)->result_array();
+    // }
     function get_poItem($tiID){
         $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus
             FROM (transitems LEFT JOIN trans_items USING(tiID))
@@ -2415,13 +2456,7 @@ function add_consumptionitems($ciID,$stocks,$date){
             WHERE tType = 'purchase order' AND drStatus = 'pending' and tiID = ?;";
         return $this->db->query($query,array($tiID))->result_array();
     }
-    function get_drItem($tiID){
-        $query = "SELECT tiID, tiID, tType, tiQty, qtyPerItem, actualQty, drStatus
-            FROM (transitems LEFT JOIN trans_items USING(tiID))
-            LEFT JOIN transactions USING(tID)
-            WHERE tType = 'delivery receipt' AND drStatus in ('complete','resolved') and tiID = ?;";
-        return $this->db->query($query,array($tiID))->result_array();
-    }
+
     function get_latestreturn() {
         $query = "SELECT SUM(tiQty) as sumQty, riID FROM transitems WHERE piID IS NOT NULL AND riID IS NOT NULL GROUP BY riID";
     }

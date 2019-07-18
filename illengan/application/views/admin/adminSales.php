@@ -512,7 +512,7 @@
 var ol = olist.filter(function(o){
                 return item[i].osID == o.osID;
             });
-                var ordersDiv = `<div class="preferences" style="float:left;margin-right:3%" >`;
+                var ordersDiv = `<div style="padding-right:3%;padding-left:3%;" >`;
                 if(ol == null || ol == ""){
                     ordersDiv += `No orders`;
                 }else{
@@ -544,14 +544,8 @@ var ol = olist.filter(function(o){
             var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
-                    <div style="overflow:auto;display:none"> <!-- container ng accordion -->
+                    <div style="overflow:auto;display:none" class="poAccordionContent"> <!-- container ng accordion -->
                         
-                        <div style="width:100%;overflow:auto;padding-left: 5%"> <!-- description, preferences, and addons container -->
-                            
-                            <div class="poAccordionContent" style="overflow:auto;margin-top:1%"> <!-- Preferences and addons container-->
-                                
-                            </div>
-                        </div>
                     </div>
                 </td>
             </tr>

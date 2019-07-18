@@ -242,6 +242,9 @@ class Barista extends CI_Controller{
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
             $this->baristamodel->update_payment($status,$osID,$payDate, $date_recorded);
+            foreach ($osID as $o) {
+                $this->destockPrefStock($o);
+            }
         }else{
             redirect('login');
             }
@@ -253,9 +256,53 @@ class Barista extends CI_Controller{
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
             $this->baristamodel->update_payment2($status,$osID,$payDate, $date_recorded);
+            $this->destockPrefStock($osID);
         }else{
             redirect('login');
             }
+        }
+        function destockPrefStock($osID){
+            $prefStocks = $this->baristamodel->get_prefStocks();
+            $olists = $this->baristamodel->get_olistsID($osID);
+            $destockables = array();
+            $cDate = '';
+            if(count($prefStocks) > 0){
+                foreach($prefStocks as $ps){
+                    foreach($olists as $ol){
+                        if($ps->prID == $ol->prID){
+                            $tiActual = intval($ps->prstQty) * intval($ol->olQty);
+                            $curQty = intval($this->baristamodel->get_stockQty($ps->stID));
+                            $remainingQty = $curQty - $tiActual;
+                            $tiDate = $ol->osDate;
+                            if($cDate == '') $cDate = $ol->osDate;
+                            array_push($destockables,array(
+                                'tiActual'      => $tiActual,
+                                'remainingQty'  => $remainingQty,
+                                'stID'          => $ps->stID,
+                                'tiType'        => 'consumed',
+                                'tiRemarks'     => 'Ordered'
+                            ));
+                        }
+                    }
+                }
+                if(count($destockables > 0)){
+                    $this->baristamodel->addAutoConsumption(array('cDate' => $cDate, 'cDateRecorded' => date("Y-m-d H:i:s")),$destockables);
+                }
+            }
+        }
+        function destockitem(){            
+            if($this->checkIfLoggedIn()){
+                $lastNumget = intval($this->baristamodel->getLastNum2());
+                $stocks = json_decode($this->input->post('stocks'), true);
+                echo json_encode($stocks, true);
+                $date_recorded = date("Y-m-d H:i:s");
+                $account_id = $_SESSION["user_id"];
+                $user = $_SESSION["user_name"];
+                $lastNum = $lastNumget + 1;
+                $this->baristamodel->add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user);
+            }else{
+                redirect('login');
+            }    
         }
         function updateStatus(){
             if($this->checkIfLoggedIn()){
@@ -318,23 +365,8 @@ class Barista extends CI_Controller{
     //             $account_id = $_SESSION["user_id"];
     //             $this->baristamodel->restock($stocks,$date_recorded,$account_id);
     //         }
-    function destockitem(){
-                
-                if($this->checkIfLoggedIn()){
-                    $lastNumget = intval($this->baristamodel->getLastNum2());
-                    $stocks = json_decode($this->input->post('stocks'), true);
-                    echo json_encode($stocks, true);
-                    $date_recorded = date("Y-m-d H:i:s");
-                    $account_id = $_SESSION["user_id"];
-                    $user = $_SESSION["user_name"];
-                    $lastNum = $lastNumget + 1;
-                   
-                    $this->baristamodel->add_consumption($date_recorded,$stocks,$account_id,$lastNum,$user);
-                }else{
-                redirect('login');
-                }
-                
-    }
+
+    
     //ADDON SPOILAGE------------------------------------------------
     function viewSpoilagesAddons(){
         if($this->checkIfLoggedIn()){

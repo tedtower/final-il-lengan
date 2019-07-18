@@ -147,7 +147,7 @@
                     qty: $(this).find("input[name='quantity']").val(),
                 });
             });
-                if($('input[name="menu"]:checked').length == 0) {
+                if($('input[name="pref"]:checked').length == 0) {
                         alert('No checkbox is checked');
                         return false;
                     }

@@ -19,8 +19,17 @@
                         <div style="width:100%;overflow:auto;">
                             <div style="overflow:auto;">
                             <span style="float:left;width:40%;"><b>Stock Item:</b> <?= $stock['stName'] . " " . $stock['stSize']?></span>
-                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $logs[0]['logDate']?></span>
-                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $logs[0]['actual'] . " " . $stock['uomAbbreviation']?></span>
+                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> 
+                                <?php foreach($logs as $log){
+                                    if($log['type'] == 'beginning'){
+                                        echo $log['logDate'];
+                                    }}?></span>
+                                <span style="float:left;width:20%">
+                                <b>Beginning Qty:</b> 
+                                <?php foreach($logs as $log){
+                                    if($log['type'] == 'beginning'){
+                                        echo $log['actual'];
+                                    }}?></span>
                             </div>
                             
                             <div style="overflow:auto;">
@@ -36,8 +45,8 @@
                         <thead class="thead-dark">
                             <tr>
                                 <th style="width:2%"></th>
-                                <th><b class="pull-left">Transaction</b></th>
-                                <th><b class="pull-left">Receipt No.</b></th>
+                                <th><b class="pull-left">Transaction Type</b></th>
+                                <th><b class="pull-left">Transaction No.</b></th>
                                 <th><b class="pull-left">Date</b></th>
                                 <th><b class="pull-left">Log Quantity</b></th>
                                 <th><b class="pull-left">Remaining Qty</b></th>
@@ -49,14 +58,26 @@
                             foreach($logs as $log){
                                 switch($log['type']){
                                     case 'restock':
-                                        echo '<tr>
-                                                <td><img src="/assets/media/admin/plus.png" style="height:18px;width:18px"/></td>
-                                                <td>Restock</td>
-                                                <td data-id="'.$log['tID'].'">'.$log['tID'] == NULL ? "N/A" : $log['tID'].'</td>
-                                                <td>'. $log['logDate'].'</td>
-                                                <td>'. $log['actual'].'</td>
-                                                <td>'. $log['remain'].'</td>
-                                            </tr>';
+                                        if($log['receipt'] == NULL){
+                                            echo '<tr>
+                                                    <td><img src="/assets/media/admin/plus.png" style="height:18px;width:18px"/></td>
+                                                    <td>Restock</td>
+                                                    <td>'.$log['tiID'].'</td>
+                                                    <td>'. $log['logDate'].'</td>
+                                                    <td>'. $log['actual'].'</td>
+                                                    <td>'. $log['remain'].'</td>
+                                                </tr>';
+                                        }else{
+                                            echo '<tr>
+                                            <td><img src="/assets/media/admin/plus.png" style="height:18px;width:18px"/></td>
+                                            <td>Restock</td>
+                                            <td>'.$log['receipt'].'</td>
+                                            <td>'. $log['logDate'].'</td>
+                                            <td>'. $log['actual'].'</td>
+                                            <td>'. $log['remain'].'</td>
+                                        </tr>';
+                                        }
+
                                         break;
                                     case 'beginning':
                                         echo '<tr style="background:#fcfcfc">

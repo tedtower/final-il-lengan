@@ -118,7 +118,7 @@
                             data-price="${del.spmPrice}"  data-spmid="${del.spmID}"
                              value="${del.stID}"></td>
                     <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spName}' 
-                    data-spid="${del.spID}">${del.trans}</td>
+                    data-spid="${del.spID}">${del.trans == null ? del.pDate : del.trans }</td>
                     <td class="item" data-stid='${del.stID}'>${del.item}</td>
                 </tr>`
         );
@@ -247,7 +247,6 @@
                     items: JSON.stringify(returnitems)
                 },
                 success: function(){
-                    console.log("YEYYEYE");
                     location.reload();
                 },
                 error: function(response, setting, error) {

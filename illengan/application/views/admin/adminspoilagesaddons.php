@@ -12,11 +12,7 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content">
-                                <!--Add Addon Spoilage BUTTON-->
-                                <div class="col-md-4 col-lg-2" id="addonTable">
                                     <a class="btn btn-primary btn-sm" href="<?= site_url('admin/addons/spoilage/formadd') ?>" data-original-title style="margin:0" id="addBtn">Add Spoilage</a>
-                                </div>
-                                <!--eND Add Addon Spoilage BUTTON-->
                                 <!--Search-->
                                 <div id="addonTable" style="width:25%; float:right; border-radius:5px">
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
@@ -153,10 +149,10 @@
         
    });
         function setSpoilagesData(adds) {
-                $("#addonTable> tbody").empty();
+                $("#addonTable > tbody").empty();
                 for(ao in adds){
                     var row1 = `<tr class="addonTable ic-level-1" data-aoID="`+adds[ao].aoID+`" data-aosID="`+adds[ao].aosID+`" data-aosQty="`+adds[ao].aosQty+`"  data-aosDate="`+adds[ao].aosDate+`"  data-aosRemarks="`+adds[ao].aosRemarks+`" data-spoilname="`+adds[ao].aoName+`"  >`;
-                    row1 += `	<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
+                    row1 += `<td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`+adds[ao].aoName+`</td>`;
                     row1 += `<td>`+adds[ao].aoCategory+`</td>`;
                     row1 += `<td>`+adds[ao].aosQty+`</td>`;
                     row1 += `<td>`+adds[ao].aosDate+`</td>`;
