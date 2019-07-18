@@ -76,6 +76,7 @@
           <!--End Table Content-->
         <form id="formEdit" accept-charset="utf-8">
           <div class="modal-body">
+          <input type="checkbox" class="discount form-control-sm" name="discount" id="discount">Senior Citizen Discount
             <!--Quantity-->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -103,9 +104,6 @@
               </div>
               <input type="text" step="any" min="0" class="form-control" name="change" id="change" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change"); ?></span>
-            </div>
-            <div>
-              <input type="checkbox" class="discount form-control-sm" name="discount" id="discount">Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID" id="osID" readonly> 
             <!--Footer-->
@@ -151,6 +149,7 @@
           <!--End Table Content-->
         <form id="formEdit" class="formEdit2"  accept-charset="utf-8">
           <div class="modal-body">
+          <input type="checkbox" class="discount2 form-control-sm" name="discount2" id="discount2"  > Senior Citizen Discount
             <!--Quantity-->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -179,9 +178,7 @@
               <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
-            <div>
-              <input type="checkbox" class="discount2 form-control-sm" name="discount2" id="discount2"  > Senior Citizen Discount
-            </div>
+           
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
             <div class="modal-footer">
@@ -362,10 +359,10 @@
                       osID: osID,
                   },
                   dataType: "json",
-                  // complete: function() {
-                  //     $("#Modal_Pay2").modal("hide");
-                  //     location.reload();
-                  // },
+                  complete: function() {
+                      $("#Modal_Pay2").modal("hide");
+                      location.reload();
+                  },
                   error: function(error) {
                       console.log(error);
                   }
