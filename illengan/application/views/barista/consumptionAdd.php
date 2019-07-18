@@ -182,9 +182,9 @@
                         console.log(data);
                     }
                 },
-                complete: function() {
-                location.reload();
-                },
+                // complete: function() {
+                // location.reload();
+                // },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);
