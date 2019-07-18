@@ -149,7 +149,7 @@
             </tbody>
           </table>
           <!--End Table Content-->
-        <form id="formEdit" accept-charset="utf-8">
+        <form id="formEdit" class="formEdit2"  accept-charset="utf-8">
           <div class="modal-body">
             <!--Quantity-->
             <div class="input-group mb-3">
@@ -179,17 +179,8 @@
               <input type="text" step="any" min="0" class="form-control" name="change2" id="change2" value="0.00" readonly>
               <span class="text-danger"><?php echo form_error("change2"); ?></span>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-sm"
-                  style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                  Discount</span>
-              </div>
-              <input type="text" step="any" min="0" class="form-control" name="discount2" id="discount2" value="0.00" readonly>
-              <span class="text-danger"><?php echo form_error("seniorDiscount"); ?></span>
-            </div>
             <div>
-              <input type="checkbox" class="discount form-control-sm" name="discount" id="discount"  > Senior Citizen Discount
+              <input type="checkbox" class="discount2 form-control-sm" name="discount2" id="discount2"  > Senior Citizen Discount
             </div>
             <input type="hidden" class="form-control" name="osID2" id="osID2" readonly>
             <!--Footer-->
@@ -363,7 +354,7 @@
           $("#Modal_Pay2 form").on('submit', function(event) {
           event.preventDefault();
               var osID = $(this).find("input[name='osID2']").val();
-            
+              console.log(osID);
               $.ajax({
                   url: "<?= site_url("barista/updatePayment2")?>",
                   method: "post",
@@ -371,10 +362,10 @@
                       osID: osID,
                   },
                   dataType: "json",
-                  complete: function() {
-                      $("#Modal_Pay2").modal("hide");
-                      //location.reload();
-                  },
+                  // complete: function() {
+                  //     $("#Modal_Pay2").modal("hide");
+                  //     location.reload();
+                  // },
                   error: function(error) {
                       console.log(error);
                   }
@@ -406,13 +397,7 @@ document.getElementById("updtbutton2").disabled = true;
       var cash = parseFloat(document.getElementById('cash2').value);
       var seniorDiscount = parseFloat(payable * 0.20);
 
-      if(document.getElementById("discounted2").checked){
-        document.getElementByName('amount_payable').value();
-        var change = parseFloat(cash - (parseFloat(payable - seniorDiscount)));
-        $("#Modal_Pay2").find("input[name='change2']").val(change);
-        document.getElementById("updtbutton2").disabled = false;
-      }
-      else if(cash < payable){
+      if(cash < payable){
         $("#Modal_Pay2").find("input[name='change2']").val("Insufficient Amount");
         document.getElementById("updtbutton2").disabled = true;
       }else {
@@ -520,6 +505,18 @@ function setTotal() {
                   $("#formEdit").find("input[name='amount_payable']").val(disPrice);
           }else{
                   $("#formEdit").find("input[name='amount_payable']").val(payable);
+          }
+        });
+
+        $(document).on('click', '.discount2', function () {
+         
+        var payable = parseFloat(document.getElementById('amount_payable2').value);
+          if (document.getElementById('discount2').checked){
+                  var disPrice = parseFloat(payable - (0.20*payable));
+                  console.log(disPrice);
+                  $(".formEdit2").find("input[name='amount_payable2']").val(disPrice);
+          }else{
+                  $(".formEdit2").find("input[name='amount_payable2']").val(payable);
           }
         });
  

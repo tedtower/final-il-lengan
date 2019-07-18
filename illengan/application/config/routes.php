@@ -142,6 +142,7 @@ $route['admin/returns/edit'] = "adminupdate/editReturns";
 $route['admin/consumption/edit'] = "adminupdate/editConsumption";
 $route['admin/spoilages/menu/edit'] = "adminupdate/editMenuSpoil";
 $route['admin/menustock/edit'] = "adminupdate/editMenuStock";
+$route['admin/deliveryreceipt/edit'] = "adminupdate/editDelReceipt";
 //End Admin Update Routes ---------------------------------------
 
 //Admin Delete Routes -------------------------------------------

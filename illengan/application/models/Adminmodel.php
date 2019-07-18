@@ -2395,13 +2395,13 @@ function add_consumptionitems($ciID,$stocks,$date){
     //     return $this->db->query($query)->result_array();
     // }
     function get_deliveryReceipts(){
-        $query = "SELECT pID, spName, DATE_FORMAT(pDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, pType, spAltName FROM purchases
+        $query = "SELECT pID, spName, pDate AS pdate, DATE_FORMAT(pDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, pType, spAltName FROM purchases
         LEFT JOIN supplier USING (spID) INNER JOIN (SELECT SUM(tiSubtotal) as pTotal, pID  from transitems INNER JOIN pur_items 
         USING (piID) LEFT JOIN purchases pur USING (pID) GROUP BY pID) as total USING (pID) WHERE pType ='delivery'";
         return $this->db->query($query)->result_array();
     }
     function get_deliveryItems(){
-        $query = "SELECT pr.pID, ti.tiID, tiDiscount, tiQty as qty, tiActual as actual, tiType as type, remainingQty, tiRemarks, tiDate, CONCAT(stName, IFNULL(CONCAT(' ', stSize), '') ) 
+        $query = "SELECT tiSubtotal,spmID,pr.pID,piID, ti.tiID, tiDiscount, tiQty as qty, tiActual as actual, tiType as type, remainingQty, tiRemarks, tiDate, CONCAT(stName, IFNULL(CONCAT(' ', stSize), '') ) 
         AS stockname, spmName, spmPrice, piID, piStatus FROM transitems ti LEFT JOIN purchase_items USING(piID) LEFT JOIN pur_items USING (piID)
         LEFT JOIN purchases pr USING (pID) LEFT JOIN stockitems USING(stID) LEFT JOIN suppliermerchandise USING(spmID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems tri 
         LEFT JOIN pur_items USING (piID) GROUP BY piID) AS maxNew ON (ti.tiID = maxNew.tiID) WHERE piStatus in ('partially delivered','delivered')";
@@ -2612,6 +2612,17 @@ function add_consumptionitems($ciID,$stocks,$date){
     function delete_transaction($tID) {
         $query ="UPDATE transactions SET isArchived = ? WHERE tID = ?";
         $this->db->query($query,array('1', $tID));
+    }
+    function updateDelReceipt($drItems){
+        $query = "UPDATE `transitems` SET `tiQty`= ?,`tiActual`= ?,`tiSubtotal`= ?,`remainingQty`= ?,`tiRemarks`= ?,`tiDate`= ?,`tiDiscount`= ? WHERE tiID = ?";
+        for($in = 0; $in < count($drItems) ; $in++){
+            $updatedremaining =  ($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"])+$drItems[$in]["tiActualCur"];
+            $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedremaining,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
+        }
+    }
+    function updateStatus($piStatus,$piID){
+        $query = "UPDATE `purchase_items` SET `piStatus`=? WHERE piID = ?";
+        $this->db->query($query,array($piStatus,$piID));
     }
     //getPosFor Brochure
     //     SELECT

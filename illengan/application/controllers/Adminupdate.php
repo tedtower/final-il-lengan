@@ -87,6 +87,23 @@ class Adminupdate extends CI_Controller{
         }
 
     }
+    function editDelReceipt(){
+        if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
+            $piID = $this->input->post("piID");
+            $piStatus = $this->input->post("piStatus");
+            $current = date("Y-m-d H:i:s");
+            $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
+            $drItems = json_decode($this->input->post('drItems'),true);
+            $this->adminmodel->updateDelReceipt($drItems);
+            $this->adminmodel->updateStatus($piStatus,$piID);
+            $this->adminmodel->add_actlog($account_id, $current, "$user updated a delivery receipt.", "add", NULL);
+
+        }else{
+            redirect("login");
+        }
+
+    }
     function editMenuStock(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $prID = $this->input->post('prID');
