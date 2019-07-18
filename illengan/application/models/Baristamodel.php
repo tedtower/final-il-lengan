@@ -99,7 +99,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         //JEANE NEEDED THIS FOR AUTO CONSUMPTION
         //May mali dito sa query kaya comment muna
         function get_olistsID($osID){
-            $query = "SELECT prID,DATE_FORMAT('%Y-%m-%d') osDate, olQty FROM orderlists NATURAL JOIN orderslips WHERE osID = ?";
+            $query = "SELECT prID,DATE_FORMAT(osDateTime,'%Y-%m-%d') osDate, olQty FROM orderlists NATURAL JOIN orderslips WHERE osID = ?";
             return $this->db->query($query,array($osID))->result();
         }
         function get_prefStocks(){
