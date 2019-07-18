@@ -1275,9 +1275,9 @@ function add_table($tableCode){
 }
 
 //UPDATE FUNCTIONS----------------------------------------------------------------
-function add_consumptiontransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID){
-    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?)";
-    return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID));
+function add_consumptiontransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID, $date_recorded){
+    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?)";
+    return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID,$date_recorded));
 }
 function add_stocktransitems($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID){
     $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
@@ -1923,8 +1923,8 @@ function add_constrans_items($ciID, $stID, $dQty, $cDateRecorded, $cDate, $accou
    $qty = "SELECT stQty FROM stockitems WHERE stID = ?";
    $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty);
 
-   $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, remainingQty, tiDate, stID, ciID) VALUES (NULL,?,?,?,?,?,?,?)";
-   if($this->db->query($query, array('consumed', $dQty, $dQty, $remainingQty, $cDate, $stID, $ciID))) {
+   $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, remainingQty, tiDate, stID, ciID, dateRecorded) VALUES (NULL,?,?,?,?,?,?,?)";
+   if($this->db->query($query, array('consumed', $dQty, $dQty, $remainingQty, $cDate, $stID, $ciID,$cDateRecorded))) {
        $this->add_actlog($account_id, $cDateRecorded, "Admin ".$action."ed a stockitem consumption.", $action, "Sales");
    }
 
@@ -1944,15 +1944,15 @@ function add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks
 function consumed_item($cID,$stocks,$remarks,$date,$account_id,$date_recorded,$user){
     $query = "INSERT INTO `consumed_items`(`ciID`, `cID`) VALUES (NULL,?)";
     if($this->db->query($query,array($cID))){
-        $this->add_consumptionitems($this->db->insert_id(),$stocks,$date);
+        $this->add_consumptionitems($this->db->insert_id(),$stocks,$date,$date_recorded);
         $this->add_actlog($account_id,$date_recorded, "$user added a consumption.", "add", $remarks);
     }
 }
-function add_consumptionitems($ciID,$stocks,$date){
-    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?)";
+function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
+    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`ciID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
     if(count($stocks) > 0){
         for($in = 0; $in < count($stocks) ; $in++){
-            $this->db->query($query,array("consumed",$stocks[$in]['actualQty'],$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$ciID));
+            $this->db->query($query,array("consumed",$stocks[$in]['actualQty'],$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$ciID,$date_recorded));
             $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
         }
     }
@@ -2651,7 +2651,7 @@ function add_consumptionitems($ciID,$stocks,$date){
     function updateDelReceipt($drItems){
         $query = "UPDATE `transitems` SET `tiQty`= ?,`tiActual`= ?,`tiSubtotal`= ?,`remainingQty`= ?,`tiRemarks`= ?,`tiDate`= ?,`tiDiscount`= ? WHERE tiID = ?";
         for($in = 0; $in < count($drItems) ; $in++){
-            $updatedremaining =  ($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"])+$drItems[$in]["tiActualCur"];
+            $updatedremaining =  ($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"])+$drItems[$in]["tiActualCur"];
             $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedremaining,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
         }
     }

@@ -119,7 +119,7 @@
             $("#drForm .ic-level-3").append(`
                 <tr class="ic-level-1" data-dr="${dri.pID}" data-dri="${dri.piID}" data-trans="${dri.tiID} data">
                     <td style="padding:1% !important"><input type="text"
-                            class="form-control form-control-sm" data-id="${dri.spmID}" data-actual="${dri.actual}" data-stid="${dri.stID}" value="${dri.stockname}" name="spm" readonly></td>
+                            class="form-control form-control-sm" data-id="${dri.spmID}" data-actual="${dri.actual}" data-stid="${dri.stID}" value="${dri.merch}" name="spm" readonly></td>
                     <td style="padding:1% !important"><input type="number"
                             class="form-control form-control-sm" value='${dri.qty}' name="qty" required  min="0"></td>
                     <td style="padding:1% !important"><input type="number"
