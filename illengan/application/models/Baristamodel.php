@@ -813,16 +813,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function addAutoTransItems($conID,$destockables){
         $conitemID = $this->getLastConItem();
         $conitemIDs = array();
+        $consumables = array();
         for($x = 0; $x < count($destockables); $x++){
             $destockables[$x]['ciID'] = $conitemID;
             array_push($conitemIDs,array(
                 'cID'   => $conID,
                 'ciID'  => $conitemID
             ));
+            array_push($consumables,array(
+                'stID'  => $destockables[$x]['stID'],
+                'stQty' => $destockables[$x]['remainingQty']
+            ));
             $conitemID++;
         }
+        $this->updateAutoStockItems($consumables);
         $this->db->insert_batch('transitems',$destockables);
         $this->addAutoConItems($conitemIDs);
+    }
+    function updateAutoStockItems($consumables){
+        $this->db->update_batch('stockitems',$consumables, 'stID');
     }
     function addAutoConItems($conitemIDs){
         $this->db->insert_batch('consumed_items',$conitemIDs);

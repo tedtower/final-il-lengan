@@ -934,6 +934,15 @@ function countConsump(){
         $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as rDate FROM `returns` LEFT JOIN supplier USING (spID)";
         return $this->db->query($query)->result_array();
     }
+    function get_datareturns($s, $l) {
+        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as rDate FROM `returns` LEFT JOIN supplier USING (spID) LIMIT $s, $l";
+        return $this->db->query($query)->result_array();
+    }
+    function countReturns(){
+        $query = "SELECT count(rID) as allcount FROM `returns`";
+        $result = $this->db->query($query)->result_array();
+        return $result[0]['allcount'];
+    }
     function get_returnItems() {
         $query = "SELECT * FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
         INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID) INNER JOIN (SELECT max(tiID) as tiID 

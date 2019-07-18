@@ -33,6 +33,7 @@
                                     <tbody class="ic-level-2">
                                     </tbody>
                                 </table>
+                                <div id="pagination" style="float:right"></div>
                                 <!--End Table Content-->
 
                                 <!--Start of Modal "Add Returns"-->
@@ -331,55 +332,67 @@
     var supplier = [];
     var suppmerch = [];
 
-    $(function() {
-        $.ajax({
-            url: '/admin/jsonReturns',
-            dataType: 'json',
-            success: function(data) {
-                $.each(data.returns, function(index, items) {
-                    returns.push({
-                        "returns": items
-                    });
-                    returns[index].returnitems = data.returnitems.filter(ret => ret.rID == items.rID);
-                    returns[index].resolveitems = data.resolvedItems.filter(ret => ret.rID == items.rID);
-                });
-                supplier = data.supplier;
-
-                showTable();
-            },
-            error: function(response, setting, errorThrown) {
+    $(document).ready(function() {
+	createPagination(0);
+	$('#pagination').on('click','a',function(e){
+		e.preventDefault(); 
+		var pageNum = $(this).attr('data-ci-pagination-page');
+		createPagination(pageNum);
+	});
+	function createPagination(pageNum){
+		$.ajax({
+			url: '<?=base_url()?>admin/loadDataReturns/'+pageNum,
+			type: 'get',
+			dataType: 'json',
+			success: function(data){
+                $('#pagination').html(data.pagination);
+                var ret = data.returns;
+                var retItem= data.returnitems;
+                var resItem= data.resolvedItems;
+                showTable(ret, retItem, resItem);
+			},
+            error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
                 console.log(response.responseText);
             }
+		});
+	} 
+   });
+
+    function showTable(item,retItem,resItem){
+        $("#transTable > tbody").empty();
+        for(r in item){
+        var row = `<tr class="table_row ic-level-1" data-id="${item[r].rID}">`;
+            row += `<td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>`;
+            row += `${item[r].rID}</td>`;
+            if(jQuery.trim(item[r].spAltName) == ""){
+                row += `<td>`+item[r].spName+`</td>`;
+            }else{
+                row += `<td>${item[r].spAltName}</td>`;
+            }
+            row += `<td>${item[r].rDate}</td>`;
+            row += `<td>${item[r].rTotal}</td>`;
+            row += `<td>
+                    <a class="editReturnsbtn btn btn-secondary btn-sm" href="returns/formedit/${item[r].rID}" style="margin:0">Edit Return</a>                 
+                        <button class="deleteBtn btn btn-sm btn-warning" data-id="${item[r].rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
+                    </td>`;
+            row += ` </tr>`;
+            row += ``;
+        
+        var returnitems = retItem.filter(function(r){
+            return r.rID == item[r].rID;
+            
         });
-    });
-
-
-    function showTable() {
-        returns.forEach(function(item) {
-            var tableRow = `
-                <tr class="table_row ic-level-1" data-id="${item.returns.rID}">   <!-- table row ng table -->
-                    <td><a href="javascript:void(0)" class="ml-2 mr-4">
-                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>
-                    ${item.returns.rID}</td>                    
-                    <td>${jQuery.trim(item.returns.spAltName) == "" ? item.returns.spName : item.returns.spAltName }</td>
-                    <td>${item.returns.rDate}</td>
-                    <td>${item.returns.rTotal}</td>
-                    <td>
-                    <a class="editReturnsbtn btn btn-secondary btn-sm" href="returns/formedit/${item.returns.rID}" style="margin:0">Edit Return</a>                 
-                        <button class="deleteBtn btn btn-sm btn-warning" data-id="${item.returns.rID}" data-toggle="modal" data-target="#deleteReturns">Archive</button>
-                    </td>
-                </tr>
-            `;
-
-            var returnsDiv = `
-            <div width="100%"> <!-- Preferences table container-->
-                ${item.returnitems.length === 0 ? "No returns" : 
-                `<caption><b>Returns</b></caption>
-                <br>
-                <table width="100%" id="orderitem" class=" table table-bordered"> <!-- Preferences table-->
-                    <thead class="thead-light">
-                        <tr>
+        console.log(returnitems);
+            var returnsDiv = `<div width="100%">`;
+            if(returnitems.length == 0){
+                returnsDiv += `No returns`;
+            }else{
+                returnsDiv += `<caption><b>Returns</b></caption>`;
+                returnsDiv += `<br>`;
+                returnsDiv += `<table width="100%" id="orderitem" class=" table table-bordered">`;
+                returnsDiv += `<thead class="thead-light">`;
+                returnsDiv += `<tr>
                         <th>Receipt</th>
                         <th>Name</th>
                         <th>Qty</th>
@@ -389,38 +402,42 @@
                         <th>Subtotal</th>
                         <th>Status</th>
                         <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    ${item.returnitems.map(ret => {
-                        return `
-                        <tr id="${ret.riID}">
-                        <td>${ret.returnReference}</td>
-                            <td>${ret.stName}</td>
-                            <td>${ret.tiQty}</td>
-                            <td>${ret.uomName}</td>
-                            <td>${ret.tiActual}</td>
-                            <td>&#8369; ${ret.spmPrice}</td>
-                            <td>&#8369; ${ret.tiSubtotal}</td>
-                            <td>${ret.riStatus}</td>
-                            <td>${ret.tiRemarks === null ? " " : ret.tiRemarks}</td>
-                        </tr>
-                        `;
-                    }).join('')}
-                    </tbody>
-                </table>
-                `}
-            </div>
-            `;
-
-            var resolveDiv = `
-            <div  width="100%"> <!-- Preferences table container-->
-                ${item.resolveitems.length === 0 ? "No returns resolved" : 
-                `<caption><b>Resolved Items</b></caption>
-                <br>
-                <table width="100%" class=" table table-bordered"> <!-- Preferences table-->
-                    <thead class="thead-light">
-                        <tr>
+                        </tr>`;
+                returnsDiv += `</thead>`;
+                returnsDiv += `<tbody>`;
+            for(reti in returnitems){
+                returnsDiv += `<tr id="${returnitems[reti].riID}">`;
+                returnsDiv += `<td>${returnitems[retu].returnReference}</td>`;
+                returnsDiv += `<td>${returnitems[retu].stName}</td>`;
+                returnsDiv += `<td>${returnitems[retu].tiQty}</td>`;
+                returnsDiv += `<td>${returnitems[retu].uomName}</td>`;
+                returnsDiv += `<td>${returnitems[retu].tiActual}</td>`;
+                returnsDiv += `<td>&#8369; ${returnitems[retu].spmPrice}</td>`;
+                returnsDiv += `<td>&#8369; ${returnitems[retu].tiSubtotal}</td>`;
+                returnsDiv += `<td>${returnitems[retu].riStatus}</td>`;
+                if(returnitems[retu].tiRemarks === null){
+                    returnsDiv += `<td></td>`;
+                }else{
+                    returnsDiv += `<td>${returnitems[retu].tiRemarks}</td>`;
+                }
+                returnsDiv += `</tr>`;
+            }
+            returnsDiv += `</tbody>`;
+            returnsDiv += `</table>`;
+            returnsDiv += `</div>`;
+            }
+        var resolved = resItem.filter(function(ri){
+            return ri.rID == item[r].rID
+        });
+            var resolveDiv = `<div  width="100%">`;
+            if(resolved.length === 0){
+                resolveDiv += `No returns resolved`;
+            }else{
+                resolveDiv += `<caption><b>Resolved Items</b></caption>`;
+                resolveDiv += `<br>`;
+                resolveDiv += `<table width="100%" class=" table table-bordered"> `;
+                resolveDiv += `<thead class="thead-light">`;
+                resolveDiv += `<tr>
                         <th>Date Received</th>
                         <th>New Receipt</th>
                         <th>Name</th>
@@ -429,45 +446,43 @@
                         <th>Qty per Unit</th>
                         <th>Delivery Type</th>
                         <th>Remarks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    ${item.resolveitems.map(ret => {
-                        return `
-                        <tr id="${ret.pID}">
-                        <td>${ret.pDate}</td>
-                        <td>${ret.replacementReference}</td>
-                            <td>${ret.stName}</td>
-                            <td>${ret.tiQty}</td>
-                            <td>${ret.uomName}</td>
-                            <td>${ret.tiActual}</td>
-                            <td>${ret.piStatus}</td>
-                            <td>${ret.tiRemarks === null ? " " : ret.tiRemarks}</td>
-                        </tr>
-                        `;
-                    }).join('')}
-                    </tbody>
-                </table>
-                `}
-            </div>
-            `;
-
+                        </tr>`;
+                resolveDiv += `</thead>`;
+                resolveDiv += `<tbody>`;
+                for(res in resolved){
+                    resolveDiv += ` <tr id="${resolved[res].pID}">`;
+                    resolveDiv += `<td>${resolved[res].pDate}</td>`;
+                    resolveDiv += `<td>${resolved[res].replacementReference}</td>`;
+                    resolveDiv += `<td>${resolved[res].stName}</td>`;
+                    resolveDiv += `<td>${resolved[res].tiQty}</td>`;
+                    resolveDiv += `<td>${resolved[res].uomName}</td>`;
+                    resolveDiv += `<td>${resolved[res].tiActual}</td>`;
+                    resolveDiv += `<td>${resolved[res].piStatus}</td>`;
+                    if(resolved[res].tiRemarks === null){
+                        resolveDiv += `<td></td>`;
+                    }
+                    resolveDiv += `<td>${resolved[res].data}</td>`;
+                    resolveDiv += `</tr>`;
+                }
+                resolveDiv += `</tbody></table>`;
+            }
+                resolveDiv += `</div>`;
             var accordion = `
             <tr class="accordion" style="display:none">
                 <td colspan="6"> <!-- table row ng accordion -->
                     <div class="container returnsContent"> <!-- container ng accordion -->
-
                     </div>
                 </td>
             </tr>
             `;
 
-            $("#transTable > tbody").append(tableRow);
+            $("#transTable > tbody").append(row);
             $("#transTable > tbody").append(accordion);
             $(".returnsContent").last().append(returnsDiv);
             $(".returnsContent").last().append(resolveDiv);
 
-        });
+    }
+    
 
         $(".accordionBtn").on('click', function() {
             if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
@@ -478,7 +493,7 @@
                 $(this).closest("tr").next(".accordion").hide("slow");
             }
         });
-
+        
     }
 
     $("#deleteReturns form").on('submit', function(event) {

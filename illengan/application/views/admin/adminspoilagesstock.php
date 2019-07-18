@@ -12,14 +12,9 @@
 					<div class="container-fluid">
 						<!--Table-->
 						<div class="card-content">
-
-							<!--Add Stock Spoilage BUTTON-->
-							<div class="col-md-4 col-lg-2" id="spoilagesTable">
 							<!-- <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#addStockSpoilage" data-original-title style="margin:0;">Add Stock Spoilage</button><br> -->
 							<a class="btn btn-primary btn-sm" href="<?= site_url('admin/stock/spoilage/formadd')?>" data-original-title style="margin:0"
                                     id="addBtn">Add Spoilage</a>
-							<!--eND Add Stock Spoilage BUTTON-->
-							</div>
 						</div>
 						 <!--Search-->
 						 <div id="spoilagesTable" style="width:25%; float:right; border-radius:5px">
