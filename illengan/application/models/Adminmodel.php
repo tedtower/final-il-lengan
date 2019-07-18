@@ -1842,7 +1842,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
             $reID = $this->db->insert_id();
             if(count($logs) > 0){
                 foreach($logs as $logs) {
-                    $this->add_beginningLog($reID, $logs);
+                    $this->add_beginningLog($reID, $logs,$dateTime);
                     $this->set_stockQtyBeginning($logs);
                 }
             }
@@ -1850,9 +1850,9 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
         }
     }
 
-    function add_beginningLog($reID, $logs){
-        $query = "INSERT INTO transitems(tiType, tiDate, reID, tiActual, remainingQty, discrepancy, tiRemarks, stID) VALUES (?,?,?,?,?,?,?,?)";
-        $this->db->query($query, array('beginning', $logs['date'], $reID, $logs['actual'],$logs['actual'], $logs['discrepancy'], $logs['remarks'], $logs['stock']));
+    function add_beginningLog($reID, $logs, $dateTime){
+        $query = "INSERT INTO transitems(tiType, tiDate, dateRecorded, reID, tiActual, remainingQty, discrepancy, tiRemarks, stID) VALUES (?,?,?,?,?,?,?,?,?)";
+        $this->db->query($query, array('beginning', $logs['date'], $dateTime, $reID, $logs['actual'],$logs['actual'], $logs['discrepancy'], $logs['remarks'], $logs['stock']));
     }
 
     function set_stockQtyBeginning($logs){
