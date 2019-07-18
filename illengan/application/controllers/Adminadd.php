@@ -470,7 +470,6 @@ function addaccounts(){
                 $this->adminmodel->add_purchase($supplier, $receipt, "delivery", $date, $dateTime, NULL, $drItems, $addtype, $account_id);
                 break;
             }
-            echo 'HHAHAHAA';
     }
 }
  

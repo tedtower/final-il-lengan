@@ -2305,7 +2305,9 @@ function add_consumptionitems($ciID,$stocks,$date){
      $spmID, $piID, $riID, $ciID, $siID, $accountID, $action) {
         $qty = "SELECT stQty FROM stockitems WHERE stID = ?";
         $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty) + intval($tiActual); 
-
+        $string = ' qty '.$remainingQty.'';
+        print_r($string);
+        
         $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, 
         tiDate, dateRecorded, stID, spmID, piID, riID, ciID, siID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($query, array($tiType, $tiQty, $tiActualQty, $tiSubtotal, $remainingQty, $tiRemarks,
