@@ -235,7 +235,7 @@
                                     <select name="stID[]" 
                                         class="form-control form-control-sm" placeholder="Stock"></select>
                                     <input name="actualQty[]" type="number"
-                                        class="form-control form-control-sm" placeholder="Actual Qty">
+                                        class="form-control form-control-sm" placeholder="Actual Qty" required>
                                 </div>
                             </div>
                             <div class="mt-2" style="float:left:width:3%;overflow:auto">
