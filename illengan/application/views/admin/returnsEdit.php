@@ -175,7 +175,19 @@
                 }
             });
         });
+
+        $('#conForm').submit(function(event){
+            var returnDateEdit = $("#date").val();
+            var currentDate = new Date();
+            if(Date.parse(returnDateEdit) > Date.parse(currentDate)){
+                alert('Please check the date entered!');
+                //return false;
+                event.preventDefault();
+        }
     });
+    });
+
+    
     </script>
 </body>
 
