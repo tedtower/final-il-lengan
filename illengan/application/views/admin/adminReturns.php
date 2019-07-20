@@ -379,8 +379,8 @@
             row += ` </tr>`;
             row += ``;
         
-        var returnitems = retItem.filter(function(r){
-            return r.rID == item[r].rID;
+        var returnitems = retItem.filter(function(i){
+            return i.rID == item[r].rID;
             
         });
         console.log(returnitems);
@@ -405,8 +405,8 @@
                         </tr>`;
                 returnsDiv += `</thead>`;
                 returnsDiv += `<tbody>`;
-            for(reti in returnitems){
-                returnsDiv += `<tr id="${returnitems[reti].riID}">`;
+            for(retu in returnitems){
+                returnsDiv += `<tr id="${returnitems[retu].riID}">`;
                 returnsDiv += `<td>${returnitems[retu].returnReference}</td>`;
                 returnsDiv += `<td>${returnitems[retu].stName}</td>`;
                 returnsDiv += `<td>${returnitems[retu].tiQty}</td>`;

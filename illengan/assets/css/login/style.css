@@ -1,4 +1,4 @@
-body{
+body {
     margin: 0;
     padding: 0;
     background-image: url(/assets/media/Coffee_1.jpg);
@@ -6,7 +6,8 @@ body{
     background-position: center;
     font-family: sans-serif;
 }
-.form-box{
+
+.form-box {
     width: 420px;
     height: 400px;
     background: rgba(0, 0, 0, 0.5);
@@ -14,14 +15,15 @@ body{
     top: 50%;
     left: 75%;
     position: absolute;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     box-sizing: border-box;
     padding-top: 125px;
     padding-right: 20px;
     padding-bottom: 40px;
     padding-left: 20px;
 }
-.logo{
+
+.logo {
     width: 150px;
     height: 150px;
     border-radius: 50%;
@@ -29,17 +31,20 @@ body{
     top: -50px;
     left: calc(45% - 50px);
 }
-.form-box p{
+
+.form-box p {
     margin: 0;
     padding: 0;
     font-weight: bold;
 }
-.form-box input{
+
+.form-box input {
     width: 100%;
     margin-bottom: 20px;
 }
-.form-box input[type="text"], input[type="password"]
-{
+
+.form-box input[type="text"],
+input[type="password"] {
     border: none;
     border-bottom: 1px solid #fff;
     background: transparent;
@@ -48,8 +53,8 @@ body{
     color: #fff;
     font-size: 16px;
 }
-.form-box input[type="submit"]
-{
+
+.form-box input[type="submit"] {
     border: none;
     outline: none;
     height: 40px;
@@ -58,18 +63,171 @@ body{
     font-size: 15px;
     border-radius: 20px;
 }
-.form-box input[type="submit"]:hover
-{
+
+.form-box input[type="submit"]:hover {
     cursor: pointer;
     background: #a88c82;
     color: #000;
 }
-.form-box a{
+
+.form-box a {
     text-decoration: none;
     font-size: 14px;
     color: #fff;
 }
-.form-box a:hover
-{
+
+.form-box a:hover {
     color: #39dc79;
+}
+
+/* Tablet */
+@media screen and (max-width: 780px) {
+    .form-box {
+        width: 420px;
+        height: 400px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        top: 50%;
+        left: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+        padding-top: 125px;
+        padding-right: 20px;
+        padding-bottom: 40px;
+        padding-left: 20px;
+    }
+
+    .logo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        position: absolute;
+        top: -50px;
+        left: calc(45% - 50px);
+    }
+
+    .form-box p {
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+    }
+
+    .form-box input {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .form-box input[type="text"],
+    input[type="password"] {
+        border: none;
+        border-bottom: 1px solid #fff;
+        background: transparent;
+        outline: none;
+        height: 40px;
+        color: #fff;
+        font-size: 17px;
+    }
+
+    .form-box input[type="submit"] {
+        border: none;
+        outline: none;
+        height: 40px;
+        background: #603f33;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 20px;
+    }
+
+    .form-box input[type="submit"]:hover {
+        cursor: pointer;
+        background: #a88c82;
+        color: #000;
+    }
+
+    .form-box a {
+        text-decoration: none;
+        font-size: 15px;
+        color: #fff;
+    }
+
+    .form-box a:hover {
+        color: #39dc79;
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 480px) {
+    .form-box {
+        width: 360px;
+        height: 340px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        top: 50%;
+        left: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+        padding-top: 125px;
+        padding-right: 20px;
+        padding-bottom: 40px;
+        padding-left: 20px;
+    }
+
+    .logo {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        position: absolute;
+        top: -50px;
+        left: calc(45% - 50px);
+    }
+
+    .form-box p {
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+    }
+
+    .form-box input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .form-box input[type="text"],
+    input[type="password"] {
+        border: none;
+        border-bottom: 1px solid #fff;
+        background: transparent;
+        outline: none;
+        height: 40px;
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .form-box input[type="submit"] {
+        border: none;
+        outline: none;
+        height: 40px;
+        background: #603f33;
+        color: #fff;
+        font-size: 15px;
+        border-radius: 20px;
+    }
+
+    .form-box input[type="submit"]:hover {
+        cursor: pointer;
+        background: #a88c82;
+        color: #000;
+    }
+
+    .form-box a {
+        text-decoration: none;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .form-box a:hover {
+        color: #39dc79;
+    }
 }
