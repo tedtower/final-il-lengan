@@ -1053,7 +1053,7 @@ function countConsump(){
         for($in = 0; $in < count($ti) ; $in++){
             $this->db->query($query, array($ti[$in]['riStatus'], $ti[$in]['riID']));
             if(intval($ti[$in]['new']) === 1 ) {
-                $this->add_transitems($ti[$in]['riID'], $ti[$in]['tiQty'], $ti[$in]['tiActualQty'], $ti[$in]['tiActual'], $ti[$in]['tiSubtotal'], 
+                $this->add_transitems($ti[$in]['riID'], $ti[$in]['diID'],$ti[$in]['tiQty'], $ti[$in]['tiActualQty'], $ti[$in]['tiActual'], $ti[$in]['tiSubtotal'], 
                 $ti[$in]['tiRemarks'], $ti[$in]['tiDate'], $ti[$in]['stID'], $ti[$in]['spmID'], $accountID, $action);
                 $this->update_transitems($ti[$in]['tiID'], $ti[$in]['tiRemarks']);
             } else {

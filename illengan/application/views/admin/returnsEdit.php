@@ -84,7 +84,7 @@
 
         returnitems.forEach(function(ri) {
             $("tbody.deliveries").append(`
-            <tr class="ic-level-1" data-tiid="${ri.tiID}" data-riid="${ri.riID}">
+            <tr class="ic-level-1" data-tiid="${ri.tiID}" data-diid="${ri.diID}" data-riid="${ri.riID}">
                 <td style="padding:1% !important"><input type="text" class="form-control form-control-sm" name="receipt"
                         value="${ri.returnReference}" readonly></td>
                 <td><input type="text" data-id="${ri.riID}" data-stockid="${ri.stID}" value="${ri.spmName}"
@@ -95,8 +95,8 @@
                         <input type="number" value="${ri.tiQty}" data-qty="${ri.tiQty}" name="qty"
                             class="form-control form-control-sm" min="1">
                         <div class="input-group-append">
-                            <span class="input-group-text" style="font-size:14px">
-                                ${ri.uomName} </span>
+                            <span class="input-group-text" style="font-size:12px">
+                                ${ri.uomAbbreviation} </span>
                         </div>
                     </div>
                 </td>
@@ -141,6 +141,7 @@
                 returnitems.push({
                     tiID: isNaN(parseInt($(this).data("tiid"))) ? (null) : parseInt($(this).data("tiid")),
                     riID: isNaN(parseInt($(this).data("riid"))) ? (null) : parseInt($(this).data("riid")),
+                    diID: isNaN(parseInt($(this).data("riid"))) ? (null) : parseInt($(this).data("diid")),
                     stID: parseInt($(this).find("input[name='stock']").attr('data-stockid')),
                     spmID: parseInt($(this).find("input[name='stock']").attr('data-spmid')),
                     tiQty: tiQty,
