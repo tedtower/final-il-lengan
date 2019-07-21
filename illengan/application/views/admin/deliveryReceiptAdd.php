@@ -500,7 +500,7 @@
                 $("#returnCard tbody").append(`
                     <tr class="ic-level-1">
                     <td><input type="checkbox" class="mr-2" name="returns"
-                            data-name="${del.stName}" data-uom="${del.uomName}" 
+                            data-name="${del.stName}" data-uom="${del.uomAbbreviation}" 
                             data-stid="${del.stID}"  data-actual="${del.spmActual}" 
                             data-price="${del.spmPrice}"  data-riid="${del.riID}" 
                             data-tiqty="${del.tiQty}" data-spmid="${del.spmID}"
