@@ -1638,21 +1638,21 @@ function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
                 $sID = $this->db->insert_id();
                 $query2 = "insert into spoiledstock (siID,sID) values (NULL,?)";
                 if($this->db->query($query2, array($sID))){
-                    $this->add_trans($prID,$ret['stID'],$qty,$remarks,$date, $this->db->insert_id(), $tiType);
+                    $this->add_trans($prID,$ret['stID'],$qty,$remarks,$date,$date_recorded, $this->db->insert_id(), $tiType);
                     $this->add_actlog($accid, $date_recorded, "Admin added a spoiled stock.", "add", $remarks);
                 }
             }
         }
     }
-    function add_trans($prID,$stID,$qty,$remarks, $date, $siID, $tiType){
+    function add_trans($prID,$stID,$qty,$remarks, $date,$date_recorded, $siID, $tiType){
         $query1 = "SELECT stQty, prstQty FROM stockitems inner join prefstock on stockitems.stID=prefstock.stID where stockitems.stID = '$stID' AND prID = '$prID'";
         $result= $this->db->query($query1)->result_array();
         foreach($result as $r){
             $prstQty = $r['prstQty'];
             $stQty = $r['stQty'];
-        $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, stID, siID)
-            VALUES (NULL, ?,?,?,?,?,?,?,?)";
-         $this->db->query($query, array($tiType, $qty, $prstQty, $stQty, $remarks, $date, $stID, $siID));
+        $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, dateRecorded, stID, siID)
+            VALUES (NULL, ?,?,?,?,?,?,?,?,?)";
+         $this->db->query($query, array($tiType, $qty, $prstQty, $stQty, $remarks, $date,$date_recorded, $stID, $siID));
          
         } 
         
@@ -1746,7 +1746,7 @@ function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
             $stID = $r3['stID'];
         }
         $tiType = 'spoilage';
-        $this->add_trans($prID,$stID,$qty,$remarks, $sDate, $siID, $tiType);
+        $this->add_trans($prID,$stID,$qty,$remarks, $sDate, $dateRecorded, $siID, $tiType);
     }
 }
 //-----------------------------------------------------------------------------------------------
@@ -2308,7 +2308,9 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
      $spmID, $piID, $riID, $ciID, $siID, $accountID, $action) {
         $qty = "SELECT stQty FROM stockitems WHERE stID = ?";
         $remainingQty = intval($this->db->query($qty, $stID)->row()->stQty) + intval($tiActual); 
-
+        $string = ' qty '.$remainingQty.'';
+        print_r($string);
+        
         $query = "INSERT INTO transitems (tiID, tiType, tiQty, tiActual, tiSubtotal, remainingQty, tiRemarks, 
         tiDate, dateRecorded, stID, spmID, piID, riID, ciID, siID) VALUES (NULL, ?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $this->db->query($query, array($tiType, $tiQty, $tiActualQty, $tiSubtotal, $remainingQty, $tiRemarks,

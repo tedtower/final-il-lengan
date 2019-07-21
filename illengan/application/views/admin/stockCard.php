@@ -28,8 +28,8 @@
                                 <b>Beginning Qty:</b> 
                                 <?php foreach($logs as $log){
                                     if($log['type'] == 'beginning'){
-                                        echo $log['actual'];
-                                    }}?></span>
+                                        echo $log['actual'] ;
+                                    }}?> <?= $stock['uomAbbreviation']?></span>
                             </div>
                             
                             <div style="overflow:auto;">
