@@ -68,7 +68,11 @@
             row += `<td>`+act[a].alDate+`</td>`;
             row += `<td>`+act[a].aUserName+`</td>`;
             row += `<td>`+act[a].alDesc+`</td>`;
-            row += `<td>`+act[a].additionalRemarks+`</td>`;
+            if(act[a].additionalRemarks == '' || act[a].additionalRemarks == null){
+                row += `<td></td>`;
+            }else{ 
+                row += `<td>`+act[a].additionalRemarks+`</td>`;
+            }
             row += `</tr>`;
         $("#stockTable > tbody").append(row);             
         }

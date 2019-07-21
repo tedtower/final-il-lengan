@@ -255,6 +255,15 @@
                 }
             });
         });
+
+        $('#conForm').submit(function(event){
+            var returnDate = $("#date").val();
+            var currentDate = new Date();
+            if(Date.parse(currentDate) < Date.parse(returnDate)){
+                alert('Please check the date entered!');
+                return false;
+        }
+    });
     });
     </script>
 </body>

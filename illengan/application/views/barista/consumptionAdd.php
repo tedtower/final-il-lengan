@@ -13,7 +13,7 @@
                         <!--Card-->
                         <div class="card" style="float:left;width:60%">
                             <div class="card-header">
-                                <h6 style="font-size:15px;margin:0">Add Consumption</h6>
+                                <h6 style="font-size:15px;margin:0;">Add Consumption</h6>
                             </div>
                             <form id="conForm" action="<?= site_url("barista/consumption/add")?>" accept-charset="utf-8"
                                 class="form">
@@ -182,9 +182,9 @@
                         console.log(data);
                     }
                 },
-                // complete: function() {
-                // location.reload();
-                // },
+                complete: function() {
+                location.reload();
+                },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);

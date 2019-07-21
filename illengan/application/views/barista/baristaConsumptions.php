@@ -14,7 +14,7 @@
 
 							<!--Add  Consumption BUTTON-->
 							<div class="col-md-4 col-lg-2">
-							<a class="btn btn-primary btn-sm" href="<?= site_url('barista/consumption/formadd')?>" data-original-title style="margin:0"
+							<a class="btn btn-primary btn-sm" href="<?= site_url('barista/consumption/formadd')?>" data-original-title style="margin:0; width: 130px;"
                                     id="addBtn">Add Consumption</a>
 							<!--eND Add  Consumption BUTTON-->
 							</div>
@@ -282,10 +282,10 @@
                 alert(' Consumption Updated');
 				console.log(data);
             },
-            // complete: function() {
-            //     $("#editConsumption").modal("hide");
-			// 	location.reload();
-            // },
+            complete: function() {
+                $("#editConsumption").modal("hide");
+				location.reload();
+            },
             error: function(error) {
 				console.log(error);
             }
