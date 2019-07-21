@@ -282,10 +282,10 @@
                 alert(' Consumption Updated');
 				console.log(data);
             },
-            // complete: function() {
-            //     $("#editConsumption").modal("hide");
-			// 	location.reload();
-            // },
+            complete: function() {
+                $("#editConsumption").modal("hide");
+				location.reload();
+            },
             error: function(error) {
 				console.log(error);
             }
