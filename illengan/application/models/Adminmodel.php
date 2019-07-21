@@ -1282,8 +1282,9 @@ function add_consumptiontransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiR
     return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $ciID,$date_recorded));
 }
 function add_stocktransitems($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded){
-    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?,?)";
+    $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?,?)";
     return $this->db->query($query, array($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID,$date_recorded));
+    print_r($query);
 }
 function edit_table($newTableCode, $previousTableCode){
     $query = "Update tables set tableCode = ? where tableCode = ?;";
@@ -1484,15 +1485,15 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
     function add_spoileditems($sID,$stocks,$remarks,$date,$account_id,$date_recorded,$user){
         $query = "INSERT INTO `spoiledstock`(`siID`, `sID`) VALUES (NULL,?)";
         if($this->db->query($query,array($sID))){
-            $this->add_spoiltransitems($this->db->insert_id(),$stocks,$date);
+            $this->add_spoiltransitems($this->db->insert_id(),$stocks,$date,$date_recorded);
             $this->add_actlog($account_id,$date_recorded, "$user added a stock spoilage.", "add", $remarks);
         }
     }
-    function add_spoiltransitems($siID,$stocks,$date){
-        $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiQty`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`) VALUES (NULL,?,?,?,?,?,?,?,?)";
+    function add_spoiltransitems($siID,$stocks,$date,$date_recorded){
+        $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiQty`, `tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?,?)";
         if(count($stocks) > 0){
             for($in = 0; $in < count($stocks) ; $in++){
-                $this->db->query($query,array("spoilage",$stocks[$in]['tiQty'],$stocks[$in]['actualQty'],$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$siID));
+                $this->db->query($query,array("spoilage",$stocks[$in]['tiQty'],$stocks[$in]['actualQty'],$stocks[$in]['curQty']-$stocks[$in]['actualQty'],$stocks[$in]['tRemarks'],$date,$stocks[$in]['stID'],$siID,$date_recorded));
                 $this->destockvarItems($stocks[$in]['stID'],$stocks[$in]['curQty'],$stocks[$in]['actualQty']);  
             }
         }
@@ -2430,7 +2431,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         return $this->db->query($query)->result_array();
     }
     function get_deliveryItems(){
-        $query = "SELECT spmID,tiID, pi.pID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, CONCAT(spmName,' ',stSize) as merch,
+        $query = "SELECT spmID,tiID,tiRemarks, stQty,pi.pID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, CONCAT(spmName,' ',stSize) as merch,
         stSize, spmName, spmPrice, spmActual, tiQty as qty, uomName, tiActual as actual, tiType, tiSubtotal, 
         piStatus, priStatus, pType, pDateRecorded, dateRecorded FROM purchase_items pri LEFT JOIN transitems ti USING (piID) 
         LEFT JOIN pur_items pi ON (pri.piID = pi.piID) LEFT JOIN purchases p ON (pi.pID = p.pID) LEFT JOIN stockitems st 
@@ -2650,17 +2651,35 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $query ="UPDATE transactions SET isArchived = ? WHERE tID = ?";
         $this->db->query($query,array('1', $tID));
     }
-    function updateDelReceipt($drItems){
-        $query = "UPDATE `transitems` SET `tiQty`= ?,`tiActual`= ?,`tiSubtotal`= ?,`remainingQty`= ?,`tiRemarks`= ?,`tiDate`= ?,`tiDiscount`= ? WHERE tiID = ?";
-        for($in = 0; $in < count($drItems) ; $in++){
-            $updatedremaining =  ($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"])+$drItems[$in]["tiActualCur"];
-            $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedremaining,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
+    function updateDelReceipt($drItems,$current){
+        $query = "UPDATE `transitems` SET `tiQty`= ?,`tiActual`= ?,`tiSubtotal`= ?,`remainingQty`= ?,`tiRemarks`= ?,`tiDate`= ?,`tiDiscount`= ?  WHERE tiID = ?";
+            if(count($drItems) > 0){
+            for($in = 0; $in < count($drItems) ; $in++){
+                if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
+                    // $updatedqty =  ($drItems[$in]["tiActualCur"]-$drItems[$in]["spmActual"])-$drItems[$in]["stQty"];
+                    $updatedqty =  $drItems[$in]["stQty"]-($drItems[$in]["spmActual"]*($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"]));
+                    $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
+                    $this->update_stockQty($drItems[$in]["stID"], $updatedqty);
+                    print_r($query);
+                }else{
+                    // $updatedqty =  ($drItems[$in]["tiActualCur"]-$drItems[$in]["spmActual"])+$drItems[$in]["stQty"];
+                    $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
+                    $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
+                    $this->update_stock($drItems[$in]["stID"], $updatedqty);
+                    print_r($query);
+                }
         }
     }
-    function updateStatus($piStatus,$piID){
-        $query = "UPDATE `purchase_items` SET `piStatus`=? WHERE piID = ?";
-        $this->db->query($query,array($piStatus,$piID));
     }
+    function updateStatus($piStatus,$piID,$pID){
+        $query = "UPDATE `pur_items` SET `priStatus`= ? WHERE pID = ? AND piID = ?";
+        $this->db->query($query,array($piStatus,$pID,$piID));
+    }
+    function updatepurchase($receipt,$pID){
+        $query = "UPDATE `purchases` SET `receiptNo`=? WHERE `pID` = ?";
+        $this->db->query($query,array($receipt,$pID));
+    }
+
     //getPosFor Brochure
     //     SELECT
     //     tID as transactionID,

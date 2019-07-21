@@ -86,8 +86,7 @@
                                     <div class="card-footer mb-0" style="overflow:auto">
                                         <button class="btn btn-success btn-sm" type="submit"
                                             style="float:right">Insert</button>
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            style="float:right">Cancel</button>
+                                            <a class="btn btn-danger btn-sm" type="button" href="<?= site_url('admin/deliveryreceipt') ?>" data-original-title style="float:right">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -114,12 +113,12 @@
         $('textarea[name="remarks"]').val(drItems[0].tiRemarks);
         $('input[name="date"]').val(drs[0].pdate);
         $('.total').text(drs[0].pTotal);
-        
+
         drItems.forEach(function(dri) {
             $("#drForm .ic-level-3").append(`
                 <tr class="ic-level-1" data-dr="${dri.pID}" data-dri="${dri.piID}" data-trans="${dri.tiID} data">
                     <td style="padding:1% !important"><input type="text"
-                            class="form-control form-control-sm" data-id="${dri.spmID}" data-actual="${dri.actual}" data-stid="${dri.stID}" value="${dri.merch}" name="spm" readonly></td>
+                            class="form-control form-control-sm" data-id="${dri.spmID}" data-actual="${dri.actual}" data-stid="${dri.stID}" value="${dri.merch ? (null) : dri.spmName}" name="spm" readonly></td>
                     <td style="padding:1% !important"><input type="number"
                             class="form-control form-control-sm" value='${dri.qty}' name="qty" required  min="0"></td>
                     <td style="padding:1% !important"><input type="number"
@@ -127,7 +126,7 @@
                     <td style="padding:1% !important"><input type="number"
                             class="form-control form-control-sm" value='${dri.tiDiscount}' name="discount"   min="0"></td>
                     <td style="padding:1% !important"><input type="number"
-                            class="form-control form-control-sm" value="${dri.tiSubtotal}" name="price"  min="0" readonly></td>
+                            class="form-control form-control-sm" value="${dri.spmPrice}" name="price"  min="0" readonly></td>
                     <td style="padding:1% !important"><input type="number"
                             class="subtotal form-control form-control-sm" name="subtotal" value="${dri.tiSubtotal}" min="0" readonly></td>
                     <td style="padding:1% !important">
@@ -139,6 +138,10 @@
                         </select>
                     </td>
                     <input type="hidden" name="tiActualCur" hidden="hidden" value='${dri.actual}' >
+                    <input type="hidden" name="stQty" hidden="hidden" value='${dri.stQty}' >
+                    <input type="hidden" name="spmActual" hidden="hidden" value='${dri.spmActual}' >
+                    <input type="hidden" name="piID" hidden="hidden" value='${dri.piID}' >
+                    <input type="hidden" name="stID" hidden="hidden" value='${dri.stID}' >
                 </tr>`);
         $("select[name='status']").find(`option[value=${dri.piStatus}]`).attr("selected", "selected");
         });
@@ -165,23 +168,29 @@
         $("#drForm").on("submit", function(event){
          event.preventDefault();
          var pID = id;
+         var piIDnum;
+         var status;
          var url = $(this).attr("action");
-         var piID = isNaN(parseInt($(this).attr('data-dri'))) ? (null) : parseInt($(this).attr('data-dri'));
          drItems = [];
          var drTotal = 0;
+         var receipt;
 
          $(this).find(".ic-level-1").each(function(index){
+             piIDnum=  $(this).find("input[name='piID']").val();
              var date = $("#drForm").find("input[name='date']").val();
-             var receipt = $("#drForm").find("input[name='receipt']").val();
+             receipt = $("#drForm").find("input[name='receipt']").val();
              var remarks = $("#drForm").find("textarea[name='remarks']").val();
-             var status = $(this).find("select[name='status']").val();
+             status = $(this).find("select[name='status']").val();
              var tiActualCur = $(this).find("input[name='tiActualCur']").val();
+             var stQty = $(this).find("input[name='stQty']").val();
+             var stID = $(this).find("input[name='stID']").val();
+             var spmActual = $(this).find("input[name='spmActual']").val();
              var discount = $(this).find("input[name='discount']").val();
              var tiQty = parseInt($(this).find("input[name='qty']").val());
              var actQty = $(this).find("input[name='actual']").val();
              var spmID = parseInt($(this).find("input[name='spm']").attr('data-id'));
              var price = parseInt($(this).find("input[name='price']").val());
-             var actualQty = tiQty * actQty;
+             var actualQty = tiQty * spmActual;
              var subtotal = parseFloat(tiQty * price);
              drTotal = parseFloat(drTotal + subtotal);
 
@@ -195,34 +204,41 @@
                  tiSubtotal: subtotal,
                  tiRemarks:remarks,
                  tiActualCur:tiActualCur,
-                 discount:discount
+                 discount:discount,
+                 spmActual:spmActual,
+                 stQty:stQty,
+                 stID:stID
 
              }); 
              console.log(drItems);
-            //  console.log("date" +date);
-            // console.log("status" +status);
-            // console.log("tiQty" +tiQty);
-            // console.log("actQty" +actQty);
-            // console.log("spmID" +spmID);
-            // console.log("actualQty" +actualQty);
-            // console.log("subtotal" +subtotal);
-            // console.log("drTotal" +drTotal);
-            // console.log("remarks" +remarks);
-            // console.log("receipt" +receipt);
-            // console.log(tiActualCur);
+             console.log("date" +date);
+            console.log("status" +status);
+            console.log("tiQty" +tiQty);
+            console.log("actQty" +actQty);
+            console.log("spmID" +spmID);
+            console.log("actualQty" +actualQty);
+            console.log("subtotal" +subtotal);
+            console.log("drTotal" +drTotal);
+            console.log("remarks" +remarks);
+            console.log("receipt" +receipt);
+            console.log("tiActualCur"+tiActualCur);
+            console.log("piIDnum"+piIDnum);
+            console.log("stQty"+stQty);
+            console.log("stID"+stID);
+
          }); 
          
          $.ajax({
              method: "POST",
              url: url,
              data: {
-                 piID: piID,
+                 pID:pID,
+                 piID: piIDnum,
+                 receipt:receipt,
                  piStatus: status,
                  drItems: JSON.stringify(drItems)
              },
-             beforeSend: function() {
-                    console.log(id, date, drItems);
-            },
+             
             // complete: function() {
             //     location.reload();
             // },
