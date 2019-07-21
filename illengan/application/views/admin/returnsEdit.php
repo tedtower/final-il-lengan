@@ -31,7 +31,7 @@
                                                 <span class="input-group-text border border-secondary" style="width:90px;font-size:14px">
                                                     Return Date</span>
                                             </div>
-                                            <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" title="Return date is required!" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
+                                            <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" title="Return date is required!" pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}" required>
                                         </div>
                                     </div>
                                     <div class="ic-level-3">
@@ -177,15 +177,13 @@
         });
 
         $('#conForm').submit(function(event){
-            var returnDateEdit = $("#date").val();
+            var returnDateEdit = document.getElementById("date").value;//$("#date").val();
             var currentDate = new Date();
             if(Date.parse(returnDateEdit) < Date.parse(currentDate)){
-                return true;
-        }else{
-            alert('Please check the date entered!');
-            return false;
-                //event.preventDefault();
+                //alert('Please check the date entered!');
+                return false;
         }
+        
     });
     });
 
