@@ -1053,7 +1053,7 @@ function countConsump(){
         for($in = 0; $in < count($ti) ; $in++){
             $this->db->query($query, array($ti[$in]['riStatus'], $ti[$in]['riID']));
             if(intval($ti[$in]['new']) === 1 ) {
-                $this->add_transitems($ti[$in]['riID'], $ti[$in]['tiQty'], $ti[$in]['tiActualQty'], $ti[$in]['tiActual'], $ti[$in]['tiSubtotal'], 
+                $this->add_transitems($ti[$in]['riID'], $ti[$in]['diID'],$ti[$in]['tiQty'], $ti[$in]['tiActualQty'], $ti[$in]['tiActual'], $ti[$in]['tiSubtotal'], 
                 $ti[$in]['tiRemarks'], $ti[$in]['tiDate'], $ti[$in]['stID'], $ti[$in]['spmID'], $accountID, $action);
                 $this->update_transitems($ti[$in]['tiID'], $ti[$in]['tiRemarks']);
             } else {
@@ -2253,7 +2253,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $sum = "SELECT SUM(tiQty) as sumQty FROM transitems INNER JOIN (SELECT max(tiID) as tiID FROM transitems WHERE tiType = 'restock'
         GROUP BY diID, riID) as maxQty USING (tiID) WHERE riID = ? GROUP BY riID";
         $sumQty = intval($this->db->query($sum, $riID)->row()->sumQty);
-        $return = "SELECT tiQty FROM transitems INNER JOIN (SELECT riID, max(tiID) as maxTrans FROM transitems WHERE riID = ?) 
+        $return = "SELECT tiQty FROM transitems INNER JOIN (SELECT riID, max(tiID) as maxTrans FROM transitems WHERE riID = ? tiType= 'return') 
         as returns USING (riID)";
         $returnQty = intval($this->db->query($return, $riID)->row()->tiQty);
         $string = 'riID '.$riID.' sumQty '.$sumQty.' returnQtyResolve '.$returnQty; 
