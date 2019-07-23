@@ -71,7 +71,7 @@
                                             echo '<tr>
                                             <td><img src="/assets/media/admin/plus.png" style="height:18px;width:18px"/></td>
                                             <td>Restock</td>
-                                            <td>'.$log['receipt'].'</td>
+                                            <td>Receipt: '.$log['receipt'].'</td>
                                             <td>'. $log['logDate'].'</td>
                                             <td>'. $log['actual'].'</td>
                                             <td>'. $log['remain'].'</td>

@@ -136,7 +136,7 @@
 
         $(function() {
             $(document).on("change", "select[name='suppliers']", function() {
-                // $(".poitems > tbody").empty();
+                $(".poitems > tbody").empty();
                 suppmerch = <?= json_encode($suppmerch) ?>;
                 var spID = $(this).val();
                 suppmerch = suppmerch.filter(merch => merch.spID === spID);
@@ -241,8 +241,6 @@
                     alert('No checkbox is checked');
                     return false;
                 }
-
-
                 $.ajax({
                     method: "POST",
                     url: url,
@@ -255,7 +253,7 @@
                     beforeSend: function() {
                         console.log(supplier, date, poitems);
                     },
-                    succes: function() {
+                    success: function() {
                         location.reload();
                     },
                     error: function(response, setting, error) {
