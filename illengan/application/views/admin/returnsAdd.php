@@ -264,10 +264,12 @@
             var returnDate = $("#date").val();
             var currentDate = new Date();
             if(Date.parse(currentDate) < Date.parse(returnDate)){
+                event.preventDefault();
                 alert('Please check the date entered!');
                 return false;
         }
     });
+
     });
     </script>
 </body>
