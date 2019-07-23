@@ -40,7 +40,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Source</span>
                                                 </div>
-                                                <input class="form-control status-level" data-level="1" require name="source" type="text" value="" id="source" required pattern="[a-zA-Z][a-zA-Z\s]*" title="Source should only countain letters and white spaces.">
+                                                <input class="form-control status-level" data-level="1" name="source" type="text" value="" id="source">
                                             </div>
                                         </div>
 
@@ -99,8 +99,7 @@
                                     <div class="card-footer mb-0" style="overflow:auto">
                                         <button class="btn btn-success btn-sm" type="submit"
                                             style="float:right">Insert</button>
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            style="float:right">Cancel</button>
+                                            <a class="btn btn-danger btn-sm" type= "button" href="<?= site_url('admin/deliveryreceipt')?>" data-original-title  style="float:right">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -501,7 +500,7 @@
                 $("#returnCard tbody").append(`
                     <tr class="ic-level-1">
                     <td><input type="checkbox" class="mr-2" name="returns"
-                            data-name="${del.stName}" data-uom="${del.uomName}" 
+                            data-name="${del.stName}" data-uom="${del.uomAbbreviation}" 
                             data-stid="${del.stID}"  data-actual="${del.spmActual}" 
                             data-price="${del.spmPrice}"  data-riid="${del.riID}" 
                             data-tiqty="${del.tiQty}" data-spmid="${del.spmID}"
@@ -808,6 +807,15 @@
         $("#drForm .total").text("0");
         $("#drForm .ic-level-2").empty();
     }
+
+    $('#drForm').submit(function(event){
+            var drDate = $("#date").val();
+            var currentDate = new Date();
+            if(Date.parse(currentDate) < Date.parse(drDate)){
+                alert('Please check the date entered!');
+                return false;
+        }
+    });
 
             </script>
 

@@ -116,6 +116,7 @@
                             data-name="${del.stName}" data-uom="${del.uomName}" 
                             data-stid="${del.stID}"  data-actual="${del.spmActual}" 
                             data-price="${del.spmPrice}"  data-spmid="${del.spmID}"
+                            data-tiid="${del.tiID}" data-diid="${del.diID}"
                              value="${del.stID}"></td>
                     <td class="trans"  data-receipt='${del.receiptNo}' data-supplier='${del.spName}' 
                     data-spid="${del.spID}">${del.trans == null ? del.pDate : del.trans }</td>
@@ -150,13 +151,15 @@
             var spID = $(this).closest("tr").find("td.trans").data("spid");
             var spmID = $(this).data("spmid");
             var receiptNo = $(this).closest("tr").find("td.trans").data("receipt");
+            var tiID = $(this).data("tiid");
+            var diID = $(this).data("diid");
 
             console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
-                    <tr class="ic-level-1" data-stock="${id}">
+                    <tr class="ic-level-1" data-stock="${tiID}">
                         <td style="padding:1% !important"><input type="text" class="form-control form-control-sm"
-                                data-stock="${id}" value="${receiptNo}" name="receipt" readonly></td>
+                                data-stock="${id}" data-diid="${diID}" value="${receiptNo}" name="receipt" readonly></td>
                         <td style="padding:1% !important"><input type="text" class="form-control form-control-sm"
                                 data-id="${id}" data-spmid="${spmID}" data-actqty="${actualQty}" data-price="${price}" 
                                 value="${name}" name="stock" readonly></td>
@@ -179,7 +182,7 @@
                 $("#conForm").find('input[name="supplier"]').attr("readonly", true);
                 
             }else{
-                $(`#conForm .ic-level-1[data-stock=${id}]`).remove();
+                $(`#conForm .ic-level-1[data-stock=${tiID}]`).remove();
                 if(isNaN($("#conForm .ic-level-2 tr").length) || $("#conForm .ic-level-2 tr").length == 0) {
                     $('#conForm')[0].reset();
                 }
@@ -231,6 +234,7 @@
                     tiSubtotal: subtotal,
                     tiRemarks: $(this).find("textarea[name='tiRemarks']").val(),
                     tiDate: date,
+                    diID: $(this).find("input[name='receipt']").data('diid'),
                     receipt: $(this).find("input[name='receipt']").val(),
                     riStatus: 'pending'
                 }); 
@@ -255,6 +259,15 @@
                 }
             });
         });
+
+        $('#conForm').submit(function(event){
+            var returnDate = $("#date").val();
+            var currentDate = new Date();
+            if(Date.parse(currentDate) < Date.parse(returnDate)){
+                alert('Please check the date entered!');
+                return false;
+        }
+    });
     });
     </script>
 </body>

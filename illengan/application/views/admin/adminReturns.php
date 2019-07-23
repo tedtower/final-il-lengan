@@ -379,8 +379,8 @@
             row += ` </tr>`;
             row += ``;
         
-        var returnitems = retItem.filter(function(r){
-            return r.rID == item[r].rID;
+        var returnitems = retItem.filter(function(i){
+            return i.rID == item[r].rID;
             
         });
         console.log(returnitems);
@@ -405,8 +405,8 @@
                         </tr>`;
                 returnsDiv += `</thead>`;
                 returnsDiv += `<tbody>`;
-            for(reti in returnitems){
-                returnsDiv += `<tr id="${returnitems[reti].riID}">`;
+            for(retu in returnitems){
+                returnsDiv += `<tr id="${returnitems[retu].riID}">`;
                 returnsDiv += `<td>${returnitems[retu].returnReference}</td>`;
                 returnsDiv += `<td>${returnitems[retu].stName}</td>`;
                 returnsDiv += `<td>${returnitems[retu].tiQty}</td>`;
@@ -450,18 +450,18 @@
                 resolveDiv += `</thead>`;
                 resolveDiv += `<tbody>`;
                 for(res in resolved){
-                    resolveDiv += ` <tr id="${resolved[res].pID}">`;
-                    resolveDiv += `<td>${resolved[res].pDate}</td>`;
+                    resolveDiv += ` <tr id="${resolved[res].dID}">`;
+                    resolveDiv += `<td>${resolved[res].dDate}</td>`;
                     resolveDiv += `<td>${resolved[res].replacementReference}</td>`;
                     resolveDiv += `<td>${resolved[res].stName}</td>`;
                     resolveDiv += `<td>${resolved[res].tiQty}</td>`;
                     resolveDiv += `<td>${resolved[res].uomName}</td>`;
                     resolveDiv += `<td>${resolved[res].tiActual}</td>`;
-                    resolveDiv += `<td>${resolved[res].piStatus}</td>`;
+                    resolveDiv += `<td>${resolved[res].diStatus}</td>`;
                     if(resolved[res].tiRemarks === null){
                         resolveDiv += `<td></td>`;
                     }
-                    resolveDiv += `<td>${resolved[res].data}</td>`;
+                    resolveDiv += `<td>${resolved[res].tiRemarks}</td>`;
                     resolveDiv += `</tr>`;
                 }
                 resolveDiv += `</tbody></table>`;

@@ -302,6 +302,12 @@
   //  });
     }
 }
+
+$(document).ready(function(){
+            $(function() {  
+                $("body").niceScroll();
+            });
+        });
     
     </script>
 </body>

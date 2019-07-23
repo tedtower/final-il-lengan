@@ -33,7 +33,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" message="End Date is required!"  required>
+                                                <input class="form-control form-control-sm" name="date" id="date" type="date" data-validate="required" message="Date is required!"  required>
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -105,15 +105,15 @@
                     <td style="padding:1% !important"><input type="text"
                             class="form-control form-control-sm" data-id="${poi.spmid}" data-actual="${poi.spmActual}" data-stid="${poi.stID}" value="${poi.spmName}" name="spm" readonly></td>
                     <td style="padding:1% !important"><input type="number"
-                            class="form-control form-control-sm" value='${poi.qty}' name="qty" required></td>
+                            class="form-control form-control-sm" value='${poi.qty}' name="qty" min="0" required></td>
                     <td style="padding:1% !important"><input type="text"
                             class="form-control form-control-sm" data-uom="${poi.uomID}" value="${poi.uomAbbreviation}" name="unit" readonly></td>
                     <td style="padding:1% !important"><input type="number"
-                            class="form-control form-control-sm" value="${poi.spmPrice}" name="price" readonly></td>
+                            class="form-control form-control-sm" value="${poi.spmPrice}" name="price" min="0" readonly></td>
                     <td style="padding:1% !important"><input type="number"
                             class="subtotal form-control form-control-sm" name="subtotal" value="${poi.subtotal}" readonly></td>
                     <td style="padding:1% !important">
-                        <select class="form-control form-control-sm" name="status">
+                        <select class="form-control form-control-sm" name="status" required>
                             <option value="" selected>Select Status</option>
                             <option value="pending">Pending</option>
                             <option value="delivered">Delivered</option>
@@ -187,6 +187,15 @@
          });
      });
 
+    });
+
+    $('#conForm').submit(function(event){
+            var poEditDate = $("#date").val();
+            var currentDate = new Date();
+            if(Date.parse(currentDate) < Date.parse(poEditDate)){
+                alert('Please check the date entered!');
+                return false;
+        }
     });
 
 
