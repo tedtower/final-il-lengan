@@ -119,7 +119,7 @@
                             delReceipt.push({
                                 "dr": items
                             });
-                            delReceipt[index].drItems = data.drItems.filter(dr => dr.pID == items.pID);
+                            delReceipt[index].drItems = data.drItems.filter(dr => dr.dID == items.dID);
                         });
                         console.log(data.dr);
                         console.log('items');
@@ -143,7 +143,7 @@
 				$("#transTable > tbody").append(`
 			    <tr class="transTabletr ic-level-1">
                     <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4">
-                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.dr.pID}</td>
+                    <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.dr.dID}</td>
                     <td>${dr.dr.receipt == null || dr.dr.receipt == '' ?  "No receipt." : dr.dr.receipt}</td>
                     <td>${jQuery.trim(dr.dr.spAltName) == "" ? (dr.dr.spName == null ? "N/A" : dr.dr.spName) : dr.dr.spAltName }</td>
                     <td>${dr.dr.pDate}</td>
@@ -164,7 +164,7 @@
                 <!-- table row ng accordion -->
                     <div class="container" style="overflow:auto;display:none"> <!-- container ng accordion -->
                             ${dr.drItems.length === 0 ? "No item delivered" : 
-                            `<table id="drItems" width="90%" style="margin-left:auto;margin-right:auto;" class="drItems table-bordered">
+                            `<table id="drItems" width="100%" style="margin-left:auto;margin-right:auto;" class="drItems table-bordered">
                                 <thead class="thead-light" style="font-size: 15px">
                                     <tr>
                                     <th>Name</th>
@@ -173,7 +173,7 @@
                                     <th>Price</th>
                                     <th>Discount</th>
                                     <th>Subtotal</th>
-                                    <th>Delivery Status</th>
+                                    <th width="25%">Delivery Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -187,7 +187,8 @@
                                     <td>${dri.tiDiscount == null || dri.tiDiscount == '' ?  "N/A" : dri.tiDiscount}</td>
                                     <td>${isNaN((dri.tiSubtotal)) ? "N/A" : 
                                     (dri.tiSubtotal)}</td>
-                                    <td>${dri.priStatus}</td>
+                                    <td>${dri.diStatus} <small style="color:green;text-decoration: none">
+                                    ${(dri.piStatus == null || dri.piStatus == 'partially delivery') ? ' ': '(resolved)' }</small></td>
                                     </tr>
                                     `;
                                 }).join('')}
