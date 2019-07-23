@@ -137,6 +137,7 @@
                             <option value="partially delivered">Partially Delivered</option>
                         </select>
                     </td>
+                    <input type="hidden" name="tiQtyCur" hidden="hidden" value='${dri.qty}' >
                     <input type="hidden" name="tiActualCur" hidden="hidden" value='${dri.actual}' >
                     <input type="hidden" name="stQty" hidden="hidden" value='${dri.stQty}' >
                     <input type="hidden" name="spmActual" hidden="hidden" value='${dri.spmActual}' >
@@ -182,6 +183,7 @@
              var remarks = $("#drForm").find("textarea[name='remarks']").val();
              status = $(this).find("select[name='status']").val();
              var tiActualCur = $(this).find("input[name='tiActualCur']").val();
+             var tiQtyCur = $(this).find("input[name='tiQtyCur']").val();
              var stQty = $(this).find("input[name='stQty']").val();
              var stID = $(this).find("input[name='stID']").val();
              var spmActual = $(this).find("input[name='spmActual']").val();
@@ -193,25 +195,28 @@
              var actualQty = tiQty * spmActual;
              var subtotal = parseFloat(tiQty * price);
              drTotal = parseFloat(drTotal + subtotal);
+             var updateActual=actualQty-tiActualCur;
+             var updateQty=tiQty-tiQtyCur;
 
              drItems.push({
                  tiID: isNaN(parseInt($(this).attr('data-trans'))) ? (null) : parseInt($(this).attr('data-trans')),
                  piID: isNaN(parseInt($(this).attr('data-dri'))) ? (null) : parseInt($(this).attr('data-dri')),
                  pID: isNaN(parseInt($(this).attr('data-dr'))) ? (null) : parseInt($(this).attr('data-dr')),
-                 tiQty: tiQty,
+                 tiQty: updateQty,
                  date: date,
-                 tiActual: actualQty,
+                 tiActual: updateActual,
                  tiSubtotal: subtotal,
                  tiRemarks:remarks,
                  tiActualCur:tiActualCur,
                  discount:discount,
                  spmActual:spmActual,
                  stQty:stQty,
-                 stID:stID
+                 stID:stID,
+                 spmID:spmID
 
              }); 
-             console.log(drItems);
-             console.log("date" +date);
+            console.log(drItems);
+            console.log("date" +date);
             console.log("status" +status);
             console.log("tiQty" +tiQty);
             console.log("actQty" +actQty);

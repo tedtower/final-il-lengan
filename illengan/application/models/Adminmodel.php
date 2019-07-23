@@ -2654,19 +2654,17 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $this->db->query($query,array('1', $tID));
     }
     function updateDelReceipt($drItems,$current){
-        $query = "UPDATE `transitems` SET `tiQty`= ?,`tiActual`= ?,`tiSubtotal`= ?,`remainingQty`= ?,`tiRemarks`= ?,`tiDate`= ?,`tiDiscount`= ?  WHERE tiID = ?";
+        $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`, `tiActual`, `tiSubtotal`, `remainingQty`, `tiRemarks`, `tiDate`, `tiDiscount`, `stID`, `spmID`, `piID`, `dateRecorded`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
             if(count($drItems) > 0){
             for($in = 0; $in < count($drItems) ; $in++){
                 if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
-                    // $updatedqty =  ($drItems[$in]["tiActualCur"]-$drItems[$in]["spmActual"])-$drItems[$in]["stQty"];
                     $updatedqty =  $drItems[$in]["stQty"]-($drItems[$in]["spmActual"]*($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"]));
-                    $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
+                    $this->db->query($query,array($drItems[$in]["tiID"],"restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["piID"],$current));
                     $this->update_stockQty($drItems[$in]["stID"], $updatedqty);
                     print_r($query);
                 }else{
-                    // $updatedqty =  ($drItems[$in]["tiActualCur"]-$drItems[$in]["spmActual"])+$drItems[$in]["stQty"];
                     $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
-                    $this->db->query($query,array($drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["tiID"]));
+                    $this->db->query($query,array($drItems[$in]["tiID"],"restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["piID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
                     print_r($query);
                 }
