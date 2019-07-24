@@ -53,7 +53,7 @@ function get_stockCard($stID){
     LEFT JOIN suppliermerchandise USING(spmID)
     LEFT JOIN(return_items LEFT JOIN RETURNS USING(rID)) USING(riID)
     LEFT JOIN((purchase_items LEFT JOIN pur_items USING(piID)) LEFT JOIN purchases USING(pID)) USING(piID)
-    LEFT JOIN((delivery_items LEFT JOIN der_items USING(diID)) LEFT JOIN deliveries USING(dID)) USING(diID)
+    LEFT JOIN(delivery_items LEFT JOIN deliveries USING(dID)) USING(diID)
     LEFT JOIN(consumed_items LEFT JOIN consumptions USING(cID)) USING(ciID)
     LEFT JOIN(spoiledstock LEFT JOIN stockspoil USING(sID)) USING(siID)
     )
@@ -77,13 +77,14 @@ function get_stockCardAll($stID){
                 discrepancy,
                 tiRemarks,
                 COALESCE(rID, pID, cID, sID) AS tID,
-                reID
+                reID,
+                receiptNo as receipt
             FROM stockitems RIGHT JOIN(
             transitems
             LEFT JOIN suppliermerchandise USING(spmID)
             LEFT JOIN(return_items LEFT JOIN RETURNS USING(rID)) USING(riID)
             LEFT JOIN((purchase_items LEFT JOIN pur_items USING(piID)) LEFT JOIN purchases USING(pID)) USING(piID)
-            LEFT JOIN((delivery_items LEFT JOIN der_items USING(diID)) LEFT JOIN deliveries USING(dID)) USING(diID)
+            LEFT JOIN(delivery_items LEFT JOIN deliveries USING(dID)) USING(diID)
             LEFT JOIN(consumed_items LEFT JOIN consumptions USING(cID)) USING(ciID)
             LEFT JOIN( spoiledstock LEFT JOIN stockspoil USING(sID)) USING(siID)
             )
@@ -423,7 +424,7 @@ function get_transitems(){
         FROM
             uom
         WHERE
-            uomStore IS NOT NULL;";
+            uomStore IS NOT NULL order by uomAbbreviation asc;";
         return $this->db->query($query)->result_array();
     }
     function get_stockItem($id){
@@ -859,7 +860,7 @@ function get_transitems(){
         return $this->db->query($query)->result_array();
     }
     function get_addons(){
-        $query = "Select * from addons";
+        $query = "SELECT * from addons order by aoName asc";
         return $this->db->query($query)->result_array();
     }
     function get_mnAddons() {
@@ -2169,7 +2170,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         WHERE tiID = ? AND tID = ?;";
         return $this->db->query($query, array($tiID, $tID))->num_rows();
     }
-    function add_purchaseOrder($supplier, $date, $current, $type, $poitems){
+    function add_purchaseOrder($supplier, $date, $current, $poitems){
         $query = "INSERT INTO purchases(spID, pDate, pDateRecorded) VALUES(?,?,?)";
         if($this->db->query($query,array($supplier, $date, $current))){
             $pID = $this->db->insert_id();
