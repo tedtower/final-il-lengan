@@ -80,7 +80,7 @@ class Adminupdate extends CI_Controller{
             $this->adminmodel->edit_purchaseOrder($date, $current, $pID);
             $this->adminmodel->edit_pItem($poitems);
             $this->adminmodel->edit_potransitem($poitems);
-            $this->adminmodel->add_actlog($account_id, $current, "$user updated a purchase order. .", "add", NULL);
+            $this->adminmodel->add_actlog($account_id, $current, "$user updated a purchase order. .", "update", NULL);
 
         }else{
             redirect("login");
@@ -89,32 +89,33 @@ class Adminupdate extends CI_Controller{
     }
     function editDelReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $pID = $this->input->post("pID");
-            $piID = $this->input->post("piID");
-            $piStatus = $this->input->post("piStatus");
+            $dID = $this->input->post("dID");
+            $diID = $this->input->post("diID");
+            $diStatus = $this->input->post("diStatus");
             $receipt = $this->input->post("receipt");
             $current = date("Y-m-d H:i:s");
             $account_id = $_SESSION["user_id"];
             $user= $_SESSION["user_name"];
             $drItems = json_decode($this->input->post('drItems'),true);
-            $this->adminmodel->updatepurchase($receipt,$pID);
+            $this->adminmodel->updatedelivery($receipt,$dID);
+            $this->adminmodel->updateStatus($diStatus,$diID,$dID);
             $this->adminmodel->updateDelReceipt($drItems,$current);
-            $this->adminmodel->updateStatus($piStatus,$piID,$pID);
-            $this->adminmodel->add_actlog($account_id, $current, "$user updated a delivery receipt.", "add", NULL);
+            $this->adminmodel->add_actlog($account_id, $current, "$user updated a delivery receipt.", "update", NULL);
 
         }else{
             redirect("login");
         }
 
     }
-    function editMenuStock(){
+   function editMenuStock(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $prID = $this->input->post('prID');
             $stID = $this->input->post('stID');
+            $ostID = $this->input->post('ostID');
             $qty = $this->input->post('qty');
             $account_id = $this->session->userdata('user_id');
             $date_recorded = date("Y-m-d H:i:s");
-            $this->adminmodel->edit_menuStock($prID, $stID, $qty);
+            $this->adminmodel->edit_menuStock($prID, $stID, $qty, $ostID);
            $this->adminmodel->add_actlog($account_id,$date_recorded, "Admin updated a prefstock.", "update", "");
         }else{
             redirect("login");

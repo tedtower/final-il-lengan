@@ -40,7 +40,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" class="form-control" name="date" required>
+                                                <input type="date" class="form-control" name="date" id="purchaseDate" required>
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -261,6 +261,15 @@
                         console.log(response.responseText);
                     }
                 });
+            });
+
+            $('#conForm').submit(function(event){
+             var purchaseDate = $("#purchaseDate").val();
+             var currentDate= new Date();
+                if(Date.parse(currentDate) < Date.parse(spDate)){
+                    alert('Please check the date entered!');
+                    return false;
+                }
             });
         });
     </script>

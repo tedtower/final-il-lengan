@@ -163,7 +163,7 @@ $route['admin/menu/spoilage/delete/(:num)'] ="admindelete/deletemenuspoilages/$1
 $route['admin/addons/spoilage/delete/(:num)'] ="admindelete/deleteaddonsspoilages/$1";
 $route['admin/accounts/delete'] ="admindelete/deleteAccount";
 $route['admin/transaction/delete'] = "admindelete/deleteTransaction";
-
+$route['admin/menustock/delete'] = "admindelete/deleteMenuStock";
 //End Admin Delete Routes ---------------------------------------
 
 //Admin Json Routes ------------------------------------------- 
@@ -244,9 +244,12 @@ $route['barista/editTableNumber'] = "barista/editTableNumber";
 $route['barista/getConsumption'] = "barista/getConsumptionItems";
 $route['barista/getSupplierMerchandise'] = "barista/getSuppMerchForBrochure";
 $route['barista/getPosFromSupplier'] = "barista/getPOItemsBySupplier";
+//$route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
+
+
 //-----------------------------------------------------------------------------
 $route['barista/inventory/deliveryreceipt'] = "barista/viewDeliveryReceipt";
-$route['barista/inventory/deliveryreceipt/formadd'] = "barista/viewDRFormAdd";
+//$route['barista/inventory/deliveryreceipt/formadd'] = "barista/addDeliveryReceipt";
 $route['barista/inventory/officialreceipt'] = "barista/viewOfficialReceipt";
 $route['barista/inventory/officialreceipt/formadd'] = "barista/viewORFormAdd";
 $route['barista/menu/spoilages'] = "barista/viewSpoilagesMenu";
@@ -264,6 +267,9 @@ $route['barista/addons/spoilage/edit'] = "barista/editAoSpoil";
 $route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
+$route['barista/getpurchases']="barista/getpurchases";
+
+
 //-----------------------------------------
 $route['barista/consumption'] = "barista/viewConsumptions";
 $route['barista/jsonConsumptions'] = "barista/jsonConsumptions";

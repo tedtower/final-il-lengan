@@ -21,7 +21,6 @@
                                     <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
                                 </div>
 								<br><br>
-								<div id="pagination"></div>
                                 <!--Table Body-->
 								<table id="menuTable" class="spoiltable table table-bordered dt-responsive nowrap" cellpadding="0" width="100%">
 									<thead class="thead-dark">
@@ -35,6 +34,7 @@
 									<tbody>
 									</tbody>
 								</table>
+								 <div id="pagination" style="float:right"></div>
 								<!--End Table Content-->
 								<!--Delete Confirmation Box-->
 								<div class="modal fade" id="deleteSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

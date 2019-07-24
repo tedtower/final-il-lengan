@@ -103,22 +103,22 @@
     var delrec = <?= json_encode($dr) ?>;
     var drItem = <?= json_encode($drItem) ?>;
     var id = parseInt(<?php echo $id ?>);
-
+    console.log(id);
     $(function() {
-        drs = delrec.filter(dr => dr.pID == id);
-        drItems = drItem.filter(dri => dri.pID == id);
+        drs = delrec.filter(dr => dr.dID == id);
+        drItems = drItem.filter(dri => dri.dID == id);
         $("input[name='supplier']").val(drs[0].spName);
         $('input[name="receipt"]').val(drs[0].receipt);
         $('input[name="source"]').val(drs[0].spAltName);
         $('textarea[name="remarks"]').val(drItems[0].tiRemarks);
-        $('input[name="date"]').val(drs[0].pdate);
+        $('input[name="date"]').val(drs[0].ddate);
         $('.total').text(drs[0].pTotal);
-
+        
         drItems.forEach(function(dri) {
             $("#drForm .ic-level-3").append(`
-                <tr class="ic-level-1" data-dr="${dri.pID}" data-dri="${dri.piID}" data-trans="${dri.tiID} data">
+                <tr class="ic-level-1" data-dr="${dri.dID}" data-dri="${dri.diID}" data-trans="${dri.tiID} data"> 
                     <td style="padding:1% !important"><input type="text"
-                            class="form-control form-control-sm" data-id="${dri.spmID}" data-actual="${dri.actual}" data-stid="${dri.stID}" value="${dri.merch ? (null) : dri.spmName}" name="spm" readonly></td>
+                            class="form-control form-control-sm" data-id="${dri.spmID}" data-actual="${dri.actual}" data-stid="${dri.stID}" value="${dri.merch == null ?  dri.spmName: dri.merch}" name="spm" readonly></td>
                     <td style="padding:1% !important"><input type="number"
                             class="form-control form-control-sm" value='${dri.qty}' name="qty" required  min="0"></td>
                     <td style="padding:1% !important"><input type="number"
@@ -141,10 +141,10 @@
                     <input type="hidden" name="tiActualCur" hidden="hidden" value='${dri.actual}' >
                     <input type="hidden" name="stQty" hidden="hidden" value='${dri.stQty}' >
                     <input type="hidden" name="spmActual" hidden="hidden" value='${dri.spmActual}' >
-                    <input type="hidden" name="piID" hidden="hidden" value='${dri.piID}' >
+                    <input type="hidden" name="diID" hidden="hidden" value='${dri.diID}' >
                     <input type="hidden" name="stID" hidden="hidden" value='${dri.stID}' >
                 </tr>`);
-        $("select[name='status']").find(`option[value=${dri.piStatus}]`).attr("selected", "selected");
+        $("select[name='status']").find(`option[value=${dri.diStatus}]`).attr("selected", "selected");
         });
 
         $(document).on("change","input[name='qty']", function(drs) {
@@ -168,16 +168,16 @@
 
         $("#drForm").on("submit", function(event){
          event.preventDefault();
-         var pID = id;
-         var piIDnum;
+         var dID = id;
+         var diIDnum;
          var status;
          var url = $(this).attr("action");
          drItems = [];
          var drTotal = 0;
          var receipt;
-
+            console.log(dID);
          $(this).find(".ic-level-1").each(function(index){
-             piIDnum=  $(this).find("input[name='piID']").val();
+             diIDnum=  $(this).find("input[name='diID']").val();
              var date = $("#drForm").find("input[name='date']").val();
              receipt = $("#drForm").find("input[name='receipt']").val();
              var remarks = $("#drForm").find("textarea[name='remarks']").val();
@@ -200,8 +200,8 @@
 
              drItems.push({
                  tiID: isNaN(parseInt($(this).attr('data-trans'))) ? (null) : parseInt($(this).attr('data-trans')),
-                 piID: isNaN(parseInt($(this).attr('data-dri'))) ? (null) : parseInt($(this).attr('data-dri')),
-                 pID: isNaN(parseInt($(this).attr('data-dr'))) ? (null) : parseInt($(this).attr('data-dr')),
+                 diID: isNaN(parseInt($(this).attr('data-dri'))) ? (null) : parseInt($(this).attr('data-dri')),
+                 dID: isNaN(parseInt($(this).attr('data-dr'))) ? (null) : parseInt($(this).attr('data-dr')),
                  tiQty: updateQty,
                  date: date,
                  tiActual: updateActual,
@@ -227,7 +227,7 @@
             console.log("remarks" +remarks);
             console.log("receipt" +receipt);
             console.log("tiActualCur"+tiActualCur);
-            console.log("piIDnum"+piIDnum);
+            console.log("diIDnum"+diIDnum);
             console.log("stQty"+stQty);
             console.log("stID"+stID);
 
@@ -237,10 +237,10 @@
              method: "POST",
              url: url,
              data: {
-                 pID:pID,
-                 piID: piIDnum,
+                 dID:dID,
+                 diID: diIDnum,
                  receipt:receipt,
-                 piStatus: status,
+                 diStatus: status,
                  drItems: JSON.stringify(drItems)
              },
              

@@ -148,5 +148,14 @@ class Admindelete extends CI_Controller{
         $id = $this->input->post('tID');
         $this->adminmodel->delete_transaction($id);
     }
+    function deleteMenuStock(){
+        $prid = $this->input->post('prID');
+        $stid = $this->input->post('ostID');
+        $date =date("Y-m-d H:i:s");
+        $acid = $this->session->userdata('user_id');
+        $remarks = $this->input->post('remarks');
+
+        $this->adminmodel->delete_menustock($prid, $stid, $date, $acid, $remarks);
+    }
 }
 ?>

@@ -152,7 +152,7 @@
                             <!--Action Buttons-->
                             <div class="onoffswitch">
                                 <!--Edit button-->
-                                <a role="button" class="updateBtn btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/')?>${dr.dr.pID}">Edit</a>
+                                <a role="button" class="updateBtn btn btn-secondary btn-sm" href="<?= site_url('admin/deliveryreceipt/formedit/')?>${dr.dr.dID}">Edit</a>
                                 <!--Delete button-->                
                             </div>
                     </td>
@@ -188,7 +188,7 @@
                                     <td>${isNaN((dri.tiSubtotal)) ? "N/A" : 
                                     (dri.tiSubtotal)}</td>
                                     <td>${dri.diStatus} <small style="color:green;text-decoration: none">
-                                    ${(dri.piStatus == null || dri.piStatus == 'partially delivery') ? ' ': '(resolved)' }</small></td>
+                                    ${(dri.piStatus == 'delivered') ? '(resolved)': '' }</small></td>
                                     </tr>
                                     `;
                                 }).join('')}
