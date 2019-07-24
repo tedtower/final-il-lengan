@@ -12,13 +12,23 @@
                         </p>
                         <button class="btn btn-primary btn-sm m-0" data-toggle="modal" data-target="#addReport"><i class="fas fa-filter"></i> Filter</button>
                     </div>
+                    <!--Card--> 
                     <div class="card" style="background:whitesmoke">
                         <div class="card-body">
                         <div style="width:100%;overflow:auto;">
                             <div style="overflow:auto;">
                             <span style="float:left;width:40%;"><b>Stock Item:</b> <?= $stock['stName'] . " " . $stock['stSize']?></span>
-                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> <?= $logs[0]['logDate']?></span>
-                                <span style="float:left;width:20%"><b>Beginning Qty:</b> <?= $logs[0]['actual'] . " " . $stock['uomAbbreviation']?></span>
+                                <span style="float:left;width:40%"><b>Beginning Inventory Date:</b> 
+                                <?php foreach($log as $lg){
+                                    if($lg['type'] == 'beginning'){
+                                        echo $lg['logDate'];
+                                    }}?></span>
+                                <span style="float:left;width:20%">
+                                <b>Beginning Qty:</b> 
+                                <?php foreach($log as $lg){
+                                    if($lg['type'] == 'beginning'){
+                                        echo $lg['actual'] ;
+                                    }}?> <?= $stock['uomAbbreviation']?></span>
                             </div>
                             
                             <div style="overflow:auto;">
@@ -35,7 +45,7 @@
                             <tr>
                                 <th style="width:2%"></th>
                                 <th><b class="pull-left">Transaction</b></th>
-                                <th><b class="pull-left">Receipt No.</b></th>
+                                <th><b class="pull-left">Transaction No.</b></th>
                                 <th><b class="pull-left">Date</b></th>
                                 <th><b class="pull-left">Log Quantity</b></th>
                                 <th><b class="pull-left">Remaining Qty</b></th>
@@ -47,15 +57,27 @@
                             foreach($logs as $log){
                                 switch($log['type']){
                                     case 'restock':
+                                    if($log['receipt'] == NULL){
                                         echo '<tr>
                                                 <td><img src="/assets/media/admin/plus.png" style="height:18px;width:18px"/></td>
                                                 <td>Restock</td>
-                                                <td>'.$log['tID'].'</td>
+                                                <td>'.$log['tiID'].'</td>
                                                 <td>'. $log['logDate'].'</td>
                                                 <td>'. $log['actual'].'</td>
                                                 <td>'. $log['remain'].'</td>
                                             </tr>';
-                                        break;
+                                    }else{
+                                        echo '<tr>
+                                        <td><img src="/assets/media/admin/plus.png" style="height:18px;width:18px"/></td>
+                                        <td>Restock</td>
+                                        <td>Receipt: '.$log['receipt'].'</td>
+                                        <td>'. $log['logDate'].'</td>
+                                        <td>'. $log['actual'].'</td>
+                                        <td>'. $log['remain'].'</td>
+                                    </tr>';
+                                    }
+
+                                    break;
                                     case 'beginning':
                                         echo '<tr style="background:#fcfcfc">
                                                 <td><img src="/assets/media/admin/check.png" style="height:18px;width:18px;"/></td>
@@ -136,3 +158,9 @@
 <!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 <script src="assets/js/admin/demo.js"></script>
 </body>
+
+
+                                <!--Search-->
+                                <div id="addonTableSearch" style="width:25%; float:right; border-radius:5px">
+                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
+                                </div

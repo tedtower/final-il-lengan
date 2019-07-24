@@ -331,7 +331,7 @@
                         var menuitems = data.menu;
                         var pref = data.preferences;
                         var adds = data.addons;
-                        addons = data.addons;
+                        addons = data.adds;
                         var categories = data.categories;
                         showTable(menuitems, pref, adds, categories);
                         menuedit = data;
@@ -738,20 +738,20 @@
             });
 
         });
-        // function deleteItem(element) {
-        //     var el = $(element).closest("tr");
-        //     $(el).attr("data-delete", "0");
-        //     $(el).addClass("deleted");
+        function deleteItem(element) {
+            var el = $(element).closest("tr");
+            $(el).attr("data-delete", "0");
+            $(el).addClass("deleted");
 
-        //     $(".deleted").find("input").attr("disabled", "disabled");
-        //     $(".deleted").find("input").removeAttr("class");
-        //     $(".deleted").find("input").addClass("form-control form-control-sm");
+            $(".deleted").find("input").attr("disabled", "disabled");
+            $(".deleted").find("input").removeAttr("class");
+            $(".deleted").find("input").addClass("form-control form-control-sm");
 
-        //     var deleted = $(".deleted");
-        //     for(var i = 0; i <= deleted.length - 1; i++) {
-        //         deleted[i].style.textDecoration = "line-through";
-        //         deleted[i].style.opacity = "0.6";
-        //     }
-        // }
+            var deleted = $(".deleted");
+            for(var i = 0; i <= deleted.length - 1; i++) {
+                deleted[i].style.textDecoration = "line-through";
+                deleted[i].style.opacity = "0.6";
+            }
+        }
     </script>
 </body>

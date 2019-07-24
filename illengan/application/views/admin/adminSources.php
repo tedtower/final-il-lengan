@@ -447,8 +447,8 @@
     <tr class="supplierTable ic-level-1" data-id="${source.spID}">
         <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${source.spName}</td>
         <td>${source.spContactNum}</td>
-        <td>${source.spEmail == null ? source.spEmail = "N/A" : source.spEmail}</td>
-        <td>${source.spAddress == null ? source.spAddress = "N/A" : source.spAddress}</td>
+        <td>${source.spEmail == null || source.spEmail == '' ? source.spEmail = "N/A" : source.spEmail}</td>
+        <td>${source.spAddress == null || source.spAddress == '' ? source.spAddress = "N/A" : source.spAddress}</td>
         <td>${source.spStatus}</td>
         <td>
             <button class="editBtn btn btn-secondary btn-sm" data-toggle="modal"
