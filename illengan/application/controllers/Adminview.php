@@ -807,7 +807,7 @@ function loadDataMenuSpoil($record=0) {
 function viewMenuSpoilageFormAdd(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Menu";
-        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/head2', $data);
         $this->load->view('admin/templates/sideNav');
         $data['menu'] = $this->adminmodel->get_menuPrefSpoilage();
         $data['slip'] = $this->adminmodel->getSlipNum();
