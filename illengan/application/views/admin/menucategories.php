@@ -127,7 +127,7 @@
                                                                 <span class="input-group-text" id="inputGroup-sizing-sm" style="width:130px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                     Category Name</span>
                                                             </div>
-                                                            <input class="form-control" name="ctName" type="textarea" value="" id="example-number-input" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Name should only countain letters">
+                                                            <input class="form-control" name="new_name" type="textarea" value="" id="new_name" required="" pattern="[a-zA-Z][a-zA-Z\s]*" title="Name should only countain letters">
                                                         </div>
                                                         <div class="input-group mb-3">
                                                             <div class="input-group-prepend">
@@ -237,15 +237,15 @@
                 window.location = "<?php echo base_url();?>/admin/menucategories/delete/" + id;
             });
         });
-         
-     }     
-       var tuples = ((document.getElementById('categTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
+        var tuples = ((document.getElementById('categTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
         var tupleNo = tuples.length;
         var editButtons = document.getElementsByName('editCategory');
         var editModal = document.getElementById('editCategory');
         for (var x = 0; x < tupleNo; x++) {
             editButtons[x].addEventListener("click", showEditModal);
         }
+     }     
+
        
          function showEditModal(event) {
             var row = event.target.parentElement.parentElement;
