@@ -8,8 +8,6 @@
                     <div style="overflow:auto">
                         <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
                             <?php echo date("M j, Y -l"); ?> </p>
-                        <a  class="btn btn-primary btn-sm" href="<?= site_url('admin/menu/spoilages')?>" data-original-title style="margin:0;width:20%"
-                                            id="addBtn">View Spoiled Menu</a>
                     </div>
                     <!--Card Container-->
                     <div style="overflow:auto">
@@ -122,12 +120,12 @@
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-stock="${id}">
                         <td style="padding:1% !important"><input type="text"
-                                class="form-control" data-id="${id}" data-stID="${stID}" value="${name}" name="stock" readonly required></td>
+                                class="form-control form-control-sm" data-id="${id}" data-stID="${stID}" value="${name}" name="stock" readonly required></td>
                         <td style="padding:1% !important"><input type="number" value="1" min="1"
-                                class="form-control" name="qty" required/></td>
+                                class="form-control form-control-sm" name="qty" required/></td>
                         <td style="padding:1% !important">
-                            <input list="orderslips" type="number" class="form-control" name="slipNum" >
-                            <datalist id="orderslips">
+                            <input list="orderslips" type="number" class="form-control form-control-sm" name="slipNum" >
+                            <datalist id="orderslips" >
                                 <option value="">None</option>
                                 <?php foreach($slip as $s){ 
                             echo '<option value="'.$s['osID'].'">'.$s['osID'].'</option>';
@@ -135,7 +133,7 @@
                             </datalist>
                         </td>
                         <td style="padding:1% !important"><textarea type="text"
-                                class="form-control" name="cRemarks" rows="1"></textarea>
+                                class="form-control form-control-sm" name="cRemarks" rows="1"></textarea>
                         </td>
                     </tr>`);
             }else{
@@ -181,10 +179,13 @@
                     menus: JSON.stringify(menus)
                 },
                 dataType: "JSON",
-                complete: function(data){
-                     location.reload();
-                     alert('Added');
+                beforeSend: function() {
+                        console.log(menus);
                 },
+                // complete: function(data){
+                //      location.reload();
+                //      alert('Added');
+                // },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);

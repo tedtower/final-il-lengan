@@ -276,7 +276,7 @@ function viewDRFormAdd(){
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['returns'] = $this->adminmodel->get_retItems();
-        $data['retTrans'] = $this->adminmodel->get_returns();
+        $data['retTrans'] = $this->adminmodel->get_unresolveReturns();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
@@ -346,6 +346,7 @@ function viewStockCardHistory($stID){
         $head['title'] = "Admin - Stock Card History";
         $this->load->view('admin/templates/head', $head);
         $this->load->view('admin/templates/sideNav');
+        $data['log'] = $this->adminmodel->get_stockCard($stID);
         $data['logs'] = $this->adminmodel->get_stockCardAll($stID);
         $data['stock'] = $this->adminmodel->get_stockItem($stID)[0];
         $this->load->view('admin/stockcardHistory', $data);
@@ -715,7 +716,7 @@ if($this->checkIfLoggedIn()){
 function viewSpoilagesStockAdd(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Stock";
-        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/head2', $data);
         $this->load->view('admin/templates/sideNav');
         $data['stocks'] = $this->adminmodel->get_stocks();
         $this->load->view('admin/adminspoilagesstockAdd', $data);
@@ -806,7 +807,7 @@ function loadDataMenuSpoil($record=0) {
 function viewMenuSpoilageFormAdd(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Menu";
-        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/head2', $data);
         $this->load->view('admin/templates/sideNav');
         $data['menu'] = $this->adminmodel->get_menuPrefSpoilage();
         $data['slip'] = $this->adminmodel->getSlipNum();
@@ -921,7 +922,7 @@ function getStockItem(){
                 'sources' => $this->adminmodel->get_supplier(),
                 'merchandises' => $this->adminmodel->get_suppliermerch(),
                 'stocks' => $this->adminmodel->get_stocks(),
-                'uom' => $this->adminmodel->get_uom()
+                'uom' => $this->adminmodel->get_uomForStoring()
             );
             $this->load->view('admin/adminSources', $data);
             // $this->load->view('admin/templates/scripts');
@@ -947,7 +948,7 @@ function getStockItem(){
             $data['title'] = "Menu";
             $this->load->view('admin/templates/head',$data);
             $this->load->view('admin/templates/sideNav');
-            $data['addons'] = $this->adminmodel->get_addons();
+            $data['addon'] = $this->adminmodel->get_addons();
             $data['category'] = $this->adminmodel->get_menucategories();
             // $data['menuitem'] = array(
             //     'menus' => $this->adminmodel->get_menu(),
@@ -964,8 +965,8 @@ function getStockItem(){
             $head['title'] = "Menu - Stock";
             $this->load->view('admin/templates/head',$head);
             $this->load->view('admin/templates/sideNav');
-           // $data['menuStock'] = $this->adminmodel->get_prefStocks();
-            $this->load->view('admin/menu-stock');
+            $data['stocks'] = $this->adminmodel->get_stockItemNames();
+            $this->load->view('admin/menu-stock', $data);
         }else{
             redirect('login');
         }
@@ -1006,7 +1007,7 @@ function getStockItem(){
                $data['stocks'] = $this->adminmodel->get_stockItemNames();
         //     ));
         $head['title'] = "Menu - Stock";
-        $this->load->view('admin/templates/head',$head);
+        $this->load->view('admin/templates/head2',$head);
         $this->load->view('admin/templates/sideNav');
         $this->load->view('admin/menu-stockAdd', $data);
         }else{
@@ -1057,6 +1058,7 @@ function getStockItem(){
         $data['pagination'] = $this->pagination->create_links();
         $data['preferences'] = $this->adminmodel->get_preferences();
         $data['addons'] = $this->adminmodel->get_addons2();
+        $data['adds'] = $this->adminmodel->get_addons();
         $data['categories'] = $this->adminmodel->get_menucategories();
         $data['menu'] = $menuRecord;
         echo json_encode($data);	

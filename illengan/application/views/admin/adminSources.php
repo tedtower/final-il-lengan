@@ -334,10 +334,7 @@
                         console.log(name, contactNum, email, address, status, supplierMerchandise);
                     },
                     success: function(data) {
-                        console.log(data);
-                        // inventory = data;
-                        // lastIndex = 0;
-                        // setTableData();
+                        location.reload();
                     },
                     error: function(response, setting, error) {
                         console.log(response.responseText);
@@ -371,7 +368,7 @@
                         del: isNaN(parseInt(row.attr('data-delete'))) ? (null) : parseInt(row.attr('data-delete'))
                     });
                 }
-
+                
                 console.log(id, name, contactNum, email, address, status, supplierMerchandise);
                 $.ajax({
                     url: "<?= site_url("admin/supplier/edit") ?>",
@@ -389,11 +386,8 @@
                     beforeSend: function() {
                         console.log(name, contactNum, email, address, status, supplierMerchandise);
                     },
-                    success: function(data) {
-                        console.log(data);
-                        // inventory = data;
-                        // lastIndex = 0;
-                        // setTableData();
+                    success: function() {
+                        location.reload();
                     },
                     error: function(response, setting, error) {
                         console.log(error);
@@ -453,8 +447,8 @@
     <tr class="supplierTable ic-level-1" data-id="${source.spID}">
         <td><a href="javascript:void(0)" class="ml-2 mr-4"><img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${source.spName}</td>
         <td>${source.spContactNum}</td>
-        <td>${source.spEmail == null ? source.spEmail = "N/A" : source.spEmail}</td>
-        <td>${source.spAddress == null ? source.spAddress = "N/A" : source.spAddress}</td>
+        <td>${source.spEmail == null || source.spEmail == '' ? source.spEmail = "N/A" : source.spEmail}</td>
+        <td>${source.spAddress == null || source.spAddress == '' ? source.spAddress = "N/A" : source.spAddress}</td>
         <td>${source.spStatus}</td>
         <td>
             <button class="editBtn btn btn-secondary btn-sm" data-toggle="modal"
@@ -528,7 +522,7 @@
                     }).join('')}
                 </select>
             </td>
-            <td><input type="number" name="merchActualQty[]" value="${merchandise.spmActualQty}" class="form-control form-control-sm" require></td>
+            <td><input type="number" name="merchActualQty[]" value="${merchandise.spmActual}" class="form-control form-control-sm" require></td>
             <td><input type="number" name="merchPrice[]" value="${merchandise.spmPrice}" class="form-control form-control-sm" require></td>
             <td>
             <select class="form-control" name="variance[]" require>

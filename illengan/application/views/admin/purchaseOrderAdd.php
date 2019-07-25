@@ -40,7 +40,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" style="width:70px">Date</span>
                                                 </div>
-                                                <input type="date" class="form-control" name="date" required>
+                                                <input type="date" class="form-control" name="date" id="purchaseDate" required>
                                             </div>
                                         </div>
                                         <!--Remarks-->
@@ -136,7 +136,7 @@
 
         $(function() {
             $(document).on("change", "select[name='suppliers']", function() {
-                // $(".poitems > tbody").empty();
+                $(".poitems > tbody").empty();
                 suppmerch = <?= json_encode($suppmerch) ?>;
                 var spID = $(this).val();
                 suppmerch = suppmerch.filter(merch => merch.spID === spID);
@@ -241,8 +241,6 @@
                     alert('No checkbox is checked');
                     return false;
                 }
-
-
                 $.ajax({
                     method: "POST",
                     url: url,
@@ -255,7 +253,7 @@
                     beforeSend: function() {
                         console.log(supplier, date, poitems);
                     },
-                    succes: function() {
+                    success: function() {
                         location.reload();
                     },
                     error: function(response, setting, error) {
@@ -263,6 +261,15 @@
                         console.log(response.responseText);
                     }
                 });
+            });
+
+            $('#conForm').submit(function(event){
+             var purchaseDate = $("#purchaseDate").val();
+             var currentDate= new Date();
+                if(Date.parse(currentDate) < Date.parse(spDate)){
+                    alert('Please check the date entered!');
+                    return false;
+                }
             });
         });
     </script>

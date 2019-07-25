@@ -59,8 +59,8 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        style="float:right">Cancel</button>
+                                        <a href="<?= site_url('admin/inventory') ?>" class="btn btn-danger btn-sm" style="float:right" role="button">Cancel</a>
+
                                 </div>
                             </form>
                         </div>
@@ -122,7 +122,7 @@
                 beforeSend: function() {
                     console.log(date, items);
                 },
-                succes: function(){
+                success: function(){
                     location.reload();
                 },
                 error: function(response, setting, error) {
