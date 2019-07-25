@@ -287,6 +287,39 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $result =  $this->db->query($query)->result_array();
             return $result[0]['allcount'];
         }
+        // function get_stocks(){
+        //     $query = "SELECT
+        //     stockitems.stID,
+        //     CONCAT(
+        //         stName,
+        //         IF(
+        //             stSize IS NULL,
+        //             '',
+        //             CONCAT(' ', stSize)
+        //         )
+        //     ) AS stName,
+        //     stMin,
+        //     stQty,
+        //     uomID,
+        //     uomAbbreviation,
+        //     uomStore,
+        //     stBqty,
+        //     UPPER(stStatus) AS stStatus,
+        //     stType,
+        //     UPPER(stLocation) AS stLocation,
+        //     ctName,
+        //     ctID
+        // FROM
+        //     (
+        //         stockitems
+        //     LEFT JOIN uom USING(uomID)
+        //     )
+        // LEFT JOIN categories USING(ctID)
+        // GROUP BY
+        //     stID order by ctName, stName asc";
+        //     return $this->db->query($query)->result_array();
+        // }
+
         function get_stocks(){
             $query = "SELECT
             stockitems.stID,
@@ -413,27 +446,44 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 return $this->db->query($query, array($aID, $alDate, $alDesc, $defaultType, $additionalRemarks));
         } 
         
+        // function get_deliveryReceipts(){
+        //     $query = "SELECT
+        //             tID AS id,
+        //             tNum AS num,
+        //             receiptNo AS receipt,
+        //             IF(
+        //                 spID IS NULL,
+        //                 supplierName,
+        //                 spName
+        //             ) AS supplier,
+        //             tType AS type,
+        //             tTotal AS total,
+        //             tRemarks AS remarks,
+        //             tDate AS date,
+        //             dateRecorded AS daterecorded
+        //         FROM
+        //             transactions
+        //         LEFT JOIN supplier USING(spID)
+        //         WHERE
+        //             isArchived = '0' and tType = 'delivery receipt'
+        //     ORDER BY tID desc";
+        //     return $this->db->query($query)->result_array();
+        // }
         function get_deliveryReceipts(){
-            $query = "SELECT
-                    tID AS id,
-                    tNum AS num,
-                    receiptNo AS receipt,
-                    IF(
-                        spID IS NULL,
-                        supplierName,
-                        spName
-                    ) AS supplier,
-                    tType AS type,
-                    tTotal AS total,
-                    tRemarks AS remarks,
-                    tDate AS date,
-                    dateRecorded AS daterecorded
-                FROM
-                    transactions
-                LEFT JOIN supplier USING(spID)
-                WHERE
-                    isArchived = '0' and tType = 'delivery receipt'
-            ORDER BY tID desc";
+            $query = "SELECT dID, spName, dDate AS ddate, DATE_FORMAT(dDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, spAltName 
+            FROM deliveries LEFT JOIN supplier USING (spID) INNER JOIN (SELECT SUM(tiSubtotal) as pTotal, dID 
+            from transitems INNER JOIN delivery_items USING (diID) LEFT JOIN deliveries USING (dID) GROUP BY dID) 
+            as total USING (dID)";
+            return $this->db->query($query)->result_array();
+        }
+
+        function get_deliveryItems(){
+            $query = "SELECT spmID,tiID, d.dID, di.diID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, 
+            CONCAT(spmName,' ',stSize) as merch, stSize, spmName, spmPrice, spmActual, tiQty as qty, uomName, tiActual as actual, 
+            tiType, tiSubtotal, diStatus, piStatus FROM delivery_items di LEFT JOIN transitems ti USING (diID) LEFT JOIN deliveries d USING (dID) 
+            LEFT JOIN purchase_items USING (piID) LEFT JOIN stockitems st ON (ti.stID = st.stID) LEFT JOIN suppliermerchandise spm 
+            USING (spmID) LEFT JOIN uom ON (spm.uomID = uom.uomID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems ti GROUP BY diID)
+             AS maxNew USING (tiID) WHERE tiType = 'restock'";
             return $this->db->query($query)->result_array();
         }
 
@@ -463,6 +513,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
 
+        // function get_uomForStoring(){
+        //     $query = "SELECT
+        //         uomID,
+        //         uomName,
+        //         uomAbbreviation
+        //     FROM
+        //         uom
+        //     WHERE
+        //         uomStore IS NOT NULL;";
+        //     return $this->db->query($query)->result_array();
+        // }
+
         function get_uomForStoring(){
             $query = "SELECT
                 uomID,
@@ -471,13 +533,27 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             FROM
                 uom
             WHERE
-                uomStore IS NOT NULL;";
+                uomStore IS NOT NULL order by uomAbbreviation asc;";
             return $this->db->query($query)->result_array();
         }
+
+        // function get_stockitems() {
+        //     $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+        //     return $this->db->query($query)->result_array();
+        // }
+
         function get_stockitems() {
-            $query = "SELECT * FROM stockitems LEFT JOIN uom USING (uomID) LEFT JOIN suppliermerchandise USING (stID) ORDER BY 2;";
+            $query = "SELECT * FROM suppliermerchandise INNER JOIN supplier USING (spID) INNER JOIN stockitems USING (stID) LEFT JOIN uom ON stockitems.uomID = uom.uomID order by 2";
             return $this->db->query($query)->result_array();
         }
+
+        function add_purchase($spID, $receiptNo, $pType, $dDate, $dDateRecorded, $spAltName, $items, $addtype, $accountID){
+            $query = "INSERT INTO `deliveries` (spID, receiptNo, dDate, dDateRecorded, spAltName ) VALUES(?,?,?,?,?);";
+            if($this->db->query($query, array($spID, $receiptNo, $dDate, $dDateRecorded, $spAltName))) {
+                $this->add_dItem($this->db->insert_id(), $items, $addtype, $dDateRecorded, $accountID);
+            }
+        }
+
         function get_supplier(){
             $query = "Select * from supplier order by spName";
             return $this->db->query($query)->result_array();
@@ -586,6 +662,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 tType = 'official receipt'";
             return $this->db->query($query)->result_array();
         }
+
+        function get_purchases(){
+            $query="SELECT * FROM `purchases` INNER JOIN pur_items USING (`pID`) INNER JOIN purchase_items USING (`piID`) 
+            INNER JOIN transitems USING (piID) INNER JOIN supplier USING (spID) WHERE purchase_items.piStatus != 'delivered' 
+            GROUP BY pID";
+            return $this->db->query($query)->result_array();
+        }
+
+
+        function get_purchItems($pID){
+            $query="SELECT ti.stID, pu.piID, ti.spmID, spmActual, spmPrice, tiQty, spmName FROM transitems ti 
+            LEFT JOIN purchase_items pu USING (piID) LEFT JOIN pur_items pri USING (piID) LEFT JOIN purchases pur USING 
+            (pID) INNER JOIN supplier USING (spID) LEFT JOIN suppliermerchandise sm ON (ti.spmID = sm.spmID) 
+            WHERE piStatus != 'delivered' AND tiType = 'purchase order' AND pur.piD = ?";
+            return $this->db->query($query,array($pID))->result_array();
+        }
+
         function get_stockItemNames(){
             $query = "SELECT
                 stID,

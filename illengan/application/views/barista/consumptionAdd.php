@@ -200,7 +200,7 @@
     $('#conForm').submit(function(event){
             var spDate = $("#tDate").val();
             var currentDate= new Date();
-            if(Date.parse(currentDate) <= Date.parse(spDate)){
+            if(Date.parse(currentDate) < Date.parse(spDate)){
                 alert('Please check the date entered!');
                 return false;
         }

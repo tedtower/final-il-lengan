@@ -604,7 +604,7 @@ class Barista extends CI_Controller{
             $this->load->view('barista/templates/head');
             $this->load->view('barista/templates/navigation');
             $data['drs'] = $this->baristamodel->get_deliveryReceipts();
-            $data['drItems'] = $this->baristamodel->get_deliveryReceiptItems();
+            $data['drItems'] = $this->baristamodel->get_deliveryItems();
             $this->load->view('barista/deliveryReceipt', $data);
         }else{
             redirect('login');
@@ -641,8 +641,8 @@ class Barista extends CI_Controller{
 
     function viewOfficialReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-            $this->load->view('barista/templates/head');
-            $this->load->view('barista/templates/navigation');
+            //$this->load->view('barista/templates/head');
+            //$this->load->view('barista/templates/navigation');
             $data['ors'] = $this->baristamodel->get_officialReceipts();
             $data['orItems'] = $this->baristamodel->get_officialReceiptItems();
             $this->load->view('barista/officialReceipt', $data);
@@ -669,10 +669,22 @@ class Barista extends CI_Controller{
             ));
         }
     }
+    // function getUOMs(){
+    //     if($this->checkIfLoggedIn()){
+    //         echo json_encode(array(
+    //             'uom' => $this->baristamodel->get_uomForStoring()
+    //         ));
+    //     }else{
+    //         echo json_encode(array(
+    //             "sessErr" => true
+    //         ));
+    //     }
+    // }
     function getUOMs(){
         if($this->checkIfLoggedIn()){
             echo json_encode(array(
-                'uom' => $this->baristamodel->get_uomForStoring()
+                'uom' => $this->baristamodel->get_uomForStoring(),
+                'stocks' => $this->baristamodel->get_stocks()
             ));
         }else{
             echo json_encode(array(
@@ -680,6 +692,29 @@ class Barista extends CI_Controller{
             ));
         }
     }
+
+    function getpurchases(){
+        $data =$this->baristamodel->get_purchases();
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    function viewPurchItems(){
+        $pID = $this->input->post('pID');
+        // $pID = $this->input->post('pID');
+        $data =$this->baristamodel->get_purchItems($pID);
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    function viewStockitems(){
+        $data =$this->baristamodel->get_stockitems();
+        header('Content-Type: application/json');
+        echo json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+
+
     function getPOItemsBySupplier(){
         if($this->checkIfLoggedIn()){
             $id = $this->input->post('id');
@@ -702,92 +737,121 @@ class Barista extends CI_Controller{
         }
     }
 
+    // function addDeliveryReceipt(){
+    //     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+    //         $total = 0;
+    //         $dateTime = date("Y-m-d H:i:s");
+    //         $dateOfTrans = $this->input->post('date');
+    //         $drItems = json_decode($this->input->post('transitems'),true);
+    //         $dr = array(
+    //             "supplier" => $this->input->post('supplier'),
+    //             "supplierName" => NULL,
+    //             "receipt" => $this->input->post('receipt'),
+    //             "date" => $dateOfTrans,
+    //             "dateRecorded" => $dateTime,
+    //             "type" => "delivery receipt",
+    //             "total" => $this->input->post('total'),
+    //             "remarks" => $this->input->post('remarks')
+    //         );
+    //         $drID = $this->baristamodel->add_receiptTransaction($dr);
+    //         if(count($drItems) > 0){
+    //             foreach($drItems as $drItem){
+    //                 $tiID = isset($drItem['tiID']) ? $drItem['tiID'] : NULL;
+    //                 $qty = $drItem['qty'];
+    //                 $status = "complete";
+    //                 $item = $this->baristamodel->get_poItem($tiID);
+    //                 if(!isset($item[0])){
+    //                     $tiID = NULL;
+    //                 }else if($item[0]['tiQty'] > $drItem['qty']){
+    //                     $status = "partial";
+    //                 }
+    //                 $dr = array(
+    //                     "uom" => $drItem['uomID'],
+    //                     "stock" => $drItem['stID'],
+    //                     "name" => $drItem['name'],
+    //                     "price" => $drItem['price'],
+    //                     "discount" => $drItem['discount'],
+    //                     "delivery" => $status,
+    //                     "payment" => NULL,
+    //                     "return" => NULL,
+    //                     "tiQty" => $drItem['qty'],
+    //                     "perUnit" => $drItem['actualQty'],
+    //                     "actual" => $drItem['qty'] * $drItem['actualQty'],
+    //                     "subtotal" => ($drItem['price'] - $drItem['discount']) * $drItem['qty'],
+    //                     "tiID" => $tiID
+    //                 );
+    //                 if($dr['tiID'] == NULL){
+    //                     $dr['tiID'] = $this->baristamodel->add_receiptTransactionItems($dr);
+    //                     $total += $dr['subtotal'];
+    //                     $this->baristamodel->add_receiptTransactionItemsQty($drID, $dr);
+    //                     $log = array(
+    //                         "stock" => $dr['stock'],
+    //                         "qty" => $dr['actual'],
+    //                         "remain" => $this->baristamodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
+    //                         "actual" => NULL,
+    //                         "discrepancy" => NULL,
+    //                         "dateTime" => $dateOfTrans,
+    //                         "dateRecorded" => $dateTime,
+    //                         "remarks" => "delivery"
+    //                     );
+    //                     $this->baristamodel->add_restockLog($drID, $log);
+    //                     $this->baristamodel->update_stockQty($dr['stock'], $dr['actual']);
+    //                 }else{
+    //                     $this->baristamodel->edit_receiptTransactionItems($dr);
+    //                     $total += $dr['subtotal'];
+    //                     $this->baristamodel->add_receiptTransactionItemsQty($drID, $dr);
+    //                     $log = array(
+    //                         "stock" => $dr['stock'],
+    //                         "qty" => $dr['actual'],
+    //                         "remain" => $this->baristamodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
+    //                         "actual" => NULL,
+    //                         "discrepancy" => NULL,
+    //                         "dateTime" => $dateOfTrans,
+    //                         "dateRecorded" => $dateTime,
+    //                         "remarks" => "delivery"
+    //                     );
+    //                     $this->baristamodel->add_restockLog($drID, $log);
+    //                     $this->baristamodel->update_stockQty($dr['stock'], $dr['actual']);
+    //                 }
+    //             }
+    //             $this->baristamodel->edit_receiptTransactionTotal($drID, $total);
+    //         }
+    //         echo json_encode(array(
+    //             "success" => true
+    //         ));
+    //     }else{
+    //         echo json_encode(array(
+    //             "sessErr" => true
+    //         ));
+    //     }
+    // }
+
     function addDeliveryReceipt(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-            $total = 0;
+            $supplier = $this->input->post("spID");
+            $remarks = $this->input->post("remarks");
+            $receipt = $this->input->post("receipt");
+            $date = $this->input->post("date");
+            $source = $this->input->post("spAltName");
+            $addtype = $this->input->post("addtype");
             $dateTime = date("Y-m-d H:i:s");
-            $dateOfTrans = $this->input->post('date');
-            $drItems = json_decode($this->input->post('transitems'),true);
-            $dr = array(
-                "supplier" => $this->input->post('supplier'),
-                "supplierName" => NULL,
-                "receipt" => $this->input->post('receipt'),
-                "date" => $dateOfTrans,
-                "dateRecorded" => $dateTime,
-                "type" => "delivery receipt",
-                "total" => $this->input->post('total'),
-                "remarks" => $this->input->post('remarks')
-            );
-            $drID = $this->baristamodel->add_receiptTransaction($dr);
-            if(count($drItems) > 0){
-                foreach($drItems as $drItem){
-                    $tiID = isset($drItem['tiID']) ? $drItem['tiID'] : NULL;
-                    $qty = $drItem['qty'];
-                    $status = "complete";
-                    $item = $this->baristamodel->get_poItem($tiID);
-                    if(!isset($item[0])){
-                        $tiID = NULL;
-                    }else if($item[0]['tiQty'] > $drItem['qty']){
-                        $status = "partial";
-                    }
-                    $dr = array(
-                        "uom" => $drItem['uomID'],
-                        "stock" => $drItem['stID'],
-                        "name" => $drItem['name'],
-                        "price" => $drItem['price'],
-                        "discount" => $drItem['discount'],
-                        "delivery" => $status,
-                        "payment" => NULL,
-                        "return" => NULL,
-                        "tiQty" => $drItem['qty'],
-                        "perUnit" => $drItem['actualQty'],
-                        "actual" => $drItem['qty'] * $drItem['actualQty'],
-                        "subtotal" => ($drItem['price'] - $drItem['discount']) * $drItem['qty'],
-                        "tiID" => $tiID
-                    );
-                    if($dr['tiID'] == NULL){
-                        $dr['tiID'] = $this->baristamodel->add_receiptTransactionItems($dr);
-                        $total += $dr['subtotal'];
-                        $this->baristamodel->add_receiptTransactionItemsQty($drID, $dr);
-                        $log = array(
-                            "stock" => $dr['stock'],
-                            "qty" => $dr['actual'],
-                            "remain" => $this->baristamodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
-                            "actual" => NULL,
-                            "discrepancy" => NULL,
-                            "dateTime" => $dateOfTrans,
-                            "dateRecorded" => $dateTime,
-                            "remarks" => "delivery"
-                        );
-                        $this->baristamodel->add_restockLog($drID, $log);
-                        $this->baristamodel->update_stockQty($dr['stock'], $dr['actual']);
-                    }else{
-                        $this->baristamodel->edit_receiptTransactionItems($dr);
-                        $total += $dr['subtotal'];
-                        $this->baristamodel->add_receiptTransactionItemsQty($drID, $dr);
-                        $log = array(
-                            "stock" => $dr['stock'],
-                            "qty" => $dr['actual'],
-                            "remain" => $this->baristamodel->get_stockQty($dr['stock'])[0]['stQty'] + $dr['actual'],
-                            "actual" => NULL,
-                            "discrepancy" => NULL,
-                            "dateTime" => $dateOfTrans,
-                            "dateRecorded" => $dateTime,
-                            "remarks" => "delivery"
-                        );
-                        $this->baristamodel->add_restockLog($drID, $log);
-                        $this->baristamodel->update_stockQty($dr['stock'], $dr['actual']);
-                    }
-                }
-                $this->baristamodel->edit_receiptTransactionTotal($drID, $total);
+            $drItems = json_decode($this->input->post('items'),true);
+            $account_id = $_SESSION["user_id"];
+           
+            switch($addtype) {
+                case "new":
+                $this->baristamodel->add_purchase(NULL, $receipt, "delivery", $date, $dateTime, $source, $drItems, $addtype, $account_id);
+                break;
+                case "merchandise":
+                $this->baristamodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, NULL, $drItems, $addtype, $account_id);
+                break;
+                case "po":
+                $this->baristamodel->add_purchase($supplier, $receipt, "delivery",$date, $dateTime, NULL, $drItems, $addtype, $account_id);
+                break;
+                case "return":
+                $this->baristamodel->add_purchase($supplier, $receipt, "delivery", $date, $dateTime, NULL, $drItems, $addtype, $account_id);
+                break;
             }
-            echo json_encode(array(
-                "success" => true
-            ));
-        }else{
-            echo json_encode(array(
-                "sessErr" => true
-            ));
         }
     }
     //-----------------------------CONSUMPTION---------------------
