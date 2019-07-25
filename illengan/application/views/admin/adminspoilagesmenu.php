@@ -114,7 +114,7 @@
                                                             <span class="input-group-text" id="inputGroup-sizing-sm" style="width:140px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
                                                                 Orderslip No.</span>
                                                         </div>
-                                                        <input list="orderslips" type="number" name="osID" id="osID"/>
+                                                        <input list="orderslips" class="form-control" type="number" name="osID" id="osID"/>
                                                         <datalist id="orderslips">
                                                             <option value="">None</option>
                                                             <?php foreach($slip as $s){ 
@@ -199,8 +199,6 @@ function setMenuSpoilData(data) {
                 <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
                                 data-target="#editSpoil">Edit</button>
                             <!--Delete button-->
-                <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteSpoilage">Archived</button>
                 </td></tr>`;
             var accord = `<tr class="accordion" style="display:none;background: #f9f9f9">`;
                 accord += ` <td colspan="6">`;

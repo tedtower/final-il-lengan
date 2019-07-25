@@ -1419,6 +1419,10 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         $query = "UPDATE categories SET ctName = ?, ctStatus = ? where ctID = ?";
         return $this->db->query($query,array($ctName, $ctStatus, $ctID));
     }
+    function edit_menuStock($prID, $stID, $qty, $ostID){
+        $query = "UPDATE prefstock SET stID = ?, prstQty = ? where prID = ? AND stID = ?";
+        return $this->db->query($query,array($stID, $qty, $prID, $ostID));
+    }
 //DELETE FUNCTIONS----------------------------------------------------------------
      function delete_salesOrderitem($olID, $stID, $stQty) {
         $query = "DELETE FROM orderlists WHERE orderlists.olID = ?";

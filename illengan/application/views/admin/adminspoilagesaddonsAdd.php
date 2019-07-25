@@ -56,7 +56,7 @@
                                 <div class="card-footer mb-0" style="overflow:auto">
                                     <button class="btn btn-success btn-sm" type="submit"
                                         style="float:right">Insert</button>
-                                        <a class="btn btn-danger btn-sm" type="button" href="<?= site_url('admin/addons/spoilages') ?>" data-original-title style="float:right">Cancel</a>
+                                        <a class="btn btn-danger btn-sm" role="button" href="<?= site_url('admin/addons/spoilages') ?>" data-original-title style="float:right">Cancel</a>
                                 </div>
                             </form>
                         </div>
@@ -182,7 +182,7 @@
                     items: JSON.stringify(items)
                 },
                 dataType: "JSON",
-                succes: function(data){
+                success: function(data){
                     if(data.sessErr){
                         location.replace("/login");
                     }else{

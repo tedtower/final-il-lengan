@@ -807,7 +807,7 @@ function loadDataMenuSpoil($record=0) {
 function viewMenuSpoilageFormAdd(){
     if($this->checkIfLoggedIn()){
         $data['title'] = "Spoilages - Menu";
-        $this->load->view('admin/templates/head', $data);
+        $this->load->view('admin/templates/head2', $data);
         $this->load->view('admin/templates/sideNav');
         $data['menu'] = $this->adminmodel->get_menuPrefSpoilage();
         $data['slip'] = $this->adminmodel->getSlipNum();
@@ -965,8 +965,8 @@ function getStockItem(){
             $head['title'] = "Menu - Stock";
             $this->load->view('admin/templates/head',$head);
             $this->load->view('admin/templates/sideNav');
-           // $data['menuStock'] = $this->adminmodel->get_prefStocks();
-            $this->load->view('admin/menu-stock');
+            $data['stocks'] = $this->adminmodel->get_stockItemNames();
+            $this->load->view('admin/menu-stock', $data);
         }else{
             redirect('login');
         }
