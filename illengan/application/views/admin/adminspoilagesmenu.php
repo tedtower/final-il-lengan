@@ -35,6 +35,7 @@
 									<tbody>
 									</tbody>
 								</table>
+								 <div id="pagination" style="float:right"></div>
 								<!--End Table Content-->
 								<!--Delete Confirmation Box-->
 								<div class="modal fade" id="deleteSpoilage" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
