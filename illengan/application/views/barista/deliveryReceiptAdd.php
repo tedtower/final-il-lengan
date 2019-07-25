@@ -17,7 +17,7 @@
                                 <div class="card-header">
                                     <h6 style="font-size:15px;margin:0">Add Delivery</h6>
                                 </div>
-                                <form id="drForm" action="<?= site_url("barista/deliveryreceipt/add")?>"
+                                <form id="drForm" action="<?= site_url("barista/viewDRFormAdd")?>"
                                     accept-charset="utf-8" class="form">
                                     <div class="card-body">
                                         <input type="text" name="tID" hidden="hidden">
@@ -99,7 +99,7 @@
                                     <div class="card-footer mb-0" style="overflow:auto">
                                         <button class="btn btn-success btn-sm" type="submit"
                                             style="float:right">Insert</button>
-                                            <a class="btn btn-danger btn-sm" role= "button" href="<?= site_url('admin/deliveryreceipt')?>" data-original-title  style="float:right">Cancel</a>
+                                            <a class="btn btn-danger btn-sm" role= "button" href="<?= site_url('barista/inventory/deliveryreceipt')?>" data-original-title  style="float:right">Cancel</a>
                                     </div>
                                 </form>
                             </div>
@@ -331,7 +331,7 @@
             var url = $(this).attr("data-url");
 
             $.ajax({
-                url: '<?php echo site_url('barista/getpurchases') ?>',
+                url: '<?= site_url('barista/getpurchases') ?>',
                 dataType: 'json',
                 success: function (data) {
                     var poLastIndex = 0;
@@ -363,7 +363,7 @@
           
             $.ajax({
                 type: 'POST',
-                url: '<?php echo site_url('barista/viewPurchItems') ?>',
+                url: '<?= site_url('barista/viewPurchItems') ?>',
                 data: {
                     pID: pID
                 },
@@ -387,7 +387,7 @@
                 $("#listpo").append(`${purchorder.map(stock => {
                 return `<label style="width:96%"><input type="checkbox" name="purchorder" class="choiceStock mr-2"  
                 data-spID="${stock.spID}" data-spmActual="${stock.spmActual}" data-piid="${stock.piID}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
-                    data-stID="${stock.stID}" data-tiqty="${stock.tiQty}"  value="${stock.spmID}">${stock.spmName}</label>`
+                    data-stID="${stock.stID}" data-tiqty="${stock.tiQty}"  value="${stock.spmID}">${stock.tiQty} ${stock.uomAbbreviation}/s of ${stock.spmName}</label>`
                 }).join('')}`);
             } else {
                 $("#listpo").append(`<p>No purchases</p>`);
@@ -571,7 +571,7 @@
             if ($("#stockCardmerch").is(':visible')) {
                 var merch;
                 $.ajax({
-                    url: '<?php echo site_url('barista/viewStockitems') ?>',
+                    url: '<?= site_url('barista/viewStockitems') ?>',
                     dataType: 'json',
                     success: function (data) {
                         var poLastIndex = 0;
@@ -605,7 +605,7 @@
             var rTotal = 0;
 
             var params = {
-                url: '/barista/deliveryreceipt/add',
+                url: "<?php echo site_url('barista/viewDRFormAdd') ?>",
                 type: "POST",
                 success: function () {
                     location.reload();

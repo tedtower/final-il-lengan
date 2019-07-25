@@ -14,7 +14,7 @@
                         <div class="container-fluid">
                             <!--Table-->
                             <div class="card-content" id="transTable">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('barista/deliveryreceipt/formadd') ?>" data-original-title style="margin:0" id="addBtn">Add Delivery Receipt</a>
+                                <a class="btn btn-primary btn-sm" href="<?= site_url('barista/viewDRFormAdd') ?>" data-original-title style="margin:0; width: 140px" id="addBtn;">Add Delivery Receipt</a>
                                 <br>
                                 <!--Search-->
                                 <div id="transTable" style="width:25%; float:right; border-radius:5px">
@@ -78,13 +78,13 @@
     </div>
     <?php include_once('templates/scripts.php') ?>
     <script>
-        var getEnumValsUrl = '<?= site_url('admin/transactions/getEnumVals') ?>';
+        var getEnumValsUrl = '<?= site_url('barista/getEnumValsForTransaction') ?>';
         var crudUrl = '<?= site_url('admin/transactions/add') ?>';
         var getTransUrl = '<?= site_url('admin/transactions/getTransaction') ?>';
         var loginUrl = '<?= site_url('login') ?>';
-        var getPOsUrl = '<?= site_url('admin/transactions/getPOs') ?>';
-        var getDRsUrl = '<?= site_url('admin/transactions/getDRs') ?>';
-        var getSPMsUrl = '<?= site_url('admin/transactions/getSPMs') ?>';
+        var getPOsUrl = '<?= site_url('barista/getPOs') ?>';
+        var getDRsUrl = '<?= site_url('barista/getDRs') ?>';
+        var getSPMsUrl = '<?= site_url('barista/getSPMs') ?>';
        
         //Search Function
         $("#transTable input[name='search']").on("keyup", function() {
@@ -110,7 +110,7 @@
 
 			function viewDelReceipts() {
 				$.ajax({
-					url: "<?= site_url('admin/viewDeliveryReceiptJS') ?>",
+					url: "<?= site_url('barista/viewDeliveryReceiptJS') ?>",
 					method: "post",
 					dataType: "json",
 					success: function(data) {
@@ -188,7 +188,7 @@
                                     <td>${isNaN((dri.tiSubtotal)) ? "N/A" : 
                                     (dri.tiSubtotal)}</td>
                                     <td>${dri.diStatus} <small style="color:green;text-decoration: none">
-                                    ${(dri.piStatus == null || dri.piStatus == 'partially delivery') ? ' ': '(resolved)' }</small></td>
+                                    ${(dri.piStatus == 'delivered') ? '(resolved)': '' }</small></td>
                                     </tr>
                                     `;
                                 }).join('')}

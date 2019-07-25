@@ -267,6 +267,9 @@ $route['barista/addons/spoilage/edit'] = "barista/editAoSpoil";
 $route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
+$route['barista/getpurchases']="barista/getpurchases";
+
+
 //-----------------------------------------
 $route['barista/consumption'] = "barista/viewConsumptions";
 $route['barista/jsonConsumptions'] = "barista/jsonConsumptions";

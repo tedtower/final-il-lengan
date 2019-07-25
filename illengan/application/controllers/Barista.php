@@ -611,16 +611,31 @@ class Barista extends CI_Controller{
         }
     }
     
+    // function viewDRFormAdd(){
+    //     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
+    //         $this->load->view('barista/templates/head');
+    //         $this->load->view('barista/templates/navigation');
+    //         $data['uom'] = $this->baristamodel->get_uomForStoring();
+    //         $data['stocks'] = $this->baristamodel->get_stockitems();
+    //         $data['supplier'] = $this->baristamodel->get_supplier();
+    //         $data['suppmerch'] = $this->baristamodel->get_supplierstocks();
+    //         $data['pos'] = $this->baristamodel->get_posForBrochure();
+    //         $data['poItems'] = $this->baristamodel->get_poItemsForBrochure();
+    //         $this->load->view('barista/deliveryReceiptAdd', $data);
+    //     }else{
+    //         redirect('login');
+    //     }
+    // }
+
     function viewDRFormAdd(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
-            $this->load->view('barista/templates/head');
+            $head['title'] = "Inventory - Add Delivery";
+            $this->load->view('barista/templates/head', $head);
             $this->load->view('barista/templates/navigation');
-            $data['uom'] = $this->baristamodel->get_uomForStoring();
             $data['stocks'] = $this->baristamodel->get_stockitems();
             $data['supplier'] = $this->baristamodel->get_supplier();
-            $data['suppmerch'] = $this->baristamodel->get_supplierstocks();
-            $data['pos'] = $this->baristamodel->get_posForBrochure();
-            $data['poItems'] = $this->baristamodel->get_poItemsForBrochure();
+            $data['returns'] = $this->baristamodel->get_retItems();
+            $data['retTrans'] = $this->baristamodel->get_unresolveReturns();
             $this->load->view('barista/deliveryReceiptAdd', $data);
         }else{
             redirect('login');
@@ -650,6 +665,17 @@ class Barista extends CI_Controller{
             redirect('login');
         }
     }
+
+    function viewDeliveryReceiptJS(){
+        if($this->checkIfLoggedIn()){
+        $data['dr']= $this->baristamodel->get_deliveryReceipts();
+        $data['drItems']= $this->baristamodel->get_deliveryItems();
+            echo json_encode($data);
+        }else{
+            redirect('login');
+        }
+    }
+
     function getSuppMerchForBrochure(){
         if($this->checkIfLoggedIn()){
             $id = $this->input->post('id');
@@ -713,7 +739,102 @@ class Barista extends CI_Controller{
         echo json_encode($data, JSON_PRETTY_PRINT);
     }
 
+    function getEnumValsForTransaction(){
+        if($this->checkIfLoggedIn()){
+            preg_match_all("/\w+(\s+)?(\w+)?(\'\w+)?(?=')/",$this->baristamodel->get_enumVals('transactions','tType')[0]['column_type'], $tTypes);
+            preg_match_all("/\w+(\s+)?(\w+)?(\'\w+)?(?=')/",$this->baristamodel->get_enumVals('transitems','tiStatus')[0]['column_type'], $tiStatuses);
+            echo json_encode(array(
+                "tTypes" => $tTypes[0],
+                "tiStatuses" => $tiStatuses[0],
+                "suppliers" => $this->baristamodel->get_supplierNames(),
+                "uoms" => $this->baristamodel->get_uomForStoring(),
+                "stocks" => $this->baristamodel->get_stockItemNames()
+            ));
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 
+    function getTransaction(){
+        if($this->checkIfLoggedIn()){
+            $id = $this->input->post('id');
+            if(is_numeric($id)){
+                echo json_encode(array(
+                    "transaction" => $this->baristamodel->get_transaction($id),
+                    "transitems" => $this->baristamodel->get_transitems($id)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function getPOs(){
+        if($this->checkIfLoggedIn()){
+            $spID = $this->input->post('supplier');
+            if(is_numeric($spID)){
+                echo json_encode(array(
+                    "transactions" => $this->baristamodel->get_transactionsBySupplier($spID, array("purchase order")),
+                    "transitems" =>  $this->baristamodel->get_transitemsBySupplier($spID, array("purchase order"))
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function getDRs(){
+        if($this->checkIfLoggedIn()){
+            $spID = $this->input->post('supplier');
+            if(is_numeric($spID)){
+                echo json_encode(array(
+                    "transactions" => $this->baristamodel->get_transactionsBySupplier($spID, array("delivery receipt")),
+                    "transitems" =>  $this->baristamodel->get_transitemsBySupplier($spID, array("delivery receipt"))
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
+
+    function getSPMs(){
+        if($this->checkIfLoggedIn()){
+            $spID = $this->input->post('supplier');
+            if(is_numeric($spID)){
+                echo json_encode(array(
+                    "merchandise" => $this->baristamodel->get_SPMs($spID)
+                ));
+            }else{
+                echo json_encode(array(
+                    "inputErr" => true
+                ));
+            }
+        }else{
+            echo json_encode(array(
+                "sessErr" => true
+            ));
+        }
+    }
 
     function getPOItemsBySupplier(){
         if($this->checkIfLoggedIn()){
