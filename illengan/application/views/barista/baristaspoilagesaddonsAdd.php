@@ -212,6 +212,7 @@
                 });
             });
 
+    //Date Validation
     $('#conForm').submit(function(event){
         var spoilageDate = $("#tDate").val();
         var currentDate = new Date();
