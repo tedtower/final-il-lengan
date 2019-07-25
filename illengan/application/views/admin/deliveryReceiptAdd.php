@@ -387,7 +387,7 @@
                 $("#listpo").append(`${purchorder.map(stock => {
                 return `<label style="width:96%"><input type="checkbox" name="purchorder" class="choiceStock mr-2"  
                 data-spID="${stock.spID}" data-spmActual="${stock.spmActual}" data-piid="${stock.piID}" data-spmPrice="${stock.spmPrice}" data-spmName="${stock.spmName}" 
-                    data-stID="${stock.stID}" data-tiqty="${stock.tiQty}"  value="${stock.spmID}">${stock.spmName}</label>`
+                    data-stID="${stock.stID}" data-tiqty="${stock.tiQty}"  value="${stock.spmID}">${stock.tiQty} ${stock.uomAbbreviation}/s of ${stock.spmName}</label>`
                 }).join('')}`);
             } else {
                 $("#listpo").append(`<p>No purchases</p>`);
