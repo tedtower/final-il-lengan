@@ -2402,28 +2402,6 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
             LEFT JOIN uom ON (suppliermerchandise.uomID = uom.uomID) GROUP BY piID";
         return $this->db->query($query)->result_array();
     }
-    // function get_deliveryReceipts(){
-    //     $query = "SELECT
-    //     pID AS id,
-    //     purchase_items.piID,
-    //     receiptNo as receipt,
-    //     spID AS supplier,
-    //     spName AS supplierName,
-    //     spAltName as altSupplier,
-    //     DATE_FORMAT(pDate, '%b %d, %Y %r') AS transDate,
-    //     DATE_FORMAT(pDateRecorded, '%b %d, %Y %r') AS dateRecorded,
-    //     SUM(tiSubtotal) AS total
-    // FROM
-    //     (
-    //     purchases LEFT JOIN pur_items USING (pID)
-    //     LEFT JOIN purchase_items USING (piID)
-    //     )
-    //     LEFT JOIN transitems USING(piID)
-    //     LEFT JOIN supplier USING(spID)
-    //     WHERE pType = 'delivery'
-    //     ORDER BY transDate DESC ,pID DESC";
-    //     return $this->db->query($query)->result_array();
-    // }
     function get_deliveryReceipts(){
         $query = "SELECT dID, spName, dDate AS ddate, DATE_FORMAT(dDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, spAltName 
         FROM deliveries LEFT JOIN supplier USING (spID) INNER JOIN (SELECT SUM(tiSubtotal) as pTotal, dID 
@@ -2653,30 +2631,30 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $this->db->query($query,array('1', $tID));
     }
     function updateDelReceipt($drItems,$current){
-        $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`, `tiActual`, `tiSubtotal`, `remainingQty`, `tiRemarks`, `tiDate`, `tiDiscount`, `stID`, `spmID`, `piID`, `dateRecorded`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`, `tiActual`, `tiSubtotal`, `remainingQty`, `tiRemarks`, `tiDate`, `tiDiscount`, `stID`, `spmID`, `diID`, `dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?)";
             if(count($drItems) > 0){
             for($in = 0; $in < count($drItems) ; $in++){
                 if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
                     $updatedqty =  $drItems[$in]["stQty"]-($drItems[$in]["spmActual"]*($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"]));
-                    $this->db->query($query,array($drItems[$in]["tiID"],"restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["piID"],$current));
+                    $this->db->query($query,array("restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stockQty($drItems[$in]["stID"], $updatedqty);
                     print_r($query);
                 }else{
                     $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
-                    $this->db->query($query,array($drItems[$in]["tiID"],"restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["piID"],$current));
+                    $this->db->query($query,array("restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
                     print_r($query);
                 }
         }
     }
     }
-    function updateStatus($piStatus,$piID,$pID){
-        $query = "UPDATE `pur_items` SET `priStatus`= ? WHERE pID = ? AND piID = ?";
-        $this->db->query($query,array($piStatus,$pID,$piID));
+    function updateStatus($diStatus,$diID,$dID){
+        $query = "UPDATE `delivery_items` SET `diStatus`=? WHERE`diID`= ? AND`dID`=?";
+        $this->db->query($query,array($diStatus,$diID,$dID));
     }
-    function updatepurchase($receipt,$pID){
-        $query = "UPDATE `purchases` SET `receiptNo`=? WHERE `pID` = ?";
-        $this->db->query($query,array($receipt,$pID));
+    function updatedelivery($receipt,$dID){
+        $query = "UPDATE `deliveries` SET `receiptNo`= ? WHERE `dID` = ?";
+        $this->db->query($query,array($receipt,$dID));
     }
 
     //getPosFor Brochure
