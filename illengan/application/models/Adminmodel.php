@@ -1170,7 +1170,7 @@ function countConsump(){
         foreach($items as $item){
             $this->db->query($query, array($item['prID'],$item['stID'],$item['qty']));
         }
-        $this->$this->add_actlog($account_id, $date, "Admin added prefstock.", "add", '');;
+        $this->add_actlog($account_id, $date, "Admin added prefstock.", "add", '');;
     }
     function add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore){
         $query = "INSERT into uom (uomName, uomAbbreviation, uomVariant, uomStore) values (?,?,?,?)";
@@ -1424,7 +1424,12 @@ function edit_stockItem($stockCategory, $stockLocation, $stockMin, $stockName, $
         return $this->db->query($query,array($stID, $qty, $prID, $ostID));
     }
 //DELETE FUNCTIONS----------------------------------------------------------------
-     function delete_salesOrderitem($olID, $stID, $stQty) {
+     function delete_menustock($p, $s, $date, $acid, $remarks){
+        $query = "DELETE FROM prefstock WHERE prID = ? AND stID = ?";
+         $this->db->query($query, array($p, $s));
+         $this->add_actlog($acid, $date, "Admin deleted a prefstock.", "archived", $remarks);
+    } 
+    function delete_salesOrderitem($olID, $stID, $stQty) {
         $query = "DELETE FROM orderlists WHERE orderlists.olID = ?";
         if($stID !== null) {
             $this->update_stock($stID, $stQty);
