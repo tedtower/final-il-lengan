@@ -188,7 +188,7 @@
                                     <td>${isNaN((dri.tiSubtotal)) ? "N/A" : 
                                     (dri.tiSubtotal)}</td>
                                     <td>${dri.diStatus} <small style="color:green;text-decoration: none">
-                                    ${(dri.piStatus == null || dri.piStatus == 'partially delivery') ? ' ': '(resolved)' }</small></td>
+                                    ${(dri.piStatus == 'delivered') ? '(resolved)': '' }</small></td>
                                     </tr>
                                     `;
                                 }).join('')}

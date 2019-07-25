@@ -193,14 +193,39 @@
                     },
                     dataType: "json",
                     complete: function() {
-                    //     $("#editMS").modal("hide");
-                    //     location.reload();
+                        $("#editMS").modal("hide");
+                        location.reload();
                      },
                      error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);
                 }
-
+		});
+            });
+            $("form#confirmDelete").on('submit', function(event){
+                event.preventDefault();
+                var prID = $(this).find("input[name='prID']").val();
+                var ostID = $(this).find("input[name='stID']").val();
+                var remarks = $(this).find("input[name='deleteRemarks']").val();
+                console.log(prID,ostID,remarks);
+                $.ajax({
+                    url: "<?= site_url("admin/menustock/delete")?>",
+                    method: "post",
+                    data: {
+                        prID: prID,
+                        ostID: ostID,
+                        remarks: remarks 
+                    },
+                    dataType: "json",
+                    complete: function() {
+                        $("#deletePrefStock").modal("hide");
+                        alert('Deleted');
+                        location.reload();
+                     },
+                     error: function(response, setting, error) {
+                    console.log(error);
+                    console.log(response.responseText);
+                }
                 });
             });
         });

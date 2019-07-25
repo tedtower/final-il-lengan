@@ -276,7 +276,7 @@ function viewDRFormAdd(){
         $data['stocks'] = $this->adminmodel->get_stockitems();
         $data['supplier'] = $this->adminmodel->get_supplier();
         $data['returns'] = $this->adminmodel->get_retItems();
-        $data['retTrans'] = $this->adminmodel->get_returns();
+        $data['retTrans'] = $this->adminmodel->get_unresolveReturns();
         $this->load->view('admin/deliveryReceiptAdd', $data);
     }else{
         redirect('login');
