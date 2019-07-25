@@ -212,6 +212,7 @@
                 });
             });
 
+    //Date Validation
     $('#conForm').submit(function(event){
         var spoilageDate = $("#tDate").val();
         var currentDate = new Date();
@@ -220,31 +221,6 @@
             return false;
         }
     });
-    			//-----------------------Populate Dropdown----------------------------------------
-				// 		$.ajax({
-				// 			url: '<= site_url('barista/inventoryJS') ?>',
-				// 			dataType: 'json',
-				// 			success: function (data) {
-				// 				var poLastIndex = 0;
-				// 				stockitem = data;
-				// 				setStockData(stockitem);
-				// 			},
-				// 			failure: function () {
-				// 				console.log('None');
-				// 			},
-				// 			error: function (response, setting, errorThrown) {
-				// 				console.log(errorThrown);
-				// 				console.log(response.responseText);
-				// 			}
-				// 		});
-
-				// function setStockData(stockitem){
-				// 		$("#orderslips").empty();
-				// 		$("#orderslips").append(`${stockitem.map(stocks => {
-				// 			return `<option name= "osID" id ="osID" value="${stocks.osID}">${stocks.stName}</option>`
-				// 		}).join('')}`);
-				// }
-			  //-----------------------End of Dropdown Populate--------------------------
     </script>
 </body>
 

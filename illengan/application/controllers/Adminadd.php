@@ -428,15 +428,14 @@ function addaccounts(){
 
     function addPurchaseOrder(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
-            $supplier = $this->input->post('supplier');
-            $date = $this->input->post('date');
-            $current = date("Y-m-d H:i:s");
-            $type = "purchase order";
-            $poitems = json_decode($this->input->post('poitems'),true);
             $account_id = $_SESSION["user_id"];
             $date_recorded = date("Y-m-d H:i:s");
             $user= $_SESSION["user_name"];
-            $this->adminmodel->add_purchaseOrder($supplier, $date, $current, $type, $poitems);
+            $supplier = $this->input->post('supplier');
+            $date = $this->input->post('date');
+            $current = date("Y-m-d H:i:s");
+            $poitems = json_decode($this->input->post('poitems'),true);
+            $this->adminmodel->add_purchaseOrder($supplier, $date, $current,$poitems);
             $this->adminmodel->add_actlog($account_id, $date_recorded, "$user added a purchase order to $supplier .", "add", NULL);
 
         }else{

@@ -177,7 +177,7 @@
              beforeSend: function() {
                     console.log(id, date, poitems);
             },
-             succes: function(){
+             success: function(){
                  location.reload();
              },
              error: function(response, setting, error) {

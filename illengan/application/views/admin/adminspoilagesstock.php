@@ -187,9 +187,7 @@
                             <!--Edit button-->
                             <button class="updateBtn btn btn-secondary btn-sm" data-toggle="modal"
                                 data-target="#editSpoil">Edit</button>
-                            <!--Delete button-->
-                            <button class="item_delete btn btn-warning btn-sm" data-toggle="modal" 
-                            data-target="#deleteSpoilage">Archive</button>                      
+                            <!--Delete button-->                   
                         </div>
                     </td>
 				</tr>`;
@@ -302,10 +300,10 @@
                 alert('Stock Spoilage Updated');
 				console.log(data);
             },
-            // complete: function() {
-            //     $("#editSpoil").modal("hide");
-			// 	location.reload();
-            // },
+            complete: function() {
+                $("#editSpoil").modal("hide");
+				location.reload();
+            },
             error: function(error) {
 				console.log(error);
             }
