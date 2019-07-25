@@ -33,6 +33,35 @@
                                         </tbody>
                                     </table>
                                     <div id="pagination" style="float:right"></div>
+				     <!--Delete Confirmation Box-->
+								<div class="modal fade" id="deletePrefStock" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+									<div class="modal-dialog modal-dialog-centered" role="document">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="exampleModalLongTitle">Delete Menu-Stock</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<form id="confirmDelete">
+												<div class="modal-body">
+													<h6 id="deleteTableCode"></h6>
+													<p>Are you sure you want to delete the selected prefstock?</p>
+                                                    <input type="number" name="prID" hidden="hidden"/>
+                                                    <input type="number" name="stID" hidden="hidden"/>
+													<div>
+														Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm" required>
+													</div>
+												</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+													<button type="submit" class="btn btn-danger btn-sm">Delete</button>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<!--End of Delete Modal-->
                                 <!--Edit Spoilage-->
                                 <div class="modal fade" id="editMS" name="editSpoil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow: auto !important;">
                                     <div class="modal-dialog " role="document">
@@ -63,10 +92,12 @@
                                                         <input list="stocks" type="text" name="newstID" id="newstID" class="form-control form-control-sm" required/>
                                                             <datalist id="stocks">
                                                                 <?php foreach($stocks as $s){ 
-                                                                 echo '<option value="'.$s['stID'].'">'. $s['stName'].'</option>';}?>
+                                                                 echo '<option value="'.$s['stID'].'">'. $s['stName'].'</option>';
+                                                                 }?>
                                                         </datalist>
                                                     </div>
                                                     <input name="prID" id="prID" hidden="hidden"/>
+                                                    <input name="stID" id="stID" hidden="hidden"/>
                                                     <!--Footer-->
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
@@ -116,23 +147,31 @@
                 var text = `<p>No items recorded!</p>`;
                 $('#menuStockTable > tbody').append(text);
             }else{
-            var row = `<tr class="menuStockTable ic-level-1" data-id1="`+item[p].prID+`" data-id2="`+item[p].stID+`" data-qty="`+item[p].qty+`">`;
+            var row = `<tr class="menuStockTable ic-level-1" data-id1="`+item[p].prID+`" data-id2="`+item[p].stockitem+`" data-qty="`+item[p].qty+`">`;
             row += ` <td>`+item[p].prefname+`</td>`;
             row += ` <td>`+item[p].stockitemname+`</td>`;
             row += ` <td>`+item[p].qty+`</td>`;
             row += ` <td>
             <button class="editBtn btn btn-sm btn-secondary" data-toggle="modal" data-target="#editMS">Edit</button>
-            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deleteMS">Delete</button>
+            <button class="deleteBtn btn btn-sm btn-warning" data-toggle="modal" data-target="#deletePrefStock">Delete</button>
             </td>
             </tr>`;
             $('#menuStockTable > tbody').append(row);
         }
-        $(".editBtn").last().on('click', function() {
+       $(".editBtn").last().on('click', function() {
                     $("#editMS").find("input[name='prID']").val($(this).closest("tr").attr(
                         "data-id1"));
+                    $("#editMS").find("input[name='stID']").val($(this).closest("tr").attr(
+                        "data-id2"));
                     $("#editMS").find("input[name='qty']").val($(this).closest("tr").attr(
                         "data-qty"));
                 });
+        $(".deleteBtn").last().on('click', function() {
+					$("#deletePrefStock").find("input[name='prID']").val($(this).closest("tr").attr(
+						"data-id1"));
+					$("#deletePrefStock").find("input[name='stID']").val($(this).closest("tr").attr(
+						"data-id2"));
+				});
     }
     }
     $(document).ready(function() {
@@ -141,14 +180,16 @@
                 var prID = $(this).find("input[name='prID']").val();
                 var qty = $(this).find("input[name='qty']").val();
                 var stID = $(this).find("input[name='newstID']").val();
-                console.log(prID,stID,qty);
+                var ostID = $(this).find("input[name='stID']").val();
+                console.log(prID,stID,qty,ostID);
                 $.ajax({
                     url: "<?= site_url("admin/menustock/edit") ?>",
                     method: "post",
                     data: {
                         prID: prID,
                         qty: qty,
-                        stID: stID
+                        stID: stID,
+			ostID: ostID 
                     },
                     dataType: "json",
                     complete: function() {

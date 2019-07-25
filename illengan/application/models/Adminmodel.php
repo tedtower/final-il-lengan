@@ -1655,7 +1655,7 @@ function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
         $query1 = "SELECT stQty, prstQty FROM stockitems inner join prefstock on stockitems.stID=prefstock.stID where stockitems.stID = '$stID' AND prID = '$prID'";
         $result= $this->db->query($query1)->result_array();
         foreach($result as $r){
-            $prstQty = $r['prstQty'];
+            $prstQty = ($r['prstQty'] * $qty);
             $stQty = $r['stQty'];
         $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, dateRecorded, stID, siID)
             VALUES (NULL, ?,?,?,?,?,?,?,?,?)";
