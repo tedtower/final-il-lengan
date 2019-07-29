@@ -134,11 +134,10 @@ function addspoilagesaddons(){
     if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
         $date_recorded = date("Y-m-d H:i:s");
         $date = $this->input->post('date');
-        $remarks = $this->input->post('remarks');
         $addons = json_decode($this->input->post('items'), true);
         $account_id = $_SESSION["user_id"];
         $user= $_SESSION["user_name"];
-        $this->adminmodel->add_aospoil($date_recorded,$date,$remarks,$addons,$account_id,$user);
+        $this->adminmodel->add_aospoil($date_recorded,$date,$addons,$account_id,$user);
        
     }else{
         redirect('login');
