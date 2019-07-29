@@ -193,14 +193,15 @@
                         window.location = "<?php echo base_url(); ?>/admin/stockcategories/delete/" + id;
                     });
                 });
+                var tuples = ((document.getElementById('categTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
+                var tupleNo = tuples.length;
+                var editButtons = document.getElementsByName('editCategory');
+                var editModal = document.getElementById('editCategory');
+                for (var x = 0; x < tupleNo; x++) {
+                    editButtons[x].addEventListener("click", showEditModal);
+                }
             }
-            var tuples = ((document.getElementById('categTable')).getElementsByTagName('tbody'))[0].getElementsByTagName('tr');
-            var tupleNo = tuples.length;
-            var editButtons = document.getElementsByName('editCategory');
-            var editModal = document.getElementById('editCategory');
-            for (var x = 0; x < tupleNo; x++) {
-                editButtons[x].addEventListener("click", showEditModal);
-            }
+
 
             function showEditModal(event) {
                 var row = event.target.parentElement.parentElement;
