@@ -64,7 +64,7 @@ class Adminupdate extends CI_Controller{
             $action = 'update';
 
             $this->adminmodel->edit_returns($rID, $rTotal, $rDate);
-            $this->adminmodel->update_riStatus($items, $accountID, $action);
+            $this->adminmodel->update_riStatus($items, $accountID, $action, $rDateRecorded);
             }else{
                 redirect('login');
             }
