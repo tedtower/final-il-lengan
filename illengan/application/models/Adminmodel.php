@@ -2392,12 +2392,12 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $query = "SELECT
                 tiID,
                 tiType as type,
-                SUM(tiQty) AS qty,
-                SUM(tiActual) AS actual,
-                SUM(tiSubtotal) AS subtotal,
+                tiQty AS qty,
+                tiActual AS actual,
+                tiSubtotal AS subtotal,
                 remainingQty,
                 tiRemarks,
-                tiDate,
+                tiDate, 
                 CONCAT(
                     stName,
                     IFNULL(CONCAT(' ', stSize),
