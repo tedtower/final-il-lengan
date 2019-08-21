@@ -229,7 +229,7 @@ function setModalContents(item_id){
                 $('#sizeable').show();                
                 $("#sizeSelect").removeAttr('disabled');
                 for(var x=0; x<menu_pref.length; x++){
-                    $('#sizeSelect').append('<option data-price="'+menu_pref[x].prPrice+'" data-name="'+menu_pref[x].prName+'" value="'+menu_pref[x].prID+'">'+menu_pref[x].preference+'</option>');
+                    $('#sizeSelect').append('<option data-price="'+menu_pref[x].prPrice+'" data-name="'+menu_pref[x].prName+'" value="'+menu_pref[x].prID+'">'+menu_pref[x].prName+'</option>');
                 }
                 $("#sizeSelect").on('change',function(){
                     $('#menu_price').text($("#sizeSelect > option:selected").attr("data-price"));
