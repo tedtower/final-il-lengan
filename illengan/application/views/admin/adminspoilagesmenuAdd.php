@@ -182,10 +182,10 @@
                 beforeSend: function() {
                         console.log(menus);
                 },
-                // complete: function(data){
-                //      location.reload();
-                //      alert('Added');
-                // },
+                complete: function(data){
+                     location.reload();
+                     alert('Added');
+                },
                 error: function(response, setting, error) {
                     console.log(error);
                     console.log(response.responseText);

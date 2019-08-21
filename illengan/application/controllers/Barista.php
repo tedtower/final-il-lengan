@@ -425,11 +425,10 @@ class Barista extends CI_Controller{
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'barista'){
             $date_recorded = date("Y-m-d H:i:s");
             $date = $this->input->post('date');
-            $remarks = $this->input->post('remarks');
             $addons = json_decode($this->input->post('items'), true);
             $account_id = $_SESSION["user_id"];
             $user= $_SESSION["user_name"];
-            $this->baristamodel->add_aospoil($date_recorded,$date,$remarks,$addons,$account_id,$user);
+            $this->baristamodel->add_aospoil($date_recorded,$date,$addons,$account_id,$user);
            
         }else{
             redirect('login');
@@ -529,8 +528,6 @@ class Barista extends CI_Controller{
                 
                 $tiActual = $this->input->post('tiActual');
                 $actualQtyUpdate = $this->input->post('actualQtyUpdate');
-                $updateTiQty = $this->input->post('updateTiQty');
-                $tiQty = $this->input->post('tiQty');
                 $stQty = $this->input->post('stQty');
                 $tiRemarks = $this->input->post('tiRemarks');
                 $tiDate = $this->input->post('tiDate');
@@ -541,31 +538,25 @@ class Barista extends CI_Controller{
                 $date_recorded = date("Y-m-d H:i:s");
                 $user= $_SESSION["user_name"];
                 $account_id= $_SESSION["user_id"];
-                $updatedActual = $actualQtyUpdate - $tiActual;
-                $updatedQty = $updateTiQty - $tiQty;
+                $updatedActual = $actualQtyUpdate - $tiActual;   
     
                 if($tiActual > $actualQtyUpdate){
                     $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                    $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyl,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
+                    $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyl,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
                     $this->baristamodel->update_stock($stID, $updateQtyl);
                     $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
                                     
                 }else if($tiActual < $actualQtyUpdate) {
                         $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                        $this->baristamodel->add_stocktransitems($tiType,$updatedQty,$updatedActual,$updateQtyh,$tiDate,$tiRemarks,$stID, $siID,$date_recorded);
+                        $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyh,$tiDate,$tiRemarks,$stID, $siID,$date_recorded);
                         $this->baristamodel->update_stock($stID, $updateQtyh);
                         $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
     
                 }else{
-                    if($tiQty == $updateTiQty){
-                        $this->baristamodel->add_stocktransitems($tiType,0,0,$stQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
+                    
+                        $this->baristamodel->add_stocktransitems($tiType,0,$stQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
                         $this->baristamodel->update_stock($stID, $stQty);
                         $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
-                    }else{
-                        $this->baristamodel->add_stocktransitems($tiType,$updatedQty,0,$stQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
-                        $this->baristamodel->update_stock($stID, $stQty);
-                        $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
-                    }
                 }
                
             }else{

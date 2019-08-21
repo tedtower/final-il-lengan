@@ -26,15 +26,6 @@
                                         </div>
                                         <input class="form-control form-control-sm" name="tDate" id="tDate" type="date" class="no-border"  data-validate="required" message="Date consumed is required!"  required>
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text border border-secondary"
-                                                style="width:125px;font-size:14px">
-                                                Remarks</span>
-                                        </div>
-                                        <textarea type="text" name="remarks"
-                                            class="form-control" rows="1"></textarea>
-                                    </div>
                                 
                                     <div class="ic-level-3">
                                         <table class="table table-borderless">
@@ -156,7 +147,6 @@
             event.preventDefault();
             var url = $(this).attr("action");
             var tDate = $(this).find("input[name='tDate']").val();
-            var remarks = $(this).find("textarea[name='remarks']").val();
             var items = [];
             $(this).find(".ic-level-1").each(function(index){
                 items.push({
@@ -178,7 +168,6 @@
                 url: url,
                 data: {
                     date: tDate,
-                    remarks: remarks,
                     items: JSON.stringify(items)
                 },
                 dataType: "JSON",

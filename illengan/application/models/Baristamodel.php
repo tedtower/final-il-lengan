@@ -251,19 +251,19 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             $query = "Select * from addons";
             return $this->db->query($query)->result_array();
         }
-        function add_aospoil($date_recorded,$date,$remarks,$addons,$account_id,$user){
+        function add_aospoil($date_recorded,$date,$addons,$account_id,$user){
             $query = "insert into aospoil (aosID,aosDateRecorded) values (NULL,?)";
             if($this->db->query($query,array($date_recorded))){ 
-                $this->add_spoiledaddon($this->db->insert_id(),$addons,$date_recorded,$date,$account_id,$user,$remarks);
+                $this->add_spoiledaddon($this->db->insert_id(),$addons,$date_recorded,$date,$account_id,$user);
                 return true;
             }
         }
-        function add_spoiledaddon($aosID,$addons,$date_recorded,$date,$account_id,$user,$remarks){
+        function add_spoiledaddon($aosID,$addons,$date_recorded,$date,$account_id,$user){
             $query = "INSERT INTO `addonspoil`(`aoID`, `aosID`, `osID`, `aosQty`, `aosDate`, `aosRemarks`) VALUES (?,?,?,?,?,?)";
             if(count($addons) > 0){
                 for($in = 0; $in < count($addons) ; $in++){
                     $this->db->query($query, array($addons[$in]['aoID'],$aosID, $addons[$in]['osID'], $addons[$in]['aosQty'],$date,$addons[$in]['tRemarks']));
-                    $this->add_actlog($account_id,$date_recorded, "$user added an addon spoilage.", "add", $remarks);
+                    $this->add_actlog($account_id,$date_recorded, "$user added an addon spoilage.", "add", $addons[$in]['tRemarks']);
                     
                 }    
             }
@@ -396,9 +396,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
             return $this->db->get()->row()->lastnum;
         }
-        function add_stocktransitems($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded){
-            $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?,?)";
-            return $this->db->query($query, array($tiType,$updatedQty,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID,$date_recorded));
+        function add_stocktransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded){
+            $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?)";
+            return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID,$date_recorded));
         }
         function update_stockQty($stID, $stQty){
             $query = "UPDATE stockitems
