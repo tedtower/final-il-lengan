@@ -229,7 +229,7 @@ function setModalContents(item_id){
                 $('#sizeable').show();                
                 $("#sizeSelect").removeAttr('disabled');
                 for(var x=0; x<menu_pref.length; x++){
-                    $('#sizeSelect').append('<option data-price="'+menu_pref[x].prPrice+'" data-name="'+menu_pref[x].prName+'" value="'+menu_pref[x].prID+'">'+menu_pref[x].prName+'</option>');
+                    $('#sizeSelect').append('<option data-price="'+menu_pref[x].prPrice+'" data-name="'+menu_pref[x].prName+'" value="'+menu_pref[x].prID+'">'+menu_pref[x].prName+'&nbsp;('+menu_pref[x].prPrice+')</option>');
                 }
                 $("#sizeSelect").on('change',function(){
                     $('#menu_price').text($("#sizeSelect > option:selected").attr("data-price"));
@@ -546,9 +546,9 @@ function appendExistingPreference(ep,pid){
     $('#edit_pref').empty();
     for(var m=0; m < ep.length; m++){
         if(orders[pid].id == ep[m].prID){
-            $('#edit_pref').append('<option data-price="'+ep[m].prPrice+'" data-name="'+ep[m].prName+'" value="'+ep[m].prID+'" selected>'+ep[m].preference+'</option>');
+            $('#edit_pref').append('<option data-price="'+ep[m].prPrice+'" data-name="'+ep[m].prName+'" value="'+ep[m].prID+'" selected>'+ep[m].prName+'</option>');
         } else {
-            $('#edit_pref').append('<option data-price="'+ep[m].prPrice+'" data-name="'+ep[m].prName+'" value="'+ep[m].prID+'">'+ep[m].preference+'</option>');
+            $('#edit_pref').append('<option data-price="'+ep[m].prPrice+'" data-name="'+ep[m].prName+'" value="'+ep[m].prID+'">'+ep[m].prName+'</option>');
         }
     }
 }
