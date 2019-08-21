@@ -145,21 +145,21 @@ class Adminupdate extends CI_Controller{
 
             if($tiActual > $actualQtyUpdate){
                 $updateQtyl = ($tiActual - $actualQtyUpdate) + $stQty;
-                $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyl,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
-                $this->baristamodel->update_stock($stID, $updateQtyl);
-                $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+                $this->adminmodel->add_stocktransitems($tiType,$updatedActual,$updateQtyl,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
+                $this->adminmodel->update_stock($stID, $updateQtyl);
+                $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
                                 
             }else if($tiActual < $actualQtyUpdate) {
                     $updateQtyh = $stQty - ($actualQtyUpdate - $tiActual); 
-                    $this->baristamodel->add_stocktransitems($tiType,$updatedActual,$updateQtyh,$tiDate,$tiRemarks,$stID, $siID,$date_recorded);
-                    $this->baristamodel->update_stock($stID, $updateQtyh);
-                    $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+                    $this->adminmodel->add_stocktransitems($tiType,$updatedActual,$updateQtyh,$tiDate,$tiRemarks,$stID, $siID,$date_recorded);
+                    $this->adminmodel->update_stock($stID, $updateQtyh);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
 
             }else{
                 
-                    $this->baristamodel->add_stocktransitems($tiType,0,$stQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
-                    $this->baristamodel->update_stock($stID, $stQty);
-                    $this->baristamodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
+                    $this->adminmodel->add_stocktransitems($tiType,0,$stQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded);
+                    $this->adminmodel->update_stock($stID, $stQty);
+                    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user updated a spoilage.", "update", $tiRemarks);
             }
            
         }else{

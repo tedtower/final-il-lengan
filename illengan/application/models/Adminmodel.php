@@ -2429,7 +2429,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         return $this->db->query($query)->result_array();
     }
     function get_deliveryItems(){
-        $query = "SELECT spmID,tiID, d.dID, di.diID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, 
+        $query = "SELECT tiDiscount,stQty,spmID,tiID, d.dID, di.diID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, 
         CONCAT(spmName,' ',stSize) as merch, stSize, spmName, spmPrice, spmActual, tiQty as qty, uomName, tiActual as actual, 
         tiType, tiSubtotal, diStatus, piStatus FROM delivery_items di LEFT JOIN transitems ti USING (diID) LEFT JOIN deliveries d USING (dID) 
         LEFT JOIN purchase_items USING (piID) LEFT JOIN stockitems st ON (ti.stID = st.stID) LEFT JOIN suppliermerchandise spm 
@@ -2654,18 +2654,22 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
             if(count($drItems) > 0){
             for($in = 0; $in < count($drItems) ; $in++){
                 if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
+
+                    $updateActual=$drItems[$in]["tiActualCur"]-$drItems[$in]["actualQty"];
+                    $updateQty=$drItems[$in]["tiQtyCur"]-$drItems[$in]["tiQty"];
                     $updatedqty =  $drItems[$in]["stQty"]-($drItems[$in]["spmActual"]*($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"]));
-                    $this->db->query($query,array("restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
-                    $this->update_stockQty($drItems[$in]["stID"], $updatedqty);
-                    print_r($query);
-                }else{
-                    $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
-                    $this->db->query($query,array("restock",$drItems[$in]["tiQty"],$drItems[$in]["tiActual"],$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
+                    $this->db->query($query,array("restock",$updateQty,$updateActual,$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
-                    print_r($query);
+                   
+                }else{
+                    $updateActual=$drItems[$in]["actualQty"]-$drItems[$in]["tiActualCur"];
+                    $updateQty=$drItems[$in]["tiQty"]-$drItems[$in]["tiQtyCur"];
+                    $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
+                    $this->db->query($query,array("restock",$updateQty,$updateActual,$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
+                    $this->update_stock($drItems[$in]["stID"], $updatedqty);
                 }
-        }
-    }
+            }
+            }
     }
     function updateStatus($diStatus,$diID,$dID){
         $query = "UPDATE `delivery_items` SET `diStatus`=? WHERE`diID`= ? AND`dID`=?";

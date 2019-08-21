@@ -115,6 +115,7 @@
         $('.total').text(drs[0].pTotal);
         
         drItems.forEach(function(dri) {
+            
             $("#drForm .ic-level-3").append(`
                 <tr class="ic-level-1" data-dr="${dri.dID}" data-dri="${dri.diID}" data-trans="${dri.tiID} data"> 
                     <td style="padding:1% !important"><input type="text"
@@ -195,24 +196,25 @@
              var actualQty = tiQty * spmActual;
              var subtotal = parseFloat(tiQty * price);
              drTotal = parseFloat(drTotal + subtotal);
-             var updateActual=actualQty-tiActualCur;
-             var updateQty=tiQty-tiQtyCur;
+             var tiActual = actualQty;
 
              drItems.push({
                  tiID: isNaN(parseInt($(this).attr('data-trans'))) ? (null) : parseInt($(this).attr('data-trans')),
                  diID: isNaN(parseInt($(this).attr('data-dri'))) ? (null) : parseInt($(this).attr('data-dri')),
                  dID: isNaN(parseInt($(this).attr('data-dr'))) ? (null) : parseInt($(this).attr('data-dr')),
-                 tiQty: updateQty,
                  date: date,
-                 tiActual: updateActual,
                  tiSubtotal: subtotal,
                  tiRemarks:remarks,
                  tiActualCur:tiActualCur,
+                 tiQtyCur:tiQtyCur,
                  discount:discount,
                  spmActual:spmActual,
                  stQty:stQty,
                  stID:stID,
-                 spmID:spmID
+                 spmID:spmID,
+                 tiActual:tiActual,
+                 actualQty:actualQty,
+                 tiQty:tiQty
 
              }); 
             console.log(drItems);
@@ -247,6 +249,9 @@
             // complete: function() {
             //     location.reload();
             // },
+            beforesend: function(){
+                console.log(dID, diID, receipt, diStatus, drItems);
+            },
              error: function(response, setting, error) {
                  console.log(error);
                  console.log(response.responseText);
