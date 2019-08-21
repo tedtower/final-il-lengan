@@ -1056,7 +1056,7 @@ function countConsump(){
         }
         
     }
-    function update_riStatus($ti, $accountID, $action) {
+    function update_riStatus($ti, $accountID, $action, $rDateRecorded) {
         $query = "UPDATE return_items SET riStatus = ? WHERE riID = ?";
         for($in = 0; $in < count($ti) ; $in++){
             $this->db->query($query, array($ti[$in]['riStatus'], $ti[$in]['riID']));
