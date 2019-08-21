@@ -160,7 +160,3 @@
 </body>
 
 
-                                <!--Search-->
-                                <div id="addonTableSearch" style="width:25%; float:right; border-radius:5px">
-                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
-                                </div
