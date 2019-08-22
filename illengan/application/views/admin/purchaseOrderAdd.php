@@ -165,7 +165,7 @@
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-id="${spmid}" data-actual="${spmActual}" data-stid="${stID}" value="${spmName}" name="spm" readonly></td>
                         <td style="padding:1% !important"><input type="number"
-                                class="form-control form-control-sm" value='0' min="0" name="qty" required></td>
+                                class="form-control form-control-sm" min="1" name="qty" required></td>
                         <td style="padding:1% !important"><input type="text"
                                 class="form-control form-control-sm" data-uom="${uomID}" value="${uomAbbreviation}" name="unit" readonly></td>
                         <td style="padding:1% !important"><input type="number"

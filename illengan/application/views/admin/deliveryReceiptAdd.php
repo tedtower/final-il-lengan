@@ -289,7 +289,7 @@
                         <input type="number"  min="0" name="tiDiscount" id="tiDiscount"
                            class="tiDiscount form-control form-control-sm" placeholder="Discount" >
                        <input type="number" name="spmPrice" id="spmPrice"
-                           class="form-control form-control-sm" placeholder="Price" value="${spmPrice}">
+                           class="form-control form-control-sm" placeholder="Price" value="${spmPrice}" readonly>
                        <input type="number" name="tiSubtotal" id="tiSubtotal"
                            class="form-control form-control-sm" placeholder="Subtotal"
                            readonly>
@@ -657,7 +657,7 @@
                     });
                        
                     params.data = {
-                        supplier:supplier,
+                        spID:supplier,
                         spAltName: source,
                         date: date,
                         receipt: receipt,
