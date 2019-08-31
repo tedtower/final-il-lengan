@@ -335,7 +335,8 @@ class Barista extends CI_Controller{
             $data = array(
                 'slips' => $this->baristamodel->get_servedorderslips(),
                 'lists' => $this->baristamodel->get_servedOlist(),
-                'addons' => $this->baristamodel->get_addons()
+                'addons' => $this->baristamodel->get_addons(),
+		'orderaddons' => $this->baristamodel->get_oaddons()
             );
             header('Content-Type: application/json');
                 echo json_encode($data, JSON_PRETTY_PRINT);
