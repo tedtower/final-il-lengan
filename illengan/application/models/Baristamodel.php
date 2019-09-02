@@ -19,10 +19,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 redirect('login');
             } 
         }
-        function get_oaddons(){
-            $query = "SELECT * from orderaddons right join addons using (aoID)";
-            return $this->db->query($query)->result_array();
-        }
+    
         function get_orderlist($osID){
             $query = "Select olID, olDesc, olQty, olSubTotal from orderlists inner join preferences using (prID) where osID = ?";
             return $this->db->query($query, array($order_id))->result_array(); 
@@ -93,8 +90,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $query->result();
         }
 
-        function get_oslips(){//current date slips
-            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" and orderslips.osDateTime >= CURDATE() GROUP BY osID, tableCode' );
+        function get_oslips(){
+            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" GROUP BY osID, tableCode' );
             return $query->result();
 
         }
@@ -194,7 +191,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
         function get_servedorderslips(){
-            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID WHERE orderslips.osDateTime >= CURDATE() GROUP BY orderslips.osID, tableCode";
+            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode"; //WHERE CAST(osDateTime AS date) = cast((now()) as date)
             return $this->db->query($query)->result_array();
         }
         function get_servedOlist(){
