@@ -248,7 +248,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return  $this->db->query($query)->result_array();
         }
         function get_addons(){
-            $query = "Select * from addons";
+            $query = "Select * from addons left join orderaddons using (aoID)";
             return $this->db->query($query)->result_array();
         }
         function add_aospoil($date_recorded,$date,$addons,$account_id,$user){

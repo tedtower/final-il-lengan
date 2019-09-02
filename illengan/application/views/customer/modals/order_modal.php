@@ -21,9 +21,9 @@
                     echo form_hidden('cust_name', $cust_name);
                     echo '<input type="hidden" id="cust_name" value="'.$cust_name.'">';
                     if(empty($cust_name)){
-                        echo '<div class="mb-3"><strong>Table Code: </strong>'.$table_no['table_code'].'<br><b>Date:&nbsp;</b>'.$date.'<br></div>';
+                        echo '<div class="mb-3">Table Code: <strong>'.$table_no['table_code'].'</strong><br>Date:&nbsp;<b>'.$date.'</b><br></div>';
                     }else{
-                        echo '<div class="mb-3"><strong>Customer Name:</strong>'.$cust_name.'<br><strong>Table Code: </strong>'.$table_no['table_code'].'<br><b>Date:&nbsp;</b>'.$date.'<br></div>';
+                        echo '<div class="mb-3">Customer Name: <strong>'.$cust_name.'</strong><br>Table Code: <strong>'.$table_no['table_code'].'</strong><br>Date:&nbsp;<b>'.$date.'</b><br></div>';
                     }
                     if(empty($orders)) {
                         echo '<h5>You have no saved orders. To order menu items click on <span style="color:#b96e43">"Save to Orderlist"</span> button.</h5>';

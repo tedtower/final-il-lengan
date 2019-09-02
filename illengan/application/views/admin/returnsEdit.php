@@ -81,6 +81,7 @@
         $('input[name="supplier"]').val(returns[0].spAltName);
         $('input[name="supplier"]').val(returns[0].spAltName);
         $('input[name="date"]').val(returns[0].rDate);
+        console.log(returns[0].rDate);
 
         returnitems.forEach(function(ri) {
             $("tbody.deliveries").append(`
@@ -92,7 +93,7 @@
                         class="form-control form-control-sm" readonly></td>
                 <td>
                     <div class="input-group">
-                        <input type="number" value="${ri.tiQty}" data-qty="${ri.tiQty}" name="qty"
+                        <input type="number" value="${ri.totalQty}" data-qty="${ri.totalQty}" name="qty"
                             class="form-control form-control-sm" min="1">
                         <div class="input-group-append">
                             <span class="input-group-text" style="font-size:12px">
@@ -144,7 +145,7 @@
                     diID: isNaN(parseInt($(this).data("riid"))) ? (null) : parseInt($(this).data("diid")),
                     stID: parseInt($(this).find("input[name='stock']").attr('data-stockid')),
                     spmID: parseInt($(this).find("input[name='stock']").attr('data-spmid')),
-                    tiQty: tiQty,
+                    tiQty: tiQty - orgQty,
                     tiActualQty: actualQty,
                     tiActual: actualQty - (orgQty * actqty),
                     tiSubtotal: tiQty * price,

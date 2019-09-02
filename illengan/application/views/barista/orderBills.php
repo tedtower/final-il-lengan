@@ -6,7 +6,7 @@
   <?php include_once('templates/head.php') ?>
 </head>
 
-<body style="background:white">
+<body style="background:whitesmoke">
   <?php include_once('templates/navigation.php') ?>
   <!--End Top Nav-->
   <div class="content">
@@ -76,7 +76,7 @@
           <!--End Table Content-->
         <form id="formEdit" accept-charset="utf-8">
           <div class="modal-body">
-          <input type="checkbox" class="discount form-control-sm" name="discount" id="discount">Senior Citizen Discount
+          <div class="align-center"><input type="checkbox" class="discount form-control-sm" name="discount" id="discount" style="margin-right: 10px">Senior Citizen Discount</div>
             <!--Quantity-->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -149,7 +149,7 @@
           <!--End Table Content-->
         <form id="formEdit" class="formEdit2"  accept-charset="utf-8">
           <div class="modal-body">
-          <input type="checkbox" class="discount2 form-control-sm" name="discount2" id="discount2"  > Senior Citizen Discount
+          <div class="align-center"> <input type="checkbox" class="discount2 form-control-sm" name="discount2" id="discount2" style="margin-right: 10px"> Senior Citizen Discount</div>
             <!--Quantity-->
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -281,6 +281,8 @@
                     "data-osID"));
             $("#Modal_Pay2").find("input[name='custName2']").val($(this).closest("tr").attr(
 					          "data-custName"));
+            $("#Modal_Pay2").find("input[name='amount_payable2']").attr("data-payable", $(this).closest("tr").attr(
+                "data-payable"));
             
         });
         $(".pay").last().on('click', function () {
@@ -291,8 +293,6 @@
                   "data-osID"));
           $("#Modal_Pay").find("input[name='custName']").val($(this).closest("tr").attr(
                   "data-custName"));
-
-          
 
           });
         $(".item_delete").last().on('click', function () {
@@ -341,7 +341,7 @@
                             <td><input type="text" name="aoTotal" class="form-control form-control-sm"  value="${items.aoTotal}" required readonly></td>
                             <td><input type="text" name="olSubtotal" class="form-control form-control-sm"  value="${items.olSubtotal} " required readonly></td>
                             <td></td>
-                            </tr>`
+                      </tr>`
             }).join('')}`);
           }
 
@@ -471,6 +471,7 @@ function setTotal() {
    
     //---------------------For Resolving Payment Multiple Payment---------------------------
     $("#Modal_Pay").find("input[name='amount_payable']").val(parseFloat(total));
+    $("#Modal_Pay").find("input[name='amount_payable']").attr("data-payable", parseFloat(total));
   
     $("#Modal_Pay form").on('submit', function (event) {
         event.preventDefault();
@@ -496,7 +497,7 @@ function setTotal() {
     
 }
         $(document).on('click', '.discount', function () {
-        var payable = parseFloat(document.getElementById('amount_payable').value);
+        var payable = parseFloat($('#amount_payable').data("payable"));
           if (document.getElementById('discount').checked){
                   var disPrice = parseFloat(payable - (0.20*payable));
                   $("#formEdit").find("input[name='amount_payable']").val(disPrice);
@@ -507,7 +508,7 @@ function setTotal() {
 
         $(document).on('click', '.discount2', function () {
          
-        var payable = parseFloat(document.getElementById('amount_payable2').value);
+        var payable = parseFloat($('#amount_payable2').data("payable"));
           if (document.getElementById('discount2').checked){
                   var disPrice = parseFloat(payable - (0.20*payable));
                   console.log(disPrice);

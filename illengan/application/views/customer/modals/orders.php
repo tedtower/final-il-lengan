@@ -12,8 +12,8 @@
 		$cart_check = $this->cart->contents();
 		$cust_name = $this->session->userdata('cust_name');
         $table_no = $this->session-> userdata('table_no');
-		echo '<strong>Customer Name:</strong>'.$cust_name.'
-		<br><strong>Table Number: </strong>'.$table_no.'<br>';
+		echo 'Customer Name: <strong>'.$cust_name.'
+		</strong><br>Table Number: <strong>'.$table_no.'</strong><br>';
           if(empty($cart_check)) { //check if the customer did not order yet
             echo 'To order menu items click on "Save to Orderlist" Button';
 		  }else{
