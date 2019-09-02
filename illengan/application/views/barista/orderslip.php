@@ -105,21 +105,23 @@ function setPenOrdersData() {
                                     <th style="width:2%"></th>
                                     <th style="width:2%"></th>
                                 </tr>
-                            </thead>
-                    ${item.orderlists.map(ol => {
-                        //olID = ol.olID;
-                                    return `
-                                    <tbody style="font-size:13px">
-                                <tr data-id="${ol.olID}" style="overflow:auto">
-                                    <td class="p-2">${ol.olQty}</td>
-                                    <td class="p-2">${ol.olDesc}</td>
+                            </thead>`;
+                    var ol = olist.filter(function(ot){
+                        return ot.osID == item.orderslips.osID;
+                    });
+
+                    header += `<tbody style="font-size:13px">`
+                    for(o in ol){
+                    header +=`<tr data-id="${ol[o].olID}" style="overflow:auto">
+                                    <td class="p-2">${ol[o].olQty}</td>
+                                    <td class="p-2">${ol[o].olDesc}</td>
                                     <td class="p-2">
                                         <input type="button" style="width:100%;padding:6%;background:orange;color:white;border:0;border-radius:5px"
-                                       id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>
+                                       id="item_status" data-id="${ol[o].olID}" value="${ol[o].olStatus}"/>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <img class="cancelBtn" data-status="${ol.olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
+                                        <img class="cancelBtn" data-status="${ol[o].olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
                                     </td>
                                 </tr>
                                 <tr>
@@ -133,9 +135,17 @@ function setPenOrdersData() {
                                 <td></td>
                                 <td></td>
                                 </tr>
-                                `
-                                }).join('')} 
-                                </tbody>
+                                <tr class="thisAddons${ol[o].olID}">`;
+                    var add = oad.filter(function(oa){
+                        return oa.olID == ol[o].olID;
+                    })
+                    
+                    header += `<td>Addons:</td>`;
+                        for(i in add){
+                        header +=  `<td>${add[i].aoQty}&nbsp;${add[i].aoName}<br></td>`;
+                        }               
+                    }
+                    header += `</tr></tbody>
                         </table>
                     </div>
                     <!--Footer-->
