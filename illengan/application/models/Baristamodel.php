@@ -20,6 +20,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             } 
         }
     
+        function get_oaddons(){
+            $query = "SELECT * from orderaddons right join addons using (aoID)";
+            return $this->db->query($query)->result_array();
+        }
+        
         function get_orderlist($osID){
             $query = "Select olID, olDesc, olQty, olSubTotal from orderlists inner join preferences using (prID) where osID = ?";
             return $this->db->query($query, array($order_id))->result_array(); 
