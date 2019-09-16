@@ -59,7 +59,7 @@
         });
       });
     var olID;
-      function setPenOrdersData() {
+      function setPenOrdersData(olist,oad) {
               slips.forEach(function(item) {
                     var header = `
             <!--Long Order Card-->
