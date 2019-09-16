@@ -56,6 +56,7 @@ $(function () {
             orderlists = data.orderlists;
             addons = data.addons;
             tables = data.tables;
+            orderaddons = data.orderaddons;
             setPenOrdersData(orderlists,orderaddons);
         },
         error: function (response, setting, errorThrown) {
