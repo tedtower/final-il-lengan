@@ -104,7 +104,7 @@
                                     </td>
                                     <td></td>
                                     <td>
-                                        <img class="cancelBtn" data-status="${ol[o].olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
+                                        <img class="cancelBtn" data-status="${ol[o].olStatus}" data-id="${ol[o].olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
                                     </td>
                                 </tr>
                                 <tr>
