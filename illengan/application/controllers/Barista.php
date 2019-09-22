@@ -255,6 +255,28 @@ class Barista extends CI_Controller{
             $osID = $this->input->post('osID');
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
+            $items = $this->baristamodel->get_orderSlipItems($osID);
+            // if osID is invalid catch error
+            //
+            //
+            if(count($items) == 0 ){
+                throw Error;
+            }
+            // olID AS item,
+            // prID AS pref,
+            // olQty AS qty
+            foreach($items as $item){
+                $prefStocks = $this->baristamodel->get_prefStockItems($item['pref']);
+                if (count($prefStocks) == 0){
+                    continue;
+                }
+                // prID AS pref,
+                // stID AS stock,
+                // prstQty AS qty
+                foreach($prefStocks as $prefStock){
+                    $this->baristamodel->update_stockQty($prefStock['stock'], (-1 * ($prefStock['qty'] * $item['qty'])));
+                }
+            }
             $this->baristamodel->update_payment2($status,$osID,$payDate, $date_recorded);
             $this->destockPrefStock($osID);
         }else{
@@ -306,37 +328,38 @@ class Barista extends CI_Controller{
         }
         function updateStatus(){
             if($this->checkIfLoggedIn()){
-            $stats = $this->input->post('status');
-            $id = $this->input->post('id');
-            $this->baristamodel->updateStats($stats, $id);
-        }else{
-            redirect('login');
+                $stats = $this->input->post('status');
+                $id = $this->input->post('id');
+                $this->baristamodel->updateStats($stats, $id);
+            }else{
+                redirect('login');
             }
         }
+        // function 
         function deleteOrderItem(){
             if($this->checkIfLoggedIn()){
-            $id = $this->input->post('id');
-            $this->baristamodel->cancelOrder($id);
-        }else{
-            redirect('login');
+                $id = $this->input->post('id');
+                $this->baristamodel->cancelOrder($id);
+            }else{
+                redirect('login');
+                }
             }
-        }
         function vieworderslip(){
             if($this->checkIfLoggedIn()){
-            $data['orderlists'] = $this->baristamodel->get_olist();
-            $data['orderslips'] = $this->baristamodel->get_orderslips();
-            $this->load->view('barista/orderslip', $data);
-        }else{
-            redirect('login');
+                $data['orderlists'] = $this->baristamodel->get_olist();
+                $data['orderslips'] = $this->baristamodel->get_orderslips();
+                $this->load->view('barista/orderslip', $data);
+            }else{
+                redirect('login');
+                }
             }
-        }
         function getServed(){
             if($this->checkIfLoggedIn()){
             $data = array(
                 'slips' => $this->baristamodel->get_servedorderslips(),
                 'lists' => $this->baristamodel->get_servedOlist(),
                 'addons' => $this->baristamodel->get_addons(),
-		'orderaddons' => $this->baristamodel->get_oaddons()
+		        'orderaddons' => $this->baristamodel->get_oaddons()
             );
             header('Content-Type: application/json');
                 echo json_encode($data, JSON_PRETTY_PRINT);
@@ -346,14 +369,14 @@ class Barista extends CI_Controller{
         }
         function getOrderslip(){
             if($this->checkIfLoggedIn()){
-            $data = array(
-                'orderslips' => $this->baristamodel->get_oslips(),
-                'orderlists' => $this->baristamodel->get_pendingOlist(),
-                'addons' => $this->baristamodel->get_addons(),
-		'tables' => $this->baristamodel->get_availableTables(),
-		'orderaddons' => $this->baristamodel->get_oaddons()
-            );
-            header('Content-Type: application/json');
+                $data = array(
+                    'orderslips' => $this->baristamodel->get_oslips(),
+                    'orderlists' => $this->baristamodel->get_pendingOlist(),
+                    'addons' => $this->baristamodel->get_addons(),
+                    'tables' => $this->baristamodel->get_availableTables(),
+                    'orderaddons' => $this->baristamodel->get_oaddons()
+                );
+                header('Content-Type: application/json');
                 echo json_encode($data, JSON_PRETTY_PRINT);
             }else{
                 redirect('login');

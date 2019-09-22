@@ -20,5 +20,9 @@ class Loginmodel extends CI_Model{
                             <div style="font-size:15px">Warning Message</div><hr style="margin:0;margin-top:1%"><div style="margin-top:3%;margin-bottom:2%;color:grey;font-size:14px;">'.$this->err[0].'</div></div>';
         }
     }
+    function set_isOnline($id, $stat){
+        $query = "UPDATE accounts SET aIsOnline = ? WHERE aID = ?";
+        return $this->db->query($query, array($stat, $id));
+    }
 }
 ?>
