@@ -936,7 +936,7 @@ function countConsump(){
 }
     //--------------------------------
     function get_returns() {
-        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as rDate FROM `returns` LEFT JOIN supplier USING (spID)";
+        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as newDate FROM `returns` LEFT JOIN supplier USING (spID)";
         return $this->db->query($query)->result_array();
     }
     function get_unresolveReturns() {
@@ -945,7 +945,7 @@ function countConsump(){
         return $this->db->query($query)->result_array();
     }
     function get_datareturns($s, $l) {
-        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as rDate FROM `returns` LEFT JOIN supplier USING (spID) LIMIT $s, $l";
+        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as newDate FROM `returns` LEFT JOIN supplier USING (spID) LIMIT $s, $l";
         return $this->db->query($query)->result_array();
     }
     function countReturns(){
@@ -953,12 +953,18 @@ function countConsump(){
         $result = $this->db->query($query)->result_array();
         return $result[0]['allcount'];
     }
+    // function get_returnItems() {
+    //     $query = "SELECT * FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
+    //     INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID) INNER JOIN (SELECT max(tiID) as tiID 
+    //     FROM transitems ti WHERE ti.tiType = 'return' GROUP BY riID) AS maxNew USING (tiID)";
+    //     return $this->db->query($query)->result_array();
+    // }  
     function get_returnItems() {
-        $query = "SELECT * FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
-        INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID) INNER JOIN (SELECT max(tiID) as tiID 
-        FROM transitems ti WHERE ti.tiType = 'return' GROUP BY riID) AS maxNew USING (tiID)";
+        $query = "SELECT *, SUM(tiQty) AS totalQty FROM return_items LEFT JOIN transitems ti USING (riID) INNER JOIN suppliermerchandise USING (spmID) 
+        INNER JOIN uom USING (uomID) LEFT JOIN stockitems st ON (ti.stID = st.stID) GROUP BY riID AND diID";
         return $this->db->query($query)->result_array();
     }
+  
     function get_deliveries() {
         $query = "SELECT diID, tiID, spmID, d.spID, ti.stID, sup.spName, spmPrice, spmActual, receiptNo, spAltName, stName, u.uomAbbreviation as uomName,
         tiQty, tiActual, dDate as pDate, CONCAT(receiptNo,' - ', DATE_FORMAT(dDate, '%b %d, %Y')) AS trans, 
@@ -1171,11 +1177,11 @@ function countConsump(){
     }
     function add_menuStock($items, $account_id, $date){
         $query = "INSERT INTO prefstock(prID, stID, prstQty)
-        VALUES(?, ?, ?)";
+            VALUES(?, ?, ?)";
         foreach($items as $item){
             $this->db->query($query, array($item['prID'],$item['stID'],$item['qty']));
         }
-        $this->add_actlog($account_id, $date, "Admin added prefstock.", "add", '');;
+        $this->add_actlog($account_id, $date, "Admin added prefstock.", "add", '');
     }
     function add_uom($uomName, $uomAbbreviation, $uomVariant, $uomStore){
         $query = "INSERT into uom (uomName, uomAbbreviation, uomVariant, uomStore) values (?,?,?,?)";
@@ -2428,6 +2434,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         as total USING (dID)";
         return $this->db->query($query)->result_array();
     }
+    
     function get_deliveryItems(){
         $query = "SELECT tiDiscount,stQty,spmID,tiID, d.dID, di.diID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, 
         CONCAT(spmName,' ',stSize) as merch, stSize, spmName, spmPrice, spmActual, tiQty as qty, uomName, tiActual as actual, 

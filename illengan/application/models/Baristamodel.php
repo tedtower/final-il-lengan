@@ -8,6 +8,43 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
             return false;
         }
+
+        // AUTOMATIC CONSUMPTION UPON PAYMENT
+        // Get Orderlist by Orderslip ID
+        function get_orderSlipItems($id){
+            $query = "SELECT
+                    olID AS item,
+                    prID AS pref,
+                    olQty AS qty
+                FROM
+                    orderlists
+                WHERE
+                    osID = ?;";
+            return $this->db->query($query, array($id))->result_array();
+        }
+        // Get Preference affiliated stocks
+        function get_prefStockItems($id){
+            $query = "SELECT
+                    prID AS pref,
+                    stID AS stock,
+                    prstQty AS qty
+                FROM
+                    prefstock
+                WHERE
+                    prID = ?;";
+            return $this->db->query($query, array($id))->result_array();
+        }
+        // Deduct from current stock qunatity
+        // For automatic consumption $stQty value will be negative to deduct from quantity instead of adding
+        function update_stockQty($stID, $stQty){
+            $query = "UPDATE stockitems
+            SET
+                stQty = stQty + ?
+            WHERE
+                stID = ?";
+            return $this->db->query($query, array($stQty, $stID));
+        }
+
         
         function index()
         {
@@ -20,9 +57,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             } 
         }
     
+        function get_oaddons(){
+            $query = "SELECT * from orderaddons right join addons using (aoID)";
+            return $this->db->query($query)->result_array();
+        }
+        
         function get_orderlist($osID){
             $query = "Select olID, olDesc, olQty, olSubTotal from orderlists inner join preferences using (prID) where osID = ?";
-            return $this->db->query($query, array($order_id))->result_array(); 
+            return $this->db->query($query, array($osID))->result_array(); 
         }
         function orderlist(){
             $query = "SELECT * from orderslips join orderlists using (osID) join preferences using (prID)";
@@ -148,13 +190,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         //         }
         //     }
         // }
-
+        
+        # For Multiple Order Slips
         function update_payment($status,$osID,$payDate,$date_recorded){
             $query = "Update orderslips set payStatus = ?, osPayDateTime = ?, osDateRecorded = ? where osID = ?";
             for($in = 0; $in < count($osID) ; $in++){
-            $this->db->query($query, array($status,$payDate, $date_recorded, $osID[$in]['osID']));
+                $this->db->query($query, array($status,$payDate, $date_recorded, $osID[$in]['osID']));
             }
         }
+
+        # For One Order Slip
         function update_payment2($status,$osID,$payDate, $date_recorded){
             $query = "Update orderslips set payStatus = ?, osPayDateTime = ?, osDateRecorded = ? where osID = ?";
             $this->db->query($query, array($status,$payDate, $date_recorded, $osID));
@@ -191,7 +236,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $this->db->query($query)->result_array();
         }
         function get_servedorderslips(){
-            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID GROUP BY orderslips.osID, tableCode"; //WHERE CAST(osDateTime AS date) = cast((now()) as date)
+            $query = "SELECT * from orderslips inner join (Select * from orderlists  where orderlists.olStatus = 'served') as orderlists on orderslips.osID = orderlists.osID WHERE orderslips.osDateTime >= CURDATE() GROUP BY orderslips.osID, tableCode"; //WHERE CAST(osDateTime AS date) = cast((now()) as date)
             return $this->db->query($query)->result_array();
         }
         function get_servedOlist(){
@@ -248,7 +293,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return  $this->db->query($query)->result_array();
         }
         function get_addons(){
-            $query = "Select * from addons";
+            $query = "Select * from addons left join orderaddons using (aoID)";
             return $this->db->query($query)->result_array();
         }
         function add_aospoil($date_recorded,$date,$addons,$account_id,$user){
@@ -399,14 +444,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         function add_stocktransitems($tiType,$actualQtyUpdate,$tiRemainingQty,$tiDate,$tiRemarks, $stID, $siID,$date_recorded){
             $query = "INSERT INTO `transitems`(`tiID`, `tiType`,`tiActual`, `remainingQty`, `tiRemarks`, `tiDate`, `stID`,`siID`,`dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?)";
             return $this->db->query($query, array($tiType,$actualQtyUpdate,$tiRemainingQty,$tiRemarks,$tiDate, $stID, $siID,$date_recorded));
-        }
-        function update_stockQty($stID, $stQty){
-            $query = "UPDATE stockitems
-            SET
-                stQty = stQty + ?
-            WHERE
-                stID = ?";
-            return $this->db->query($query, array($stQty, $stID));
         }
         function destockvarItems($stID,$curQty,$actualQty){
             $query = "UPDATE stockitems SET stQty = ? - ? WHERE stID = ?;";
@@ -1011,7 +1048,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     function add_consumption($date_recorded,$stocks,$account_id,$user,$date,$remarks) {
         $query = "INSERT INTO consumptions (cID, cDate, cDateRecorded) VALUES (NULL,?,?)";
         if($this->db->query($query, array($date, $date_recorded))) {
-             $this->consumed_item($this->db->insert_id(), $stocks,$remarks,$date,$account_id,$date_recorded,$user);
+            $this->consumed_item($this->db->insert_id(), $stocks,$remarks,$date,$account_id,$date_recorded,$user);
         }
     }
     function consumed_item($cID, $stocks,$remarks,$date,$account_id,$date_recorded,$user) {

@@ -47,7 +47,8 @@
                 });
                 lists = data.lists;
                 addons = data.addons;
-                setPenOrdersData();
+                orderaddons = data.orderaddons;
+                setPenOrdersData(lists,orderaddons);
                 console.log('Success');
                 console.log(lists, addons);
             },
@@ -58,7 +59,7 @@
         });
       });
     var olID;
-      function setPenOrdersData() {
+      function setPenOrdersData(olist,oad) {
               slips.forEach(function(item) {
                     var header = `
             <!--Long Order Card-->
@@ -87,40 +88,45 @@
                                     <th style="width:2%"></th>
                                     <th></th>
                                 </tr>
-                            </thead>
-                    ${item.lists.map(ol => {
-                        //olID = ol.olID;
-                                    return `
-                                    <tbody style="font-size:13px">
-                                <tr data-id="${ol.olID}">
-                                    <td class="p-2">${ol.olQty}</td>
-                                    <td class="p-2">${ol.olDesc}</td>
+                            </thead>`;
+                    var ol = olist.filter(function(ot){
+                        return ot.osID == item.slips.osID;
+                    });
+
+                    header += `<tbody style="font-size:13px">`
+                    for(o in ol){
+                    header +=`<tr data-id="${ol[o].olID}" style="overflow:auto">
+                                    <td class="p-2">${ol[o].olQty}</td>
+                                    <td class="p-2">${ol[o].olDesc}</td>
                                     <td class="p-2">
-                                        <input type="button" style="width:100%;padding:6%;background:green;color:white;border:0;border-radius:5px"
-                                       id="item_status" data-id="${ol.olID}" value="${ol.olStatus}"/>
+                                        <input type="button" style="width:100%;padding:6%;background:orange;color:white;border:0;border-radius:5px"
+                                       id="item_status" data-id="${ol[o].olID}" value="${ol[o].olStatus}"/>
                                     </td>
                                     <td></td>
                                     <td>
-                                        <img class="cancelBtn" data-status="${ol.olStatus}" data-id="${ol.olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
+                                        <img class="cancelBtn" data-status="${ol[o].olStatus}" data-id="${ol[o].olID}"src="/assets/media/admin/error.png" style="width:18px;height:18px; float:right;"  data-toggle="modal" data-target="#cancelModal">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="p-2">Remarks:</td>
-                                    <td class="p-2" colspan="4">${ol.olRemarks}</td>
+                                    <td class="p-2" colspan="4">${ol[o].olRemarks}</td>
                                 </tr>
-                                <tr>
-                                    <td class="p-2">Addons:</td>
-                                    <td class="aDoQty${ol.olID} p-2"></td>
-                                    <td colspan="2" class="aDoName${ol.olID}"></td>
-                                    <td class="aDoPrice${ol.olID}"></td>
-                                </tr>
-                                `
-                                }).join('')} 
-                                </tbody>
+                                <tr class="p-2" colspan="4">`;
+                    var add = oad.filter(function(oa){
+                        return oa.olID == ol[o].olID;
+                    })
+                    
+                    header += `<td>Addons:</td>`;
+                        for(i in add){
+                        header +=  `<td>${add[i].aoQty}&nbsp;${add[i].aoName}<br></td>`;
+                        }             
+                    }
+                    header += `</tr></tbody>
                         </table>
                     </div>
                     <!--Footer-->
-                    <div class="card-footer p-1 m-1 text-muted">
+                        <div class="card-footer text-muted">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -219,7 +225,6 @@
                 }
             });
 
-            addAddons();
         }
        
         function cancelOrder(cancelID){
@@ -287,21 +292,6 @@
             }
             });
     }
-
-    function addAddons() {
-       // addons.forEach(ao => {
-           for(var i=0; i < addons.length; i++){
-            if($(".thisAddons"+addons[i].olID) != ''){
-                for(var i=0; i < addons.length; i++){
-                    $(".aDoQty"+addons[i].olID).append(`${addons[i].aoQty}<br>`);
-                    $(".aDoName"+addons[i].olID).append(`${addons[i].aoName}<br>`);
-                    $(".aDoPrice"+addons[i].olID).append(`${addons[i].aoTotal}<br>`);
-                
-           }     
-            }
-  //  });
-    }
-}
 
 $(document).ready(function(){
             $(function() {  

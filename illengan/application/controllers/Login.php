@@ -24,6 +24,7 @@ class Login extends CI_Controller{
                 'user_type' => $loginAttempt[0]['aType']
             );
             $this->session->set_userdata($user_data);
+            $this->loginmodel->set_isOnline($loginAttempt[0]['aID'], 1);
             $this->homeRedirect();
         }else{
             $data['err'] = $loginAttempt;

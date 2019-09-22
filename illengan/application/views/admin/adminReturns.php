@@ -350,6 +350,7 @@
                 var retItem= data.returnitems;
                 var resItem= data.resolvedItems;
                 showTable(ret, retItem, resItem);
+                console.log(retItem);
 			},
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);
@@ -370,7 +371,7 @@
             }else{
                 row += `<td>${item[r].spAltName}</td>`;
             }
-            row += `<td>${item[r].rDate}</td>`;
+            row += `<td>${item[r].newDate}</td>`;
             row += `<td>${item[r].rTotal}</td>`;
             row += `<td>
                     <a class="editReturnsbtn btn btn-secondary btn-sm" href="returns/formedit/${item[r].rID}" style="margin:0">Edit Return</a>                 
@@ -409,7 +410,7 @@
                 returnsDiv += `<tr id="${returnitems[retu].riID}">`;
                 returnsDiv += `<td>${returnitems[retu].returnReference}</td>`;
                 returnsDiv += `<td>${returnitems[retu].stName}</td>`;
-                returnsDiv += `<td>${returnitems[retu].tiQty}</td>`;
+                returnsDiv += `<td>${returnitems[retu].totalQty}</td>`;
                 returnsDiv += `<td>${returnitems[retu].uomName}</td>`;
                 returnsDiv += `<td>${returnitems[retu].tiActual}</td>`;
                 returnsDiv += `<td>&#8369; ${returnitems[retu].spmPrice}</td>`;
