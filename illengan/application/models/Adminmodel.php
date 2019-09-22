@@ -2661,12 +2661,15 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
                     $this->db->query($query,array("restock",$updateQty,$updateActual,$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
                    
-                }else{
+                }if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
                     $updateActual=$drItems[$in]["actualQty"]-$drItems[$in]["tiActualCur"];
                     $updateQty=$drItems[$in]["tiQty"]-$drItems[$in]["tiQtyCur"];
                     $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
                     $this->db->query($query,array("restock",$updateQty,$updateActual,$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
+                }else{
+                    $this->db->query($query,array("restock",0,0,0,0,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],0,$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
+                    $this->update_stock($drItems[$in]["stID"], 0);
                 }
             }
             }
