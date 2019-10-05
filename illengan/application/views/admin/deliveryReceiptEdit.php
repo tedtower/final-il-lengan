@@ -246,9 +246,9 @@
                  drItems: JSON.stringify(drItems)
              },
              
-            // complete: function() {
-            //     location.reload();
-            // },
+            complete: function() {
+                location.reload();
+            },
             beforesend: function(){
                 console.log(dID, diID, receipt, diStatus, drItems);
             },
