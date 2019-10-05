@@ -2436,12 +2436,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
     }
     
     function get_deliveryItems(){
-        $query = "SELECT tiDiscount,stQty,spmID,tiID, d.dID, di.diID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, 
-        CONCAT(spmName,' ',stSize) as merch, stSize, spmName, spmPrice, spmActual, tiQty as qty, uomName, tiActual as actual, 
-        tiType, tiSubtotal, diStatus, piStatus FROM delivery_items di LEFT JOIN transitems ti USING (diID) LEFT JOIN deliveries d USING (dID) 
-        LEFT JOIN purchase_items USING (piID) LEFT JOIN stockitems st ON (ti.stID = st.stID) LEFT JOIN suppliermerchandise spm 
-        USING (spmID) LEFT JOIN uom ON (spm.uomID = uom.uomID) INNER JOIN (SELECT max(tiID) as tiID FROM transitems ti GROUP BY diID)
-         AS maxNew USING (tiID) WHERE tiType = 'restock'";
+        $query = "SELECT tiDiscount,stQty,spmID,tiID, d.dID, di.diID, ti.piID, receiptNo, ti.stID, stName, CONCAT(stName,' ',stSize) as stock, CONCAT(spmName,' ',stSize) as merch, stSize, spmName, spmPrice, spmActual,SUM(tiQty) as qty, uomName, SUM(tiActual) as actual, tiType, tiSubtotal, diStatus, piStatus FROM delivery_items di LEFT JOIN transitems ti USING (diID) LEFT JOIN deliveries d USING (dID) LEFT JOIN purchase_items USING (piID) LEFT JOIN stockitems st ON (ti.stID = st.stID) LEFT JOIN suppliermerchandise spm USING (spmID) LEFT JOIN uom ON (spm.uomID = uom.uomID) WHERE tiType = 'restock' group by diID";
         return $this->db->query($query)->result_array();
     }
     function countDR(){
@@ -2660,24 +2655,25 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $query = "INSERT INTO `transitems`(`tiID`, `tiType`, `tiQty`, `tiActual`, `tiSubtotal`, `remainingQty`, `tiRemarks`, `tiDate`, `tiDiscount`, `stID`, `spmID`, `diID`, `dateRecorded`) VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?)";
             if(count($drItems) > 0){
             for($in = 0; $in < count($drItems) ; $in++){
-                if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
+                if($drItems[$in]["tiQty"] < $drItems[$in]["tiQtyCur"]){
 
-                    $updateActual=$drItems[$in]["tiActualCur"]-$drItems[$in]["actualQty"];
-                    $updateQty=$drItems[$in]["tiQtyCur"]-$drItems[$in]["tiQty"];
-                    $updatedqty =  $drItems[$in]["stQty"]-($drItems[$in]["spmActual"]*($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"]));
+                    $updateActual=$drItems[$in]["actualQty"]-$drItems[$in]["tiActualCur"];
+                    $updateQty=$drItems[$in]["tiQty"]-$drItems[$in]["tiQtyCur"];
+                    $updatedqty =  $drItems[$in]["stQty"]-($drItems[$in]["tiActualCur"]-$drItems[$in]["tiActual"]);
                     $this->db->query($query,array("restock",$updateQty,$updateActual,$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
                    
-                }if($drItems[$in]["tiActual"] < $drItems[$in]["tiActualCur"]){
+                }else if($drItems[$in]["tiQty"] > $drItems[$in]["tiQtyCur"]){
                     $updateActual=$drItems[$in]["actualQty"]-$drItems[$in]["tiActualCur"];
                     $updateQty=$drItems[$in]["tiQty"]-$drItems[$in]["tiQtyCur"];
-                    $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["spmActual"]*($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]));
+                    $updatedqty = $drItems[$in]["stQty"]+($drItems[$in]["tiActual"]-$drItems[$in]["tiActualCur"]);
                     $this->db->query($query,array("restock",$updateQty,$updateActual,$drItems[$in]["tiSubtotal"],$updatedqty,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],$drItems[$in]["discount"],$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
                     $this->update_stock($drItems[$in]["stID"], $updatedqty);
-                }else{
-                    $this->db->query($query,array("restock",0,0,0,0,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],0,$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
-                    $this->update_stock($drItems[$in]["stID"], 0);
                 }
+                // else{
+                //     $this->db->query($query,array("restock",0,0,0,0,$drItems[$in]["tiRemarks"],$drItems[$in]["date"],0,$drItems[$in]["stID"],$drItems[$in]["spmID"],$drItems[$in]["diID"],$current));
+                //     $this->update_stock($drItems[$in]["stID"], 0);
+                // }
             }
             }
     }
