@@ -116,12 +116,12 @@
                         return oa.olID == ol[o].olID;
                     })
                     
-                    header += `<td>Addons:</td>`;
+                    header += `<td>Addons:</td><td>`;
                         for(i in add){
-                        header +=  `<td>${add[i].aoQty}&nbsp;${add[i].aoName}<br></td>`;
+                        header +=  `${add[i].aoQty}&nbsp;${add[i].aoName}<br>`;
                         }             
                     }
-                    header += `</tr></tbody>
+                    header += `</td></tr></tbody>
                         </table>
                     </div>
                     <!--Footer-->
