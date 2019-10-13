@@ -238,12 +238,31 @@ class Barista extends CI_Controller{
         function updatePayment(){
             if($this->checkIfLoggedIn()){
             $status = "paid";
-            $osID = json_decode($this->input->post('osIDarr'), true);
+            $osIDs = json_decode($this->input->post('osIDarr'), true);
             $payDate = date("Y-m-d H:i:s");
             $date_recorded = date("Y-m-d H:i:s");
-            $this->baristamodel->update_payment($status,$osID,$payDate, $date_recorded);
-            foreach ($osID as $o) {
-                $this->destockPrefStock($o);
+            foreach ($osIDs as $osID) {
+                $items = $this->baristamodel->get_orderSlipItems($osID);
+                // if osID is invalid catch error
+                if(count($items) == 0 ){
+                    throw Error;
+                }
+                $destockables = array();
+                foreach($items as $item){
+                    $prefStocks = $this->baristamodel->get_prefStockItems($item['pref']);
+                    if (count($prefStocks) == 0){
+                        continue;
+                    }
+                    foreach($prefStocks as $prefStock){
+                        $destockables[$prefStock['stock']] += ($prefStock['qty'] * $item['qty']);
+                    }
+                }
+                $consumption = array(
+                    "cDate" => $date_recorded,
+                    "cDateRecorded" => $date_recorded
+                );
+                $this->baristamodel->add_consumptionFromSales($consumption, $destockables);
+                $this->baristamodel->update_payment2($status,$osID,$payDate, $date_recorded);
             }
         }else{
             redirect('login');
@@ -257,28 +276,25 @@ class Barista extends CI_Controller{
             $date_recorded = date("Y-m-d H:i:s");
             $items = $this->baristamodel->get_orderSlipItems($osID);
             // if osID is invalid catch error
-            //
-            //
             if(count($items) == 0 ){
                 throw Error;
             }
-            // olID AS item,
-            // prID AS pref,
-            // olQty AS qty
+            $destockables = array();
             foreach($items as $item){
                 $prefStocks = $this->baristamodel->get_prefStockItems($item['pref']);
                 if (count($prefStocks) == 0){
                     continue;
                 }
-                // prID AS pref,
-                // stID AS stock,
-                // prstQty AS qty
                 foreach($prefStocks as $prefStock){
-                    $this->baristamodel->update_stockQty($prefStock['stock'], (-1 * ($prefStock['qty'] * $item['qty'])));
+                    $destockables[$prefStock['stock']] += ($prefStock['qty'] * $item['qty']);
                 }
             }
+            $consumption = array(
+                "cDate" => $date_recorded,
+                "cDateRecorded" => $date_recorded
+            );
+            $this->baristamodel->add_consumptionFromSales($consumption, $destockables);
             $this->baristamodel->update_payment2($status,$osID,$payDate, $date_recorded);
-            $this->destockPrefStock($osID);
         }else{
             redirect('login');
             }

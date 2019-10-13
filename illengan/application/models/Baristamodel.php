@@ -22,7 +22,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     osID = ?;";
             return $this->db->query($query, array($id))->result_array();
         }
-        // Get Preference affiliated stocks
+        // Get Preference's affiliated stocks
         function get_prefStockItems($id){
             $query = "SELECT
                     prID AS pref,
@@ -43,6 +43,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             WHERE
                 stID = ?";
             return $this->db->query($query, array($stQty, $stID));
+        }
+
+        // Add Consumption By Sales
+        function add_consumptionFromSales($consumption, $consumedItems){
+            $consumption_insert = $this->db->insert_string("consumptions", $consumption);
+            $this->db->query($consumption_insert);
+            $consumption_id = $this->db->insert_id();
+            foreach($consumedItems as $key => $qty){
+                $this->db->query("INSERT INTO consumed_items (ciID, cID) VALUES (NULL, ?)",array($consumption_id));
+                $consumed_item_id = $this->db->insert_id();
+                $this->update_stockQty($key, (-1 * $qty));
+                $obj = array(
+                    "tiType" => 'consumed',
+                    "tiQty" => $qty,
+                    "remainingQty" => $this->get_stockQtyConsumption($key),
+                    "tiRemarks" => "Ordered",
+                    "tiDate" => $consumption['cDate'],
+                    "dateRecorded" => $consumption['cDateRecorded'],
+                    "stID" => $key,
+                    "ciID" => $consumed_item_id
+                );
+                $transitem_insert = $this->db->insert_string("transitems", $obj);
+                $this->db->query($transitem_insert);
+            }
         }
 
         
@@ -1055,7 +1079,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         $query = "INSERT INTO consumed_items (ciID, cID) VALUES (NULL,?)";
         if($this->db->query($query, array($cID))) {
             $this->add_consumptransitems($this->db->insert_id(),$stocks,$date,$date_recorded);
-            $this->add_actlog($account_id,$date_recorded, "$user added a consumption.", "add", $remarks);
+            $this->add_actlog($account_id,$date_recorded, "$user added a consumption record.", "add", $remarks);
         }
     }
     function addAutoConsumption($consumption,$destockables){

@@ -16,7 +16,7 @@
             "type": "php",
             "request": "launch",
             // "program": "",
-            "cwd": "${workspaceFolder}/application",
+            "cwd": "${workspaceFolder}",
             "port": 80
         }
     ]
