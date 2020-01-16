@@ -172,28 +172,26 @@ function addspoilagesstock(){
     }
 }
 function addaccounts(){
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[50]');
-        // $this->form_validation->set_rules('confirm_password', 'Confirm password', 'trim|required|min_length[5]|max_length[50]|matches[password]');
-        $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
-        $this->form_validation->set_rules('aType','Account Type','trim|required');
+    $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]|max_length[50]');
+    $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
+    $this->form_validation->set_rules('aType','Account Type','trim|required');
 
-            //$password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
-            $password = $this->input->post("password");
-            $username = $this->input->post("aUsername");
-            $aType = $this->input->post("aType");
-            $date_recorded = date("Y-m-d H:i:s");
-            $account_id = $_SESSION["user_id"];
-            $user= $_SESSION["user_name"];
-            $data = array(
-                'aPassword'=>$password,
-                'aUsername'=>$username,
-                'aType'=>$aType
-            );
-            $this->adminmodel->add_accounts($data);
-            $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added a new account: $username .", "add", NULL);
+    $password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
+    $username = $this->input->post("aUsername");
+    $aType = $this->input->post("aType");
+    $date_recorded = date("Y-m-d H:i:s");
+    $account_id = $_SESSION["user_id"];
+    $user= $_SESSION["user_name"];
+    $data = array(
+        'aPassword'=>$password,
+        'aUsername'=>$username,
+        'aType'=>$aType
+    );
+    $this->adminmodel->add_accounts($data);
+    $this->adminmodel->add_actlog($account_id,$date_recorded, "$user added a new account: $username .", "add", NULL);
 
-            redirect('admin/accounts');
-    }
+    redirect('admin/accounts');
+}
     function addMenuCategory(){
         if($this->session->userdata('user_id') && $this->session->userdata('user_type') === 'admin'){
             $ctName = trim($this->input->post('ctName'));
