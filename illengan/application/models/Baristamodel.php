@@ -114,7 +114,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     //         return $query->result();
     // }
         function get_orderitems($osID){
-            $query = "SELECT osID, olDesc, olQty, ROUND(olPrice * olQty ) as olSubtotal, olPrice, osTotal, IFNULL(aoTotal, 0) as aoTotal from orderlists join orderslips USING (osID) left join orderaddons on orderlists.olID = orderaddons.olID WHERE osID = ?";
+            $query = "SELECT osID, olDesc, olQty, olSubtotal, olPrice, osTotal, IFNULL(aoTotal, 0) as aoTotal from orderlists join orderslips USING (osID) left join orderaddons on orderlists.olID = orderaddons.olID WHERE osID = ?";
             return $this->db->query($query,array($osID))->result_array();
         }
 
