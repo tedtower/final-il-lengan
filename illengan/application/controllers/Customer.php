@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-include_once("../helper/utility_helper.php");
+include_once($_SERVER["DOCUMENT_ROOT"]."/application/helpers/utility_helper.php");
 class Customer extends CI_Controller {
 
 	function __construct(){
