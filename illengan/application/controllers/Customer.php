@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-
+include_once("../helper/utility_helper.php");
 class Customer extends CI_Controller {
 
 	function __construct(){
@@ -139,7 +139,7 @@ class Customer extends CI_Controller {
 					'name' => $preference['order'],
 					'qty' => intval($this->input->post('quantity')),
 					'orderDesc' => $preference['order'],
-					'subtotal' => floatval($this->input->post('subtotal')) ,
+					'subtotal' => (floatval($preference["prPrice"]) * intval($this->input->post('quantity'))) + get_sum($rawAddons["addonSubtotals"]) ,
 					'remarks' => $this->input->post('remarks'),
 					'addons' => $rawAddons
 				);

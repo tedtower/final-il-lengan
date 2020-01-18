@@ -129,7 +129,7 @@ class Barista extends CI_Controller{
             'orderlists' => $this->baristamodel->get_orderlists($osID)
             );
                 $this->output->set_output(json_encode($orderdetails));
-            }else{
+        }else{
             redirect('login');
         }
     }

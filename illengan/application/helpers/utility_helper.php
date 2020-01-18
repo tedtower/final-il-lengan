@@ -44,4 +44,12 @@ function barista_js(){
 function chef_js(){
    return base_url().'assets/js/chef/';
 }
+
+function get_sum($list){
+   $sum = 0;
+   foreach ($list as $index => $value) {
+      $sum += $value;
+   }
+   return $sum;
+}
 ?>
