@@ -175,7 +175,7 @@ function addaccounts(){
     $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]|max_length[50]');
     $this->form_validation->set_rules('aUsername','Username','trim|required|is_unique[accounts.aUsername]');
     $this->form_validation->set_rules('aType','Account Type','trim|required');
-
+    //
     $password = password_hash($this->input->post("password"),PASSWORD_DEFAULT);
     $username = $this->input->post("aUsername");
     $aType = $this->input->post("aType");
