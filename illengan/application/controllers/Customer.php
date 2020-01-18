@@ -128,7 +128,7 @@ class Customer extends CI_Controller {
 							if($addon['aoID'] == $rawAddons['addonIds'][$index]){
 								$rawAddons['addonIds'][$index] = intval($rawAddons['addonIds'][$index]);
 								$rawAddons['addonQtys'][$index] = intval($rawAddons['addonQtys'][$index]);
-								array_push($rawAddons['addonSubtotals'], floatval($addon['aoPrice'])*intval($rawAddons['addonQtys'][$index]));
+								array_push($rawAddons['addonSubtotals'], intval($this->input->post('quantity')) * (floatval($addon['aoPrice'])*intval($rawAddons['addonQtys'][$index])));
 							}
 						}
 					}
