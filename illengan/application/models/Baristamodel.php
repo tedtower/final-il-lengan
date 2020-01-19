@@ -157,7 +157,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         }
 
         function get_oslips(){
-            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" GROUP BY osID, tableCode' );
+            $query = $this->db->query('SELECT osID, tableCode, custName, osTotal, payStatus, olQty, olPrice, olDesc, olSubtotal, olStatus from orderslips inner join orderlists using (osID) where olStatus = "pending" and orderslips.osDateTime >= CURDATE() GROUP BY osID, tableCode' );
             return $query->result();
 
         }
