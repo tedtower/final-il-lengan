@@ -945,7 +945,8 @@ function countConsump(){
         return $this->db->query($query)->result_array();
     }
     function get_datareturns($s, $l) {
-        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as newDate FROM `returns` LEFT JOIN supplier USING (spID) LIMIT $s, $l";
+        $query = "SELECT *,  DATE_FORMAT(rDate, '%b %d, %Y') as newDate FROM `returns` LEFT JOIN supplier USING (spID) ORDER BY rID desc
+        LIMIT $s, $l";
         return $this->db->query($query)->result_array();
     }
     function countReturns(){
@@ -2431,7 +2432,7 @@ function add_consumptionitems($ciID,$stocks,$date,$date_recorded){
         $query = "SELECT dID, spName, dDate AS ddate, DATE_FORMAT(dDate, '%b %d, %Y') as pDate, pTotal, spID, receiptNo as receipt, spAltName 
         FROM deliveries LEFT JOIN supplier USING (spID) INNER JOIN (SELECT SUM(tiSubtotal) as pTotal, dID 
         from transitems INNER JOIN delivery_items USING (diID) LEFT JOIN deliveries USING (dID) GROUP BY dID) 
-        as total USING (dID)";
+        as total USING (dID) ORDER BY dID desc";
         return $this->db->query($query)->result_array();
     }
     

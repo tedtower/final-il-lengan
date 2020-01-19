@@ -2,200 +2,209 @@
     <div class="content">
         <div class="container-fluid">
             <br>
-            <div class="content" style="margin-left:250px;">
-                <div class="container-fluid">
-                    <div class="card-content">
-                        <!--Export button and Real Time Date & Time -->
-                        <div style="overflow:auto;">
-                            <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
-                                <?php echo date("M j, Y -l"); ?>
-                            </p>
+            <div class="card-content">
+                <!--Export button and Real Time Date & Time -->
+                <div style="overflow:auto;">
+                    <p style="text-align:right; font-weight: regular; font-size: 16px;float:right">
+                        <?php echo date("M j, Y -l"); ?>
+                    </p>
+                </div>
+                <!--Card-->
+                <div style="overflow:auto">
+                    <div class="card" style="float:left;width:62%">
+                        <div class="card-header">
+                            <h6 style="font-size:15px;margin:0">Add Delivery</h6>
                         </div>
-                        <!--Card-->
-                        <div style="overflow:auto">
-                            <div class="card" style="float:left;width:62%">
-                                <div class="card-header">
-                                    <h6 style="font-size:15px;margin:0">Add Delivery</h6>
-                                </div>
-                                <form id="drForm" action="<?= site_url("barista/viewDRFormAdd")?>"
-                                    accept-charset="utf-8" class="form">
-                                    <div class="card-body">
-                                        <input type="text" name="tID" hidden="hidden">
-                                        <div class="form-row">
-                                            <!--Supplier-->
-                                            <div class="input-group input-group-sm mb-3 col">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="width:70px">Supplier</span>
-                                                </div>
-                                                <select class="spID form-control status-level" name="supplier" id="supplier" data-level="2,3" required>
-                                                    <option value="" selected>Choose</option>
-                                                    <?php if(isset($supplier)){
+                        <form id="drForm" action="<?= site_url("barista/viewDRFormAdd")?>" accept-charset="utf-8"
+                            class="form">
+                            <div class="card-body">
+                                <input type="text" name="tID" hidden="hidden">
+                                <div class="form-row">
+                                    <!--Supplier-->
+                                    <div class="input-group input-group-sm mb-3 col">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="width:70px">Supplier</span>
+                                        </div>
+                                        <select class="spID form-control status-level" name="supplier" id="supplier"
+                                            data-level="2,3" required>
+                                            <option value="" selected>Choose</option>
+                                            <?php if(isset($supplier)){
                                                 foreach($supplier as $sup){?>
-                                                    <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
-                                                    <?php }}?>
-                                                </select>
-                                            </div>
-                                            <!--Source-->
-                                            <div class="input-group input-group-sm mb-3 col">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="width:70px">Source</span>
-                                                </div>
-                                                <input class="form-control status-level" data-level="1" name="source" type="text" value="" id="source">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <!--Receipt-->
-                                            <div class="input-group input-group-sm mb-3 col">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="width:70px">Receipt</span>
-                                                </div>
-                                                <input class="form-control status-level" data-level="0" name="receipt" type="text" value="" id="receipt">
-                                            </div>
-                                            <!--Date-->
-                                            <div class="input-group input-group-sm mb-3 col">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="width:70px">Date</span>
-                                                </div>
-                                                <input class="form-control" name="date" id="date" type="date" data-level="0" data-validate="required" message="Date is required!" required pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
-                                            </div>
-                                        </div>
-                                        <!--Remarks-->
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text" style="width:70px">Remarks</span>
-                                            </div>
-                                            <textarea type="text" data-level="0" name="remarks" class="status-level form-control form-control-sm"
-                                                rows="1"></textarea>
-                                        </div>
-
-                                        <!--Radio Buttons-->
-                                        <div class="form-check form-check-inline mb-3"
-                                            style="font-size:14px;width:100%;margin:0" required>
-                                            <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
-                                                    type="radio" data-trigger-level="3" name="inlineRadioOptions" value="3">W/ PO Ref</label>
-                                            <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
-                                                    type="radio" data-trigger-level="2" name="inlineRadioOptions" value="2">W/O PO Ref</label>
-                                            <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
-                                                    type="radio" data-trigger-level="1" name="inlineRadioOptions" value="1">No Official Supplier</label>
-                                        </div>
-                                        <!--Buttons-->
-                                        <button id="addNewBtn" data-level="1" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button" disabled>New Item</button>
-                                        <button id="addMBtn" data-level="2" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button" disabled>Add Merchandise</button>
-                                        <button id="addPOBtn" data-level="3" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button" disabled>PO Item</button>
-                                        <button id="addRBtn" data-level="3" class="btn btn-outline-primary btn-sm m-0 status-level"
-                                            type="button" disabled>Return Item</button>
-                                        <br><br>
-
-                                        <div class="ic-level-2">
-                                        </div>
-                                        <br>
-                                        <span>Total: &#8369;<span class="total">0</span></span>
-                                        <!--Total of the trans items-->
+                                            <option value="<?= $sup['spID']?>"><?= $sup['spName']?></option>
+                                            <?php }}?>
+                                        </select>
                                     </div>
-                                    <div class="card-footer mb-0" style="overflow:auto">
-                                        <button class="btn btn-success btn-sm" type="submit"
-                                            style="float:right">Insert</button>
-                                            <a class="btn btn-danger btn-sm" role= "button" href="<?= site_url('barista/inventory/deliveryreceipt')?>" data-original-title  style="float:right">Cancel</a>
+                                    <!--Source-->
+                                    <div class="input-group input-group-sm mb-3 col">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="width:70px">Source</span>
+                                        </div>
+                                        <input class="form-control status-level" data-level="1" name="source"
+                                            type="text" value="" id="source">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <!--Receipt-->
+                                    <div class="input-group input-group-sm mb-3 col">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="width:70px">Receipt</span>
+                                        </div>
+                                        <input class="form-control status-level" data-level="0" name="receipt"
+                                            type="text" value="" id="receipt">
+                                    </div>
+                                    <!--Date-->
+                                    <div class="input-group input-group-sm mb-3 col">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" style="width:70px">Date</span>
+                                        </div>
+                                        <input class="form-control" name="date" id="date" type="date" data-level="0"
+                                            data-validate="required" message="Date is required!" required
+                                            pattern="[0-9]{2}-[0-9]{2}-[0-9]{4}">
+                                    </div>
+                                </div>
+                                <!--Remarks-->
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" style="width:70px">Remarks</span>
+                                    </div>
+                                    <textarea type="text" data-level="0" name="remarks"
+                                        class="status-level form-control form-control-sm" rows="1"></textarea>
+                                </div>
+
+                                <!--Radio Buttons-->
+                                <div class="form-check form-check-inline mb-3"
+                                    style="font-size:14px;width:100%;margin:0" required>
+                                    <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
+                                            type="radio" data-trigger-level="3" name="inlineRadioOptions" value="3">W/
+                                        PO Ref</label>
+                                    <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
+                                            type="radio" data-trigger-level="2" name="inlineRadioOptions" value="2">W/O
+                                        PO Ref</label>
+                                    <label class=" form-check-label mr-3"><input class="radio-level form-check-input"
+                                            type="radio" data-trigger-level="1" name="inlineRadioOptions" value="1">No
+                                        Official Supplier</label>
+                                </div>
+                                <!--Buttons-->
+                                <button id="addNewBtn" data-level="1"
+                                    class="btn btn-outline-primary btn-sm m-0 status-level" type="button" disabled>New
+                                    Item</button>
+                                <button id="addMBtn" data-level="2"
+                                    class="btn btn-outline-primary btn-sm m-0 status-level" type="button" disabled>Add
+                                    Merchandise</button>
+                                <button id="addPOBtn" data-level="3"
+                                    class="btn btn-outline-primary btn-sm m-0 status-level" type="button" disabled>PO
+                                    Item</button>
+                                <button id="addRBtn" data-level="3"
+                                    class="btn btn-outline-primary btn-sm m-0 status-level" type="button"
+                                    disabled>Return Item</button>
+                                <br><br>
+
+                                <div class="ic-level-2">
+                                </div>
+                                <br>
+                                <span>Total: &#8369;<span class="total">0</span></span>
+                                <!--Total of the trans items-->
+                            </div>
+                            <div class="card-footer mb-0" style="overflow:auto">
+                                <button class="btn btn-success btn-sm" type="submit" style="float:right">Insert</button>
+                                <a class="btn btn-danger btn-sm" role="button"
+                                    href="<?= site_url('barista/inventory/deliveryreceipt')?>" data-original-title
+                                    style="float:right">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!--Start of PO sidenav-->
+                    <div class="card brochure" id="stockCardPO" style="float:left;width:35%;margin-left:3%" hidden>
+                        <div class="status-level" data-show-level="3">
+                            <div class="card-header" style="overflow:auto">
+                                <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Purchase
+                                    Order</div>
+                                <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
+                                    <input type="search"
+                                        style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search"
+                                        placeholder="Search...">
+                                </div>
+                            </div>
+                            <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                                <!--checkboxes-->
+                                <div class="mt-1 mb-1">
+                                    <select class="form-control form-control-sm" id="po" name="po" required>
+                                    </select>
+                                </div>
+                                <p class="modal-title" style="font-size: 16px;padding-left: 10px;font-weight: 600;
+                                      margin-top: 15px" id="exampleModalLabel">Purchase Item</p>
+                                <form id="formAdd" method="post" accept-charset="utf-8">
+                                    <div class="modal-body">
+                                        <div style="margin:1% 3%" id="listpo" class="ic-level-1">
+                                        </div>
                                     </div>
                                 </form>
                             </div>
-
-                        <!--Start of PO sidenav-->
-                            <div class="card brochure" id="stockCardPO" style="float:left;width:35%;margin-left:3%" hidden>
-                                <div class="status-level" data-show-level="3">
-                                    <div class="card-header" style="overflow:auto">
-                                        <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Purchase Order</div>
-                                        <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
-                                            <input type="search"
-                                                style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
-                                                name="search" placeholder="Search...">
-                                        </div>
-                                    </div>
-                                    <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                                        <!--checkboxes-->
-                                        <div class="mt-1 mb-1">
-                                            <select class="form-control form-control-sm" id="po" name="po" required>
-                                            </select>
-                                      </div>
-                                      <p class="modal-title" style="font-size: 16px;padding-left: 10px;font-weight: 600;
-                                      margin-top: 15px" id="exampleModalLabel">Purchase Item</p>
-                                            <form id="formAdd"  method="post" accept-charset="utf-8">
-                                                    <div class="modal-body">
-                                                        <div style="margin:1% 3%" id="listpo" class="ic-level-1">
-                                                        </div>
-                                                    </div>
-                                            </form>
-                                            </div>
-                                </div>
-                                <div class="status-level" data-show-level="3">
-                                </div>
-                                <div class="status-level" data-show-level="2">
-                                </div>
-                            </div>
-                            <!--End of PO sidenav-->
-
-                            <!--Start of Return sidenav-->
-                            <div class="card brochure" id="returnCard" style="float:left;width:35%;margin-left:3%" hidden>
-                                <div class="card-header" style="overflow:auto">
-                                    <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Return</div>
-                                    <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
-                                        <input type="search"
-                                            style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
-                                            name="search" placeholder="Search...">
-                                    </div>
-                                </div>
-                                <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                                    <!--checkboxes-->
-                                    <div class="mt-1 mb-1">
-                                        <select class="form-control form-control-sm" name="returns" required>
-                                            <option value="0" selected>Choose Return</option>
-                                        </select>
-                                    </div>
-                                    <table class="table table-borderless">
-                                        <thead style="border-bottom:2px solid #cccccc">
-                                            <tr>
-                                                <th width="2%"></th>
-                                                <th style="font-weight:500 !important">Item Name</th>
-                                                <th style="font-weight:500 !important">Qty</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="ic-level-2">
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <!--End of PO sidenav-->
-
-                            <!--Start of Merchandise sidenav-->
-                            <div class="card brochure" id="stockCardmerch" style="float:left;width:35%;margin-left:3%" hidden>
-                                <div class="card-header" style="overflow:auto">
-                                    <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Merchandise</div>
-                                    <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
-                                        <input type="search"
-                                            style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
-                                            name="search" placeholder="Search...">
-                                    </div>
-                                </div>
-                                <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
-                                    <!--checkboxes-->
-                                    <p class="modal-title" style="font-size: 16px;padding-left: 10px;font-weight: 600"
-                                    id="exampleModalLabel">Merchandise Name</p>
-                                    <form id="formAdd"  method="post" accept-charset="utf-8">
-                                            <div class="modal-body">
-                                                <div style="margin:1% 3%" id="list" class="ic-level-1">
-                                                </div>
-                                            </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <!--End of Merchandise sidenav-->
-
+                        </div>
+                        <div class="status-level" data-show-level="3">
+                        </div>
+                        <div class="status-level" data-show-level="2">
                         </div>
                     </div>
+                    <!--End of PO sidenav-->
+
+                    <!--Start of Return sidenav-->
+                    <div class="card brochure" id="returnCard" style="float:left;width:35%;margin-left:3%" hidden>
+                        <div class="card-header" style="overflow:auto">
+                            <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Return</div>
+                            <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
+                                <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
+                                    name="search" placeholder="Search...">
+                            </div>
+                        </div>
+                        <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                            <!--checkboxes-->
+                            <div class="mt-1 mb-1">
+                                <select class="form-control form-control-sm" name="returns" required>
+                                    <option value="0" selected>Choose Return</option>
+                                </select>
+                            </div>
+                            <table class="table table-borderless">
+                                <thead style="border-bottom:2px solid #cccccc">
+                                    <tr>
+                                        <th width="2%"></th>
+                                        <th style="font-weight:500 !important">Item Name</th>
+                                        <th style="font-weight:500 !important">Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="ic-level-2">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--End of PO sidenav-->
+
+                    <!--Start of Merchandise sidenav-->
+                    <div class="card brochure" id="stockCardmerch" style="float:left;width:35%;margin-left:3%" hidden>
+                        <div class="card-header" style="overflow:auto">
+                            <div style="font-size:15px;font-weight:600;float:left;width:40%;margin-top:4px">Merchandise
+                            </div>
+                            <div style="width:55%;float:left;margin-left:5%;border-radius:10px">
+                                <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px"
+                                    name="search" placeholder="Search...">
+                            </div>
+                        </div>
+                        <div class="card-body" style="margin:1%;padding:1%;font-size:14px">
+                            <!--checkboxes-->
+                            <p class="modal-title" style="font-size: 16px;padding-left: 10px;font-weight: 600"
+                                id="exampleModalLabel">Merchandise Name</p>
+                            <form id="formAdd" method="post" accept-charset="utf-8">
+                                <div class="modal-body">
+                                    <div style="margin:1% 3%" id="list" class="ic-level-1">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--End of Merchandise sidenav-->
+
                 </div>
             </div>
         </div>
@@ -289,7 +298,7 @@
                         <input type="number"  min="0" name="tiDiscount" id="tiDiscount"
                            class="tiDiscount form-control form-control-sm" placeholder="Discount" >
                        <input type="number" name="spmPrice" id="spmPrice"
-                           class="form-control form-control-sm" placeholder="Price" value="${spmPrice}">
+                           class="form-control form-control-sm" placeholder="Price" value="${spmPrice}" disabled>
                        <input type="number" name="tiSubtotal" id="tiSubtotal"
                            class="form-control form-control-sm" placeholder="Subtotal"
                            readonly>

@@ -350,7 +350,6 @@
                 var retItem= data.returnitems;
                 var resItem= data.resolvedItems;
                 showTable(ret, retItem, resItem);
-                console.log(retItem);
 			},
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);

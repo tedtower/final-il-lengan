@@ -20,7 +20,6 @@
         </div>
         <div class="mainkey icons-go">
         <div id="left" class="icons"><i class="far fa-arrow-left"></i></div>
-        <div id="right" class="icons" style="margin-left: 20px"><i class="far fa-arrow-right"></i></div>
         </div>
     </div>
 
@@ -359,6 +358,16 @@ function setTableData(slipID) {
 //     this.scrollLeft -= (delta * 30);
 //     event.preventDefault();
 // });
+const scrollToLeft = function scrollToLeft() {
+    console.log(window.scrollX);
+    if(window.scrollX > 0) {
+      setTimeout(function() {
+        window.scrollTo(0,window.scrollX-30);
+        scrollToLeft();
+      }, 20);
+    }
+};
+
 $(document).ready(function () {
     $("body").niceScroll();
     $("#shortcutKeys").niceScroll();
@@ -377,19 +386,12 @@ $(document).ready(function () {
         }, 1000);
     });
 
-    $("#left").on("click", TopScrollTo());
+    $("#left").on("click", scrollToLeft);
 
 });
 
 
-// var TopscrollTo = function () {
-//     if(window.scrollX!=0) {
-//       setTimeout(function() {
-//         window.scrollTo(0,window.scrollX-30);
-//         TopscrollTo();
-//       }, 5);
-//     }
-//   }
+
 
     </script>
 </body>

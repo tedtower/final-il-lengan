@@ -147,7 +147,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 
         function get_bills(){
-            $query = "select osID, tableCode, custName, osTotal, osDateTime,(CAST(osDateTime AS time)) as time, payStatus , osPayDateTime from orderslips where CAST(osDateTime AS date) = cast((now()) as date) ORDER BY `orderslips`.`osDateTime` DESC ";
+            $query = "select osID, tableCode, custName, osTotal, osDateTime,(CAST(osDateTime AS time)) as time, payStatus , osPayDateTime from orderslips where CAST(osDateTime AS date) = cast((now()) as date) ORDER BY payStatus desc, `orderslips`.`osDateTime` DESC";
             return $this->db->query($query)->result_array();
         }
 

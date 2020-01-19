@@ -420,6 +420,8 @@
             success: function(data) {
               console.log(data);
               for (var i = 0; i <= data.length - 1; i++) {
+                console.log(parseFloat(data[i].olPrice * data[i].olQty ).toFixed(2) + parseFloat(data[i].aoTotal).toFixed(2))
+                console.log(parseFloat(data[i].olPrice * data[i].olQty ).toFixed(2) + " + " + parseFloat(data[i].aoTotal).toFixed(2))
                 stockChecked = `<tr class="stockelem" data-osID="` + data[i].osID + `" >
                             <td></td>
                             <td><input type="text" id="olDesc` + i + `" name="olDesc"
@@ -431,7 +433,7 @@
                             <td><input type="text" id="aoTotal` + i + `" name="aoTotal"
                                     class="aoTotal form-control form-control-sm" value="` + data[i].aoTotal + `" readonly="readonly" required></td>
                             <td><input type="text" id="olSubtotal` + i + `" name="olSubtotal"
-                                    class="olSubtotal form-control form-control-sm" value="` + (data[i].olPrice.toFixed(2) * data[i].olQty ).toFixed(2) + data[i].aoTotal.toFixed(2) + `" readonly="readonly" required></td>
+                                    class="olSubtotal form-control form-control-sm" value="` + (parseFloat(data[i].olPrice * data[i].olQty) + parseFloat(data[i].aoTotal)).toFixed(2) + `" readonly="readonly" required></td>
                             
                             <td></td>
                             </tr>`;

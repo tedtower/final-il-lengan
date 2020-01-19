@@ -2,145 +2,132 @@
 
 <body style="background:white">
     <div class="content">
-        <div class="container-fluid">
+        <br>
+        <p style="text-align:right; font-weight: regular; font-size: 16px">
+            <!-- Real Time Date & Time -->
+            <?php echo date("M j, Y -l"); ?>
+        </p>
+        <!--Table-->
+        <div class="card-content" id="transTable">
+            <a class="btn btn-primary btn-sm" href="<?= site_url('barista/viewDRFormAdd') ?>" data-original-title
+                style="margin:0; width: 140px" id="addBtn;">Add Delivery Receipt</a>
             <br>
-            <p style="text-align:right; font-weight: regular; font-size: 16px">
-                <!-- Real Time Date & Time -->
-                <?php echo date("M j, Y -l"); ?>
-            </p>
-            <div class="content" style="margin-left:250px;">
-                <div class="container-fluid">
-                    <div class="content">
-                        <div class="container-fluid">
-                            <!--Table-->
-                            <div class="card-content" id="transTable">
-                                <a class="btn btn-primary btn-sm" href="<?= site_url('barista/viewDRFormAdd') ?>" data-original-title style="margin:0; width: 140px" id="addBtn;">Add Delivery Receipt</a>
-                                <br>
-                                <!--Search-->
-                                <div id="transTable" style="width:25%; float:right; border-radius:5px">
-                                    <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search" placeholder="Search...">
-                                </div>
-                                <br><br>
-                                <!--Table Body-->
-                                
-                                    <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                                        <thead class="thead-dark">
-                                            <th><b class="pull-left">Transaction #</b></th>
-                                            <th><b class="pull-left">Receipt #</b></th>
-                                            <th><b class="pull-left">Supplier</b></th>
-                                            <th><b class="pull-left">Date</b></th>
-                                            <th><b class="pull-left">Total</b></th>
-                                            <th><b class="pull-left">Actions</b></th>
-                                        </thead>
-                                        <tbody class="transTable ic-level-2">
-                                        </tbody>
-                                    </table>
-                                <!--End Table Content-->
+            <!--Search-->
+            <div id="transTable" style="width:25%; float:right; border-radius:5px">
+                <input type="search" style="padding:1% 5%;width:100%;border-radius:20px;font-size:14px" name="search"
+                    placeholder="Search...">
+            </div>
+            <br><br>
+            <!--Table Body-->
 
-                                <!--Start of Modal "Delete Stock Item"-->
-                                <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLongTitle">Delete/Archive
-                                                    Transaction
-                                                </h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <form id="confirmDelete">
-                                                <div class="modal-body">
-                                                    <h6 id="deleteTableCode"></h6>
-                                                    <p>Are you sure you want to delete/archive this item?</p>
-                                                    <input type="text" name="" hidden="hidden">
-                                                    <div>
-                                                        Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks" class="form-control form-control-sm">
-                                                    </div>
-                                                </div>
+            <table id="transTable" class="table table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                <thead class="thead-dark">
+                    <th><b class="pull-left">Transaction #</b></th>
+                    <th><b class="pull-left">Receipt #</b></th>
+                    <th><b class="pull-left">Supplier</b></th>
+                    <th><b class="pull-left">Date</b></th>
+                    <th><b class="pull-left">Total</b></th>
+                    <th><b class="pull-left">Actions</b></th>
+                </thead>
+                <tbody class="transTable ic-level-2">
+                </tbody>
+            </table>
+            <!--End Table Content-->
 
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--End of Modal "Delete Stock Item"-->
-                            </div>
+            <!--Start of Modal "Delete Stock Item"-->
+            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Delete/Archive
+                                Transaction
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                        <form id="confirmDelete">
+                            <div class="modal-body">
+                                <h6 id="deleteTableCode"></h6>
+                                <p>Are you sure you want to delete/archive this item?</p>
+                                <input type="text" name="" hidden="hidden">
+                                <div>
+                                    Remarks:<input type="text" name="deleteRemarks" id="deleteRemarks"
+                                        class="form-control form-control-sm">
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm"
+                                    data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
+            <!--End of Modal "Delete Stock Item"-->
         </div>
     </div>
-    </div>
-    <?php include_once('templates/scripts.php') ?>
-    <script>
-        var getEnumValsUrl = '<?= site_url('barista/getEnumValsForTransaction') ?>';
-        var crudUrl = '<?= site_url('admin/transactions/add') ?>';
-        var getTransUrl = '<?= site_url('admin/transactions/getTransaction') ?>';
-        var loginUrl = '<?= site_url('login') ?>';
-        var getPOsUrl = '<?= site_url('barista/getPOs') ?>';
-        var getDRsUrl = '<?= site_url('barista/getDRs') ?>';
-        var getSPMsUrl = '<?= site_url('barista/getSPMs') ?>';
-       
-        //Search Function
-        $("#transTable input[name='search']").on("keyup", function() {
-            var string = $(this).val().toLowerCase();
+<?php include_once('templates/scripts.php') ?>
+<script>
+var getEnumValsUrl = '<?= site_url('barista/getEnumValsForTransaction')?>';
+var crudUrl = '<?= site_url('admin/transactions/add') ?>';
+var getTransUrl = '<?= site_url('admin/transactions/getTransaction') ?>';
+var loginUrl = '<?= site_url('login')?>';
+var getPOsUrl = '<?= site_url('barista/getPOs')?>';
+var getDRsUrl = '<?= site_url('barista/getDRs')?>';
+var getSPMsUrl = '<?= site_url('barista/getSPMs')?>';
 
-            $("#transTable .ic-level-1").each(function(index) {
-                var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
-                if (!text.includes(string)) {
-                    $(this).closest("tr").hide();
-                } else {
-                    $(this).closest("tr").show();
-                }
-            });
+//Search Function
+$("#transTable input[name='search']").on("keyup", function () {
+    var string = $(this).val().toLowerCase();
 
+    $("#transTable .ic-level-1").each(function (index) {
+        var text = $(this).text().toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+        if (!text.includes(string)) {
+            $(this).closest("tr").hide();
+        } else {
+            $(this).closest("tr").show();
+        }
+    });
+
+});
+
+var delReceipt = [];
+$(function () {
+    viewDelReceipts();
+    var table = $('#transTable');
+
+    function viewDelReceipts() {
+        $.ajax({
+            url: "<?= site_url('barista/viewDeliveryReceiptJS') ?>",
+            method: "post",
+            dataType: "json",
+            success: function (data) {
+                $.each(data.dr, function (index, items) {
+                    delReceipt.push({
+                        "dr": items
+                    });
+                    delReceipt[index].drItems = data.drItems.filter(dr => dr.dID == items.dID);
+                });
+                setDelReceiptsData(delReceipt);
+            },
+            error: function (response, setting, errorThrown) {
+                console.log(response.responseText);
+                console.log(errorThrown);
+            }
         });
+    }
+});
 
-        var delReceipt = [];
-		$(function() {
-			viewDelReceipts();
-
-			//POPULATE TABLE
-			var table = $('#transTable');
-
-			function viewDelReceipts() {
-				$.ajax({
-					url: "<?= site_url('barista/viewDeliveryReceiptJS') ?>",
-					method: "post",
-					dataType: "json",
-					success: function(data) {
-                        console.log(data);
-                        $.each(data.dr, function(index, items) {
-                            delReceipt.push({
-                                "dr": items
-                            });
-                            delReceipt[index].drItems = data.drItems.filter(dr => dr.dID == items.dID);
-                        });
-                        console.log(data.dr);
-                        console.log('items');
-                        console.log(data.drItems);
-                        console.log(delReceipt);
-						setDelReceiptsData(delReceipt);
-					},
-					error: function(response, setting, errorThrown) {
-						console.log(response.responseText);
-						console.log(errorThrown);
-					}
-				});
-			}
-		});
-
-		function setDelReceiptsData(delReceipt) {
-			if ($("#transTable > tbody").children().length > 0) {
-				$("#transTable > tbody").empty();
-			}
-			delReceipt.forEach(dr => {
-				$("#transTable > tbody").append(`
+function setDelReceiptsData(delReceipt) {
+    if ($("#transTable > tbody").children().length > 0) {
+        $("#transTable > tbody").empty();
+    }
+    delReceipt.forEach(dr => {
+        $("#transTable > tbody").append(`
 			    <tr class="transTabletr ic-level-1">
                     <td><a data-toggle="collapse" href="#collapseExample" class="ml-2 mr-4">
                     <img class="accordionBtn" src="/assets/media/admin/down-arrow%20(1).png" style="height:15px;width: 15px"/></a>${dr.dr.dID}</td>
@@ -157,8 +144,8 @@
                             </div>
                     </td>
 				</tr>`);
-              
-				var accordion = `
+
+        var accordion = `
                 <tr class="accordion" style="display:none;background: #f9f9f9">
                 <td colspan="7">
                 <!-- table row ng accordion -->
@@ -198,21 +185,21 @@
                     </td>
 				</tr>
             `;
-            $("#transTable > tbody").append(accordion);
-            });
-			$(".accordionBtn").on('click', function() {
-				if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
-					$(this).closest("tr").next(".accordion").css("display", "table-row");
-					$(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
+        $("#transTable > tbody").append(accordion);
+    });
+    $(".accordionBtn").on('click', function () {
+        if ($(this).closest("tr").next(".accordion").css("display") == 'none') {
+            $(this).closest("tr").next(".accordion").css("display", "table-row");
+            $(this).closest("tr").next(".accordion").find("td > div").slideDown("slow");
 
-				} else {
-					$(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
-					$(this).closest("tr").next(".accordion").hide("slow");
-				}
-			});
-        
+        } else {
+            $(this).closest("tr").next(".accordion").find("td > div").slideUp("slow");
+            $(this).closest("tr").next(".accordion").hide("slow");
         }
-		//END OF POPULATING TABLE
+    });
+
+}
+//END OF POPULATING TABLE
 
     </script>
 </body>

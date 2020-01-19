@@ -143,7 +143,9 @@ a {
     flex-direction: row;
     padding: 5px;
 }
-
+button.btn {
+    min-width: fit-content !important;
+}
 /* .c-focus a{
     color: #ececec !important;
 }

@@ -102,7 +102,6 @@
         $("#stockCard input[name='pref']").on("click", function(event) {
             var id = $(this).val();
             var name = $(this).attr("data-name");
-            console.log(id, name, $(this).is(":checked"));
             if($(this).is(":checked")){
                 $("#conForm .ic-level-2").append(`
                     <tr class="ic-level-1" data-pref="${id}">

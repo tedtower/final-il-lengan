@@ -211,7 +211,7 @@
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <form action="<?php echo base_url('admin/inventory/add')?>" method="get"
+                                <form action="<?php echo base_url('admin/inventory/addEdit')?>" method="post"
                                     accept-charset="utf-8">
                                     <input type="text" name="stockID" id="stockID"
                                                 class="form-control form-control-sm" hidden="hidden">
@@ -406,7 +406,6 @@ $(document).ready(function() {
                 $('#pagination').html(data.pagination);
                 stocks = data.invstocks;
                 setStocksData(stocks);
-                console.log('Stock:',stocks);
 			},
             error: function (response, setting, errorThrown) {
                 console.log(errorThrown);

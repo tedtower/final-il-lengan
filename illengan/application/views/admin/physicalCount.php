@@ -119,9 +119,6 @@
                     items: JSON.stringify(items)
                 },
                 dataType: "JSON",
-                beforeSend: function() {
-                    console.log(date, items);
-                },
                 success: function(){
                     location.reload();
                 },
