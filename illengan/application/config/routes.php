@@ -265,6 +265,11 @@ $route['barista/addons/spoilage/formadd'] = "barista/viewSpoilagesAddonAdd";
 $route['barista/spoilagesaddonsjson'] = "barista/viewSpoilagesAddonsJs";
 $route['barista/addons/spoilage/edit'] = "barista/editAoSpoil";
 $route['barista/addons/spoilages/add'] = "barista/addspoilagesaddons";
+$route['barista/spoilages/menu'] = "barista/viewSpoilagesMenu";
+$route['barista/menuspoilage/add'] = "barista/addMenuSpoilage";
+$route['barista/menuspoilage/formadd'] = "barista/viewMenuSpoilageFormAdd";
+$route['barista/spoilages/menu/edit'] = "barista/editMenuSpoil";
+$route['barista/menuspoilage/loadDataMenuSpoil/(:num)'] = "barista/loadDataMenuSpoil/$1";
 //-----------------------------------------------------------------------------
 $route['barista/deliveryreceipt/add'] = "barista/addDeliveryReceipt";
 $route['barista/getpurchases']="barista/getpurchases";
