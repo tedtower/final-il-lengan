@@ -407,8 +407,103 @@ class Barista extends CI_Controller{
     //             $this->baristamodel->restock($stocks,$date_recorded,$account_id);
     //         }
 
+// --------------- M E N U  S P O I L A G E S ----------------- 
+	function viewSpoilagesMenu(){
+		if($this->checkIfLoggedIn()){
+			$data['title'] = " Menu Spoilages";
+			$data['slip'] = $this->baristamodel->getSlipNum();
+			$this->load->view('barista/templates/head', $data);
+			$this->load->view('barista/templates/navigation');
+			$this->load->view('barista/baristaMenuSpoilages');
+		}else{
+			redirect('login');
+		}
+	}
+	function loadDataMenuSpoil($record=0) {
+		$recordPerPage = 3;
+		if($record != 0){
+            $record = ($record-1) * $recordPerPage;
+		}      	
+      	$recordCount = $this->baristamodel->getCountRecMenuSpoil();
+        $msRecord = $this->baristamodel->get_spoilagesmenu($record,$recordPerPage);
+        $config['base_url'] = base_url().'chef/menuspoilage/loadDataMenuSpoil';
+        $config['full_tag_open'] = '<ul class="pagination">';
+        $config['full_tag_close'] = '<ul>';
+        $config['num_tag_open'] = '<li class="page-item" style="padding:7px 10px 7px 10px;">&nbsp;';
+        $config['num_tag_close'] = '&nbsp;<li>';
+        $config['cur_tag_open'] = '<li style="background-color:#a6b1b3;width:30px;padding:7px 10px 7px 10px;">';
+        $config['cur_tag_close'] = '</li>';
+        $config['use_page_numbers'] = TRUE;
+		$config['next_link'] = '&nbsp;Next&nbsp;<i class="fa fa-long-arrow-right"></i></li>&nbsp;';
+        $config['prev_link'] = '&nbsp;<i class="fa fa-long-arrow-left"></i>Previous&nbsp;';
+		$config['total_rows'] = $recordCount;
+		$config['per_page'] = $recordPerPage;
+        $this->pagination->initialize($config);
+        $data['pagination'] = $this->pagination->create_links();
+		$data['menuspoiled'] = $msRecord;
+		echo json_encode($data);		
+    }
+
+	function viewMenuSpoilageFormAdd(){
+        if($this->checkIfLoggedIn()){
+            $head['title'] = "Inventory - Add Menu Spoilage";
+            $this->load->view('barista/templates/head', $head);
+            $this->load->view('barista/templates/navigation');
+			$data['menu'] = $this->baristamodel->get_menuPref();
+			$data['slip'] = $this->baristamodel->getSlipNum();
+            $this->load->view('barista/menuspoilageAdd', $data);
+        }else{
+            redirect('login');
+        }
+	}
+	
+
+    function viewSpoilagesMenuJs(){
+        if($this->checkIfLoggedIn()){
+            $data= $this->baristamodel->get_spoilagesmenu();
+            echo json_encode($data);
+            
+        }else{
+            redirect('login');
+        }
+    }
+   
+	function editMenuSpoil(){
+		if($this->checkIfLoggedIn()){
+            $msID = $this->input->post('msID');
+            $prID = $this->input->post('prID');
+            $msQty = $this->input->post('msQty');
+	    	$oldQty = $this->input->post('oldQty');
+            $msDate = $this->input->post('msDate');
+            $msRemarks = $this->input->post('msRemarks');
+			$date_recorded = date("Y-m-d H:i:s");
+            $osID = $this->input->post('osID');
+            $account_id = $_SESSION["user_id"];
+            $user= $_SESSION["user_name"];
+			
+            $this->baristamodel->edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded,$osID,$account_id,$user);
+        }else{
+            redirect('login');
+        } 
+	}
+	
+	function addMenuSpoilage(){
+		if($this->checkIfLoggedIn()){
+			$date_recorded = date("Y-m-d H:i:s");
+			$date = $this->input->post('date');
+			$menus = json_decode($this->input->post('menus'), true);
+			$account_id = $_SESSION["user_id"];
+            $tiType = "spoilage";
+            $user= $_SESSION["user_name"];
+
+            echo json_encode($menus, true);
+			$this->baristamodel->add_menuspoil($date, $date_recorded,$account_id, $menus, $tiType,$user);
+        }else{
+            redirect('login');
+        }
+	}
     
-    //ADDON SPOILAGE------------------------------------------------
+//ADDON SPOILAGE------------------------------------------------
     function viewSpoilagesAddons(){
         if($this->checkIfLoggedIn()){
             $data['title'] = "Spoilages - Addons";
