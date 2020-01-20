@@ -224,6 +224,7 @@
                                             </div>
                                             <input class="form-control form-control-sm" name="stockName" type="textarea" value="" id="stockName" require pattern="[a-zA-Z][a-zA-Z\s]*" title="Stock name should only countain letters and white spaces." required>
                                         </div>
+                                        <h6>Original Unit of Stock Item</h6>
                                         <div class="form-row">
                                             <!--Stock Type-->
                                             <div class="input-group mb-3 col">
@@ -249,7 +250,20 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <h6>Stock Item Upon Storage</h6>
                                         <div class="form-row">
+                                            <!--Category-->
+                                            <div class="input-group mb-3 col">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                                        style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        Category</span>
+                                                </div>
+                                                <select name="stockCategory" class="form-control">
+                                                    <option value="" selected>Choose</option>
+                                                    <option value=""></option>
+                                                </select>
+                                            </div>
                                             <!--Stock UOM-->
                                             <div class="input-group mb-3 col">
                                                 <div class="input-group-prepend">
@@ -259,6 +273,9 @@
                                                     <option value="">Choose Unit</option>
                                                 </select>
                                             </div>
+                                        </div>
+
+                                        <div class="form-row">
                                             <!--Stock Storage-->
                                             <div class="input-group mb-3 col">
                                                 <div class="input-group-prepend">
@@ -268,21 +285,6 @@
                                                 </div>
                                                 <select name="stockStorage" class="form-control" required>
                                                     <option value="" selected>Choose</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <!--Category-->
-                                            <div class="input-group mb-3 col">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                        style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                        Category</span>
-                                                </div>
-                                                <select name="stockCategory" class="form-control" required>
-                                                    <option value="" selected>Choose</option>
-                                                    <option value=""></option>
                                                 </select>
                                             </div>
                                             <!--Status-->
@@ -299,24 +301,25 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <h6>Minimum and Starting Quantity</h6>
                                         <div class="form-row">
-                                            <!--Quantity-->
-                                            <div class="input-group mb-3 col">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text" id="inputGroup-sizing-sm"
-                                                        style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                        Quantity</span>
-                                                </div>
-                                                <input type="number" name="stockQty" class="form-control" required>
-                                            </div>
                                             <!--Min Quantity-->
                                             <div class="input-group mb-3 col">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="inputGroup-sizing-sm"
                                                         style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
-                                                        Min Qty</span>
+                                                        Min. Qty</span>
                                                 </div>
                                                 <input type="number" name="stockMinQty" class="form-control" required>
+                                            </div>
+                                            <!--Quantity-->
+                                            <div class="input-group mb-3 col">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="inputGroup-sizing-sm"
+                                                        style="width:100px;background:rgb(242, 242, 242);color:rgba(48, 46, 46, 0.9);font-size:14px;">
+                                                        Start Qty</span>
+                                                </div>
+                                                <input type="number" name="stockQty" class="form-control" required>
                                             </div>
                                         </div>
 
