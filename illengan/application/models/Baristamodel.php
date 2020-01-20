@@ -300,6 +300,219 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             return $result;
         }
 
+        //MENU SPOILAGE ------------------------------------------------------------
+        function getSlipNum(){
+            $query="SELECT osID FROM  orderslips";
+            return $this->db->query($query)->result_array();
+        }
+        function getCountRecMenuSpoil() {
+            $query = "SELECT count(msID) as allcount FROM spoiledmenu";
+            $result= $this->db->query($query)->result_array();      
+            return $result[0]['allcount'];
+        }
+        function get_spoilagesmenu($rowno,$rowperpage){
+            $query = "Select osID,menuspoil.msID as msID,prID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
+            AS msDateRecorded,msRemarks, CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ',CONCAT(' ',mTemp))) as prName from menuspoil inner join spoiledmenu on menuspoil.msID=spoiledmenu.msID inner join preferences using (prID) 
+            inner join menu using (mID) LIMIT $rowno, $rowperpage";
+            return  $this->db->query($query)->result_array();
+        }
+        function get_menuPref(){
+            $query = "SELECT prID, stID, prstQty, stQty, mName, CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ', 
+            CONCAT(' ',mTemp))) as prName, prPrice, mAvailability FROM preferences INNER JOIN menu USING (mID) 
+            LEFT JOIN prefstock USING (prID) LEFT JOIN stockitems USING (stID)";
+
+            return $this->db->query($query)->result_array();
+        }
+        function edit_menuspoilage($msID,$prID,$msQty,$oldQty,$msDate,$msRemarks,$date_recorded,$osID,$account_id,$user){
+            if($osID === ''){
+                $osID = NULL;
+            }else{
+                $osID = $osID;
+            }
+            $query = "Update menuspoil set msDateRecorded = ?, msDate=? where msID=?";
+            if($this->db->query($query,array($date_recorded,$msDate,$msID))){
+                $query = "Update spoiledmenu set osID = ?, msQty = ?, msDate = ?,msRemarks = ? where msID = ? AND prID = ?";
+                 $this->db->query($query,array($osID,$msQty,$msDate,$msRemarks,$msID,$prID));
+                 $this->add_actlog($account_id,$date_recorded, "$user edited a spoiled menu.", "edited","");
+                 $spoiled = "Select stID from spoiledmenu inner join prefstock on spoiledmenu.prID=prefstock.prID where msID = '$msID'";
+                $stock = $this->db->query($spoiled)->result_array();
+                foreach($stock as $stk){
+                    if($stk['stID'] != null && $stk['stID'] != ''){
+                        $this->update_stockItems($prID, $msQty, $oldQty);
+                        $this->update_spoiledStock($msID,$msDate,$date_recorded,$msQty,$msRemarks,$prID);
+                    }
+                }
+            }else{
+                return false;
+            }
+        }
+        //update
+        function update_stockItems($prID, $msQty, $oldQty){
+            $query3 = "Select stID from prefstock where prID = '$prID'";
+            $stID = $this->db->query($query3)->result_array();
+            foreach($stID as $s){
+                $id = $s['stID'];
+                $query4 = "Select stQty, prstQty from stockitems inner join prefstock on stockitems.stID=prefstock.stID
+                where stockitems.stID = '$id' and prID='$prID'";
+                $data = $this->db->query($query4)->result_array();
+                foreach($data as $d){
+                    $stQty = $d['stQty'];
+                    $qty = $d['prstQty'];
+                }
+                if($msQty > $oldQty){
+                    $diff = ($msQty * $qty) - ($oldQty * $qty);
+                    $finQty = $stQty - $diff;
+                    $updateQty = "Update stockitems set stQty = ? where stID = ?";
+                    $this->db->query($updateQty, array($finQty, $id));
+                }else if($msQty < $oldQty){
+                    $sum = ($oldQty * $qty) - ($msQty * $qty);
+                    $finQty = $sum + $stQty;
+                    $updateQty = "Update stockitems set stQty = ? where stID = ?";
+                    $this->db->query($updateQty, array($finQty, $id));
+                }else{
+                    $same = "Update stockitems set stQty = ? where stID = ?";
+                    $this->db->query($same, array($stQty, $id));
+                }
+            }
+        }
+
+        function update_spoiledStock($msID,$sDate,$dateRecorded,$qty,$remarks,$prID){
+            $query = "Update stockspoil set  sDate=?, sDateRecorded = ? where msID=?";
+            $this->db->query($query, array($sDate,$dateRecorded, $msID));
+            $query1 = "SELECT sID from stockspoil where msID='$msID'";
+            $rest = $this->db->query($query1)->result_array();
+            foreach($rest as $r){
+                $sID = $r['sID'];
+                $query2 = "SELECT siID from spoiledstock where sID = '$sID'";
+                $rest2 = $this->db->query($query2)->result_array();
+                foreach($rest2 as $r2){
+                    $siID = $r2['siID'];
+                }
+                $query3 = "SELECT  stID from prefstock where prID = '$prID'";
+                $rest3 = $this->db->query($query3)->result_array();
+                foreach($rest3 as $r3){
+                    $stID = $r3['stID'];
+                }
+                $tiType = 'spoilage';
+                $this->add_trans($prID,$stID,$qty,$remarks, $sDate, $siID, $tiType);
+            }
+        }
+        function update_stockqnty($qty,$prID) {
+            $query2 = "Select stID from prefstock where prID='$prID'";
+            $result2= $this->db->query($query2)->result_array();
+            foreach($result2 as $r2){
+                $stID = $r2['stID'];
+                $query1 = "SELECT stQty,prstQty FROM stockitems inner join prefstock on stockitems.stID=prefstock.stID where stockitems.stID = '$stID' AND prID='$prID'";
+                $result= $this->db->query($query1)->result_array();
+                foreach($result as $r){
+                    $prstQty = $r['prstQty'];
+                    $curQty = $r['stQty'];
+                }
+                $mul = $qty * $prstQty;
+                $diff = $curQty - $mul;
+         $query = "Update stockitems set stQty = ? where stID = ?";
+         $this->db->query($query, array($diff, $stID));   
+            } 
+        }
+        //add
+        function add_trans($prID,$stID,$qty,$remarks, $date, $siID, $tiType){
+            $query1 = "SELECT stQty, prstQty FROM stockitems inner join prefstock on stockitems.stID=prefstock.stID where stockitems.stID = '$stID' AND prID = '$prID'";
+            $result= $this->db->query($query1)->result_array();
+            foreach($result as $r){
+                $prstQty = $r['prstQty'];
+                $stQty = $r['stQty'];
+            $query = "INSERT INTO transitems(tiID, tiType, tiQty, tiActual, remainingQty, tiRemarks, tiDate, stID, siID)
+                VALUES (NULL, ?,?,?,?,?,?,?,?)";
+             $this->db->query($query, array($tiType, $qty, $prstQty, $stQty, $remarks, $date, $stID, $siID));
+            } 
+            
+        }
+        function add_menuspoil($date,$date_recorded,$account_id,$menu, $tiType, $user){
+            $query = "insert into menuspoil (msID,msDate,msDateRecorded) values (NULL,?,?)";
+            if($this->db->query($query,array($date,$date_recorded))){ 
+                $this->add_spoiledmenu($this->db->insert_id(),$account_id,$menu,$date,$date_recorded, $tiType);
+                $this->add_actlog($account_id,$date_recorded, "$user added a spoiled menu.", "add","");
+                return true;
+            }
+        }
+        function add_spoiledmenu($msID,$account_id,$menus,$date,$date_recorded,$tiType){
+            $query = "insert into spoiledmenu (msID,prID,osID,msQty,msDate,msRemarks) values (?,?,?,?,?,?)";
+            if(count($menus) > 0){
+                for($in = 0; $in < count($menus) ; $in++){
+                    if($menus[$in]['slip'] === ''){
+                        $osID = NULL;
+                    }else{
+                        $osID = $menus[$in]['slip'];
+                    }
+                $this->db->query($query, array($msID, $menus[$in]['prID'],$osID,$menus[$in]['qty'],$date,$menus[$in]['remarks']));
+                    if($menus[$in]['stID'] !== null && $menus[$in]['stID'] !== '') {
+                        $this->update_stockqnty($menus[$in]['qty'], $menus[$in]['prID']);
+                        $this->add_stockSpoiled($menus[$in]['prID'],$msID,$menus[$in]['qty'],$menus[$in]['remarks'],$date,$date_recorded, $tiType);
+                    }
+                }
+            }
+        }
+        function add_stockSpoiled($prID,$msID,$qty,$remarks,$date,$date_recorded,$tiType){
+            $query1 = "SELECT stID FROM prefstock where prID = '$prID'";
+            $return = $this->db->query($query1)->result_array();
+            foreach($return as $ret){
+                $query = "insert into stockspoil (sID, msID,sDate, sDateRecorded) values (NULL,?,?,?)";
+                if($this->db->query($query, array($msID,$date,$date_recorded))){
+                    $sID = $this->db->insert_id();
+                    $query2 = "insert into spoiledstock (siID,sID) values (NULL,?)";
+                    if($this->db->query($query2, array($sID))){
+                        $this->add_trans($prID,$ret['stID'],$qty,$remarks,$date, $this->db->insert_id(), $tiType);
+                    }
+                }
+            }
+        }
+
+        //ADDON SPOILAGES-------------------------------------------------------------------------------------------------
+        function get_addspoil($s, $l){
+            $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, 
+            DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using 
+            (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC Limit $s, $l";
+            return  $this->db->query($query)->result_array();
+        }
+        function countRecAddsSpoil(){
+            $query = "Select count(aoID) as allcount from addonspoil";
+            $result = $this->db->query($query)->result_array();
+            return $result[0]['allcount'];
+        }
+        function get_spoilagesaddons(){
+            $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC";
+            return  $this->db->query($query)->result_array();
+        }
+        function get_addons(){
+            $query = "Select * from addons left join orderaddons using (aoID)";
+            return $this->db->query($query)->result_array();
+        }
+        function add_aospoil($date_recorded,$date,$addons,$account_id,$user){
+            $query = "insert into aospoil (aosID,aosDateRecorded) values (NULL,?)";
+            if($this->db->query($query,array($date_recorded))){ 
+                $this->add_spoiledaddon($this->db->insert_id(),$addons,$date_recorded,$date,$account_id,$user);
+                return true;
+            }
+        }
+        function add_spoiledaddon($aosID,$addons,$date_recorded,$date,$account_id,$user){
+            $query = "INSERT INTO `addonspoil`(`aoID`, `aosID`, `osID`, `aosQty`, `aosDate`, `aosRemarks`) VALUES (?,?,?,?,?,?)";
+            if(count($addons) > 0){
+                for($in = 0; $in < count($addons) ; $in++){
+                    $this->db->query($query, array($addons[$in]['aoID'],$aosID, $addons[$in]['osID'], $addons[$in]['aosQty'],$date,$addons[$in]['tRemarks']));
+                    $this->add_actlog($account_id,$date_recorded, "$user added an addon spoilage.", "add", $addons[$in]['tRemarks']);
+                    
+                }    
+            }
+        }
+        function edit_aospoilage($aoID,$aosID,$aosQty,$aosDate,$aosRemarks,$date_recorded){
+            $query = "Update aospoil set aosDateRecorded = ? where aosID=?";
+            if($this->db->query($query,array($date_recorded,$aosID))){
+                $query = "Update addonspoil set aosQty = ?,aosDate = ?,aosRemarks = ? where aoID = ? and aosID = ?";
+                return $this->db->query($query,array($aosQty,$aosDate,$aosRemarks,$aoID,$aosID));
+            }else{
+                return false;
+            }
+        }
         //ADDON SPOILAGES-------------------------------------------------------------------------------------------------
         function get_addspoil($s, $l){
             $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, 
