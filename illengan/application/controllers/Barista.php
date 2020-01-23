@@ -420,7 +420,7 @@ class Barista extends CI_Controller{
 		}
 	}
 	function loadDataMenuSpoil($record=0) {
-		$recordPerPage = 3;
+		$recordPerPage = 20;
 		if($record != 0){
             $record = ($record-1) * $recordPerPage;
 		}      	
