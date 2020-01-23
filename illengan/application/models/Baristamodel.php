@@ -313,7 +313,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         function get_spoilagesmenu($rowno,$rowperpage){
             $query = "Select osID,menuspoil.msID as msID,prID, mName,msQty,DATE_FORMAT(menuspoil.msDate, '%b %d, %Y') AS msDate,DATE_FORMAT(msDateRecorded, '%b %d, %Y %r') 
             AS msDateRecorded,msRemarks, CONCAT(mName, ' ', '(',prName,')', IF(mTemp IS NULL,' ',CONCAT(' ',mTemp))) as prName from menuspoil inner join spoiledmenu on menuspoil.msID=spoiledmenu.msID inner join preferences using (prID) 
-            inner join menu using (mID) LIMIT $rowno, $rowperpage";
+            inner join menu using (mID) ORDER BY msDateRecorded DESC LIMIT $rowno, $rowperpage";
             return  $this->db->query($query)->result_array();
         }
         function get_menuPref(){
