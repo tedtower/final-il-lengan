@@ -467,52 +467,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             }
         }
 
-        //ADDON SPOILAGES-------------------------------------------------------------------------------------------------
-        function get_addspoil($s, $l){
-            $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, 
-            DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using 
-            (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC Limit $s, $l";
-            return  $this->db->query($query)->result_array();
-        }
-        function countRecAddsSpoil(){
-            $query = "Select count(aoID) as allcount from addonspoil";
-            $result = $this->db->query($query)->result_array();
-            return $result[0]['allcount'];
-        }
-        function get_spoilagesaddons(){
-            $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, DATE_FORMAT(aosDateRecorded, '%b %d, %Y %r') AS aosDateRecorded, aosRemarks from addonspoil INNER JOIN aospoil using (aosID)INNER JOIN addons using (aoID) order by aosDateRecorded DESC";
-            return  $this->db->query($query)->result_array();
-        }
-        function get_addons(){
-            $query = "Select * from addons left join orderaddons using (aoID)";
-            return $this->db->query($query)->result_array();
-        }
-        function add_aospoil($date_recorded,$date,$addons,$account_id,$user){
-            $query = "insert into aospoil (aosID,aosDateRecorded) values (NULL,?)";
-            if($this->db->query($query,array($date_recorded))){ 
-                $this->add_spoiledaddon($this->db->insert_id(),$addons,$date_recorded,$date,$account_id,$user);
-                return true;
-            }
-        }
-        function add_spoiledaddon($aosID,$addons,$date_recorded,$date,$account_id,$user){
-            $query = "INSERT INTO `addonspoil`(`aoID`, `aosID`, `osID`, `aosQty`, `aosDate`, `aosRemarks`) VALUES (?,?,?,?,?,?)";
-            if(count($addons) > 0){
-                for($in = 0; $in < count($addons) ; $in++){
-                    $this->db->query($query, array($addons[$in]['aoID'],$aosID, $addons[$in]['osID'], $addons[$in]['aosQty'],$date,$addons[$in]['tRemarks']));
-                    $this->add_actlog($account_id,$date_recorded, "$user added an addon spoilage.", "add", $addons[$in]['tRemarks']);
-                    
-                }    
-            }
-        }
-        function edit_aospoilage($aoID,$aosID,$aosQty,$aosDate,$aosRemarks,$date_recorded){
-            $query = "Update aospoil set aosDateRecorded = ? where aosID=?";
-            if($this->db->query($query,array($date_recorded,$aosID))){
-                $query = "Update addonspoil set aosQty = ?,aosDate = ?,aosRemarks = ? where aoID = ? and aosID = ?";
-                return $this->db->query($query,array($aosQty,$aosDate,$aosRemarks,$aoID,$aosID));
-            }else{
-                return false;
-            }
-        }
+        
         //ADDON SPOILAGES-------------------------------------------------------------------------------------------------
         function get_addspoil($s, $l){
             $query = "Select aoID,aosID, aoName,aosQty, aoCategory,DATE_FORMAT(addonspoil.aosDate, '%b %d, %Y') AS aosDate, 
