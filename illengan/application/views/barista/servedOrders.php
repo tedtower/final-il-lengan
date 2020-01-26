@@ -99,7 +99,7 @@
                                     <td class="p-2">${ol[o].olQty}</td>
                                     <td class="p-2">${ol[o].olDesc}</td>
                                     <td class="p-2">
-                                        <input type="button" style="width:100%;padding:6%;background:orange;color:white;border:0;border-radius:5px"
+                                        <input type="button" style="width:100%;padding:6%;background:green;color:white;border:0;border-radius:5px"
                                        id="item_status" data-id="${ol[o].olID}" value="${ol[o].olStatus}"/>
                                     </td>
                                     <td></td>
