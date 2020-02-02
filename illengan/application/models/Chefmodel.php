@@ -10,14 +10,14 @@
             $query = "SELECT os.osID, os.tableCode, os.custName, os.osDateTime, ol.olID, ol.olDesc, ol.olQty, ol.olRemarks
             FROM orderlists ol INNER JOIN orderslips os USING (osID) INNER JOIN preferences USING (prID) 
             INNER JOIN menu USING (mID) INNER JOIN categories cat USING (ctID) 
-            WHERE cat.supcatID = '1' AND ol.olStatus='pending' LIMIT $rowno, $rowperpage";
+            WHERE cat.supcatID = '1' AND ol.olStatus='pending' AND os.osDateTime >= CURDATE() LIMIT $rowno, $rowperpage";
             return $this->db->query($query)->result_array();
         }
         function getRecordCount() {
             $query = "SELECT count(ol.olID) as allcount
             FROM orderlists ol INNER JOIN orderslips os USING (osID) INNER JOIN preferences USING (prID) 
             INNER JOIN menu USING (mID) INNER JOIN categories cat USING (ctID) 
-            WHERE supcatID = '1' AND olStatus='pending'";
+            WHERE supcatID = '1' AND olStatus='pending' AND os.osDateTime >= CURDATE()";
             $result= $this->db->query($query)->result_array();      
               return $result[0]['allcount'];
         }
